@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
 namespace bcf2json.Model {
-  public struct Json {
+  public struct Viewpoint {
     /// <summary>
     ///   Describes a viewpoint using perspective camera.
     /// </summary>
@@ -48,7 +48,7 @@ namespace bcf2json.Model {
     /// <param name="clippingPlanes">
     ///   Clipping planes for the topic.
     /// </param>
-    public Json(PerspectiveCamera perspectiveCamera,
+    public Viewpoint(PerspectiveCamera perspectiveCamera,
       OrthogonalCamera orthogonalCamera, Components components,
       Snapshot snapshot, List<ClippingPlane> clippingPlanes) {
       this.perspectiveCamera = perspectiveCamera;

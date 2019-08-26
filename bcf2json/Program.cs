@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using bcf2json.Model;
+using bcf2json.Parser;
 
 namespace bcf2json {
   class Program {
-    static void main(string[] args) {
+    static async Task Main(string[] args) {
       if (args.Length < 1) {
         Console
           .WriteLine("Please specify the path to the BCFZIP.");
@@ -15,32 +17,14 @@ namespace bcf2json {
 
         ");
         Environment.Exit(1);
-        
       }
+
+      var bcfzipPath = args[0];
+      var parser = new Xml20();
+      var json = await parser.jsonFrom(bcfzipPath);
+      Console.WriteLine(json);
       
-      
-      // Unzip
-        // Loop through folders
-          // Load markup.bcf
-            // Parse topic information:
-            //   Guid, TopicType, TopicStatus
-            //   Title, CreationDate, CreationAuthor, Description
-            
-            // Parse viewpoints
-            //  load referenced snapshot into Base64
-              // snapshot_type, snapshot_data
-            //  parse referenced viewpoint.bcfv 2.0
-            
-              // Components
-                // Collect all visible ("selection")
-                  // ifc_guid, originating_system, authoring_tool_id
-                  
-                // Collect all selected ("visibility")
-                  // default_visibility, exceptions, view_setup_hints
-                
-                // Collect all colours ("coloring")
-                  // color, components
-            // PerspectiveCamera
+      Environment.Exit(0);
     }
   }
 }
