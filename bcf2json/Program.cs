@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Xml.Linq; 
+using System.Xml.Linq;
+using bcf2json.Model;
 
 namespace bcf2json {
   class Program {
@@ -14,6 +15,7 @@ namespace bcf2json {
 
         ");
         Environment.Exit(1);
+        
       }
       
       
