@@ -1,0 +1,6 @@
+.env
+bin
+obj
+.idea
+TestOutput
+TestInput
