@@ -1,10 +1,11 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using bcf2json.Model;
 
 namespace bcf2json.Parser {
   public class Xml21: BCFParser {
-    public Task<List<Topic>> jsonFrom(string path) {
+    public Task<ConcurrentBag<Topic>> parse(string path) {
       throw new System.NotImplementedException();
     }
   }

@@ -21,7 +21,7 @@ namespace bcf2json {
 
       var bcfzipPath = args[0];
       var parser = new Xml20();
-      var json = await parser.jsonFrom(bcfzipPath);
+      var json = await parser.parse(bcfzipPath);
       Console.WriteLine(json);
       
       Environment.Exit(0);

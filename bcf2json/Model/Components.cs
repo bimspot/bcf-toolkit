@@ -15,7 +15,7 @@ namespace bcf2json.Model {
     ///   Coloring describes a list of components that are colored in the
     ///   specific color.
     /// </summary>
-    public Coloring coloring;
+    public List<Coloring> coloring;
 
     /// <summary>
     ///   The Visibility element states the components DefaultVisibility and
@@ -38,7 +38,7 @@ namespace bcf2json.Model {
     ///   The Visibility element states the components DefaultVisibility and
     ///   lists all Exceptions that apply to specific components.
     /// </param>
-    public Components(List<Component> selection, Coloring coloring,
+    public Components(List<Component> selection, List<Coloring> coloring,
       Visibility visibility) {
       this.selection = selection;
       this.coloring = coloring;
