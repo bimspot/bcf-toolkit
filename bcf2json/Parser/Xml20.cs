@@ -161,7 +161,21 @@ namespace bcf2json.Parser {
                 Convert.ToSingle(item.Element("ViewToWorldScale")?.Value)
             }).SingleOrDefault();
 
-        var selections = document
+        var visibleComponents = document
+          .Descendants("Components")
+          .Elements("Component")
+          .Where(e =>
+            bool.Parse(e.Attribute("Visible")?.Value ?? "false").Equals
+              (true));
+        
+        var hiddenComponents = document
+          .Descendants("Components")
+          .Elements("Component")
+          .Where(e =>
+            bool.Parse(e.Attribute("Visible")?.Value ?? "false").Equals
+              (false));
+        
+        var selectedComponents = document
           .Descendants("Components")
           .Elements("Component")
           .Where(e =>
@@ -187,24 +201,22 @@ namespace bcf2json.Parser {
         // If the list of visible components is smaller or equals the list of
         // hidden components: set default_visibility to false and put the
         // visible components in exceptions.
-
-        var numberOfVisibleElements = selections.Count();
-        var totalElements = document
-          .Descendants("Components")
-          .Elements("Component")
-          .Count();
-        var numberOfHiddenElements = totalElements - numberOfVisibleElements;
-        var defaultVisibility =
-          numberOfHiddenElements < numberOfVisibleElements;
+        
+        var defaultVisibility = 
+          hiddenComponents.Count() < visibleComponents.Count();
+        var exceptionalComponents = (defaultVisibility)
+          ? makeComponentList(hiddenComponents)
+          : makeComponentList(visibleComponents);
 
         return new Viewpoint {
           perspectiveCamera = pCam,
           orthogonalCamera = oCam,
           components = new Components {
-            selection = makeComponentList(selections),
+            selection = makeComponentList(selectedComponents),
             coloring = colors.ToList(),
             visibility = new Visibility {
-              defaultVisibility = defaultVisibility
+              defaultVisibility = defaultVisibility,
+              exceptions = exceptionalComponents
             }
           }
         };
