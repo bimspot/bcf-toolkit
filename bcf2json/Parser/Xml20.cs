@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -30,6 +31,13 @@ namespace bcf2json.Parser {
 
         // Unzipping the bcfzip
         using (var archive = ZipFile.OpenRead(path)) {
+          // In order to instanciate the Viewpoints struct in the Topic, 
+          // the data from the viewpoint and the snapshot files have to be
+          // ready. They are collected there and are null-ed after the Topic
+          // is created.
+          Viewpoint? viewpoint = null;
+          Snapshot? snapshot = null;
+
           // Iterating through the files
           foreach (var entry in archive.Entries) {
             Console.WriteLine(entry.FullName);
@@ -40,32 +48,36 @@ namespace bcf2json.Parser {
             var uuid = entry.FullName.Split("/")[0];
 
             // Parsing BCF files
-            if (entry.FullName.EndsWith(".bcf",
-              StringComparison.OrdinalIgnoreCase)) {
+            if (entry.isBcf()) {
               var topic = await this.topicUsing(entry);
               topics.Add(topic);
             }
 
             // Parsing the viewpoint file
-            else if (entry.FullName.EndsWith(".bcfv",
-              StringComparison.OrdinalIgnoreCase)) {
-              var viewpoint = await this.viewpointUsing(entry);
-              var topic = topics.Single(t => t.guid.Equals(uuid));
-              topic.viewpoints.Add(viewpoint);
+            else if (entry.isBcfViewpoint()) {
+              viewpoint = await this.viewpointUsing(entry);
             }
             
-            // TODO: snapshot
-          }
+            // Parsing the
+            else if (entry.isSnapshot()) {
+              snapshot = await this.snapshotUsing(entry);
+            }
 
-          foreach (var topic in topics) {
-            Console.WriteLine(
-              "{0} {1} {2}",
-              topic.guid,
-              topic.title,
-              topic.viewpoints.Count);
+            // Once all: topic, viewpoint and snapshot for the uuid is
+            // available, the object can be created and returned
+            if (viewpoint.HasValue && snapshot.HasValue) {
+              var topic = topics.Single(t => t.guid.Equals(uuid));
+              topic.viewpoints.Add(new Viewpoints() {
+                viewpoint = viewpoint.Value,
+                snapshot = snapshot.Value
+              });
+
+              // Null-ing external references
+              viewpoint = null;
+              snapshot = null;
+            }
           }
         }
-
         return topics;
       });
     }
@@ -99,7 +111,7 @@ namespace bcf2json.Parser {
             dueDate = item.Element("DueDate")?.Value,
             assignedTo = item.Element("AssignedTo")?.Value,
             description = item.Element("Description")?.Value,
-            viewpoints = new List<Viewpoint>()
+            viewpoints = new List<Viewpoints>()
           }).Single();
       });
     }
@@ -149,13 +161,12 @@ namespace bcf2json.Parser {
 //                Convert.ToSingle(item.Element("ViewToWorldScale")?.Value)
 //            }).Single();
 //
-
         var selections = document
           .Descendants("Components")
           .Elements("Component")
           .Where(e =>
             Boolean.Parse(e.Attribute("Selected")?.Value ?? "false").Equals
-            (true));
+              (true));
 
         var colors = document
           .Descendants("Components")
@@ -167,9 +178,9 @@ namespace bcf2json.Parser {
             };
           });
 
-        
+
         // Note: Optimization Rules
-        
+
         // If the list of hidden components is smaller than the list of visible
         // components: set default_visibility to true and put the hidden
         // components in exceptions.
@@ -177,13 +188,13 @@ namespace bcf2json.Parser {
         // If the list of visible components is smaller or equals the list of
         // hidden components: set default_visibility to false and put the
         // visible components in exceptions.
-        
+
         var numberOfVisibleElements = selections.Count();
         var totalElements = document
           .Descendants("Components")
           .Elements("Component").Count();
         var numberOfHiddenElements = totalElements - numberOfVisibleElements;
-        var defaultVisibility = 
+        var defaultVisibility =
           (numberOfHiddenElements < numberOfVisibleElements);
 
         return new Viewpoint() {
@@ -194,12 +205,20 @@ namespace bcf2json.Parser {
             coloring = colors.ToList(),
             visibility = new Visibility() {
               defaultVisibility = defaultVisibility
-            }
+            },
           },
         };
       });
     }
 
+    /// <summary>
+    ///   A private utility method creating a list of Components using
+    ///   the data in the XML. 
+    /// </summary>
+    /// <param name="items">
+    ///   A list of XElement's with the component elements in XML.
+    /// </param>
+    /// <returns></returns>
     private List<Component> makeComponentList(IEnumerable<XElement> items) {
       var list = new List<Component>();
       foreach (var xElement in items) {
@@ -209,7 +228,26 @@ namespace bcf2json.Parser {
           originatingSystem = xElement.Element("OriginatingSystem")?.Value
         });
       }
+
       return list;
+    }
+
+    private Task<Snapshot> snapshotUsing(ZipArchiveEntry entry) {
+      return Task.Run(async () => {
+        var extension = entry.FullName.Split(".").Last();
+        var mime = $"data:image/{extension};base64";
+        var type = (Snapshot.Type) Enum.Parse(typeof(Snapshot.Type), extension);
+        var buffer = new byte[entry.Length];
+        var image = await entry
+          .Open()
+          .ReadAsync(buffer, 0, buffer.Length);
+        var base64String = Convert.ToBase64String(buffer.ToArray());
+
+        return new Snapshot() {
+          snapshotType = type,
+          snapshotData = $"{mime},{base64String}"
+        };
+      });
     }
   }
 }

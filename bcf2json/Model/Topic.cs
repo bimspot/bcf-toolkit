@@ -84,6 +84,6 @@ namespace bcf2json.Model {
     ///   The markup file can contain multiple viewpoints related to one or
     ///   more comments.
     /// </summary>
-    public List<Viewpoint> viewpoints;
+    public List<Viewpoints> viewpoints;
   }
 }
