@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading;
@@ -255,10 +256,12 @@ namespace bcf2json.Parser {
         var mime = $"data:image/{extension};base64";
         var type = (Snapshot.Type) Enum.Parse(typeof(Snapshot.Type), extension);
         var buffer = new byte[entry.Length];
-        var image = await entry
+        
+        var image = entry
           .Open()
-          .ReadAsync(buffer, 0, buffer.Length);
-        var base64String = Convert.ToBase64String(buffer.ToArray());
+          .Read(buffer, 0, buffer.Length);
+        var base64String = Convert.ToBase64String(buffer);
+        
         return new Snapshot {
           snapshotType = type,
           snapshotData = $"{mime},{base64String}"
