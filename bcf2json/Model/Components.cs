@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace bcf2json.Model {
   /// <summary>
@@ -15,6 +16,7 @@ namespace bcf2json.Model {
     ///   Coloring describes a list of components that are colored in the
     ///   specific color.
     /// </summary>
+    [JsonIgnore] // TODO: move this to a custom serializer for xeokit
     public List<Coloring> coloring;
 
     /// <summary>

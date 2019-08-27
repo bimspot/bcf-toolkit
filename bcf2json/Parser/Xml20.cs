@@ -159,7 +159,7 @@ namespace bcf2json.Parser {
               cameraUpVector = makeVector(item, "CameraUpVector"),
               viewToWorldScale =
                 Convert.ToSingle(item.Element("ViewToWorldScale")?.Value)
-            }).FirstOrDefault()
+            }).SingleOrDefault();
 
         var selections = document
           .Descendants("Components")
@@ -249,7 +249,7 @@ namespace bcf2json.Parser {
         var base64String = Convert.ToBase64String(buffer.ToArray());
         return new Snapshot {
           snapshotType = type,
-//          snapshotData = $"{mime},{base64String}"
+          snapshotData = $"{mime},{base64String}"
         };
       });
     }

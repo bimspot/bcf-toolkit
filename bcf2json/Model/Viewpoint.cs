@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace bcf2json.Model {
   public struct Viewpoint {
@@ -9,7 +10,8 @@ namespace bcf2json.Model {
 
     /// <summary>
     ///   Describes a viewpoint using orthogonal camera.
-    /// </summary>
+    /// </summary>s
+    [JsonIgnore] // TODO: Fix the issue witch default empty object.
     public OrthogonalCamera? orthogonalCamera;
 
     /// <summary>
