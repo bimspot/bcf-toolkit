@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
-using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -49,25 +48,25 @@ namespace bcf2json.Parser {
 
             // Parsing BCF files
             if (entry.isBcf()) {
-              var topic = await this.topicUsing(entry);
+              var topic = await topicUsing(entry);
               topics.Add(topic);
             }
 
             // Parsing the viewpoint file
             else if (entry.isBcfViewpoint()) {
-              viewpoint = await this.viewpointUsing(entry);
+              viewpoint = await viewpointUsing(entry);
             }
-            
+
             // Parsing the
             else if (entry.isSnapshot()) {
-              snapshot = await this.snapshotUsing(entry);
+              snapshot = await snapshotUsing(entry);
             }
 
             // Once all: topic, viewpoint and snapshot for the uuid is
             // available, the object can be created and returned
             if (viewpoint.HasValue && snapshot.HasValue) {
               var topic = topics.Single(t => t.guid.Equals(uuid));
-              topic.viewpoints.Add(new Viewpoints() {
+              topic.viewpoints.Add(new Viewpoints {
                 viewpoint = viewpoint.Value,
                 snapshot = snapshot.Value
               });
@@ -78,6 +77,7 @@ namespace bcf2json.Parser {
             }
           }
         }
+
         return topics;
       });
     }
@@ -96,7 +96,7 @@ namespace bcf2json.Parser {
           CancellationToken.None);
 
         return (from item in document.Descendants("Topic")
-          select new Topic() {
+          select new Topic {
             guid = item.Attribute("Guid")?.Value,
             type = item.Attribute("TopicType")?.Value,
             status = item.Attribute("TopicStatus")?.Value,
@@ -131,53 +131,52 @@ namespace bcf2json.Parser {
           LoadOptions.None,
           CancellationToken.None);
 
-        Func<XElement, String, Vector3> makeVector = (item, element) => {
-          return new Vector3() {
+        Func<XElement, string, Vector3> makeVector = (item, element) => {
+          return new Vector3 {
             x = Convert.ToSingle(
               item.Element("CameraViewPoint")?.Element("X")?.Value),
             y = Convert.ToSingle(
               item.Element("CameraViewPoint")?.Element("Y")?.Value),
             z = Convert.ToSingle(
-              item.Element("CameraViewPoint")?.Element("Z")?.Value),
+              item.Element("CameraViewPoint")?.Element("Z")?.Value)
           };
         };
 
-        var pcam =
+        var pCam =
           (from item in document.Descendants("PerspectiveCamera")
-            select new PerspectiveCamera() {
+            select new PerspectiveCamera {
               cameraViewPoint = makeVector(item, "CameraViewPoint"),
               cameraDirection = makeVector(item, "CameraDirection"),
               cameraUpVector = makeVector(item, "CameraUpVector"),
               fieldOfView = Convert.ToSingle(item.Element("FieldOfView")?.Value)
-            }).Single();
+            }).SingleOrDefault();
 
-//        var oCam =
-//          (from item in document.Descendants("OrthogonalCamera")
-//            select new OrthogonalCamera() {
-//              cameraViewPoint = makeVector(item, "CameraViewPoint"),
-//              cameraDirection = makeVector(item, "CameraDirection"),
-//              cameraUpVector = makeVector(item, "CameraUpVector"),
-//              viewToWorldScale =
-//                Convert.ToSingle(item.Element("ViewToWorldScale")?.Value)
-//            }).Single();
-//
+        var oCam =
+          (from item in document.Descendants("OrthogonalCamera")
+            select new OrthogonalCamera() {
+              cameraViewPoint = makeVector(item, "CameraViewPoint"),
+              cameraDirection = makeVector(item, "CameraDirection"),
+              cameraUpVector = makeVector(item, "CameraUpVector"),
+              viewToWorldScale =
+                Convert.ToSingle(item.Element("ViewToWorldScale")?.Value)
+            }).FirstOrDefault()
+
         var selections = document
           .Descendants("Components")
           .Elements("Component")
           .Where(e =>
-            Boolean.Parse(e.Attribute("Selected")?.Value ?? "false").Equals
+            bool.Parse(e.Attribute("Selected")?.Value ?? "false").Equals
               (true));
 
         var colors = document
           .Descendants("Components")
           .Elements("Component")
-          .GroupBy(i => i.Attribute("Color")?.Value, (key, result) => {
-            return new Coloring() {
+          .GroupBy(i => i.Attribute("Color")?.Value ?? "FFFFFFFF", (key, result) => {
+            return new Coloring {
               color = key,
-              components = this.makeComponentList(result)
+              components = makeComponentList(result)
             };
           });
-
 
         // Note: Optimization Rules
 
@@ -192,28 +191,29 @@ namespace bcf2json.Parser {
         var numberOfVisibleElements = selections.Count();
         var totalElements = document
           .Descendants("Components")
-          .Elements("Component").Count();
+          .Elements("Component")
+          .Count();
         var numberOfHiddenElements = totalElements - numberOfVisibleElements;
         var defaultVisibility =
-          (numberOfHiddenElements < numberOfVisibleElements);
+          numberOfHiddenElements < numberOfVisibleElements;
 
-        return new Viewpoint() {
-          perspectiveCamera = pcam,
-//          orthogonalCamera = oCam,
-          components = new Components() {
-            selection = this.makeComponentList(selections),
+        return new Viewpoint {
+          perspectiveCamera = pCam,
+          orthogonalCamera = oCam,
+          components = new Components {
+            selection = makeComponentList(selections),
             coloring = colors.ToList(),
-            visibility = new Visibility() {
+            visibility = new Visibility {
               defaultVisibility = defaultVisibility
-            },
-          },
+            }
+          }
         };
       });
     }
 
     /// <summary>
     ///   A private utility method creating a list of Components using
-    ///   the data in the XML. 
+    ///   the data in the XML.
     /// </summary>
     /// <param name="items">
     ///   A list of XElement's with the component elements in XML.
@@ -221,17 +221,22 @@ namespace bcf2json.Parser {
     /// <returns></returns>
     private List<Component> makeComponentList(IEnumerable<XElement> items) {
       var list = new List<Component>();
-      foreach (var xElement in items) {
-        list.Add(new Component() {
+      foreach (var xElement in items)
+        list.Add(new Component {
           ifcGuid = xElement.Attribute("IfcGuid")?.Value,
           authoringToolId = xElement.Element("AuthoringToolId")?.Value,
           originatingSystem = xElement.Element("OriginatingSystem")?.Value
         });
-      }
 
       return list;
     }
 
+    /// <summary>
+    ///   The private method extracts the contents of the zipped image and
+    ///   converts it into a base64 string. Returns the created Snapshot struct.
+    /// </summary>
+    /// <param name="entry">The ZipArchiveEntry containing the image.</param>
+    /// <returns>Returns a Task of the promised Snapshot.</returns>
     private Task<Snapshot> snapshotUsing(ZipArchiveEntry entry) {
       return Task.Run(async () => {
         var extension = entry.FullName.Split(".").Last();
@@ -242,10 +247,9 @@ namespace bcf2json.Parser {
           .Open()
           .ReadAsync(buffer, 0, buffer.Length);
         var base64String = Convert.ToBase64String(buffer.ToArray());
-
-        return new Snapshot() {
+        return new Snapshot {
           snapshotType = type,
-          snapshotData = $"{mime},{base64String}"
+//          snapshotData = $"{mime},{base64String}"
         };
       });
     }

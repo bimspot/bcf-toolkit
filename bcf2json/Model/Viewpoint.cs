@@ -5,13 +5,13 @@ namespace bcf2json.Model {
     /// <summary>
     ///   Describes a viewpoint using perspective camera.
     /// </summary>
-    public PerspectiveCamera perspectiveCamera;
-    
+    public PerspectiveCamera? perspectiveCamera;
+
     /// <summary>
     ///   Describes a viewpoint using orthogonal camera.
     /// </summary>
-    public OrthogonalCamera orthogonalCamera;
-    
+    public OrthogonalCamera? orthogonalCamera;
+
     /// <summary>
     ///   The components node contains a set of Component references.
     /// </summary>

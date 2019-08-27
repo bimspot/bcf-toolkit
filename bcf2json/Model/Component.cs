@@ -1,6 +1,6 @@
 namespace bcf2json.Model {
   /// <summary>
-  /// The Component describes a single building element.
+  ///   The Component describes a single building element.
   /// </summary>
   public struct Component {
     /// <summary>

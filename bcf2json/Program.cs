@@ -1,12 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using bcf2json.Model;
 using bcf2json.Parser;
+using Newtonsoft.Json;
 
 namespace bcf2json {
-  class Program {
-    static async Task Main(string[] args) {
+  internal class Program {
+    private static async Task Main(string[] args) {
       if (args.Length < 1) {
         Console
           .WriteLine("Please specify the path to the BCFZIP.");
@@ -21,9 +21,17 @@ namespace bcf2json {
 
       var bcfzipPath = args[0];
       var parser = new Xml20();
-      var json = await parser.parse(bcfzipPath);
-      Console.WriteLine(json);
-      
+      var topics = await parser.parse(bcfzipPath);
+      var json = JsonConvert
+        .SerializeObject(
+          topics, 
+          Formatting.Indented, new JsonSerializerSettings { 
+            NullValueHandling = NullValueHandling.Ignore
+          });
+      using (StreamWriter writer = File.CreateText("bcf.json")) {
+        await writer.WriteAsync(json);
+      }
+
       Environment.Exit(0);
     }
   }

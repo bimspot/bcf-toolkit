@@ -24,7 +24,7 @@ namespace bcf2json.Model {
     public float viewToWorldScale;
 
     /// <summary>
-    ///  Creates and returns an instance of the PerspectiveCamera.
+    ///   Creates and returns an instance of the PerspectiveCamera.
     /// </summary>
     /// <param name="cameraViewPoint">Camera location</param>
     /// <param name="cameraDirection">Camera direction</param>
