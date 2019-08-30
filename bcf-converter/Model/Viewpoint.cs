@@ -10,7 +10,8 @@ namespace bcf_converter.Model {
 
     /// <summary>
     ///   Describes a viewpoint using orthogonal camera.
-    /// </summary>s
+    /// </summary>
+    /// s
     [JsonIgnore] // TODO: Fix the issue witch default empty object.
     public OrthogonalCamera? orthogonalCamera;
 

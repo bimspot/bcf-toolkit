@@ -3,15 +3,7 @@
 A .NET library and a command line utility for converting `BCF` (Building 
 Collaboration Format) files into `json` and vice versa.
 
-The tool converts `BCF` information across formats and versions. The 
-development is ongoing, the table below shows the currently completed features.
-
-|          | XML 2.0 | XML 2.1 | JSON 2.0 | JSON 2.1 |
-|:--------:|---------|---------|----------|----------|
-| XML 2.0  |         |         |          |     X    |
-| XML 2.1  |         |         |          |          |
-| JSON 2.0 |         |         |          |          |
-| JSON 2.1 |         |         |          |          |
+The tool converts `BCF` information across formats and versions. 
 
 ## Usage
 
@@ -26,3 +18,20 @@ The command line interface accepts three arguments:
 ```
 $ ifc-converter /path/to/source.bcfzip /path/to/target.json 2.1
 ```
+
+## Development
+
+The development of the tool is ongoing, the table below shows the currently 
+completed features.
+
+|          | XML 2.0 | XML 2.1 | JSON 2.0 | JSON 2.1 |
+|----------|:-------:|:-------:|:--------:|:--------:|
+| XML 2.0  |         |         |          |     X    |
+| XML 2.1  |         |         |          |          |
+| JSON 2.0 |         |         |          |          |
+| JSON 2.1 |         |         |          |          |
+
+
+### Contribution
+
+Code style guide can be found in the `bcf-converter.sln.DotSettings` file.

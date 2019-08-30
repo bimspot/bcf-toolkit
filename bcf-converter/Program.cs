@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using bcf_converter.Parser;
+using bcf_converter.Parser.Xml20;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -22,24 +22,24 @@ namespace bcf_converter {
 
       var sourcePath = args[0];
       var targetPath = args[1];
-      var version = args[2] ?? "21";
-      
+      var version = args[2] ?? "2.1";
+
       var parser = new Xml20();
       var topics = await parser.parse(sourcePath);
-      
+
       var contractResolver = new DefaultContractResolver {
         NamingStrategy = new SnakeCaseNamingStrategy()
       };
-      
+
       var json = JsonConvert
         .SerializeObject(
-          topics, 
-          Formatting.Indented, new JsonSerializerSettings { 
+          topics,
+          Formatting.None, new JsonSerializerSettings {
             NullValueHandling = NullValueHandling.Ignore,
-            ContractResolver = contractResolver,
+            ContractResolver = contractResolver
           });
-      
-      using (StreamWriter writer = File.CreateText(targetPath)) {
+
+      using (var writer = File.CreateText(targetPath)) {
         await writer.WriteAsync(json);
       }
 
