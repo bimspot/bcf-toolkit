@@ -10,20 +10,22 @@ namespace bcf_converter {
     private static async Task Main(string[] args) {
       if (args.Length < 2) {
         Console.WriteLine(
-          "Please specify the path to the BCFZIP and to the output json.");
+          "Please specify the path to the source and target files.");
         Console.WriteLine(@"
           Usage:
 
-          $ bcf-converter /path/to/some.bcfzip /path/to/some.json
+          $ ifc-converter /path/to/source.bcfzip /path/to/target.json 2.1
 
         ");
         Environment.Exit(1);
       }
 
-      var bcfzipPath = args[0];
-      var jsonPath = args[1];
+      var sourcePath = args[0];
+      var targetPath = args[1];
+      var version = args[2] ?? "21";
+      
       var parser = new Xml20();
-      var topics = await parser.parse(bcfzipPath);
+      var topics = await parser.parse(sourcePath);
       
       var contractResolver = new DefaultContractResolver {
         NamingStrategy = new SnakeCaseNamingStrategy()
@@ -37,7 +39,7 @@ namespace bcf_converter {
             ContractResolver = contractResolver,
           });
       
-      using (StreamWriter writer = File.CreateText(jsonPath)) {
+      using (StreamWriter writer = File.CreateText(targetPath)) {
         await writer.WriteAsync(json);
       }
 
