@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace bcf2json.Model {
+namespace bcf_converter.Model {
   public struct Viewpoint {
     /// <summary>
     ///   Describes a viewpoint using perspective camera.

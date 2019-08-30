@@ -1,4 +1,4 @@
-namespace bcf2json.Model {
+namespace bcf_converter.Model {
   /// <summary>
   ///   This element describes a viewpoint using orthogonal camera.
   /// </summary>

@@ -1,4 +1,4 @@
-namespace bcf2json.Model {
+namespace bcf_converter.Model {
   /// <summary>
   ///   A snapshot related to the topic as base64 string.
   /// </summary>

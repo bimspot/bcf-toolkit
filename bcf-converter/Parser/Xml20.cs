@@ -1,18 +1,17 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using bcf2json.Model;
+using bcf_converter.Model;
 
-namespace bcf2json.Parser {
+namespace bcf_converter.Parser {
   /// <summary>
   ///   The `Xml20` parser unzips and parses BCF zips of version 2.0 and
-  ///   serialises their contents into the Topic model.
+  ///   puts their contents into the Topic model.
   /// </summary>
   public class Xml20 : BCFParser {
     /// <summary>
@@ -135,11 +134,11 @@ namespace bcf2json.Parser {
         Func<XElement, string, Vector3> makeVector = (item, element) => {
           return new Vector3 {
             x = Convert.ToSingle(
-              item.Element("CameraViewPoint")?.Element("X")?.Value),
+              item.Element(element)?.Element("X")?.Value),
             y = Convert.ToSingle(
-              item.Element("CameraViewPoint")?.Element("Y")?.Value),
+              item.Element(element)?.Element("Y")?.Value),
             z = Convert.ToSingle(
-              item.Element("CameraViewPoint")?.Element("Z")?.Value)
+              item.Element(element)?.Element("Z")?.Value)
           };
         };
 

@@ -1,27 +1,22 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
-using bcf2json.Parser;
+using NUnit.Framework;
+using bcf_converter;
+using bcf_converter.Parser;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace bcf2json {
-  internal class Program {
-    private static async Task Main(string[] args) {
-      if (args.Length < 2) {
-        Console.WriteLine(
-          "Please specify the path to the BCFZIP and to the output json.");
-        Console.WriteLine(@"
-          Usage:
-          
-          $ bcf2json /path/to/some.bcfzip /path/to/some.json
+namespace Tests {
+  public class Tests {
+    [SetUp]
+    public void Setup() { }
 
-        ");
-        Environment.Exit(1);
-      }
+    [Test]
+    public async Task Test1() {
+      var bcfzipPath = $"Resources/Test.zip";
+      var jsonPath = $"Resources/Test.json";
 
-      var bcfzipPath = args[0];
-      var jsonPath = args[1];
       var parser = new Xml20();
       var topics = await parser.parse(bcfzipPath);
       
@@ -38,10 +33,10 @@ namespace bcf2json {
           });
       
       using (StreamWriter writer = File.CreateText(jsonPath)) {
-        await writer.WriteAsync(json);
+        writer.Write(json);
       }
-
-      Environment.Exit(0);
+      
+      Assert.Pass();
     }
   }
 }

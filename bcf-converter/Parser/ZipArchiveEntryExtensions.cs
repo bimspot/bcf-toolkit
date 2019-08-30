@@ -1,7 +1,7 @@
 using System;
 using System.IO.Compression;
 
-namespace bcf2json.Parser {
+namespace bcf_converter.Parser {
   public static class ZipArchiveEntryExtensions {
     /// <summary>
     ///   A convenience method returns true if the file in the entry has the

@@ -1,4 +1,4 @@
-namespace bcf2json.Model {
+namespace bcf_converter.Model {
   /// <summary>
   ///   The Component describes a single building element.
   /// </summary>

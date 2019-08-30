@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace bcf2json.Model {
+namespace bcf_converter.Model {
   /// <summary>
   ///   The Visibility element states the components DefaultVisibility and
   ///   lists all Exceptions that apply to specific components.

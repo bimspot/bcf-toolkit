@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using bcf2json.Model;
+using bcf_converter.Model;
 
-namespace bcf2json.Parser {
+namespace bcf_converter.Parser {
   public interface BCFParser {
     Task<ConcurrentBag<Topic>> parse(string path);
   }

@@ -1,4 +1,4 @@
-namespace bcf2json.Model {
+namespace bcf_converter.Model {
   /// <summary>
   ///   ClippingPlanes can be used to define a subsection of a building model
   ///   that is related to the topic. Each clipping plane is defined by

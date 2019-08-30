@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace bcf2json.Model {
+namespace bcf_converter.Model {
   /// <summary>
   ///   Topic node contains reference information of the topic.
   /// </summary>

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace bcf2json.Model {
+namespace bcf_converter.Model {
   /// <summary>
   ///   The components node contains a set of Component references.
   /// </summary>

@@ -1,4 +1,4 @@
-namespace bcf2json.Model {
+namespace bcf_converter.Model {
   /// <summary>
   ///   A vector with coordinated in tree dimensions.
   /// </summary>

@@ -1,4 +1,4 @@
-namespace bcf2json.Model {
+namespace bcf_converter.Model {
   /// <summary>
   ///   The Viewpoints struct wraps the Viewpoint and the related Snapshot
   ///   data.

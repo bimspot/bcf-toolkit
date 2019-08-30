@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace bcf2json.Model {
+namespace bcf_converter.Model {
   /// <summary>
   ///   Coloring describes a list of components that are colored in the specific
   ///   color.
