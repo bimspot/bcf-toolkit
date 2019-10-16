@@ -22,7 +22,7 @@ namespace bcf_converter {
 
       var sourcePath = args[0];
       var targetPath = args[1];
-      var version = args[2] ?? "2.1";
+//      var version = args[2] ?? "2.1";
 
       var parser = new Xml20();
       var topics = await parser.parse(sourcePath);
