@@ -2,9 +2,11 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 using bcf_converter.Model;
 
 namespace bcf_converter.Parser.Xml20 {
@@ -41,10 +43,9 @@ namespace bcf_converter.Parser.Xml20 {
         // The BCF data is collected from several files, therefore references
         // are kept here for the currently processes ones.
         string currentUuid = "";
-        Header? header = null;
-        Topic? topic = null;
-        Viewpoint? viewpoint = null;
-        Snapshot? snapshot = null;
+        Markup? markup = null;
+        VisualizationInfo? viewpoint = null;
+        string? snapshot = null;
 
         for (int i = 0; i < archive.Entries.Count; i++) {
           var entry = archive.Entries[i];
@@ -62,20 +63,30 @@ namespace bcf_converter.Parser.Xml20 {
 
           if ((currentUuid != "" && uuid != currentUuid) || isLastEntry) {
             // This is a new subfolder, writing out Markup.
-            if (topic.HasValue && header.HasValue) {
-              var viewpoints = new Viewpoints(viewpoint, snapshot);
-              markups.Add(new Markup(header.Value, topic.Value, viewpoints));
+            if (markup != null) {
+              // var viewpoints = new Viewpoints(viewpoint, snapshot);
+              // markup = new Markup();
+              // markup.Header.Add(header);
+              // markup.Viewpoints.Add(viewpoint);
+
+              var firstViewPoint = markup.Viewpoints.FirstOrDefault();
+
+              if (firstViewPoint != null) {
+                firstViewPoint.VisualizationInfo = viewpoint;
+                firstViewPoint.SnapshotData = snapshot;
+              }
+              
+              markups.Add(markup);
 
               // Null-ing external references
-              header = null;
-              topic = null;
+              markup = null;
               viewpoint = null;
               snapshot = null;
               currentUuid = uuid;
             }
             else {
               throw new InvalidDataException(
-                "Header or Topic not found in BCF " + currentUuid);
+                "Markup not found in BCF " + currentUuid);
             }
           }
 
@@ -85,34 +96,32 @@ namespace bcf_converter.Parser.Xml20 {
               entry.Open(),
               LoadOptions.None,
               CancellationToken.None);
-            header = document.header();
-            topic = document.topic();
+            var s = new XmlSerializer(typeof(Markup));
+            markup = (Markup)s.Deserialize(document.CreateReader());
           }
 
           // Parsing the viewpoint file
           else if (entry.isBcfViewpoint()) {
-            if (viewpoint.HasValue) {
+            if (viewpoint != null) {
               // TODO: No support for multiple viewpoints!
               Console.WriteLine("No support for multiple viewpoints!");
               continue;
             }
-
             var document = await XDocument.LoadAsync(
               entry.Open(),
               LoadOptions.None,
               CancellationToken.None);
-            viewpoint = document.viewpoint();
+            viewpoint = document.VisualizationInfo();
           }
 
           // Parsing the
           else if (entry.isSnapshot()) {
-            if (snapshot.HasValue) {
+            if (snapshot != null) {
               // TODO: No support for multiple snapshots!
               Console.WriteLine("No support for multiple snapshots!");
               continue;
             }
-
-            snapshot = entry.snapshot();
+            snapshot = entry.Snapshot();
           }
         }
 

@@ -37,7 +37,7 @@ namespace bcf_converter {
       } else if (sourcePath.EndsWith("bcfzip")) {
         // TODO: read bcf.version and decide on the parser version
         var parser = new Xml20();
-        var topics = await parser.parse(sourcePath);
+        var markups = await parser.parse(sourcePath);
 
         var contractResolver = new DefaultContractResolver {
           NamingStrategy = new SnakeCaseNamingStrategy()
@@ -45,7 +45,7 @@ namespace bcf_converter {
 
         var json = JsonConvert
           .SerializeObject(
-            topics,
+            markups,
             Formatting.None, new JsonSerializerSettings {
               NullValueHandling = NullValueHandling.Ignore,
               ContractResolver = contractResolver

@@ -17,11 +17,19 @@ namespace bcf_converter.Parser.Xml20 {
     ///   The name of the sub-element to be parsed into Vector3.
     /// </param>
     /// <returns>A Vector3 instance.</returns>
-    public static Vector3 vector3(this XElement item, string element) {
-      return new Vector3 {
-        x = Convert.ToSingle(item.Element(element)?.Element("X")?.Value),
-        y = Convert.ToSingle(item.Element(element)?.Element("Y")?.Value),
-        z = Convert.ToSingle(item.Element(element)?.Element("Z")?.Value)
+    public static Direction Direction(this XElement item, string element) {
+      return new Direction {
+        X = Convert.ToSingle(item.Element(element)?.Element("X")?.Value),
+        Y = Convert.ToSingle(item.Element(element)?.Element("Y")?.Value),
+        Z = Convert.ToSingle(item.Element(element)?.Element("Z")?.Value)
+      };
+    }
+    
+    public static Point Point(this XElement item, string element) {
+      return new Point {
+        X = Convert.ToSingle(item.Element(element)?.Element("X")?.Value),
+        Y = Convert.ToSingle(item.Element(element)?.Element("Y")?.Value),
+        Z = Convert.ToSingle(item.Element(element)?.Element("Z")?.Value)
       };
     }
   }

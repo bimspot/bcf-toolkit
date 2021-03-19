@@ -16,14 +16,14 @@ namespace bcf_converter.Parser.Xml20 {
     ///   A list of XElement's with the component elements in XML.
     /// </param>
     /// <returns>Returns a list of Component instances.</returns>
-    public static List<Component> componentList(
+    public static List<Component> ComponentList(
       this IEnumerable<XElement> items) {
       var list = new List<Component>();
       foreach (var xElement in items)
         list.Add(new Component {
-          ifcGuid = xElement.Attribute("IfcGuid")?.Value,
-          authoringToolId = xElement.Element("AuthoringToolId")?.Value,
-          originatingSystem = xElement.Element("OriginatingSystem")?.Value
+          IfcGuid = xElement.Attribute("IfcGuid")?.Value,
+          AuthoringToolId = xElement.Element("AuthoringToolId")?.Value,
+          OriginatingSystem = xElement.Element("OriginatingSystem")?.Value
         });
       return list;
     }
