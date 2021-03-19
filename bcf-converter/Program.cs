@@ -27,34 +27,39 @@ namespace bcf_converter {
       var sourcePath = args[0];
       var targetPath = args[1];
       var targetVersion = args.Length > 2 ? args[2] : "2.1";
+      
+      var contractResolver = new DefaultContractResolver {
+        NamingStrategy = new SnakeCaseNamingStrategy()
+      };
 
+      var jsonSerializerSettings = new JsonSerializerSettings {
+        NullValueHandling = NullValueHandling.Ignore,
+        ContractResolver = contractResolver
+      };
+      
       if (sourcePath.EndsWith("json")) {
         using var file = File.OpenText(sourcePath);
-        JsonSerializer serializer = new JsonSerializer();
-        Topic topic = (Topic)serializer.Deserialize(file, typeof(Topic));
+        JsonSerializer serializer =
+          new JsonSerializer {ContractResolver = contractResolver};
+
+        Markup markup = (Markup) serializer.Deserialize(file, typeof(Markup));
         await using var writer = File.CreateText(targetPath);
-        new XmlSerializer(typeof(Topic)).Serialize(writer, topic);
-      } else if (sourcePath.EndsWith("bcfzip")) {
+        new XmlSerializer(typeof(Markup)).Serialize(writer, markup);
+      }
+      else if (sourcePath.EndsWith("bcfzip")) {
         // TODO: read bcf.version and decide on the parser version
         var parser = new Xml20();
         var markups = await parser.parse(sourcePath);
-
-        var contractResolver = new DefaultContractResolver {
-          NamingStrategy = new SnakeCaseNamingStrategy()
-        };
+        
 
         var json = JsonConvert
           .SerializeObject(
             markups,
-            Formatting.None, new JsonSerializerSettings {
-              NullValueHandling = NullValueHandling.Ignore,
-              ContractResolver = contractResolver
-            });
+            Formatting.None, jsonSerializerSettings);
 
-          await using var writer = File.CreateText(targetPath);
-          await writer.WriteAsync(json);
-        }
-      
+        await using var writer = File.CreateText(targetPath);
+        await writer.WriteAsync(json);
+      }
 
       Environment.Exit(0);
     }
