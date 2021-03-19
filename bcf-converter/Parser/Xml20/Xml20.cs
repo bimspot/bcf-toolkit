@@ -114,7 +114,7 @@ namespace bcf_converter.Parser.Xml20 {
             viewpoint = document.VisualizationInfo();
           }
 
-          // Parsing the
+          // Parsing the snapshot
           else if (entry.isSnapshot()) {
             if (snapshot != null) {
               // TODO: No support for multiple snapshots!
@@ -124,18 +124,6 @@ namespace bcf_converter.Parser.Xml20 {
             snapshot = entry.Snapshot();
           }
         }
-
-        // // The last item in the 
-        // if (topic.HasValue && header.HasValue) {
-        //   var viewpoints = new Viewpoints(viewpoint, snapshot);
-        //   markups.Add(new Markup(header.Value, topic.Value, viewpoints));
-        //
-        //   // Null-ing external references
-        //   header = null;
-        //   topic = null;
-        //   viewpoint = null;
-        //   snapshot = null;
-        // }
 
         return markups;
       });
