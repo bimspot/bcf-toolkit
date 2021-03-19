@@ -5,7 +5,7 @@ using bcf_converter.Model;
 
 namespace bcf_converter.Parser {
   public class Xml21 : BCFParser {
-    public Task<ConcurrentBag<Topic>> parse(string path) {
+    public Task<ConcurrentBag<Markup>> parse(string path) {
       throw new NotImplementedException();
     }
   }

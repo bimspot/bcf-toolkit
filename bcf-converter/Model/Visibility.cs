@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace bcf_converter.Model {
   /// <summary>
@@ -9,11 +10,13 @@ namespace bcf_converter.Model {
     /// <summary>
     ///   The default visibility for elements of certain types.
     /// </summary>
+    [Newtonsoft.Json.JsonProperty("view_setup_hints")]
     public ViewSetupHints viewSetupHints;
 
     /// <summary>
     ///   The default visibility of the elements in the BCF.
     /// </summary>
+    [Newtonsoft.Json.JsonProperty("default_visibility")]
     public bool defaultVisibility;
 
     /// <summary>

@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace bcf_converter.Model {
   /// <summary>
   ///   This element describes a viewpoint using perspective camera.
@@ -6,21 +8,25 @@ namespace bcf_converter.Model {
     /// <summary>
     ///   Camera location
     /// </summary>
+    [Newtonsoft.Json.JsonProperty("camera_view_point")]
     public Vector3 cameraViewPoint;
 
     /// <summary>
     ///   Camera direction
     /// </summary>
+    [Newtonsoft.Json.JsonProperty("camera_direction")]
     public Vector3 cameraDirection;
 
     /// <summary>
     ///   Camera up vector
     /// </summary>
+    [Newtonsoft.Json.JsonProperty("camera_up_vector")]
     public Vector3 cameraUpVector;
 
     /// <summary>
     ///   Camera’s field of view angle in degrees.
     /// </summary>
+    [Newtonsoft.Json.JsonProperty("field_of_view")]
     public float fieldOfView;
 
     /// <summary>

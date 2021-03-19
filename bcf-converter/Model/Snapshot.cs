@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace bcf_converter.Model {
   /// <summary>
   ///   A snapshot related to the topic as base64 string.
@@ -14,11 +16,13 @@ namespace bcf_converter.Model {
     /// <summary>
     ///   The format of the snapshot. Predefined values png or jpg.
     /// </summary>
+    [Newtonsoft.Json.JsonProperty("snapshot_type")]
     public Type snapshotType;
 
     /// <summary>
     ///   The snapshot image data as base64 encoded string.
     /// </summary>
+    [Newtonsoft.Json.JsonProperty("snapshot_data")]
     public string snapshotData;
 
     /// <summary>

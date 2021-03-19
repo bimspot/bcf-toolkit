@@ -10,11 +10,11 @@ namespace bcf_converter.Parser {
   public interface BCFParser {
     /// <summary>
     ///   The method unzips the bcfzip at the specified path into the memory,
-    ///   and parses the xml files within to create a Topic representation of
+    ///   and parses the xml files within to create a Markup representation of
     ///   the data.
     /// </summary>
-    /// <param name="path">The absolute path to the bcfzip.</param>
-    /// <returns>Returns a Task with a List of Topic models.</returns>
-    Task<ConcurrentBag<Topic>> parse(string path);
+    /// <param name="path">The path to the bcfzip.</param>
+    /// <returns>Returns a Task with a List of Markup models.</returns>
+    Task<ConcurrentBag<Markup>> parse(string path);
   }
 }

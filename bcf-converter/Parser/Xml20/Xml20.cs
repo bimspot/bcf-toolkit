@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Concurrent;
+using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -15,77 +15,120 @@ namespace bcf_converter.Parser.Xml20 {
   public class Xml20 : BCFParser {
     /// <summary>
     ///   The method unzips the bcfzip at the specified path into the memory,
-    ///   and parses the xml files within to create a Topic representation of
-    ///   the data.
+    ///   and parses the xml files within to create an in memory representation
+    ///   of the data.
     /// </summary>
-    /// <param name="path">The absolute path to the bcfzip.</param>
-    /// <returns>Returns a Task with a List of Topic models.</returns>
-    public Task<ConcurrentBag<Topic>> parse(string path) {
+    /// <param name="path">The path to the bcfzip.</param>
+    /// <returns>Returns a Task with a List of Markup models.</returns>
+    public Task<ConcurrentBag<Markup>> parse(string path) {
       return Task.Run(async () => {
         Console.WriteLine("'\nProcessing bcfzip at {0} \n", path);
 
         // A thread-safe storage for the parsed topics.
-        var topics = new ConcurrentBag<Topic>();
+        var markups = new ConcurrentBag<Markup>();
 
         // Unzipping the bcfzip
-        using (var archive = ZipFile.OpenRead(path)) {
-          // In order to instantiate the Viewpoints struct in the Topic, 
-          // the data from the viewpoint and the snapshot files have to be
-          // ready. They are collected there and are null-ed after the Topic
-          // is created.
-          Viewpoint? viewpoint = null;
-          Snapshot? snapshot = null;
+        using var archive = ZipFile.OpenRead(path);
 
-          // Iterating through the files
-          foreach (var entry in archive.Entries) {
-            Console.WriteLine(entry.FullName);
+        // This iterates through the archive file-by-file and the sub-folders
+        // being just in the names of the entries.
+        //
+        // We know it is a new Markup, when the folder (uuid) changes. In that
+        // case the Markup object is created and pushed into the bac. A special
+        // case is the last entry in the archive, when that is reached, the
+        // markup is created as well.
 
-            // TODO: read bcf.version and decide on the parser version
+        // The BCF data is collected from several files, therefore references
+        // are kept here for the currently processes ones.
+        string currentUuid = "";
+        Header? header = null;
+        Topic? topic = null;
+        Viewpoint? viewpoint = null;
+        Snapshot? snapshot = null;
 
-            // This sets the folder context
-            var uuid = entry.FullName.Split("/")[0];
+        for (int i = 0; i < archive.Entries.Count; i++) {
+          var entry = archive.Entries[i];
+          var isFirstEntry = (i == 0);
+          var isLastEntry = (i == archive.Entries.Count - 1);
 
-            // Parsing BCF files
-            if (entry.isBcf()) {
-              var document = await XDocument.LoadAsync(
-                entry.Open(),
-                LoadOptions.None,
-                CancellationToken.None);
-              var topic = document.topic();
-              topics.Add(topic);
-            }
+          Console.WriteLine(entry.FullName);
 
-            // Parsing the viewpoint file
-            else if (entry.isBcfViewpoint()) {
-              var document = await XDocument.LoadAsync(
-                entry.Open(),
-                LoadOptions.None,
-                CancellationToken.None);
-              viewpoint = document.viewpoint();
-            }
+          // This sets the folder context
+          var uuid = entry.FullName.Split("/")[0];
 
-            // Parsing the
-            else if (entry.isSnapshot()) {
-              snapshot = entry.snapshot();
-            }
+          if (isFirstEntry) {
+            currentUuid = uuid;
+          }
 
-            // Once all: topic, viewpoint and snapshot for the uuid is
-            // available, the object can be created and returned
-            if (viewpoint.HasValue && snapshot.HasValue) {
-              var topic = topics.Single(t => t.guid.Equals(uuid));
-              topic.viewpoints.Add(new Viewpoints {
-                viewpoint = viewpoint.Value,
-                snapshot = snapshot.Value
-              });
+          if ((currentUuid != "" && uuid != currentUuid) || isLastEntry) {
+            // This is a new subfolder, writing out Markup.
+            if (topic.HasValue && header.HasValue) {
+              var viewpoints = new Viewpoints(viewpoint, snapshot);
+              markups.Add(new Markup(header.Value, topic.Value, viewpoints));
 
               // Null-ing external references
+              header = null;
+              topic = null;
               viewpoint = null;
               snapshot = null;
+              currentUuid = uuid;
             }
+            else {
+              throw new InvalidDataException(
+                "Header or Topic not found in BCF " + currentUuid);
+            }
+          }
+
+          // Parsing BCF files
+          if (entry.isBcf()) {
+            var document = await XDocument.LoadAsync(
+              entry.Open(),
+              LoadOptions.None,
+              CancellationToken.None);
+            header = document.header();
+            topic = document.topic();
+          }
+
+          // Parsing the viewpoint file
+          else if (entry.isBcfViewpoint()) {
+            if (viewpoint.HasValue) {
+              // TODO: No support for multiple viewpoints!
+              Console.WriteLine("No support for multiple viewpoints!");
+              continue;
+            }
+
+            var document = await XDocument.LoadAsync(
+              entry.Open(),
+              LoadOptions.None,
+              CancellationToken.None);
+            viewpoint = document.viewpoint();
+          }
+
+          // Parsing the
+          else if (entry.isSnapshot()) {
+            if (snapshot.HasValue) {
+              // TODO: No support for multiple snapshots!
+              Console.WriteLine("No support for multiple snapshots!");
+              continue;
+            }
+
+            snapshot = entry.snapshot();
           }
         }
 
-        return topics;
+        // // The last item in the 
+        // if (topic.HasValue && header.HasValue) {
+        //   var viewpoints = new Viewpoints(viewpoint, snapshot);
+        //   markups.Add(new Markup(header.Value, topic.Value, viewpoints));
+        //
+        //   // Null-ing external references
+        //   header = null;
+        //   topic = null;
+        //   viewpoint = null;
+        //   snapshot = null;
+        // }
+
+        return markups;
       });
     }
   }

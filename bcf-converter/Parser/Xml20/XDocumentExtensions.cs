@@ -40,6 +40,16 @@ namespace bcf_converter.Parser.Xml20 {
           fieldOfView = Convert.ToSingle(item.Element("FieldOfView")?.Value)
         }).SingleOrDefault();
     }
+    
+    /// <summary>
+    ///   Uses LINQ to extract all information for the Header of the Markup.
+    /// </summary>
+    /// <param name="document"></param>
+    /// <returns>Returns the Header document</returns>
+    public static Header header(this XDocument document) {
+      // TODO: finish this
+      return new Header();
+    }
 
     /// <summary>
     ///   Uses LINQ to extract all information from the elements in order to
@@ -53,8 +63,8 @@ namespace bcf_converter.Parser.Xml20 {
       return (from item in document.Descendants("Topic")
         select new Topic {
           guid = item.Attribute("Guid")?.Value,
-          type = item.Attribute("TopicType")?.Value,
-          status = item.Attribute("TopicStatus")?.Value,
+          topicType = item.Attribute("TopicType")?.Value,
+          topicStatus = item.Attribute("TopicStatus")?.Value,
           title = item.Element("Title")?.Value,
           priority = item.Element("Priority")?.Value,
           index = item.Element("Index")?.Value,
@@ -66,7 +76,6 @@ namespace bcf_converter.Parser.Xml20 {
           dueDate = item.Element("DueDate")?.Value,
           assignedTo = item.Element("AssignedTo")?.Value,
           description = item.Element("Description")?.Value,
-          viewpoints = new List<Viewpoints>()
         }).Single();
     }
 
