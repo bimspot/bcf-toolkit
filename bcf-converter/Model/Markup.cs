@@ -31,7 +31,6 @@ namespace bcf_converter.Model
             get
             {
                 return this._file;
-                return this._file;
             }
             private set
             {

@@ -20,11 +20,11 @@ do
     -c Release \
     -r $id \
     --self-contained false \
-    --output ../dist/bcf-converter-$id
+    --output ../dist/bcf-converter-$id || exit 9
 
   # zip -r $id.zip $id
-  tar -zcvf bcf-converter-$id.tar.gz bcf-converter-$id
-  rm -rf bcf-converter-$id
+  tar -zcvf bcf-converter-$id.tar.gz bcf-converter-$id || exit 9
+  rm -rf bcf-converter-$id || exit 9
 
   printf "\n\n"
 done

@@ -38,6 +38,8 @@ completed features.
 The models for the BCF in-memory representation were auto-created from the
 [latest XSDs][1] using the [`XmlSchemaClassGenerator`][2].
 
+To publish, run the script at `dist/publish.sh`.
+
 ### Contribution
 
 Code style guide can be found in the `bcf-converter.sln.DotSettings` file.
