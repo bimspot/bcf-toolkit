@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Markup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Topic Guid="3ffb4df2-0187-49a9-8a4a-23992696bafd" TopicType="Error" TopicStatus="Open">
+    <Title>Glas, VSG 40, 7 7/8"</Title>
+    <Index>56</Index>
+    <CreationDate>2019-08-23T11:45:03Z</CreationDate>
+    <CreationAuthor>bimspot.io</CreationAuthor>
+    <ModifiedDate>2019-08-23T11:45:03Z</ModifiedDate>
+    <ModifiedAuthor>bimspot.io</ModifiedAuthor>
+    <AssignedTo />
+    <Description>Load bearing Walls must touch Footings, Slabs or Walls below
+Similar components that don't touch components below themselves. Distance to the nearest is 7 7/8".
+</Description>
+  </Topic>
+  <Comment Guid="153c7877-17f7-4928-902e-d54522ee835d">
+    <Date>2019-08-23T11:45:03Z</Date>
+    <Author>bimspot.io</Author>
+    <Comment />
+    <ModifiedDate>2019-08-23T11:45:03Z</ModifiedDate>
+  </Comment>
+  <Viewpoints>
+    <Viewpoint>viewpoint.bcfv</Viewpoint>
+    <Snapshot>snapshot.png</Snapshot>
+  </Viewpoints>
+</Markup>

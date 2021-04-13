@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisualizationInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Components>
+    <Selection>
+      <Component IfcGuid="3aDhsSjpDF8Arh1Jntm1sc">
+        <OriginatingSystem>xeokit.io</OriginatingSystem>
+      </Component>
+    </Selection>
+    <Visibility DefaultVisibility="true">
+      <Exceptions>
+        <Component IfcGuid="1j5LafTQT2CBYQzQkh3pjI">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1j5LafTQT2CBYQzQkh3pjH">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1j5LafTQT2CBYQzQkh3pjS">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1j5LafTQT2CBYQzQkh3piz">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1j5LafTQT2CBYQzQkh3mLJ">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1j5LafTQT2CBYQzQkh3nTL">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1FtfNgjvP9axZxvuZE2S65">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="28QW0Rr5DF3ezaHQkip7Cr">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="28QW0Rr5DF3ezaHQkip6vZ">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="28QW0Rr5DF3ezaHQkip6u6">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="28QW0Rr5DF3ezaHQkip6uu">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="28QW0Rr5DF3ezaHQkip6uW">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1DknavZ09EP8KGvcFih9m8">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1DknavZ09EP8KGvcFih9ms">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1DknavZ09EP8KGvcFih9Zy">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1DknavZ09EP8KGvcFih9Ws">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="0lqUoUz9D0pgSyHqgny1k8">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="2RwTFv$KT6DA_YZr7CXKGU">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="0AHR2l25zBWRCn2jsJ4gr5">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="0xI4TK9vzCl8VXLoFFb7I1">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1vtZuDtSLAGwxBt7lUZSLZ">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="3jloN9r493exrKoD$GnAJT">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="3jloN9r493exrKoD$GnAJL">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1f$DtIKObCiwQO5B6PupZB">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1f$DtIKObCiwQO5B6PupY9">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1f$DtIKObCiwQO5B6Pupb9">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1f$DtIKObCiwQO5B6Pupaz">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1f$DtIKObCiwQO5B6Pupcz">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1f$DtIKObCiwQO5B6Pupca">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="1f$DtIKObCiwQO5B6PupcR">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="3g_nvCSeDDM97aWpf572Ds">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="0Tfc13q2f8qxrLGCztICjn">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="0Tfc13q2f8qxrLGCztICjp">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="0Tfc13q2f8qxrLGCztICjr">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="0Tfc13q2f8qxrLGCztICjt">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="0Tfc13q2f8qxrLGCztICjv">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="0Tfc13q2f8qxrLGCztICcl">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="0Tfc13q2f8qxrLGCztICcw">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="0Tfc13q2f8qxrLGCztICQJ">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="0Tfc13q2f8qxrLGCztICBA">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="3NE_Mrx_bAEOY2O3AuneyM">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="3mXKSEb450lhZ4Swwvd8X9">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="01XanTqID8JwhgGQog3TyD">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+        <Component IfcGuid="0kUIhWhzr5XO4cCTHqSLI_">
+          <OriginatingSystem>xeokit.io</OriginatingSystem>
+        </Component>
+      </Exceptions>
+    </Visibility>
+    <Coloring>
+      <Color Color="26ffffff" />
+      <Color Color="26f2f8f9" />
+      <Color Color="26f0f4f8" />
+      <Color Color="265c5eb7" />
+      <Color Color="26405c80" />
+      <Color Color="26c2d5da" />
+      <Color Color="262367de" />
+      <Color Color="26d7e1ea" />
+      <Color Color="266d8388" />
+      <Color Color="26696cff" />
+      <Color Color="26766cf5" />
+      <Color Color="2635425b" />
+    </Coloring>
+  </Components>
+  <PerspectiveCamera>
+    <CameraViewPoint>
+      <X>17.661890304230155</X>
+      <Y>-18.875333343237465</Y>
+      <Z>0.40960505359544186</Z>
+    </CameraViewPoint>
+    <CameraDirection>
+      <X>0</X>
+      <Y>1</Y>
+      <Z>0</Z>
+    </CameraDirection>
+    <CameraUpVector>
+      <X>0</X>
+      <Y>0</Y>
+      <Z>1</Z>
+    </CameraUpVector>
+    <FieldOfView>60</FieldOfView>
+  </PerspectiveCamera>
+</VisualizationInfo>

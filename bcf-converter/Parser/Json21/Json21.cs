@@ -1,0 +1,122 @@
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Xml.Serialization;
+using bcf_converter.Model;
+using Newtonsoft.Json;
+using Version = bcf_converter.Model.Version;
+
+namespace bcf_converter.Parser.Json21 {
+  public class Json21 : JsonToBcfConverter {
+    /// <summary>
+    ///   The JSON serialiser used in the instance.
+    /// </summary>
+    private JsonSerializer jsonSerializer;
+
+    /// <summary>
+    ///   Creates and returns a new instance of the Json21 converter.
+    /// </summary>
+    /// <param name="jsonSerializer">
+    ///  The JSON serialiser used in the instance.
+    /// </param>
+    public Json21(JsonSerializer jsonSerializer) {
+      this.jsonSerializer = jsonSerializer;
+    }
+
+    /// <inheritdoc/>
+    public Task json2bcf(string sourceFolder, string targetFile) {
+      return Task.Run(async () => {
+        var targetFolder = Path.GetDirectoryName(targetFile);
+
+        // Will create a tmp folder for the intermediate files.
+        var tmpFolder = $"{targetFolder}/tmp";
+        if (Directory.Exists(tmpFolder)) {
+          Directory.Delete(tmpFolder, true);
+        }
+        Directory.CreateDirectory(tmpFolder);
+
+        // Create the version file
+        var version = new Version {
+          VersionId = "2.1",
+          DetailedVersion = "2.1"
+        };
+        await using var versionWriter =
+          File.CreateText($"{tmpFolder}/bcf.version");
+        new XmlSerializer(typeof(Version)).Serialize(versionWriter, version);
+
+        var files = new List<string>(Directory.EnumerateFiles(sourceFolder));
+
+        foreach (var file in files.Where(file => file.EndsWith("json"))) {
+          Console.WriteLine($"Processing {file}");
+
+          using var json = File.OpenText(file);
+          Markup markup =
+            (Markup)this.jsonSerializer.Deserialize(json, typeof(Markup));
+
+          // Creating the target folder
+          var guid = markup.Topic.Guid;
+          var topicFolder = $"{tmpFolder}/{guid}";
+          Directory.CreateDirectory(topicFolder);
+
+          // Markup
+          await using var markupWriter =
+            File.CreateText($"{topicFolder}/markup.bcf");
+          new XmlSerializer(typeof(Markup)).Serialize(markupWriter, markup);
+
+          // Viewpoint
+          await using var viewpointWriter =
+            File.CreateText($"{topicFolder}/viewpoint.bcfv");
+          new XmlSerializer(typeof(VisualizationInfo)).Serialize(
+            viewpointWriter,
+            markup.Viewpoints.First().VisualizationInfo);
+
+          // Snapshot
+          var snapshotFileName = markup.Viewpoints.First().Snapshot;
+          var base64String = markup.Viewpoints.First().SnapshotData;
+          string result = Regex.Replace(base64String,
+            @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
+          await File.WriteAllBytesAsync(
+            $"{topicFolder}/{snapshotFileName}",
+            Convert.FromBase64String(result));
+        }
+
+        // zip shit
+        ZipFile.CreateFromDirectory(tmpFolder, targetFile);
+        Directory.Delete(tmpFolder, true);
+      });
+    }
+
+    /// <inheritdoc/>
+    public Task writeJson(ConcurrentBag<Markup> markups, string targetFolder) {
+      return Task.Run(async () => {
+        var jsonSerializerSettings = new JsonSerializerSettings {
+          NullValueHandling = this.jsonSerializer.NullValueHandling,
+          ContractResolver = this.jsonSerializer.ContractResolver
+        };
+
+        // Creating the target folder
+        if (Directory.Exists(targetFolder)) {
+          Directory.Delete(targetFolder, true);
+        }
+        Directory.CreateDirectory(targetFolder);
+
+        // Writing to disk, one markup per file.
+        foreach (var markup in markups) {
+          var json = JsonConvert
+            .SerializeObject(
+              markup,
+              Formatting.None, jsonSerializerSettings);
+
+          var path = $"{targetFolder}/{markup.Topic.Guid}.json";
+          await using var writer = File.CreateText(path);
+          await writer.WriteAsync(json);
+        }
+      });
+    }
+  }
+}

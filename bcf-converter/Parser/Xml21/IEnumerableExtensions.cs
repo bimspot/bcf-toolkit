@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using bcf_converter.Model;
 
-namespace bcf_converter.Parser.Xml20 {
+namespace bcf_converter.Parser.Xml21 {
   /// <summary>
   ///   A list of convenience extension methods on the IEnumerable interface
   ///   where the items in the list are of `XElement` class.

@@ -5,7 +5,7 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using bcf_converter.Model;
 
-namespace bcf_converter.Parser.Xml20 {
+namespace bcf_converter.Parser.Xml21 {
   /// <summary>
   ///   A list of convenience extension methods on the XDocument class.
   ///   The BCF version specific parsing logic is defined here.
