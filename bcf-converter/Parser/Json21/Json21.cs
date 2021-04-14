@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -38,15 +37,14 @@ namespace bcf_converter.Parser.Json21 {
           throw new ApplicationException(
             "Target folder not found ${targetFolder}");
         }
-        
+
         // Will create a tmp folder for the intermediate files.
         var tmpFolder = $"{targetFolder}/tmp";
         if (Directory.Exists(tmpFolder)) {
           Directory.Delete(tmpFolder, true);
         }
         Directory.CreateDirectory(tmpFolder);
-        
-        
+
 
         // Create the version file
         var version = new Version {
