@@ -37,14 +37,23 @@ namespace bcf_converter {
       };
       var json21 = new Json21(jsonSerializer);
 
-      if (sourcePath.EndsWith("bcfzip")) {
-        var parser = new Xml21();
-        var markups = await parser.parse(sourcePath);
-        await json21.writeJson(markups, targetFolder);
+      try {
+        if (sourcePath.EndsWith("bcfzip")) {
+          var parser = new Xml21();
+          var markups = await parser.parse(sourcePath);
+          await json21.writeJson(markups, targetFolder);
+        }
+        else {
+          await json21.json2bcf(sourcePath, targetFolder);
+        }
       }
-      else {
-        await json21.json2bcf(sourcePath, targetFolder);
+      catch (Exception e) {
+        var errorWriter = Console.Error;
+        await errorWriter.WriteLineAsync(e.Message);
+        await errorWriter.WriteLineAsync(e.StackTrace);
+        Environment.Exit(9);
       }
+     
 
       Environment.Exit(0);
     }

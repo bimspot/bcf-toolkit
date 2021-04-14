@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -33,12 +34,19 @@ namespace bcf_converter.Parser.Json21 {
       return Task.Run(async () => {
         var targetFolder = Path.GetDirectoryName(targetFile);
 
+        if (targetFolder == null) {
+          throw new ApplicationException(
+            "Target folder not found ${targetFolder}");
+        }
+        
         // Will create a tmp folder for the intermediate files.
         var tmpFolder = $"{targetFolder}/tmp";
         if (Directory.Exists(tmpFolder)) {
           Directory.Delete(tmpFolder, true);
         }
         Directory.CreateDirectory(tmpFolder);
+        
+        
 
         // Create the version file
         var version = new Version {
@@ -51,14 +59,23 @@ namespace bcf_converter.Parser.Json21 {
 
         var files = new List<string>(Directory.EnumerateFiles(sourceFolder));
 
-        foreach (var file in files.Where(file => file.EndsWith("json"))) {
-          Console.WriteLine($"Processing {file}");
+        foreach (var file in files) {
+          if (file == null || file.EndsWith("json") == false) {
+            Console.WriteLine($" - File is not json, skipping ${file}");
+            continue;
+          }
+          Console.WriteLine($" - Processing {file}");
 
           using var json = File.OpenText(file);
-          Markup markup =
+          var markup =
             (Markup)this.jsonSerializer.Deserialize(json, typeof(Markup));
 
           // Creating the target folder
+          if (markup.Topic?.Guid == null) {
+            Console.WriteLine(
+              $" - Topic of Topic Guid is missing, skipping {file}");
+            continue;
+          }
           var guid = markup.Topic.Guid;
           var topicFolder = $"{tmpFolder}/{guid}";
           Directory.CreateDirectory(topicFolder);
@@ -78,14 +95,20 @@ namespace bcf_converter.Parser.Json21 {
           // Snapshot
           var snapshotFileName = markup.Viewpoints.First().Snapshot;
           var base64String = markup.Viewpoints.First().SnapshotData;
-          string result = Regex.Replace(base64String,
-            @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
-          await File.WriteAllBytesAsync(
-            $"{topicFolder}/{snapshotFileName}",
-            Convert.FromBase64String(result));
+          if (snapshotFileName != null && base64String != null) {
+            string result = Regex.Replace(base64String,
+              @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
+            await File.WriteAllBytesAsync(
+              $"{topicFolder}/{snapshotFileName}",
+              Convert.FromBase64String(result));
+          }
         }
 
         // zip shit
+        Console.WriteLine($"Zipping the output: {targetFile}");
+        if (File.Exists(targetFile)) {
+          File.Delete(targetFile);
+        }
         ZipFile.CreateFromDirectory(tmpFolder, targetFile);
         Directory.Delete(tmpFolder, true);
       });
