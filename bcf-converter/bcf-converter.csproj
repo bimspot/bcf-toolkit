@@ -7,7 +7,7 @@
 
     <ItemGroup>
       <PackageReference Include="Json.Net" Version="1.0.16" />
-      <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="System.Net.Security" Version="4.3.2" />
       <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
       <PackageReference Include="Microsoft.NETCore.App" Version="2.2.7" />
