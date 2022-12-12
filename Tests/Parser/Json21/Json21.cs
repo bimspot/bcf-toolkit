@@ -24,7 +24,7 @@ namespace Tests.Parser.Json21 {
     [Test]
     public async Task convertsJsonFilesToBcf() {
       var json21 = new bcf_converter.Parser.Json21.Json21(jsonSerializer);
-      await json21.json2bcf("Resources/json", "Resources/output/bcf/bcf-out.bcfzip");
+      await json21.JsonToBcf("Resources/json", "Resources/output/bcf/bcf-out.bcfzip");
     }
   }
 }

@@ -14,7 +14,7 @@ namespace bcf_converter.Parser {
     ///   Returns true if the file in the entry has the
     ///   extension of `.bcf`.
     /// </returns>
-    public static bool isBcf(this ZipArchiveEntry entry) {
+    public static bool IsBcf(this ZipArchiveEntry entry) {
       return entry.FullName.EndsWith(".bcf",
         StringComparison.OrdinalIgnoreCase);
     }
@@ -28,7 +28,7 @@ namespace bcf_converter.Parser {
     ///   Returns true if the file in the entry has the
     ///   extension of `.bcfv`.
     /// </returns>
-    public static bool isBcfViewpoint(this ZipArchiveEntry entry) {
+    public static bool IsBcfViewpoint(this ZipArchiveEntry entry) {
       return entry.FullName.EndsWith(".bcfv",
         StringComparison.OrdinalIgnoreCase);
     }
@@ -42,7 +42,7 @@ namespace bcf_converter.Parser {
     ///   Returns true if the file in the entry has the
     ///   extension of `.png` or `.jpg`
     /// </returns>
-    public static bool isSnapshot(this ZipArchiveEntry entry) {
+    public static bool IsSnapshot(this ZipArchiveEntry entry) {
       return entry.FullName.EndsWith(".png",
                StringComparison.OrdinalIgnoreCase) ||
              entry.FullName.EndsWith(".jpg",

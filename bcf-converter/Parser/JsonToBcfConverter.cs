@@ -16,7 +16,7 @@ namespace bcf_converter.Parser {
     /// <param name="sourceFolder">The folder where the JSON files are.</param>
     /// <param name="targetFile">The path to the target bcf file.</param>
     /// <returns></returns>
-    Task json2bcf(string sourceFolder, string targetFile);
+    Task JsonToBcf(string sourceFolder, string targetFile);
 
     /// <summary>
     ///   Writes the Markups to json files at the specified target, one json
@@ -25,6 +25,6 @@ namespace bcf_converter.Parser {
     /// <param name="markups">The list of Markups in the memory.</param>
     /// <param name="targetFolder">The output folder.</param>
     /// <returns></returns>
-    Task writeJson(ConcurrentBag<Markup> markups, string targetFolder);
+    Task WriteJson(ConcurrentBag<Markup> markups, string targetFolder);
   }
 }

@@ -14,7 +14,7 @@ namespace bcf_converter.Parser.Xml21 {
   ///   The `Xml20` parser unzips and parses BCF zips of version 2.0 and
   ///   puts their contents into the Topic model.
   /// </summary>
-  public class Xml21 : BCFParser {
+  public class Xml21 : BcfParser {
     /// <summary>
     ///   The method unzips the bcfzip at the specified path into the memory,
     ///   and parses the xml files within to create an in memory representation
@@ -22,7 +22,7 @@ namespace bcf_converter.Parser.Xml21 {
     /// </summary>
     /// <param name="path">The path to the bcfzip.</param>
     /// <returns>Returns a Task with a List of Markup models.</returns>
-    public Task<ConcurrentBag<Markup>> parse(string path) {
+    public Task<ConcurrentBag<Markup>> Parse(string path) {
       return Task.Run(async () => {
         Console.WriteLine("'\nProcessing bcfzip at {0} \n", path);
 
@@ -91,7 +91,7 @@ namespace bcf_converter.Parser.Xml21 {
           }
 
           // Parsing BCF files
-          if (entry.isBcf()) {
+          if (entry.IsBcf()) {
             var document = await XDocument.LoadAsync(
               entry.Open(),
               LoadOptions.None,
@@ -101,7 +101,7 @@ namespace bcf_converter.Parser.Xml21 {
           }
 
           // Parsing the viewpoint file
-          else if (entry.isBcfViewpoint()) {
+          else if (entry.IsBcfViewpoint()) {
             if (viewpoint != null) {
               // TODO: No support for multiple viewpoints!
               Console.WriteLine("No support for multiple viewpoints!");
@@ -115,7 +115,7 @@ namespace bcf_converter.Parser.Xml21 {
           }
 
           // Parsing the snapshot
-          else if (entry.isSnapshot()) {
+          else if (entry.IsSnapshot()) {
             if (snapshot != null) {
               // TODO: No support for multiple snapshots!
               Console.WriteLine("No support for multiple snapshots!");

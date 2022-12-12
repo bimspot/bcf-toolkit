@@ -29,7 +29,7 @@ namespace bcf_converter.Parser.Json21 {
     }
 
     /// <inheritdoc/>
-    public Task json2bcf(string sourceFolder, string targetFile) {
+    public Task JsonToBcf(string sourceFolder, string targetFile) {
       return Task.Run(async () => {
         var targetFolder = Path.GetDirectoryName(targetFile);
 
@@ -58,7 +58,7 @@ namespace bcf_converter.Parser.Json21 {
         var files = new List<string>(Directory.EnumerateFiles(sourceFolder));
 
         foreach (var file in files) {
-          if (file == null || file.EndsWith("json") == false) {
+          if (file.EndsWith("json") == false) {
             Console.WriteLine($" - File is not json, skipping ${file}");
             continue;
           }
@@ -113,7 +113,7 @@ namespace bcf_converter.Parser.Json21 {
     }
 
     /// <inheritdoc/>
-    public Task writeJson(ConcurrentBag<Markup> markups, string targetFolder) {
+    public Task WriteJson(ConcurrentBag<Markup> markups, string targetFolder) {
       return Task.Run(async () => {
         var jsonSerializerSettings = new JsonSerializerSettings {
           NullValueHandling = this.jsonSerializer.NullValueHandling,

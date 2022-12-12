@@ -40,11 +40,11 @@ namespace bcf_converter {
       try {
         if (sourcePath.EndsWith("bcfzip")) {
           var parser = new Xml21();
-          var markups = await parser.parse(sourcePath);
-          await json21.writeJson(markups, targetFolder);
+          var markups = await parser.Parse(sourcePath);
+          await json21.WriteJson(markups, targetFolder);
         }
         else {
-          await json21.json2bcf(sourcePath, targetFolder);
+          await json21.JsonToBcf(sourcePath, targetFolder);
         }
       }
       catch (Exception e) {
@@ -53,7 +53,7 @@ namespace bcf_converter {
         await errorWriter.WriteLineAsync(e.StackTrace);
         Environment.Exit(9);
       }
-     
+
 
       Environment.Exit(0);
     }
