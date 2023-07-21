@@ -75,7 +75,7 @@ namespace bcf_converter.Parser.Xml21 {
                 firstViewPoint.VisualizationInfo = viewpoint;
                 firstViewPoint.SnapshotData = snapshot;
               }
-              
+
               markups.Add(markup);
 
               // Null-ing external references

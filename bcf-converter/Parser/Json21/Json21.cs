@@ -16,7 +16,7 @@ namespace bcf_converter.Parser.Json21 {
     /// <summary>
     ///   The JSON serialiser used in the instance.
     /// </summary>
-    private JsonSerializer jsonSerializer;
+    private readonly JsonSerializer jsonSerializer;
 
     /// <summary>
     ///   Creates and returns a new instance of the Json21 converter.
@@ -93,13 +93,12 @@ namespace bcf_converter.Parser.Json21 {
           // Snapshot
           var snapshotFileName = markup.Viewpoints.First().Snapshot;
           var base64String = markup.Viewpoints.First().SnapshotData;
-          if (snapshotFileName != null && base64String != null) {
-            string result = Regex.Replace(base64String,
-              @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
-            await File.WriteAllBytesAsync(
-              $"{topicFolder}/{snapshotFileName}",
-              Convert.FromBase64String(result));
-          }
+          if (snapshotFileName == null || base64String == null) continue;
+          var result = Regex.Replace(base64String,
+            @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
+          await File.WriteAllBytesAsync(
+            $"{topicFolder}/{snapshotFileName}",
+            Convert.FromBase64String(result));
         }
 
         // zip shit

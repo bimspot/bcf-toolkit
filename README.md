@@ -7,6 +7,10 @@ The tool converts `BCF` information across formats ~~and versions~~.
 
 ## Usage
 
+## Requirements
+
+- dotnet 7
+
 ### CLI
 
 The command line interface accepts three arguments:
@@ -17,18 +21,22 @@ The json representation is one file for every Markup, while the BCF format
 is a zipped file as per the standard.
 
 ```
-$ ifc-converter /path/to/source.bcfzip /path/to/target/json/folder
+~ bcf-converter /path/to/source.bcfzip /path/to/target/json/folder
 
-$ ifc-converter /path/to/source/json/folder /path/to/target.bcfzip
+~ bcf-converter /path/to/source/json/folder /path/to/target.bcfzip
 ```
+
+### As A Library
+
+
 
 ## File Structure
 
-The structure of the BCF is per [the standard][3]. There is however no standard
-for the JSON format other than the [BCF API specification][4].
+The structure of the BCF is per [the standard][3]. There is, however, no 
+standard for the JSON format other than the [BCF API specification][4].
 
 The naming convention for this converter is taken from the BCF API, but the
-output is opinionated.
+output is opinionated:
 
 There is one JSON for every `Markup` and within the structure of the information
 follows that of the XML. There are no separate files for screenshots, they are
@@ -59,6 +67,10 @@ The models for the BCF in-memory representation were auto-created from the
 [latest XSDs][1] using the [`XmlSchemaClassGenerator`][2].
 
 To publish, run the script at `dist/publish.sh`.
+
+### TODO
+
+- profile memory and CPU usage
 
 ### Contribution
 

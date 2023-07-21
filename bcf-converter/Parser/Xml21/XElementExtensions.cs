@@ -24,7 +24,7 @@ namespace bcf_converter.Parser.Xml21 {
         Z = Convert.ToSingle(item.Element(element)?.Element("Z")?.Value)
       };
     }
-    
+
     public static Point Point(this XElement item, string element) {
       return new Point {
         X = Convert.ToSingle(item.Element(element)?.Element("X")?.Value),
