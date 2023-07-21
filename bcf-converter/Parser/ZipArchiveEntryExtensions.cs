@@ -14,7 +14,7 @@ namespace bcf_converter.Parser {
     ///   Returns true if the file in the entry has the
     ///   extension of `.bcf`.
     /// </returns>
-    public static bool isBcf(this ZipArchiveEntry entry) {
+    public static bool IsBcf(this ZipArchiveEntry entry) {
       return entry.FullName.EndsWith(".bcf",
         StringComparison.OrdinalIgnoreCase);
     }
@@ -28,7 +28,7 @@ namespace bcf_converter.Parser {
     ///   Returns true if the file in the entry has the
     ///   extension of `.bcfv`.
     /// </returns>
-    public static bool isBcfViewpoint(this ZipArchiveEntry entry) {
+    public static bool IsBcfViewpoint(this ZipArchiveEntry entry) {
       return entry.FullName.EndsWith(".bcfv",
         StringComparison.OrdinalIgnoreCase);
     }
@@ -42,7 +42,7 @@ namespace bcf_converter.Parser {
     ///   Returns true if the file in the entry has the
     ///   extension of `.png` or `.jpg`
     /// </returns>
-    public static bool isSnapshot(this ZipArchiveEntry entry) {
+    public static bool IsSnapshot(this ZipArchiveEntry entry) {
       return entry.FullName.EndsWith(".png",
                StringComparison.OrdinalIgnoreCase) ||
              entry.FullName.EndsWith(".jpg",
@@ -55,22 +55,16 @@ namespace bcf_converter.Parser {
     ///   Returns the created Snapshot struct.
     /// </summary>
     /// <param name="entry">The ZipArchiveEntry containing the image.</param>
-    /// <returns>Returns an instance of a Snapshot.</returns>
-    public static Snapshot snapshot(this ZipArchiveEntry entry) {
+    /// <returns>Returns the base64 encoded image as a string.</returns>
+    public static string Snapshot(this ZipArchiveEntry entry) {
       var extension = entry.FullName.Split(".").Last();
       var mime = $"data:image/{extension};base64";
-      var type = (Snapshot.Type) Enum.Parse(typeof(Snapshot.Type), extension);
       var buffer = new byte[entry.Length];
-
       var image = entry
         .Open()
         .Read(buffer, 0, buffer.Length);
       var base64String = Convert.ToBase64String(buffer);
-
-      return new Snapshot {
-        snapshotType = type,
-        snapshotData = $"{mime},{base64String}"
-      };
+      return $"{mime},{base64String}";
     }
   }
 }

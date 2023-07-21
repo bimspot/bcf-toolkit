@@ -1,0 +1,22 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI/CD
+
+# Controls when the action will run.
+on: [push, pull_request]
+jobs:
+  test:
+    name: "Running tests"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: "Unit tests"
+        run: dotnet test --test-adapter-path:. --logger:"junit;LogFilePath=./artifacts/test-output.xml"
+
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1.6
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          files: ./artifacts/*.xml
