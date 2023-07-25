@@ -7,12 +7,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using bcf_converter.Model;
+using bcf;
 using Newtonsoft.Json;
-using Version = bcf_converter.Model.Version;
+using Version = bcf.Version;
 
 namespace bcf_converter.Parser.Json21 {
-  public class Json21 : JsonToBcfConverter {
+  public class Json21 : IJsonToBcfConverter {
     /// <summary>
     ///   The JSON serialiser used in the instance.
     /// </summary>
