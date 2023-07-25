@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using bcf_converter.Model;
+using bcf;
 
 namespace bcf_converter.Parser {
   /// <summary>
   ///   Converting all JSON representations of Markups in a folder to a
   ///   BCFZIP in XML format
   /// </summary>
-  public interface JsonToBcfConverter {
+  public interface IJsonToBcfConverter {
     /// <summary>
     ///   Reads all JSON files in the source folder and creates BCF files for
     ///   them at the target folder, then zipping them all.

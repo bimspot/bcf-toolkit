@@ -7,14 +7,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using bcf_converter.Model;
+using bcf;
 
 namespace bcf_converter.Parser.Xml21 {
   /// <summary>
   ///   The `Xml20` parser unzips and parses BCF zips of version 2.0 and
   ///   puts their contents into the Topic model.
   /// </summary>
-  public class Xml21 : BcfParser {
+  public class Xml21 : IBcfParser {
     /// <summary>
     ///   The method unzips the bcfzip at the specified path into the memory,
     ///   and parses the xml files within to create an in memory representation

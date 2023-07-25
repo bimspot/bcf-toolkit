@@ -1,7 +1,6 @@
 using System;
 using System.IO.Compression;
 using System.Linq;
-using bcf_converter.Model;
 
 namespace bcf_converter.Parser {
   public static class ZipArchiveEntryExtensions {
