@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
-using bcf;
+using bcf.bcf21;
 
 namespace bcf_converter.Parser.Xml21 {
   /// <summary>

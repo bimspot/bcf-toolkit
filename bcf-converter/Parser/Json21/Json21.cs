@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using bcf;
+using bcf.bcf21;
 using Newtonsoft.Json;
-using Version = bcf.Version;
+using Version = bcf.bcf21.Version;
 
 namespace bcf_converter.Parser.Json21 {
   public class Json21 : IJsonToBcfConverter {

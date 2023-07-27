@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using bcf;
+using bcf.bcf21;
 
 namespace bcf_converter.Parser.Xml21 {
   /// <summary>
