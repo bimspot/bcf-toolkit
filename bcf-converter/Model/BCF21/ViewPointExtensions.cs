@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace bcf {
+namespace bcf.bcf21 {
   public partial class ViewPoint {
     [XmlIgnore] public VisualizationInfo? VisualizationInfo;
 

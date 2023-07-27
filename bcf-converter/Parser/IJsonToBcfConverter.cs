@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using bcf;
+using bcf.bcf21;
 
 namespace bcf_converter.Parser {
   /// <summary>
