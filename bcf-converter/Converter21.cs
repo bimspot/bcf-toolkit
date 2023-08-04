@@ -1,8 +1,6 @@
 using System.Threading.Tasks;
 using bcf.Parser;
 using bcf.bcf21;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace bcf; 
 
@@ -11,22 +9,6 @@ namespace bcf;
 ///   and back.
 /// </summary>
 public class Converter21 : IConverter {
-  private readonly JsonConverter<Markup, Version> _jsonConverter;
-
-  /// <summary>
-  ///   Creates and returns an instance of `Converter21`.
-  /// </summary>
-  public Converter21() {
-    var contractResolver = new DefaultContractResolver {
-      NamingStrategy = new SnakeCaseNamingStrategy()
-    };
-    var jsonSerializer = new JsonSerializer {
-      NullValueHandling = NullValueHandling.Ignore,
-      ContractResolver = contractResolver
-    };
-    _jsonConverter = new JsonConverter<Markup, Version>(jsonSerializer);
-  }
-  
   /// <summary>
   ///   The method parses the BCF file of version 2.1 and writes into JSON.
   ///
@@ -53,7 +35,7 @@ public class Converter21 : IConverter {
     
     // Parsing topics folder (markups)
     var markups = await BcfParser.ParseMarkups<Markup, VisualizationInfo>(source);
-    await _jsonConverter.WriteMarkupsJson(markups, target);
+    await JsonConverter.WriteMarkupsJson(markups, target);
   }
 
   /// <summary>
@@ -64,6 +46,6 @@ public class Converter21 : IConverter {
   /// <param name="source">The source folder to the JSON files.</param>
   /// <param name="target">The target path where the BCF is written.</param>
   public async Task JsonToBcf(string source, string target) {
-    await _jsonConverter.JsonToBcf(source, target);
+    await JsonConverter.JsonToBcf<Markup,Version>(source, target);
   }
 }
