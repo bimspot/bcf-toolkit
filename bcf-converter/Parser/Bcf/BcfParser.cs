@@ -10,10 +10,10 @@ using System.Xml.Linq;
 namespace bcf.Parser;
 
 /// <summary>
-///   The `BcfParser` parser unzips and parses BCF zips and
-///   puts their contents into the Topic model.
+///   The `BcfParser` static class unzips and parses BCF zips and
+///   puts their contents into the BCF models.
 /// </summary>
-public class BcfParser {
+public static class BcfParser {
   /// <summary>
   ///   The method unzips the BCFzip at the specified path into the memory,
   ///   and parses the markup xml files within to create an in memory

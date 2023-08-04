@@ -6,25 +6,11 @@ using System.IO.Compression;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace bcf.Parser; 
 
-public class JsonConverter<TMarkup, TVersion> where TVersion : new() {
-  /// <summary>
-  ///   The JSON serializer used in the instance.
-  /// </summary>
-  private readonly JsonSerializer _jsonSerializer;
-
-  /// <summary>
-  ///   Creates and returns a new instance of the Json converter.
-  /// </summary>
-  /// <param name="jsonSerializer">
-  ///  The JSON serializer used in the instance.
-  /// </param>
-  public JsonConverter(JsonSerializer jsonSerializer) {
-    _jsonSerializer = jsonSerializer;
-  }
-
+public static class JsonConverter {
   /// <summary>
   ///   
   /// </summary>
@@ -32,7 +18,7 @@ public class JsonConverter<TMarkup, TVersion> where TVersion : new() {
   /// <param name="targetFile"></param>
   /// <returns></returns>
   /// <exception cref="ApplicationException"></exception>
-  public Task JsonToBcf(string sourceFolder, string targetFile) {
+  public static Task JsonToBcf<TMarkup, TVersion>(string sourceFolder, string targetFile) where TVersion : new() {
     return Task.Run(async () => {
       var targetFolder = Path.GetDirectoryName(targetFile);
 
@@ -57,6 +43,13 @@ public class JsonConverter<TMarkup, TVersion> where TVersion : new() {
 
       var files = new List<string>(Directory.EnumerateFiles(sourceFolder));
 
+      var contractResolver = new DefaultContractResolver {
+        NamingStrategy = new SnakeCaseNamingStrategy()
+      };
+      var jsonSerializer = new JsonSerializer {
+        NullValueHandling = NullValueHandling.Ignore,
+        ContractResolver = contractResolver
+      };
       foreach (var file in files) {
         if (file.EndsWith("json") == false) {
           Console.WriteLine($" - File is not json, skipping ${file}");
@@ -66,7 +59,7 @@ public class JsonConverter<TMarkup, TVersion> where TVersion : new() {
 
         using var json = File.OpenText(file);
         var markup =
-          (IMarkup)_jsonSerializer.Deserialize(json, typeof(TMarkup));
+          (IMarkup)jsonSerializer.Deserialize(json, typeof(TMarkup));
 
         // Creating the target folder
         if (markup.GetTopic()?.Guid == null) {
@@ -117,12 +110,15 @@ public class JsonConverter<TMarkup, TVersion> where TVersion : new() {
   /// <param name="markups"></param>
   /// <param name="targetFolder"></param>
   /// <returns></returns>
-  public Task WriteMarkupsJson(ConcurrentBag<TMarkup> markups, string targetFolder) {
+  public static Task WriteMarkupsJson<TMarkup>(ConcurrentBag<TMarkup> markups, string targetFolder) {
     return Task.Run(async () => {
-      //TODO use default serialiser?
+      // TODO make a default serializer to avoid code repeat
+      var contractResolver = new DefaultContractResolver {
+        NamingStrategy = new SnakeCaseNamingStrategy()
+      };
       var jsonSerializerSettings = new JsonSerializerSettings {
-        NullValueHandling = _jsonSerializer.NullValueHandling,
-        ContractResolver = _jsonSerializer.ContractResolver
+        NullValueHandling = NullValueHandling.Ignore,
+        ContractResolver = contractResolver
       };
 
       // Creating the target folder
@@ -136,7 +132,8 @@ public class JsonConverter<TMarkup, TVersion> where TVersion : new() {
         var json = JsonConvert
           .SerializeObject(
             markup,
-            Formatting.None, jsonSerializerSettings);
+            Formatting.None, 
+            jsonSerializerSettings);
 
         var path = $"{targetFolder}/{((IMarkup)markup!).GetTopic().Guid}.json";
         await using var writer = File.CreateText(path);
@@ -151,12 +148,15 @@ public class JsonConverter<TMarkup, TVersion> where TVersion : new() {
   /// <param name="obj"></param>
   /// <param name="targetFolder"></param>
   /// <returns></returns>
-  public Task WriteBcfRootsJson(object obj, string targetFolder) {
+  public static Task WriteBcfRootsJson(object obj, string targetFolder) {
     return Task.Run(async () => {
-      //TODO use default serialiser?
+      // TODO make a default serializer to avoid code repeat
+      var contractResolver = new DefaultContractResolver {
+        NamingStrategy = new SnakeCaseNamingStrategy()
+      };
       var jsonSerializerSettings = new JsonSerializerSettings {
-        NullValueHandling = _jsonSerializer.NullValueHandling,
-        ContractResolver = _jsonSerializer.ContractResolver
+        NullValueHandling = NullValueHandling.Ignore,
+        ContractResolver = contractResolver
       };
 
       // Creating the target folder
