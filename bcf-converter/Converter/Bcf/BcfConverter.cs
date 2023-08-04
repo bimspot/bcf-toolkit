@@ -7,13 +7,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace bcf.Parser;
+namespace bcf.Converter;
 
 /// <summary>
-///   The `BcfParser` static class unzips and parses BCF zips and
+///   The `BcfConverter` static class unzips and parses BCF zips and
 ///   puts their contents into the BCF models.
 /// </summary>
-public static class BcfParser {
+public static class BcfConverter {
   /// <summary>
   ///   The method unzips the BCFzip at the specified path into the memory,
   ///   and parses the markup xml files within to create an in memory

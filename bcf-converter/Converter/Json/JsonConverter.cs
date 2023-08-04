@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace bcf.Parser; 
+namespace bcf.Converter; 
 
 public static class JsonConverter {
   /// <summary>
@@ -36,7 +36,6 @@ public static class JsonConverter {
         
       // Create the version file
       var version = new TVersion();
-      
       await using var versionWriter =
         File.CreateText($"{tmpFolder}/bcf.version");
       new XmlSerializer(typeof(TVersion)).Serialize(versionWriter, version);

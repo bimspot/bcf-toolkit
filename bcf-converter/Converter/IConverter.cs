@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace bcf; 
+namespace bcf.Converter; 
 
 /// <summary>
 ///   Converter strategy interface.

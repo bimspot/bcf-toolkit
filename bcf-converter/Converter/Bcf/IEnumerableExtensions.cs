@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using bcf.bcf21;
 
-namespace bcf.Parser; 
+namespace bcf.Converter; 
 
 /// <summary>
 ///   A list of convenience extension methods on the IEnumerable interface

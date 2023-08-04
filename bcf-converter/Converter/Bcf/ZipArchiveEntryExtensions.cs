@@ -1,9 +1,8 @@
 using System;
 using System.IO.Compression;
 using System.Linq;
-using System.Text.RegularExpressions;
 
-namespace bcf.Parser; 
+namespace bcf.Converter; 
 
 public static class ZipArchiveEntryExtensions {
   /// <summary>
