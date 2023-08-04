@@ -32,7 +32,7 @@ public class Context {
   /// </summary>
   /// <param name="version">The version of the BCF.</param>
   /// <exception cref="ArgumentException"></exception>
-  public void SetVersion(string version) {
+  private void SetVersion(string version) {
     switch (version) {
       case "2.1":
         this.SetConverter(new Converter21());

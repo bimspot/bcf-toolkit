@@ -10,13 +10,13 @@ internal static class Program {
       Console.WriteLine(
         "Please specify the path to the source and target files.");
       Console.WriteLine(@"
-          Usage:
+        Usage:
 
-          $ bcf-converter /path/to/source.bcfzip /path/to/target/folder 2.1
+        $ bcf-converter /path/to/source.bcfzip /path/to/target/folder 2.1
 
-          $ bcf-converter /path/to/json/folder /path/to/target/bcf.bcfzip 2.1
+        $ bcf-converter /path/to/json/folder /path/to/target/bcf.bcfzip 2.1
 
-        ");
+      ");
       Environment.Exit(1);
     }
 
@@ -30,7 +30,6 @@ internal static class Program {
       
     try {
       var context = new Context(targetVersion);
-      context.SetVersion(targetVersion);
       await context.Convert(sourcePath, targetFolder);
     }
     catch (Exception e) {

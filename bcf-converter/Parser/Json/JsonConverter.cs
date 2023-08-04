@@ -11,18 +11,18 @@ namespace bcf.Parser;
 
 public class JsonConverter<TMarkup, TVersion> where TVersion : new() {
   /// <summary>
-  ///   The JSON serialiser used in the instance.
+  ///   The JSON serializer used in the instance.
   /// </summary>
-  private readonly JsonSerializer jsonSerializer;
+  private readonly JsonSerializer _jsonSerializer;
 
   /// <summary>
   ///   Creates and returns a new instance of the Json converter.
   /// </summary>
   /// <param name="jsonSerializer">
-  ///  The JSON serialiser used in the instance.
+  ///  The JSON serializer used in the instance.
   /// </param>
   public JsonConverter(JsonSerializer jsonSerializer) {
-    this.jsonSerializer = jsonSerializer;
+    _jsonSerializer = jsonSerializer;
   }
 
   /// <summary>
@@ -66,7 +66,7 @@ public class JsonConverter<TMarkup, TVersion> where TVersion : new() {
 
         using var json = File.OpenText(file);
         var markup =
-          (IMarkup)this.jsonSerializer.Deserialize(json, typeof(TMarkup));
+          (IMarkup)_jsonSerializer.Deserialize(json, typeof(TMarkup));
 
         // Creating the target folder
         if (markup.GetTopic()?.Guid == null) {
@@ -121,8 +121,8 @@ public class JsonConverter<TMarkup, TVersion> where TVersion : new() {
     return Task.Run(async () => {
       //TODO use default serialiser?
       var jsonSerializerSettings = new JsonSerializerSettings {
-        NullValueHandling = this.jsonSerializer.NullValueHandling,
-        ContractResolver = this.jsonSerializer.ContractResolver
+        NullValueHandling = _jsonSerializer.NullValueHandling,
+        ContractResolver = _jsonSerializer.ContractResolver
       };
 
       // Creating the target folder
@@ -151,12 +151,12 @@ public class JsonConverter<TMarkup, TVersion> where TVersion : new() {
   /// <param name="obj"></param>
   /// <param name="targetFolder"></param>
   /// <returns></returns>
-  public Task WriteObjectJson(object obj, string targetFolder) {
+  public Task WriteBcfRootsJson(object obj, string targetFolder) {
     return Task.Run(async () => {
       //TODO use default serialiser?
       var jsonSerializerSettings = new JsonSerializerSettings {
-        NullValueHandling = this.jsonSerializer.NullValueHandling,
-        ContractResolver = this.jsonSerializer.ContractResolver
+        NullValueHandling = _jsonSerializer.NullValueHandling,
+        ContractResolver = _jsonSerializer.ContractResolver
       };
 
       // Creating the target folder
