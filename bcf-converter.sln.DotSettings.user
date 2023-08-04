@@ -1,9 +1,11 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=100be9ed_002D9008_002D4af3_002Daf6d_002D2dc84098acf5/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Json21Tests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
-    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net5.0::Tests.Parser.Json21.Json21Tests&lt;/TestId&gt;
-    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net5.0::Tests.Tests.Test1&lt;/TestId&gt;
-    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net5.0::Tests.Parser.Xml21.Xml21Tests.convertsBcfToJsonFiles&lt;/TestId&gt;
-    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net5.0::Tests.Parser.Xml21.Xml21Tests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net7.0::Tests.Parser.Xml21.Xml21Tests.convertsBcfToJsonFiles21&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net7.0::Tests.Parser.Xml21.Xml21Tests.convertsBcfToJsonFiles30&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net7.0::Tests.Parser.Json21.Json21Tests.convertsJsonFilesToBcf&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net7.0::Tests.Parser.Json21.Json21Tests.convertsJsonFilesToBcf21&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net7.0::Tests.Parser.Json21.Json21Tests.convertsJsonFilesToBcf30&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net7.0::Tests.Parser.Xml21.Xml21Tests.convertsBcfRootsToJsonFiles30&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

@@ -1,11 +1,12 @@
 using System;
 using System.Threading.Tasks;
 
-namespace bcf_converter; 
+namespace bcf;
 
-internal class Program {
+internal static class Program {
   private static async Task Main(string[] args) {
     if (args.Length < 2) {
+      // TODO: make a proper arg parser
       Console.WriteLine(
         "Please specify the path to the source and target files.");
       Console.WriteLine(@"
@@ -23,11 +24,12 @@ internal class Program {
     var targetFolder = args[1].TrimEnd('/');
       
     // TODO: read bcf.version and decide on the parser version
+    // TODO: make bcf version enum
     // by default 2.1 version is used
     var targetVersion = args.Length > 2 ? args[2] : "2.1";
       
     try {
-      var context = new Context();
+      var context = new Context(targetVersion);
       context.SetVersion(targetVersion);
       await context.Convert(sourcePath, targetFolder);
     }

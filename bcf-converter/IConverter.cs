@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
-using bcf_converter.Parser;
 
-namespace bcf_converter; 
+namespace bcf; 
 
 public interface IConverter {
-  IJsonToBcfConverter json();
-  IBcfParser parser();
+  Task BcfToJson(string source, string target);
+  Task JsonToBcf(string source, string target);
 }

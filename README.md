@@ -17,7 +17,7 @@ The command line interface accepts three arguments:
  * the source bcf file or json folder
  * the target bcf file or json folder
  
-The json representation is one file for every Markup, while the BCF format
+The json representation is one file for every `Markup`, while the BCF format
 is a zipped file as per the standard.
 
 ```
@@ -49,6 +49,7 @@ named using the `uuid` of the `Topic` within.
   |- 3395f1b1-893f-4ca0-8b7d-c2d17d7a9198.json
   |- c799e527-a413-43f8-8871-80918a52b0f0.json
   |- ...
+  |- bcfRoots.json
 ```
 
 ## Development
