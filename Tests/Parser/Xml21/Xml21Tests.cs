@@ -51,7 +51,7 @@ public class Xml21Tests {
     var json21 = new JsonConverter<bcf30.Markup, bcf30.Version>(jsonSerializer);
     //var markups = await BcfParser.ParseMarkups<bcf30.Markup,bcf30.VisualizationInfo>("Resources/TestBcf30.zip");
     //await json21.WriteMarkupsJson(markups, "Resources/output/30/json");
-    await json21.WriteObjectJson(roots, "Resources/output/30/json");
+    await json21.WriteBcfRootsJson(roots, "Resources/output/30/json");
   }
   
 }
