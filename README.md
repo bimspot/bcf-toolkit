@@ -67,6 +67,11 @@ completed features.
 The models for the BCF in-memory representation were auto-created from the
 [latest XSDs][1] using the [`XmlSchemaClassGenerator`][2].
 
+```
+~ dotnet tool install --global dotnet-xscgen
+~ xscgen -n [namespace] version.xsd
+```
+
 To publish, run the script at `dist/publish.sh`.
 
 ### TODO
