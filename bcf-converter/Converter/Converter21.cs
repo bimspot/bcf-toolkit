@@ -34,17 +34,27 @@ public class Converter21 : IConverter {
     
     // Parsing topics folder (markups)
     var markups = await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(source);
-    await JsonConverter.WriteMarkupsJson(markups, target);
+    
+    // Writing json files
+    // TODO add root after model is generated
+    await JsonConverter.WriteJson(target, markups, new {});
   }
 
   /// <summary>
-  ///   The method reads the JSON files of version 2.1 and creates BCF.
+  ///   The method reads the JSON files and creates BCF 2.1 version.
   ///   The json folder must contain files which are named using the
   ///   `uuid` of the `Topic` within, and `bcfRoot.json`.
   /// </summary>
   /// <param name="source">The source folder to the JSON files.</param>
   /// <param name="target">The target path where the BCF is written.</param>
   public async Task JsonToBcf(string source, string target) {
-    await JsonConverter.JsonToBcf<Markup,Version>(source, target);
+    // Parsing BCF root
+    var root = await JsonConverter.ParseObject<Root>(source);
+
+    // Parsing markups
+    var markups = await JsonConverter.ParseMarkups<Markup>(source);
+    
+    // Writing bcf files
+    await BcfConverter.WriteBcf<Markup,Root,Version>(target, markups, root);
   }
 }

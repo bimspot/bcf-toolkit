@@ -2,43 +2,38 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 namespace bcf.Converter; 
 
+/// <summary>
+///   The `JsonConverter` static class opens and parses the BCF json files
+///   and puts their contents into the BCF models. It also writes the in
+///   memory BCF models into json files.
+/// </summary>
 public static class JsonConverter {
   /// <summary>
-  ///   
+  ///   The method parses the markup json files to create an in memory
+  ///   representation of the data.
+  ///
+  ///   Topic folder structure inside a BCFzip archive:
+  ///   The folder name is the GUID of the topic. This GUID is in the UUID form.
+  ///   The GUID must be all-lowercase. The folder contains the following file:
+  ///   * markup.bcf
+  ///   Additionally the folder can contain other files:
+  ///   * Viewpoint files
+  ///   * Snapshot files
+  ///   * Bitmaps
   /// </summary>
   /// <param name="sourceFolder"></param>
-  /// <param name="targetFile"></param>
   /// <returns></returns>
   /// <exception cref="ApplicationException"></exception>
-  public static Task JsonToBcf<TMarkup, TVersion>(string sourceFolder, string targetFile) where TVersion : new() {
-    return Task.Run(async () => {
-      var targetFolder = Path.GetDirectoryName(targetFile);
-
-      if (targetFolder == null) {
-        throw new ApplicationException(
-          "Target folder not found ${targetFolder}");
-      }
-
-      // Will create a tmp folder for the intermediate files.
-      var tmpFolder = $"{targetFolder}/tmp";
-      if (Directory.Exists(tmpFolder)) {
-        Directory.Delete(tmpFolder, true);
-      }
-      Directory.CreateDirectory(tmpFolder);
-        
-      // Create the version file
-      var version = new TVersion();
-      await using var versionWriter =
-        File.CreateText($"{tmpFolder}/bcf.version");
-      new XmlSerializer(typeof(TVersion)).Serialize(versionWriter, version);
+  public static Task<ConcurrentBag<TMarkup>> ParseMarkups<TMarkup>(string sourceFolder) {
+    return Task.Run( () => {
+      // A thread-safe storage for the parsed topics.
+      var markups = new ConcurrentBag<TMarkup>();
 
       var files = new List<string>(Directory.EnumerateFiles(sourceFolder));
 
@@ -49,67 +44,55 @@ public static class JsonConverter {
         NullValueHandling = NullValueHandling.Ignore,
         ContractResolver = contractResolver
       };
+
       foreach (var file in files) {
         if (file.EndsWith("json") == false) {
           Console.WriteLine($" - File is not json, skipping ${file}");
           continue;
         }
+
         Console.WriteLine($" - Processing {file}");
 
         using var json = File.OpenText(file);
-        var markup =
-          (IMarkup)jsonSerializer.Deserialize(json, typeof(TMarkup));
+        var markup = (TMarkup)jsonSerializer.Deserialize(json, typeof(TMarkup));
 
-        // Creating the target folder
-        if (markup.GetTopic()?.Guid == null) {
-          Console.WriteLine(
-            $" - Topic Guid is missing, skipping {file}");
-          continue;
-        }
-        var guid = markup.GetTopic()?.Guid;
-        var topicFolder = $"{tmpFolder}/{guid}";
-        Directory.CreateDirectory(topicFolder);
-
-        // Markup
-        await using var markupWriter =
-          File.CreateText($"{topicFolder}/markup.bcf");
-        new XmlSerializer(typeof(TMarkup)).Serialize(markupWriter, markup);
-
-        // Viewpoint
-        // await using var viewpointWriter =
-        //   File.CreateText($"{topicFolder}/viewpoint.bcfv");
-        // new XmlSerializer(typeof(VisualizationInfo)).Serialize(
-        //   viewpointWriter,
-        //   markup.Viewpoints.First().VisualizationInfo);
-
-        // Snapshot
-        // var snapshotFileName = markup.Viewpoints.First().Snapshot;
-        // var base64String = markup.Viewpoints.First().SnapshotData;
-        // if (snapshotFileName == null || base64String == null) continue;
-        // var result = Regex.Replace(base64String,
-        //   @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
-        // await File.WriteAllBytesAsync(
-        //   $"{topicFolder}/{snapshotFileName}",
-        //   Convert.FromBase64String(result));
+        markups.Add(markup);
       }
 
-      // zip shit
-      Console.WriteLine($"Zipping the output: {targetFile}");
-      if (File.Exists(targetFile)) {
-        File.Delete(targetFile);
-      }
-      ZipFile.CreateFromDirectory(tmpFolder, targetFile);
-      Directory.Delete(tmpFolder, true);
+      return markups;
     });
   }
 
   /// <summary>
-  /// 
+  ///   The method opens the json file at the specified source path,
+  ///   and parses to the given object type to create an in memory
+  ///   representation of the data.
   /// </summary>
-  /// <param name="markups"></param>
-  /// <param name="targetFolder"></param>
+  /// <param name="source">The source path of the json file.</param>
+  /// <typeparam name="T">The json file is deserializes to this type.</typeparam>
   /// <returns></returns>
-  public static Task WriteMarkupsJson<TMarkup>(ConcurrentBag<TMarkup> markups, string targetFolder) {
+  public static Task<T> ParseObject<T>(string source) {
+    return Task.Run( () => {
+      var contractResolver = new DefaultContractResolver {
+        NamingStrategy = new SnakeCaseNamingStrategy()
+      };
+      var jsonSerializer = new JsonSerializer {
+        NullValueHandling = NullValueHandling.Ignore,
+        ContractResolver = contractResolver
+      };
+      using var json = File.OpenText(source);
+      return (T)jsonSerializer.Deserialize(json, typeof(T));
+    });
+  }
+  
+  /// <summary>
+  ///   The method writes the BCF objects to json file.
+  /// </summary>
+  /// <param name="targetFolder">The target folder where the json files will be saved.</param>
+  /// <param name="markups">The list of `Markup` objects.</param>
+  /// <param name="root">The `Root` object.</param>
+  /// <returns></returns>
+  public static Task WriteJson<TMarkup, TRoot>(string targetFolder, ConcurrentBag<TMarkup> markups, TRoot root) {
     return Task.Run(async () => {
       // TODO make a default serializer to avoid code repeat
       var contractResolver = new DefaultContractResolver {
@@ -126,51 +109,27 @@ public static class JsonConverter {
       }
       Directory.CreateDirectory(targetFolder);
 
-      // Writing to disk, one markup per file.
+      // Writing markups to disk, one markup per file.
       foreach (var markup in markups) {
-        var json = JsonConvert
+        var jsonMarkup = JsonConvert
           .SerializeObject(
             markup,
             Formatting.None, 
             jsonSerializerSettings);
 
-        var path = $"{targetFolder}/{((IMarkup)markup!).GetTopic().Guid}.json";
-        await using var writer = File.CreateText(path);
-        await writer.WriteAsync(json);
+        var pathMarkup = $"{targetFolder}/{((IMarkup)markup!).GetTopic()!.Guid}.json";
+        await using var writerM = File.CreateText(pathMarkup);
+        await writerM.WriteAsync(jsonMarkup);
       }
-    });
-  }
-
-  /// <summary>
-  /// 
-  /// </summary>
-  /// <param name="obj"></param>
-  /// <param name="targetFolder"></param>
-  /// <returns></returns>
-  public static Task WriteBcfRootsJson(object obj, string targetFolder) {
-    return Task.Run(async () => {
-      // TODO make a default serializer to avoid code repeat
-      var contractResolver = new DefaultContractResolver {
-        NamingStrategy = new SnakeCaseNamingStrategy()
-      };
-      var jsonSerializerSettings = new JsonSerializerSettings {
-        NullValueHandling = NullValueHandling.Ignore,
-        ContractResolver = contractResolver
-      };
-
-      // Creating the target folder
-      if (Directory.Exists(targetFolder)) {
-        Directory.Delete(targetFolder, true);
-      }
-      Directory.CreateDirectory(targetFolder);
       
+      // Writing BCF root file
       var json = JsonConvert
         .SerializeObject(
-          obj,
+          root,
           Formatting.None, jsonSerializerSettings);
-      var path = $"{targetFolder}/bcfRoots.json";
-      await using var writer = File.CreateText(path);
-      await writer.WriteAsync(json);
+      var path = $"{targetFolder}/bcfRoot.json";
+      await using var writerR = File.CreateText(path);
+      await writerR.WriteAsync(json);
     });
   }
 }

@@ -30,26 +30,34 @@ public class Converter30 : IConverter {
     var extensions = await BcfConverter.ParseExtensions<Extensions>(source);
     var projectInfo = await BcfConverter.ParseProject<ProjectInfo>(source);
     var documentInfo = await BcfConverter.ParseDocuments<DocumentInfo>(source);
-    var roots = new {
-      Extensions = extensions, 
-      ProjectInfo = projectInfo, 
-      DocumentInfo = documentInfo
+    var root = new Root {
+      extensions = extensions,
+      project = projectInfo,
+      document = documentInfo
     };
-    await JsonConverter.WriteBcfRootsJson(roots, target);
     
     // Parsing topics folder (markups)
     var markups = await BcfConverter.ParseMarkups<Markup,VisualizationInfo>(source);
-    await JsonConverter.WriteMarkupsJson(markups, target);
+    
+    // Writing json files
+    await JsonConverter.WriteJson(target, markups, root);
   }
 
   /// <summary>
-  ///   The method reads the JSON files of version 3.0 and creates BCF.
+  ///   The method reads the JSON files and creates BCF 3.0 version.
   ///   The json folder must contain files which are named using the
   ///   `uuid` of the `Topic` within, and `bcfRoot.json`.
   /// </summary>
   /// <param name="source">The source folder to the JSON files.</param>
   /// <param name="target">The target path where the BCF is written.</param>
   public async Task JsonToBcf(string source, string target) {
-    await JsonConverter.JsonToBcf<Markup,Version>(source, target);
+    // Parsing BCF root
+    var root = await JsonConverter.ParseObject<Root>(source);
+
+    // Parsing markups
+    var markups = await JsonConverter.ParseMarkups<Markup>(source);
+    
+    // Writing bcf files
+    await BcfConverter.WriteBcf<Markup,Root,Version>(target, markups, root);
   }
 }
