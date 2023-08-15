@@ -16,21 +16,22 @@ public class Converter30Tests {
   [Test]
   public async Task BcfToJsonSimpleTest() {
     await _converter.BcfToJson(
-      "Resources/Bcf/v3.0/ComponentSelection.zip", 
+      "Resources/Bcf/v3.0/ComponentSelection.bcfzip", 
       "Resources/output/json/v3.0/ComponentSelection");
   }
     
   [Test]
-  public void BcfToJsonWrongVersionTest() {
+  public void BcfToJsonBackwardCompatibilityTest() {
+    // 2.1 -> 3.0 is not backward compatible
     Assert.That(async () => await _converter.BcfToJson(
-      "Resources/Bcf/v2.1/AllPartsVisible.zip", 
+      "Resources/Bcf/v2.1/AllPartsVisible.bcfzip", 
       "Resources/output/json/v3.0/AllPartsVisible"), Throws.Exception);
   }
   
   [Test]
   public void BcfToJsonWrongPathTest() {
     Assert.That(async () => await _converter.BcfToJson(
-      "Resources/Bcf/v2.1/Meszaros.zip",
-      "Resources/output/json/v2.1/Meszaros"), Throws.ArgumentException);
+      "Resources/Bcf/v3.0/Meszaros.bcfzip",
+      "Resources/output/json/v3.0/Meszaros"), Throws.ArgumentException);
   }
 }
