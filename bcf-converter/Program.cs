@@ -22,12 +22,12 @@ internal static class Program {
 
     var sourcePath = args[0].TrimEnd('/');
     var targetFolder = args[1].TrimEnd('/');
-      
+
     // TODO: read bcf.version and decide on the parser version
     // TODO: make bcf version enum
     // by default 2.1 version is used
     var targetVersion = args.Length > 2 ? args[2] : "2.1";
-      
+
     try {
       var context = new Context(targetVersion);
       await context.Convert(sourcePath, targetFolder);
@@ -38,6 +38,7 @@ internal static class Program {
       await errorWriter.WriteLineAsync(e.StackTrace);
       Environment.Exit(9);
     }
+
     Environment.Exit(0);
   }
 }

@@ -1,4 +1,4 @@
-namespace bcf.bcf21; 
+namespace bcf.bcf21;
 
 public partial class Version {
   public Version() {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace bcf.Converter; 
+namespace bcf.Converter;
 
 /// <summary>
 ///   The `JsonConverter` static class opens and parses the BCF json files
@@ -17,7 +17,6 @@ public static class JsonConverter {
   /// <summary>
   ///   The method parses the markup json files to create an in memory
   ///   representation of the data.
-  ///
   ///   Topic folder structure inside a BCFzip archive:
   ///   The folder name is the GUID of the topic. This GUID is in the UUID form.
   ///   The GUID must be all-lowercase. The folder contains the following file:
@@ -30,8 +29,9 @@ public static class JsonConverter {
   /// <param name="sourceFolder"></param>
   /// <returns></returns>
   /// <exception cref="ApplicationException"></exception>
-  public static Task<ConcurrentBag<TMarkup>> ParseMarkups<TMarkup>(string sourceFolder) {
-    return Task.Run( () => {
+  public static Task<ConcurrentBag<TMarkup>> ParseMarkups<TMarkup>(
+    string sourceFolder) {
+    return Task.Run(() => {
       // A thread-safe storage for the parsed topics.
       var markups = new ConcurrentBag<TMarkup>();
 
@@ -72,7 +72,7 @@ public static class JsonConverter {
   /// <typeparam name="T">The json file is deserializes to this type.</typeparam>
   /// <returns></returns>
   public static Task<T> ParseObject<T>(string source) {
-    return Task.Run( () => {
+    return Task.Run(() => {
       var contractResolver = new DefaultContractResolver {
         NamingStrategy = new SnakeCaseNamingStrategy()
       };
@@ -84,7 +84,7 @@ public static class JsonConverter {
       return (T)jsonSerializer.Deserialize(json, typeof(T));
     });
   }
-  
+
   /// <summary>
   ///   The method writes the BCF objects to json file.
   /// </summary>
@@ -92,7 +92,8 @@ public static class JsonConverter {
   /// <param name="markups">The list of `Markup` objects.</param>
   /// <param name="root">The `Root` object.</param>
   /// <returns></returns>
-  public static Task WriteJson<TMarkup, TRoot>(string targetFolder, ConcurrentBag<TMarkup> markups, TRoot root) {
+  public static Task WriteJson<TMarkup, TRoot>(string targetFolder,
+    ConcurrentBag<TMarkup> markups, TRoot root) {
     return Task.Run(async () => {
       // TODO make a default serializer to avoid code repeat
       var contractResolver = new DefaultContractResolver {
@@ -104,9 +105,7 @@ public static class JsonConverter {
       };
 
       // Creating the target folder
-      if (Directory.Exists(targetFolder)) {
-        Directory.Delete(targetFolder, true);
-      }
+      if (Directory.Exists(targetFolder)) Directory.Delete(targetFolder, true);
       Directory.CreateDirectory(targetFolder);
 
       // Writing markups to disk, one markup per file.
@@ -114,14 +113,15 @@ public static class JsonConverter {
         var jsonMarkup = JsonConvert
           .SerializeObject(
             markup,
-            Formatting.None, 
+            Formatting.None,
             jsonSerializerSettings);
 
-        var pathMarkup = $"{targetFolder}/{((IMarkup)markup!).GetTopic()!.Guid}.json";
+        var pathMarkup =
+          $"{targetFolder}/{((IMarkup)markup!).GetTopic()!.Guid}.json";
         await using var writerM = File.CreateText(pathMarkup);
         await writerM.WriteAsync(jsonMarkup);
       }
-      
+
       // Writing BCF root file
       var json = JsonConvert
         .SerializeObject(

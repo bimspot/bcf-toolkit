@@ -2,7 +2,7 @@ using System;
 using System.IO.Compression;
 using System.Linq;
 
-namespace bcf.Converter; 
+namespace bcf.Converter;
 
 public static class ZipArchiveEntryExtensions {
   /// <summary>
@@ -48,7 +48,7 @@ public static class ZipArchiveEntryExtensions {
            entry.FullName.EndsWith(".jpg",
              StringComparison.OrdinalIgnoreCase);
   }
-  
+
   /// <summary>
   ///   A convenience method returns true if the file in the entry is
   ///   `extensions.xml` exactly.
@@ -61,7 +61,7 @@ public static class ZipArchiveEntryExtensions {
     return entry.FullName.Equals("extensions.xml",
       StringComparison.OrdinalIgnoreCase);
   }
-  
+
   /// <summary>
   ///   A convenience method returns true if the file in the entry has the
   ///   extension of `.bcfp`.
@@ -75,7 +75,7 @@ public static class ZipArchiveEntryExtensions {
     return entry.FullName.EndsWith(".bcfp",
       StringComparison.OrdinalIgnoreCase);
   }
-  
+
   /// <summary>
   ///   A convenience method returns true if the file in the entry is
   ///   `documents.xml` exactly.

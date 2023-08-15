@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using bcf.bcf30;
 
-namespace bcf.Converter; 
+namespace bcf.Converter;
 
 /// <summary>
 ///   Converter strategy class for converting BCF 3.0 files to JSON
@@ -10,7 +10,6 @@ namespace bcf.Converter;
 public class Converter30 : IConverter {
   /// <summary>
   ///   The method parses the BCF file of version 3.0 and writes into JSON.
-  ///
   ///   The root of the BCF zip contains the following files:
   ///   - extensions.xml
   ///   - project.bcfp (optional)
@@ -35,10 +34,11 @@ public class Converter30 : IConverter {
       project = projectInfo,
       document = documentInfo
     };
-    
+
     // Parsing topics folder (markups)
-    var markups = await BcfConverter.ParseMarkups<Markup,VisualizationInfo>(source);
-    
+    var markups =
+      await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(source);
+
     // Writing json files
     await JsonConverter.WriteJson(target, markups, root);
   }
@@ -56,8 +56,8 @@ public class Converter30 : IConverter {
 
     // Parsing markups
     var markups = await JsonConverter.ParseMarkups<Markup>(source);
-    
+
     // Writing bcf files
-    await BcfConverter.WriteBcf<Markup,Root,Version>(target, markups, root);
+    await BcfConverter.WriteBcf<Markup, Root, Version>(target, markups, root);
   }
 }

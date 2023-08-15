@@ -2,14 +2,13 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using bcf.bcf21;
 
-namespace bcf.Converter; 
+namespace bcf.Converter;
 
 /// <summary>
 ///   A list of convenience extension methods on the XDocument class.
 ///   The BCF version specific parsing logic is defined here.
 /// </summary>
 public static class XDocumentExtensions {
-
   /// <summary>
   ///   Uses LINQ to extract all information for the Header of the Markup.
   /// </summary>

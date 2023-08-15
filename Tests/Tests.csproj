@@ -11,18 +11,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="nunit" Version="3.12.0" />
-        <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+        <PackageReference Include="nunit" Version="3.12.0"/>
+        <PackageReference Include="NUnit3TestAdapter" Version="3.11.0"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\bcf-converter\bcf-converter.csproj" />
+        <ProjectReference Include="..\bcf-converter\bcf-converter.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Resources\Bcf\v2.1" />
-        <Folder Include="Resources\Bcf\v3.0" />
+        <Folder Include="Resources\Bcf\v2.1"/>
+        <Folder Include="Resources\Bcf\v3.0"/>
     </ItemGroup>
 
     <ItemGroup>
