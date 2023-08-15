@@ -207,6 +207,9 @@ public static class BcfConverter {
   private static Task<T?> ParseObject<T>(string path, Func<ZipArchiveEntry, bool> filterFn, bool isRequired=false) {
     return Task.Run(async () => {
 
+      if (string.IsNullOrEmpty(path) || !File.Exists(path))
+        throw new ArgumentException("Source file is not existing.");
+
       var objType = typeof(T);
       Console.WriteLine($"\nProcessing {objType.Name}\n", path);
 

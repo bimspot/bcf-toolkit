@@ -17,4 +17,8 @@
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Resources\Bcf21" />
+    </ItemGroup>
+
 </Project>
