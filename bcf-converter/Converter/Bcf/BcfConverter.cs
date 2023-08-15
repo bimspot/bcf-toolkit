@@ -21,7 +21,6 @@ public static class BcfConverter {
   ///   The method unzips the BCFzip at the specified path into the memory,
   ///   and parses the markup xml files within to create an in memory
   ///   representation of the data.
-  ///
   ///   Topic folder structure inside a BCFzip archive:
   ///   The folder name is the GUID of the topic. This GUID is in the UUID form.
   ///   The GUID must be all-lowercase. The folder contains the following file:
@@ -33,7 +32,8 @@ public static class BcfConverter {
   /// </summary>
   /// <param name="path">The path to the BCFzip.</param>
   /// <returns>Returns a Task with a List of `Markup` models.</returns>
-  public static Task<ConcurrentBag<TMarkup>> ParseMarkups<TMarkup, TVisualizationInfo>(string path)
+  public static Task<ConcurrentBag<TMarkup>> ParseMarkups<TMarkup,
+    TVisualizationInfo>(string path)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo {
     return Task.Run(async () => {
@@ -70,9 +70,7 @@ public static class BcfConverter {
         var uuid = entry.FullName.Split("/")[0];
         var isTopic = Regex.IsMatch(uuid.Replace("-", ""), "^[a-fA-F0-9]+$");
 
-        if (isTopic) {
-          currentUuid = uuid;
-        }
+        if (isTopic) currentUuid = uuid;
 
         // Parsing BCF files
         if (entry.IsBcf()) {
@@ -109,7 +107,8 @@ public static class BcfConverter {
           snapshot = entry.Snapshot();
         }
 
-        if ((currentUuid == "" || uuid == currentUuid) && !isLastEntry) continue;
+        if ((currentUuid == "" || uuid == currentUuid) && !isLastEntry)
+          continue;
         // This is a new subfolder, writing out Markup.
         if (markup != null) {
           var firstViewPoint = markup.GetFirstViewPoint();
@@ -142,9 +141,7 @@ public static class BcfConverter {
   ///   and parses the `extensions.xml` file within to create an in memory
   ///   representation of the data.
   ///   This is a required in the BCF archive.
-  ///
   ///   HISTORY: New file in BCF 3.0.
-  /// 
   ///   An XML file defining the extensions of a project.
   /// </summary>
   /// <param name="path">The path to the BCFzip.</param>
@@ -152,15 +149,13 @@ public static class BcfConverter {
   public static Task<TExtensions> ParseExtensions<TExtensions>(string path) {
     return ParseRequired<TExtensions>(path, entry => entry.IsExtensions());
   }
-  
+
   /// <summary>
   ///   The method unzips the BCFzip at the specified path into the memory,
   ///   and parses the `project.bcfp` file within to create an in memory
   ///   representation of the data.
   ///   This is an optional file in the BCF archive.
-  ///
   ///   HISTORY: From BCF 2.0.
-  ///
   ///   The project file contains reference information about the project
   ///   the topics belong to.
   /// </summary>
@@ -169,29 +164,32 @@ public static class BcfConverter {
   public static Task<TProjectInfo?> ParseProject<TProjectInfo>(string path) {
     return ParseOptional<TProjectInfo>(path, entry => entry.IsProject());
   }
-  
+
   /// <summary>
   ///   The method unzips the BCFzip at the specified path into the memory,
   ///   and parses the `documents.xml` file within to create an in memory
   ///   representation of the data.
   ///   An XML file defining the documents in a project.
   ///   This is an optional file in the BCF archive.
-  ///
   ///   HISTORY: New file in BCF 3.0.
   /// </summary>
   /// <param name="path">The path to the BCFzip.</param>
   /// <returns>Returns a Task with an `DocumentInfo` model.</returns>
-  public static Task<TDocumentInfo?> ParseDocuments<TDocumentInfo>(string path) {
+  public static Task<TDocumentInfo?>
+    ParseDocuments<TDocumentInfo>(string path) {
     return ParseOptional<TDocumentInfo>(path, entry => entry.IsDocuments());
   }
-  
-  private static Task<T> ParseRequired<T>(string path, Func<ZipArchiveEntry, bool> filterFn) {
+
+  private static Task<T> ParseRequired<T>(string path,
+    Func<ZipArchiveEntry, bool> filterFn) {
     return ParseObject<T>(path, filterFn, true)!;
   }
-  private static Task<T?> ParseOptional<T>(string path, Func<ZipArchiveEntry, bool> filterFn) {
+
+  private static Task<T?> ParseOptional<T>(string path,
+    Func<ZipArchiveEntry, bool> filterFn) {
     return ParseObject<T>(path, filterFn);
   }
-  
+
   /// <summary>
   ///   The method unzips the BCFzip at the specified path into the memory,
   ///   and looks for the desired file by the filter then parses to given
@@ -204,9 +202,9 @@ public static class BcfConverter {
   /// <typeparam name="T">Generic type parameter, to which we want to parse.</typeparam>
   /// <returns>Returns a Task with an `T` model.</returns>
   /// <exception cref="InvalidDataException">In case the file is required, but missing.</exception>
-  private static Task<T?> ParseObject<T>(string path, Func<ZipArchiveEntry, bool> filterFn, bool isRequired=false) {
+  private static Task<T?> ParseObject<T>(string path,
+    Func<ZipArchiveEntry, bool> filterFn, bool isRequired = false) {
     return Task.Run(async () => {
-
       if (string.IsNullOrEmpty(path) || !File.Exists(path))
         throw new ArgumentException("Source file is not existing.");
 
@@ -214,16 +212,15 @@ public static class BcfConverter {
       Console.WriteLine($"\nProcessing {objType.Name}\n", path);
 
       var obj = default(T);
-      
+
       // Unzipping the bcfzip
       using var archive = ZipFile.OpenRead(path);
-      
-      foreach (var entry in archive.Entries)
-      {
-        if(!filterFn(entry)) continue;
-        
+
+      foreach (var entry in archive.Entries) {
+        if (!filterFn(entry)) continue;
+
         Console.WriteLine(entry.FullName);
-        
+
         var document = await XDocument.LoadAsync(
           entry.Open(),
           LoadOptions.None,
@@ -256,73 +253,71 @@ public static class BcfConverter {
   /// <typeparam name="TVersion">`Version` type parameter.</typeparam>
   /// <returns></returns>
   /// <exception cref="ApplicationException"></exception>
-  public static Task WriteBcf<TMarkup, TRoot, TVersion>(string targetFile, ConcurrentBag<TMarkup> markups, TRoot root)
-    where TMarkup: IMarkup
+  public static Task WriteBcf<TMarkup, TRoot, TVersion>(string targetFile,
+    ConcurrentBag<TMarkup> markups, TRoot root)
+    where TMarkup : IMarkup
     where TRoot : IRoot
     where TVersion : new() {
-      return Task.Run(async () => {
-        var targetFolder = Path.GetDirectoryName(targetFile);
-        if (targetFolder == null) {
-          throw new ApplicationException(
-            $"Target folder not found ${targetFolder}");
+    return Task.Run(async () => {
+      var targetFolder = Path.GetDirectoryName(targetFile);
+      if (targetFolder == null)
+        throw new ApplicationException(
+          $"Target folder not found ${targetFolder}");
+
+      // Will create a tmp folder for the intermediate files.
+      var tmpFolder = $"{targetFolder}/tmp";
+      if (Directory.Exists(tmpFolder)) Directory.Delete(tmpFolder, true);
+      Directory.CreateDirectory(tmpFolder);
+
+      var tasks = new List<Task>();
+
+      // Creating the version file
+      var version = new TVersion();
+      tasks.Add(WriteBcfFile(tmpFolder, "bcf.version", version));
+
+      // Writing markup folders and files
+      foreach (var markup in markups) {
+        // Creating the target folder
+        var guid = markup.GetTopic()?.Guid;
+        if (guid == null) {
+          Console.WriteLine(
+            " - Topic Guid is missing, skipping markup");
+          continue;
         }
 
-        // Will create a tmp folder for the intermediate files.
-        var tmpFolder = $"{targetFolder}/tmp";
-        if (Directory.Exists(tmpFolder)) {
-          Directory.Delete(tmpFolder, true);
-        }
-        Directory.CreateDirectory(tmpFolder);
-        
-        var tasks = new List<Task>();
-        
-        // Creating the version file
-        var version = new TVersion();
-        tasks.Add(WriteBcfFile(tmpFolder, "bcf.version", version));
-        
-        // Writing markup folders and files
-        foreach (var markup in markups) {
-          // Creating the target folder
-          var guid = markup.GetTopic()?.Guid;
-          if (guid == null) {
-            Console.WriteLine(
-              " - Topic Guid is missing, skipping markup");
-            continue;
-          }
-          var topicFolder = $"{tmpFolder}/{guid}";
-          Directory.CreateDirectory(topicFolder);
+        var topicFolder = $"{tmpFolder}/{guid}";
+        Directory.CreateDirectory(topicFolder);
 
-          // Markup
-          tasks.Add(WriteBcfFile(topicFolder, "markup.bcf", markup));
+        // Markup
+        tasks.Add(WriteBcfFile(topicFolder, "markup.bcf", markup));
 
-          // Viewpoint
-          tasks.Add(WriteBcfFile(topicFolder, "viewpoint.bcfv", markup.GetFirstViewPoint()?.VisualizationInfo));
+        // Viewpoint
+        tasks.Add(WriteBcfFile(topicFolder, "viewpoint.bcfv",
+          markup.GetFirstViewPoint()?.VisualizationInfo));
 
-          // Snapshot
-          var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
-          var base64String = markup.GetFirstViewPoint()?.SnapshotData;
-          if (snapshotFileName == null || base64String == null) continue;
-          var result = Regex.Replace(base64String,
-            @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
-          tasks.Add(File.WriteAllBytesAsync(
-            $"{topicFolder}/{snapshotFileName}",
-            Convert.FromBase64String(result)));
-        }
+        // Snapshot
+        var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
+        var base64String = markup.GetFirstViewPoint()?.SnapshotData;
+        if (snapshotFileName == null || base64String == null) continue;
+        var result = Regex.Replace(base64String,
+          @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
+        tasks.Add(File.WriteAllBytesAsync(
+          $"{topicFolder}/{snapshotFileName}",
+          Convert.FromBase64String(result)));
+      }
 
-        // Writing root files
-        tasks.Add(root.WriteBcf(tmpFolder));
-        
-        // Waiting for all the file writing
-        await Task.WhenAll(tasks);
-        
-        // zip shit
-        Console.WriteLine($"Zipping the output: {targetFile}");
-        if (File.Exists(targetFile)) {
-          File.Delete(targetFile);
-        }
-        ZipFile.CreateFromDirectory(tmpFolder, targetFile);
-        Directory.Delete(tmpFolder, true);
-      });
+      // Writing root files
+      tasks.Add(root.WriteBcf(tmpFolder));
+
+      // Waiting for all the file writing
+      await Task.WhenAll(tasks);
+
+      // zip shit
+      Console.WriteLine($"Zipping the output: {targetFile}");
+      if (File.Exists(targetFile)) File.Delete(targetFile);
+      ZipFile.CreateFromDirectory(tmpFolder, targetFile);
+      Directory.Delete(tmpFolder, true);
+    });
   }
 
   /// <summary>

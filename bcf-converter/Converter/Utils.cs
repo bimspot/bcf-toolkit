@@ -1,9 +1,8 @@
 using System.IO;
 
-namespace bcf.Converter; 
+namespace bcf.Converter;
 
 public static class Utils {
-
   /// <summary>
   ///   Creates a temporary folder for the intermediate files.
   /// </summary>
@@ -12,9 +11,7 @@ public static class Utils {
   public static string CreateTmpFolder(string targetFolder) {
     // Will create a tmp folder for the intermediate files.
     var tmpFolder = $"{targetFolder}/tmp";
-    if (Directory.Exists(tmpFolder)) {
-      Directory.Delete(tmpFolder, true);
-    }
+    if (Directory.Exists(tmpFolder)) Directory.Delete(tmpFolder, true);
 
     return tmpFolder;
   }

@@ -1,4 +1,4 @@
-namespace bcf; 
+namespace bcf;
 
 public interface IMarkup {
   public ITopic? GetTopic();

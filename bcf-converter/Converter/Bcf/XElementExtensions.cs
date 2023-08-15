@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using bcf.bcf21;
 
 namespace bcf.Converter;
+
 /// <summary>
 ///   A list of convenience extension methods on the XElementExtensions class.
 ///   The BCF version specific parsing logic is defined here.

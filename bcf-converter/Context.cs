@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using bcf.Converter;
 
-namespace bcf; 
+namespace bcf;
 
 /// <summary>
 ///   The Context class defines the converter strategy for a specific version
@@ -36,10 +36,10 @@ public class Context {
   private void SetVersion(string version) {
     switch (version) {
       case "2.1":
-        this.SetConverter(new Converter21());
+        SetConverter(new Converter21());
         break;
       case "3.0":
-        this.SetConverter(new Converter30());
+        SetConverter(new Converter30());
         break;
       default:
         throw new ArgumentException($"Unsupported BCF version: {version}");
@@ -51,7 +51,7 @@ public class Context {
   /// </summary>
   /// <param name="converter"></param>
   private void SetConverter(IConverter? converter) {
-    this._converter = converter;
+    _converter = converter;
   }
 
   /// <summary>
@@ -60,11 +60,9 @@ public class Context {
   /// <param name="source">Source path of the file which must be converted.</param>
   /// <param name="target">Target destination for the converted results.</param>
   public async Task Convert(string source, string target) {
-    if (source.EndsWith("bcfzip")) {
+    if (source.EndsWith("bcfzip"))
       await _converter?.BcfToJson(source, target)!;
-    }
-    else {
+    else
       await _converter?.JsonToBcf(source, target)!;
-    }
   }
 }

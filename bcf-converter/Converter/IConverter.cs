@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace bcf.Converter; 
+namespace bcf.Converter;
 
 /// <summary>
 ///   Converter strategy interface.
@@ -13,7 +13,7 @@ public interface IConverter {
   /// <param name="target">The target path where the JSON is written.</param>
   /// <returns></returns>
   Task BcfToJson(string source, string target);
-  
+
   /// <summary>
   ///   The method reads the json, then creates and writes to BCF.
   /// </summary>
