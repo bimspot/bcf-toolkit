@@ -25,19 +25,16 @@ public class Converter21 : IConverter {
   /// <param name="target">The target path where the JSON is written.</param>
   public async Task BcfToJson(string source, string target) {
     // Parsing BCF root file structure
-    // TODO generate the project.xsd
-    //var projectInfo = await BcfParser.ParseProject<ProjectInfo>(source);
-    // var roots = new {
-    //   ProjectInfo = projectInfo,
-    // };
-    // await _jsonConverter.WriteObjectJson(roots, target);
+    var project = await BcfConverter.ParseProject<Project>(source);
+    var root = new Root {
+      project = project,
+    };
     
     // Parsing topics folder (markups)
     var markups = await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(source);
     
     // Writing json files
-    // TODO add root after model is generated
-    await JsonConverter.WriteJson(target, markups, new {});
+    await JsonConverter.WriteJson(target, markups, root);
   }
 
   /// <summary>
