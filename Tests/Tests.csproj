@@ -21,7 +21,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Converter\Json21" />
         <Folder Include="Resources\Bcf\v2.1" />
         <Folder Include="Resources\Bcf\v3.0" />
     </ItemGroup>

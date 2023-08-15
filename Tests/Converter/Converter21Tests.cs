@@ -17,21 +17,21 @@ public class Converter21Tests {
   [Test]
   public async Task BcfToJsonSimpleTest() {
     await _converter.BcfToJson(
-      "Resources/Bcf/v2.1/AllPartsVisible.zip", 
+      "Resources/Bcf/v2.1/AllPartsVisible.bcfzip", 
       "Resources/output/json/v2.1/AllPartsVisible");
   }
     
   [Test]
   public async Task BcfToJsonWrongVersionTest() {
     await _converter.BcfToJson(
-      "Resources/Bcf/v3.0/ComponentSelection.zip", 
+      "Resources/Bcf/v3.0/ComponentSelection.bcfzip", 
       "Resources/output/json/v2.1/ComponentSelection");
   }
   
   [Test]
   public void BcfToJsonWrongPathTest() {
     Assert.That(async () => await _converter.BcfToJson(
-      "Resources/Bcf/v3.0/Meszaros.zip",
+      "Resources/Bcf/v3.0/Meszaros.bcfzip",
       "Resources/output/json/v2.1/Meszaros"), Throws.ArgumentException);
   }
 }
