@@ -133,7 +133,7 @@ public class BcfConverterTests {
   /// </summary>
   [Test]
   [Category("BCF v2.1")]
-  public async Task ParseBcfUserAssignmentTest() {
+  public async Task ParseBcfUserAssignment21Test() {
     var markups =
       await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(
         "Resources/Bcf/v2.1/UserAssignment.bcfzip");
@@ -329,5 +329,33 @@ public class BcfConverterTests {
     Assert.AreEqual(1, markupMEP.Header.Files.Length);
     Assert.AreEqual("MEP.ifc",
       markupMEP.Header.Files.FirstOrDefault()?.Filename);
+  }
+  
+  /// <summary>
+  ///   The topic should have an assigned user.
+  /// </summary>
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task ParseBcfUserAssignment30Test() {
+    var markups =
+      await BcfConverter.ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+        "Resources/Bcf/v3.0/UserAssignment.bcfzip");
+    var markup = markups.FirstOrDefault()!;
+    Assert.AreEqual("Architect@example.com", markup.Topic.AssignedTo);
+  }
+
+  /// <summary>
+  ///   Testing the required parsing method.
+  /// </summary>
+  [Test]
+  public async Task ParseRequiredObjectTest() {
+    var extensions =
+      await BcfConverter.ParseExtensions<Extensions>(
+        "Resources/Bcf/v3.0/Milestone.bcfzip");
+    var type = extensions.TopicTypes.FirstOrDefault();
+    Assert.AreEqual("Error", type);
+    
+    Assert.That(async () => await BcfConverter.ParseExtensions<Extensions>(
+      "Resources/Bcf/v3.0/WithoutRequiredExtension.bcfzip"), Throws.Exception);
   }
 }
