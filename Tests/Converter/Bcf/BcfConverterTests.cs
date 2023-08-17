@@ -1,8 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
-using bcf.bcf21;
+using bcf.bcf30;
 using bcf.Converter;
 using NUnit.Framework;
+using Markup = bcf.bcf21.Markup;
+using VisualizationInfo = bcf.bcf21.VisualizationInfo;
 
 namespace Tests.Converter.Bcf;
 
@@ -97,7 +99,7 @@ public class BcfConverterTests {
   /// </summary>
   [Test]
   [Category("BCF v2.1")]
-  public async Task ParseBcfRelatedTopicTest() {
+  public async Task ParseBcfRelatedTopics21Test() {
     var markups =
       await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(
         "Resources/Bcf/v2.1/RelatedTopics.bcfzip");
@@ -176,9 +178,11 @@ public class BcfConverterTests {
           "Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip");
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
-    Assert.AreEqual("http://www.buildingsmart-tech.org/specifications/bcf-releases/bcfxml-v1/markup.xsd/at_download/file", markup.Topic.DocumentReferences.FirstOrDefault()?.Item);
+    Assert.AreEqual(
+      "http://www.buildingsmart-tech.org/specifications/bcf-releases/bcfxml-v1/markup.xsd/at_download/file",
+      markup.Topic.DocumentReferences.FirstOrDefault()?.Item);
   }
-  
+
   /// <summary>
   ///   It should have the document to ThisIsADocument.txt as given in the
   ///   _Topic_s DocumentReferences property in the markup.bcf file.
@@ -192,7 +196,9 @@ public class BcfConverterTests {
       await BcfConverter
         .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
           "Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip");
-    var documentInfo = await BcfConverter.ParseDocuments<bcf.bcf30.DocumentInfo>("Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip");
+    var documentInfo =
+      await BcfConverter.ParseDocuments<DocumentInfo>(
+        "Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip");
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
     var documentGuid = markup.Topic.DocumentReferences.FirstOrDefault()?.Item;
@@ -200,5 +206,128 @@ public class BcfConverterTests {
     Assert.AreEqual("b1d1b7f0-60b9-457d-ad12-16e0fb997bc5", documentGuid);
     Assert.AreEqual(documentGuid, document.Guid);
     Assert.AreEqual("ThisIsADocument.txt", document.Filename);
+  }
+
+  /// <summary>
+  ///   Due date should be assigned to the topic.
+  /// </summary>
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task ParseBcfDueDateTest() {
+    var markups =
+      await BcfConverter
+        .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+          "Resources/Bcf/v3.0/DueDate.bcfzip");
+    var markup = markups.FirstOrDefault()!;
+    Assert.AreEqual(1, markups.Count);
+    Assert.AreEqual("2021-03-15T11:00:00.000Z",
+      markup.Topic.DueDate.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
+  }
+
+  /// <summary>
+  ///   It should display the "Architects" label in the topic.
+  ///   The labels should be defined in the extensions.
+  /// </summary>
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task ParseBcfLabelsTest() {
+    var markups =
+      await BcfConverter
+        .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+          "Resources/Bcf/v3.0/Labels.bcfzip");
+    var markup = markups.FirstOrDefault()!;
+    var extensions =
+      await BcfConverter.ParseExtensions<Extensions>(
+        "Resources/Bcf/v3.0/Labels.bcfzip");
+    Assert.AreEqual(1, markups.Count);
+    var label = markup.Topic.Labels.FirstOrDefault();
+    Assert.AreEqual("Architects", label);
+    var topicLabels = extensions.TopicLabels;
+    Assert.Contains(label, topicLabels);
+  }
+
+  /// <summary>
+  ///   The topic should have a milestone set.
+  /// </summary>
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task ParseBcfStageTest() {
+    var markups =
+      await BcfConverter
+        .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+          "Resources/Bcf/v3.0/Milestone.bcfzip");
+    var markup = markups.FirstOrDefault()!;
+    var extensions =
+      await BcfConverter.ParseExtensions<Extensions>(
+        "Resources/Bcf/v3.0/Milestone.bcfzip");
+    Assert.AreEqual(1, markups.Count);
+    var stage = markup.Topic.Stage;
+    Assert.AreEqual("February", stage);
+    var stages = extensions.Stages;
+    Assert.Contains(stage, stages);
+  }
+
+  /// <summary>
+  ///   The topic should have a related topic, and that is available.
+  /// </summary>
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task ParseBcfRelatedTopics30Test() {
+    var markups =
+      await BcfConverter
+        .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+          "Resources/Bcf/v3.0/RelatedTopics.bcfzip");
+    var markup1 = markups.FirstOrDefault()!;
+    var markup2 = markups.ElementAt(1);
+    Assert.AreEqual(2, markups.Count);
+    Assert.AreEqual(markup1.Topic.Guid,
+      markup2.Topic.RelatedTopics.FirstOrDefault()?.Guid);
+  }
+
+  /// <summary>
+  ///   Nothing should be selected and the wall is hidden, but everything else
+  ///   is visible.
+  /// </summary>
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task ParseBcfSingleInvisibleWallTest() {
+    var markups =
+      await BcfConverter
+        .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+          "Resources/Bcf/v3.0/SingleInvisibleWall.bcfzip");
+    var markup = markups.FirstOrDefault()!;
+    var visInfo =
+      (bcf.bcf30.VisualizationInfo)markup.Topic.Viewpoints.FirstOrDefault()
+        ?.VisualizationInfo!;
+    Assert.AreEqual(true, visInfo.Components.Visibility.DefaultVisibility);
+    Assert.AreEqual("1E8YkwPMfB$h99jtn_uAjI",
+      visInfo.Components.Visibility.Exceptions.FirstOrDefault()?.IfcGuid);
+  }
+
+  /// <summary>
+  ///   Topic named "Topics with different model visible - MEP" should only
+  ///   display the MEP model when visualized.
+  ///   Topic named "Topics with different model visible - Architectural"
+  ///   should only display the Architectural model when visualized.
+  /// </summary>
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task ParseBcfDifferentModelsVisibleTest() {
+    var markups =
+      await BcfConverter
+        .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+          "Resources/Bcf/v3.0/TopicsWithDifferentModelsVisible.bcfzip");
+    var markupARC = markups.FirstOrDefault(m =>
+      m.Topic.Title.Equals(
+        "Topics with different model visible - Architectural"))!;
+    var markupMEP = markups.FirstOrDefault(m =>
+      m.Topic.Title.Equals("Topics with different model visible - MEP"))!;
+
+    Assert.AreEqual(1, markupARC.Header.Files.Length);
+    Assert.AreEqual("Architectural.ifc",
+      markupARC.Header.Files.FirstOrDefault()?.Filename);
+    Assert.AreEqual(1, markupMEP.Header.Files.Length);
+    Assert.AreEqual("MEP.ifc",
+      markupMEP.Header.Files.FirstOrDefault()?.Filename);
   }
 }
