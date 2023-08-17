@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -60,18 +61,30 @@ public static class BcfConverter {
       var viewpoint = default(TVisualizationInfo);
       string? snapshot = null;
 
-      for (var i = 0; i < archive.Entries.Count; i++) {
-        var entry = archive.Entries[i];
-        var isLastEntry = i == archive.Entries.Count - 1;
+      var topicEntries = archive.Entries
+        .Where(entry =>
+          Regex.IsMatch(entry.FullName.Split("/")[0].Replace("-", ""),
+            "^[a-fA-F0-9]+$"))
+        .ToList();
+
+      foreach (var entry in topicEntries) {
+        var isLastTopicEntry = entry == topicEntries.Last();
 
         Console.WriteLine(entry.FullName);
 
         // This sets the folder context
         var uuid = entry.FullName.Split("/")[0];
-        var isTopic = Regex.IsMatch(uuid.Replace("-", ""), "^[a-fA-F0-9]+$");
+        //var isTopic = Regex.IsMatch(uuid.Replace("-", ""), "^[a-fA-F0-9]+$");
 
-        if (isTopic) currentUuid = uuid;
+        var isNewTopic =
+          !string.IsNullOrEmpty(currentUuid) && uuid != currentUuid;
 
+        if (isNewTopic)
+          WritingOutMarkup(ref markup, ref viewpoint, ref snapshot,
+            currentUuid, ref markups);
+
+        currentUuid = uuid;
+        
         // Parsing BCF files
         if (entry.IsBcf()) {
           var document = await XDocument.LoadAsync(
@@ -83,12 +96,10 @@ public static class BcfConverter {
 
         // Parsing the viewpoint file
         else if (entry.IsBcfViewpoint()) {
-          if (viewpoint != null) {
+          if (viewpoint != null)
             // TODO: No support for multiple viewpoints!
             Console.WriteLine("No support for multiple viewpoints!");
-            continue;
-          }
-
+          //continue;
           var document = await XDocument.LoadAsync(
             entry.Open(),
             LoadOptions.None,
@@ -98,42 +109,48 @@ public static class BcfConverter {
 
         // Parsing the snapshot
         else if (entry.IsSnapshot()) {
-          if (snapshot != null) {
+          if (snapshot != null)
             // TODO: No support for multiple snapshots!
             Console.WriteLine("No support for multiple snapshots!");
-            continue;
-          }
-
+          //continue;
           snapshot = entry.Snapshot();
         }
-
-        if ((currentUuid == "" || uuid == currentUuid) && !isLastEntry)
-          continue;
-        // This is a new subfolder, writing out Markup.
-        if (markup != null) {
-          var firstViewPoint = markup.GetFirstViewPoint();
-
-          if (firstViewPoint != null) {
-            firstViewPoint.VisualizationInfo = viewpoint;
-            firstViewPoint.SnapshotData = snapshot;
-          }
-
-          markups.Add(markup);
-
-          // Null-ing external references
-          markup = default;
-          viewpoint = default;
-          snapshot = null;
-          currentUuid = uuid;
-        }
-        else {
-          throw new InvalidDataException(
-            "Markup not found in BCF " + currentUuid);
-        }
+        
+        if (isLastTopicEntry)
+          WritingOutMarkup(ref markup, ref viewpoint, ref snapshot,
+            currentUuid, ref markups);
       }
 
       return markups;
     });
+  }
+
+  private static void WritingOutMarkup<TMarkup, TVisualizationInfo>(
+    ref TMarkup? markup, ref TVisualizationInfo? viewpoint,
+    ref string? snapshot, string currentUuid,
+    ref ConcurrentBag<TMarkup> markups)
+    where TMarkup : IMarkup
+    where TVisualizationInfo : IVisualizationInfo {
+    // This is a new subfolder, writing out Markup.
+    if (markup != null) {
+      var firstViewPoint = markup.GetFirstViewPoint();
+
+      if (firstViewPoint != null) {
+        firstViewPoint.VisualizationInfo = viewpoint;
+        firstViewPoint.SnapshotData = snapshot;
+      }
+
+      markups.Add(markup);
+
+      // Null-ing external references
+      markup = default;
+      viewpoint = default;
+      snapshot = null;
+    }
+    else {
+      throw new InvalidDataException(
+        "Markup not found in BCF " + currentUuid);
+    }
   }
 
   /// <summary>
