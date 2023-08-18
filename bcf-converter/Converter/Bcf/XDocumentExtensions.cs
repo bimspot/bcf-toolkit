@@ -1,6 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using bcf.bcf21;
+using RecursiveDataAnnotationsValidation;
 
 namespace bcf.Converter;
 
@@ -21,6 +26,14 @@ public static class XDocumentExtensions {
 
   public static T BcfObject<T>(this XDocument document) {
     var s = new XmlSerializer(typeof(T));
-    return (T)s.Deserialize(document.CreateReader())!;
+    var deserialized = (T)s.Deserialize(document.CreateReader())!;
+    var validator = new RecursiveDataAnnotationValidator();
+    var validationErrors = new List<ValidationResult>();
+    if (validator.TryValidateObjectRecursive(deserialized, validationErrors))
+      return deserialized;
+    var errors = string.Join(
+      "\n", 
+      validationErrors.Select(e => e.ErrorMessage));
+    throw new ArgumentException($"Missing required fields(s):\n {errors}");
   }
 }

@@ -5,7 +5,7 @@ namespace bcf.bcf21;
 
 public class Root : IRoot {
   //TODO generate code
-  public Project? project;
+  public ProjectExtension? project;
 
   public Task WriteBcf(string folder) {
     return Task.Run(async () => {

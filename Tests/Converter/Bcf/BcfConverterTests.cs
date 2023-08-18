@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using bcf21 = bcf.bcf21;
@@ -98,36 +99,38 @@ public class BcfConverterTests {
 
   /// <summary>
   ///   The topic should have a related topic, and that is available.
+  ///   UPDATE: required property is missing Comment
   /// </summary>
   [Test]
   [Category("BCF v2.1")]
-  public async Task ParseBcfRelatedTopics21Test() {
-    var markups =
-      await BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
-        "Resources/Bcf/v2.1/RelatedTopics.bcfzip");
-    var markup1 = markups.FirstOrDefault()!;
-    var markup2 = markups.ElementAt(1);
-    Assert.AreEqual(2, markups.Count);
-    Assert.AreEqual(markup1.Topic.Guid,
-      markup2.Topic.RelatedTopic.FirstOrDefault()?.Guid);
+  public void ParseBcfRelatedTopics21Test() {
+    Assert.That(
+      async () => await BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
+      "Resources/Bcf/v2.1/RelatedTopics.bcfzip"), Throws.Exception);
+    // var markup1 = markups.FirstOrDefault()!;
+    // var markup2 = markups.ElementAt(1);
+    // Assert.AreEqual(2, markups.Count);
+    // Assert.AreEqual(markup1.Topic.Guid,
+    //   markup2.Topic.RelatedTopic.FirstOrDefault()?.Guid);
   }
 
   /// <summary>
   ///   Nothing should be selected and only a wall is visible.
+  ///   UPDATE: required property is missing Comment
   /// </summary>
   [Test]
   [Category("BCF v2.1")]
-  public async Task ParseBcfSingleVisibleWallTest() {
-    var markups =
+  public void ParseBcfSingleVisibleWallTest() {
+    Assert.That(async () => 
       await BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
-        "Resources/Bcf/v2.1/SingleVisibleWall.bcfzip");
-    var markup = markups.FirstOrDefault()!;
-    var visInfo =
-      (bcf21.VisualizationInfo)markup.Viewpoints.FirstOrDefault()
-        ?.VisualizationInfo!;
-    Assert.AreEqual(false, visInfo.Components.Visibility.DefaultVisibility);
-    Assert.AreEqual("1E8YkwPMfB$h99jtn_uAjI",
-      visInfo.Components.Visibility.Exceptions.FirstOrDefault()?.IfcGuid);
+        "Resources/Bcf/v2.1/SingleVisibleWall.bcfzip"), Throws.Exception);
+    // var markup = markups.FirstOrDefault()!;
+    // var visInfo =
+    //   (bcf21.VisualizationInfo)markup.Viewpoints.FirstOrDefault()
+    //     ?.VisualizationInfo!;
+    // Assert.AreEqual(false, visInfo.Components.Visibility.DefaultVisibility);
+    // Assert.AreEqual("1E8YkwPMfB$h99jtn_uAjI",
+    //   visInfo.Components.Visibility.Exceptions.FirstOrDefault()?.IfcGuid);
   }
 
   /// <summary>
