@@ -1,10 +1,12 @@
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using bcf.bcf30;
+using bcf21 = bcf.bcf21;
+using bcf30 = bcf.bcf30;
 using bcf.Converter;
 using NUnit.Framework;
-using Markup = bcf.bcf21.Markup;
-using VisualizationInfo = bcf.bcf21.VisualizationInfo;
 
 namespace Tests.Converter.Bcf;
 
@@ -18,7 +20,7 @@ public class BcfConverterTests {
   [Category("BCF v2.1")]
   public async Task ParseBcfAllPartsVisibleTest() {
     var markups =
-      await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(
+      await BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         "Resources/Bcf/v2.1/AllPartsVisible.bcfzip");
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
@@ -27,7 +29,7 @@ public class BcfConverterTests {
       markup.Topic.Title);
     Assert.AreEqual("pasi.paasiala@solibri.com", markup.Topic.ModifiedAuthor);
     var visInfo =
-      (VisualizationInfo)markup.Viewpoints.FirstOrDefault()
+      (bcf21.VisualizationInfo)markup.Viewpoints.FirstOrDefault()
         ?.VisualizationInfo!;
     Assert.AreEqual("2_hQ1Rixj6lgHTra$L72O4",
       visInfo.Components.Visibility.Exceptions.FirstOrDefault()?.IfcGuid);
@@ -40,12 +42,12 @@ public class BcfConverterTests {
   [Category("BCF v2.1")]
   public async Task ParseBcfComponentsSelection21Test() {
     var markups =
-      await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(
+      await BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         "Resources/Bcf/v2.1/ComponentSelection.bcfzip");
     var markup = markups.FirstOrDefault();
     Assert.AreEqual(1, markups.Count);
     var visInfo =
-      (VisualizationInfo)markup?.Viewpoints.FirstOrDefault()
+      (bcf21.VisualizationInfo)markup?.Viewpoints.FirstOrDefault()
         ?.VisualizationInfo!;
     Assert.AreEqual(3, visInfo.Components.Selection.Count);
     Assert.AreEqual("1GU8BMEqHBQxVAbwRD$4Jj",
@@ -63,7 +65,7 @@ public class BcfConverterTests {
   [Category("BCF v2.1")]
   public async Task ParseBcfExternalBimSnippetTest() {
     var markups =
-      await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(
+      await BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         "Resources/Bcf/v2.1/ExternalBIMSnippet.bcfzip");
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
@@ -78,7 +80,7 @@ public class BcfConverterTests {
   [Category("BCF v2.1")]
   public async Task ParseBcfMultipleMarkupsTest() {
     var markups =
-      await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(
+      await BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         "Resources/Bcf/v2.1/MaximumInformation.bcfzip");
     Assert.AreEqual(2, markups.Count);
   }
@@ -90,7 +92,7 @@ public class BcfConverterTests {
   [Category("BCF v2.1")]
   public void ParseBcfNoMarkupsTest() {
     Assert.That(async () =>
-      await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(
+      await BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         "Resources/Bcf/v2.1/NoMakrups.bcfzip"), Throws.Exception);
   }
 
@@ -101,7 +103,7 @@ public class BcfConverterTests {
   [Category("BCF v2.1")]
   public async Task ParseBcfRelatedTopics21Test() {
     var markups =
-      await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(
+      await BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         "Resources/Bcf/v2.1/RelatedTopics.bcfzip");
     var markup1 = markups.FirstOrDefault()!;
     var markup2 = markups.ElementAt(1);
@@ -117,11 +119,11 @@ public class BcfConverterTests {
   [Category("BCF v2.1")]
   public async Task ParseBcfSingleVisibleWallTest() {
     var markups =
-      await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(
+      await BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         "Resources/Bcf/v2.1/SingleVisibleWall.bcfzip");
     var markup = markups.FirstOrDefault()!;
     var visInfo =
-      (VisualizationInfo)markup.Viewpoints.FirstOrDefault()
+      (bcf21.VisualizationInfo)markup.Viewpoints.FirstOrDefault()
         ?.VisualizationInfo!;
     Assert.AreEqual(false, visInfo.Components.Visibility.DefaultVisibility);
     Assert.AreEqual("1E8YkwPMfB$h99jtn_uAjI",
@@ -135,7 +137,7 @@ public class BcfConverterTests {
   [Category("BCF v2.1")]
   public async Task ParseBcfUserAssignment21Test() {
     var markups =
-      await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(
+      await BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         "Resources/Bcf/v2.1/UserAssignment.bcfzip");
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual("jon.anders.sollien@catenda.no", markup.Topic.AssignedTo);
@@ -149,12 +151,12 @@ public class BcfConverterTests {
   public async Task ParseBcfComponentsSelection30Test() {
     var markups =
       await BcfConverter
-        .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+        .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           "Resources/Bcf/v3.0/ComponentSelection.bcfzip");
     var markup = markups.FirstOrDefault();
     Assert.AreEqual(1, markups.Count);
     var visInfo =
-      (bcf.bcf30.VisualizationInfo)markup?.Topic.Viewpoints.FirstOrDefault()
+      (bcf30.VisualizationInfo)markup?.Topic.Viewpoints.FirstOrDefault()
         ?.VisualizationInfo!;
     var header = markup?.Header!;
 
@@ -174,7 +176,7 @@ public class BcfConverterTests {
   public async Task ParseBcfDocumentRefExternalTest() {
     var markups =
       await BcfConverter
-        .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+        .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           "Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip");
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
@@ -194,10 +196,10 @@ public class BcfConverterTests {
   public async Task ParseBcfDocumentRefInternalTest() {
     var markups =
       await BcfConverter
-        .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+        .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           "Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip");
     var documentInfo =
-      await BcfConverter.ParseDocuments<DocumentInfo>(
+      await BcfConverter.ParseDocuments<bcf30.DocumentInfo>(
         "Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip");
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
@@ -216,7 +218,7 @@ public class BcfConverterTests {
   public async Task ParseBcfDueDateTest() {
     var markups =
       await BcfConverter
-        .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+        .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           "Resources/Bcf/v3.0/DueDate.bcfzip");
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
@@ -233,11 +235,11 @@ public class BcfConverterTests {
   public async Task ParseBcfLabelsTest() {
     var markups =
       await BcfConverter
-        .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+        .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           "Resources/Bcf/v3.0/Labels.bcfzip");
     var markup = markups.FirstOrDefault()!;
     var extensions =
-      await BcfConverter.ParseExtensions<Extensions>(
+      await BcfConverter.ParseExtensions<bcf30.Extensions>(
         "Resources/Bcf/v3.0/Labels.bcfzip");
     Assert.AreEqual(1, markups.Count);
     var label = markup.Topic.Labels.FirstOrDefault();
@@ -254,11 +256,11 @@ public class BcfConverterTests {
   public async Task ParseBcfStageTest() {
     var markups =
       await BcfConverter
-        .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+        .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           "Resources/Bcf/v3.0/Milestone.bcfzip");
     var markup = markups.FirstOrDefault()!;
     var extensions =
-      await BcfConverter.ParseExtensions<Extensions>(
+      await BcfConverter.ParseExtensions<bcf30.Extensions>(
         "Resources/Bcf/v3.0/Milestone.bcfzip");
     Assert.AreEqual(1, markups.Count);
     var stage = markup.Topic.Stage;
@@ -275,7 +277,7 @@ public class BcfConverterTests {
   public async Task ParseBcfRelatedTopics30Test() {
     var markups =
       await BcfConverter
-        .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+        .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           "Resources/Bcf/v3.0/RelatedTopics.bcfzip");
     var markup1 = markups.FirstOrDefault()!;
     var markup2 = markups.ElementAt(1);
@@ -293,11 +295,11 @@ public class BcfConverterTests {
   public async Task ParseBcfSingleInvisibleWallTest() {
     var markups =
       await BcfConverter
-        .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+        .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           "Resources/Bcf/v3.0/SingleInvisibleWall.bcfzip");
     var markup = markups.FirstOrDefault()!;
     var visInfo =
-      (bcf.bcf30.VisualizationInfo)markup.Topic.Viewpoints.FirstOrDefault()
+      (bcf30.VisualizationInfo)markup.Topic.Viewpoints.FirstOrDefault()
         ?.VisualizationInfo!;
     Assert.AreEqual(true, visInfo.Components.Visibility.DefaultVisibility);
     Assert.AreEqual("1E8YkwPMfB$h99jtn_uAjI",
@@ -315,7 +317,7 @@ public class BcfConverterTests {
   public async Task ParseBcfDifferentModelsVisibleTest() {
     var markups =
       await BcfConverter
-        .ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+        .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           "Resources/Bcf/v3.0/TopicsWithDifferentModelsVisible.bcfzip");
     var markupARC = markups.FirstOrDefault(m =>
       m.Topic.Title.Equals(
@@ -338,7 +340,7 @@ public class BcfConverterTests {
   [Category("BCF v3.0")]
   public async Task ParseBcfUserAssignment30Test() {
     var markups =
-      await BcfConverter.ParseMarkups<bcf.bcf30.Markup, bcf.bcf30.VisualizationInfo>(
+      await BcfConverter.ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
         "Resources/Bcf/v3.0/UserAssignment.bcfzip");
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual("Architect@example.com", markup.Topic.AssignedTo);
@@ -350,12 +352,57 @@ public class BcfConverterTests {
   [Test]
   public async Task ParseRequiredObjectTest() {
     var extensions =
-      await BcfConverter.ParseExtensions<Extensions>(
+      await BcfConverter.ParseExtensions<bcf30.Extensions>(
         "Resources/Bcf/v3.0/Milestone.bcfzip");
     var type = extensions.TopicTypes.FirstOrDefault();
     Assert.AreEqual("Error", type);
     
-    Assert.That(async () => await BcfConverter.ParseExtensions<Extensions>(
+    Assert.That(async () => await BcfConverter.ParseExtensions<bcf30.Extensions>(
       "Resources/Bcf/v3.0/WithoutRequiredExtension.bcfzip"), Throws.Exception);
+  }
+  
+  /// <summary>
+  ///   It should generate the bcfzip with the minimum information.
+  /// </summary>
+  [Test]
+  [Category("BCF v2.1")]
+  public async Task WriteBcfWithMinimumInformationTest() {
+    var markup = new bcf21.Markup {
+      Topic = new bcf21.Topic
+      {
+        Guid = "3ffb4df2-0187-49a9-8a4a-23992696bafd",
+        Title = "This is a new topic",
+        CreationDate = new DateTime(),
+        CreationAuthor = "Meszaros"
+      }
+    };
+    var markups = new ConcurrentBag<bcf21.Markup> { markup };
+    var root = new bcf21.Root();
+    await BcfConverter.WriteBcf<bcf21.Markup, bcf21.Root, bcf21.Version>(
+      "Resources/output/Bcf/v2.1/MinimumInformation.bcfzip",
+      markups,
+      root);
+  }
+  
+  /// <summary>
+  ///   It should generate a bcf skipping the markup file.
+  /// </summary>
+  [Test]
+  [Category("BCF v2.1")]
+  public async Task WriteBcfWithoutTopicGuidTest() {
+    var markup = new bcf21.Markup {
+      Topic = new bcf21.Topic
+      {
+        Title = "This is a new topic",
+        CreationDate = new DateTime(),
+        CreationAuthor = "Meszaros"
+      }
+    };
+    var markups = new ConcurrentBag<bcf21.Markup> { markup };
+    var root = new bcf21.Root();
+    await BcfConverter.WriteBcf<bcf21.Markup, bcf21.Root, bcf21.Version>(
+      "Resources/output/Bcf/v2.1/WithoutTopicGuid.bcfzip",
+      markups,
+      root);
   }
 }
