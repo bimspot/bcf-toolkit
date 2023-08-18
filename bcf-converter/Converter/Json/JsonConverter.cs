@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -31,19 +32,11 @@ public static class JsonConverter {
   /// <exception cref="ApplicationException"></exception>
   public static Task<ConcurrentBag<TMarkup>> ParseMarkups<TMarkup>(
     string sourceFolder) {
-    return Task.Run(() => {
+    return Task.Run(async () => {
       // A thread-safe storage for the parsed topics.
       var markups = new ConcurrentBag<TMarkup>();
 
       var files = new List<string>(Directory.EnumerateFiles(sourceFolder));
-
-      var contractResolver = new DefaultContractResolver {
-        NamingStrategy = new SnakeCaseNamingStrategy()
-      };
-      var jsonSerializer = new JsonSerializer {
-        NullValueHandling = NullValueHandling.Ignore,
-        ContractResolver = contractResolver
-      };
 
       foreach (var file in files) {
         if (file.EndsWith("json") == false) {
@@ -53,8 +46,9 @@ public static class JsonConverter {
 
         Console.WriteLine($" - Processing {file}");
 
-        using var json = File.OpenText(file);
-        var markup = (TMarkup)jsonSerializer.Deserialize(json, typeof(TMarkup));
+        var markup = await ParseObject<TMarkup>(file);
+        // using var json = File.OpenText(file);
+        // var markup = (TMarkup)jsonSerializer.Deserialize(json, typeof(TMarkup));
 
         markups.Add(markup);
       }
@@ -81,7 +75,12 @@ public static class JsonConverter {
         ContractResolver = contractResolver
       };
       using var json = File.OpenText(source);
-      return (T)jsonSerializer.Deserialize(json, typeof(T));
+      var deserialized = (T)jsonSerializer.Deserialize(json, typeof(T));
+      Validator.ValidateObject(
+        deserialized, 
+        new ValidationContext(deserialized), 
+        validateAllProperties: true);
+      return deserialized;
     });
   }
 

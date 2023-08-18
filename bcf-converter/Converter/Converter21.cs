@@ -24,7 +24,7 @@ public class Converter21 : IConverter {
   /// <param name="target">The target path where the JSON is written.</param>
   public async Task BcfToJson(string source, string target) {
     // Parsing BCF root file structure
-    var project = await BcfConverter.ParseProject<Project>(source);
+    var project = await BcfConverter.ParseProject<ProjectExtension>(source);
     var root = new Root {
       project = project
     };
