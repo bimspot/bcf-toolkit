@@ -347,9 +347,11 @@ public static class BcfConverter {
   /// <returns></returns>
   public static Task WriteBcfFile<T>(string folder, string file, T obj) {
     return Task.Run(async () => {
-      await using var writer =
-        File.CreateText($"{folder}/{file}");
-      new XmlSerializer(typeof(T)).Serialize(writer, obj);
+      if (obj != null) {
+        await using var writer =
+          File.CreateText($"{folder}/{file}");
+        new XmlSerializer(typeof(T)).Serialize(writer, obj);
+      }
     });
   }
 }
