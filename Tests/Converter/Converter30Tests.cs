@@ -51,7 +51,7 @@ public class Converter30Tests {
         "Resources/Bcf/v3.0/UserAssignment.bcfzip",
         "Resources/output/json/v3.0/UserAssignment")
     };
-    
+
     await Task.WhenAll(tasks);
   }
 

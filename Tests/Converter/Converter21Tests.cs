@@ -13,7 +13,7 @@ public class Converter21Tests {
   }
 
   private IConverter _converter = null!;
-  
+
   [Test]
   public async Task BcfToJsonSampleFilesTest() {
     var tasks = new List<Task> {
@@ -36,7 +36,7 @@ public class Converter21Tests {
 
     await Task.WhenAll(tasks);
   }
-  
+
   [Test]
   public void BcfToJsonMissingRequiredPropertyTest() {
     Assert.That(async () => await _converter.BcfToJson(
