@@ -23,6 +23,7 @@ jobs:
         run: dotnet format --verbosity diagnostic --verify-no-changes
 
       - name: "Unit tests"
+        working-directory: ./src
         run: dotnet test --test-adapter-path:. --logger:"junit;LogFilePath=./artifacts/test-output.xml"
 
       - name: Publish Unit Test Results
