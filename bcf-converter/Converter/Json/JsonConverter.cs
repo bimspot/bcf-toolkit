@@ -86,7 +86,7 @@ public static class JsonConverter {
       if (validator.TryValidateObjectRecursive(deserialized, validationErrors))
         return deserialized;
       var errors = string.Join(
-        "\n", 
+        "\n",
         validationErrors.Select(e => e.ErrorMessage));
       throw new ArgumentException($"Missing required fields(s):\n {errors}");
     });
