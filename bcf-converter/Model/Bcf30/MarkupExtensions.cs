@@ -17,7 +17,15 @@ public partial class Markup : IMarkup {
 public partial class Topic : ITopic { }
 
 public partial class ViewPoint : IViewPoint {
-  [XmlIgnore] public IVisualizationInfo? VisualizationInfo { get; set; }
+  [XmlIgnore] public VisualizationInfo? VisualizationInfo { get; set; }
+
+  public void SetVisualizationInfo(IVisualizationInfo? visInfo) {
+    VisualizationInfo = (VisualizationInfo?)visInfo;
+  }
+
+  public IVisualizationInfo? GetVisualizationInfo() {
+    return VisualizationInfo;
+  }
 
   /// <summary>
   ///   The snapshot image data as base64 encoded string.

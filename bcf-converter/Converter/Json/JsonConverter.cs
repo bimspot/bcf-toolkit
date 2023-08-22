@@ -3,9 +3,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using RecursiveDataAnnotationsValidation;
 
 namespace bcf.Converter;
 
@@ -37,8 +40,13 @@ public static class JsonConverter {
       var markups = new ConcurrentBag<TMarkup>();
 
       var files = new List<string>(Directory.EnumerateFiles(sourceFolder));
+      var topicFiles = files
+        .Where(file =>
+          Regex.IsMatch(Path.GetFileNameWithoutExtension(file).Replace("-", ""),
+            "^[a-fA-F0-9]+$"))
+        .ToList();
 
-      foreach (var file in files) {
+      foreach (var file in topicFiles) {
         if (file.EndsWith("json") == false) {
           Console.WriteLine($" - File is not json, skipping ${file}");
           continue;
@@ -47,9 +55,6 @@ public static class JsonConverter {
         Console.WriteLine($" - Processing {file}");
 
         var markup = await ParseObject<TMarkup>(file);
-        // using var json = File.OpenText(file);
-        // var markup = (TMarkup)jsonSerializer.Deserialize(json, typeof(TMarkup));
-
         markups.Add(markup);
       }
 
@@ -76,11 +81,14 @@ public static class JsonConverter {
       };
       using var json = File.OpenText(source);
       var deserialized = (T)jsonSerializer.Deserialize(json, typeof(T));
-      Validator.ValidateObject(
-        deserialized, 
-        new ValidationContext(deserialized), 
-        validateAllProperties: true);
-      return deserialized;
+      var validator = new RecursiveDataAnnotationValidator();
+      var validationErrors = new List<ValidationResult>();
+      if (validator.TryValidateObjectRecursive(deserialized, validationErrors))
+        return deserialized;
+      var errors = string.Join(
+        "\n", 
+        validationErrors.Select(e => e.ErrorMessage));
+      throw new ArgumentException($"Missing required fields(s):\n {errors}");
     });
   }
 

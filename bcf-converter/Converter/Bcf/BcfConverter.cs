@@ -136,7 +136,7 @@ public static class BcfConverter {
       var firstViewPoint = markup.GetFirstViewPoint();
 
       if (firstViewPoint != null) {
-        firstViewPoint.VisualizationInfo = viewpoint;
+        firstViewPoint.SetVisualizationInfo(viewpoint);
         firstViewPoint.SnapshotData = snapshot;
       }
 
@@ -270,9 +270,10 @@ public static class BcfConverter {
   /// <typeparam name="TVersion">`Version` type parameter.</typeparam>
   /// <returns></returns>
   /// <exception cref="ApplicationException"></exception>
-  public static Task WriteBcf<TMarkup, TRoot, TVersion>(string targetFile,
+  public static Task WriteBcf<TMarkup, TVisualizationInfo, TRoot, TVersion>(string targetFile,
     ConcurrentBag<TMarkup> markups, TRoot root)
     where TMarkup : IMarkup
+    where TVisualizationInfo : IVisualizationInfo
     where TRoot : IRoot
     where TVersion : new() {
     return Task.Run(async () => {
@@ -309,8 +310,10 @@ public static class BcfConverter {
         tasks.Add(WriteBcfFile(topicFolder, "markup.bcf", markup));
 
         // Viewpoint
+        var visInfo =
+          (TVisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
         tasks.Add(WriteBcfFile(topicFolder, "viewpoint.bcfv",
-          markup.GetFirstViewPoint()?.VisualizationInfo));
+          visInfo));
 
         // Snapshot
         var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
@@ -345,7 +348,7 @@ public static class BcfConverter {
   /// <param name="obj">The object which will be written.</param>
   /// <typeparam name="T">Generic type parameter.</typeparam>
   /// <returns></returns>
-  public static Task WriteBcfFile<T>(string folder, string file, T obj) {
+  public static Task WriteBcfFile<T>(string folder, string file, T? obj) {
     return Task.Run(async () => {
       if (obj != null) {
         await using var writer =
