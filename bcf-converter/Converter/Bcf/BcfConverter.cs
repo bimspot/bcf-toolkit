@@ -84,7 +84,7 @@ public static class BcfConverter {
             currentUuid, ref markups);
 
         currentUuid = uuid;
-        
+
         // Parsing BCF files
         if (entry.IsBcf()) {
           var document = await XDocument.LoadAsync(
@@ -115,7 +115,7 @@ public static class BcfConverter {
           //continue;
           snapshot = entry.Snapshot();
         }
-        
+
         if (isLastTopicEntry)
           WritingOutMarkup(ref markup, ref viewpoint, ref snapshot,
             currentUuid, ref markups);
