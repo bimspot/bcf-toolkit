@@ -36,7 +36,7 @@ public class Converter21Tests {
 
     await Task.WhenAll(tasks);
   }
-  
+
   [Test]
   public async Task JsonToBcfSampleFilesTest() {
     var tasks = new List<Task> {
