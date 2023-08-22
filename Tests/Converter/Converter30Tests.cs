@@ -60,7 +60,7 @@ public class Converter30Tests {
     var tasks = new List<Task> {
       _converter.JsonToBcf(
         "Resources/Json/v3.0/DocumentReferenceInternal",
-        "Resources/output/bcf/v3.0/DocumentReferenceInternal.bcfzip"),
+        "Resources/output/Bcf/v3.0/DocumentReferenceInternal.bcfzip"),
     };
 
     await Task.WhenAll(tasks);
@@ -71,7 +71,7 @@ public class Converter30Tests {
     // 2.1 -> 3.0 is not backward compatible
     Assert.That(async () => await _converter.BcfToJson(
       "Resources/Bcf/v2.1/AllPartsVisible.bcfzip",
-      "Resources/output/json/v3.0/AllPartsVisible"), Throws.Exception);
+      "Resources/output/Json/v3.0/AllPartsVisible"), Throws.Exception);
   }
 
   [Test]

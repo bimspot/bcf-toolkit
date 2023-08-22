@@ -36,6 +36,17 @@ public class Converter21Tests {
 
     await Task.WhenAll(tasks);
   }
+  
+  [Test]
+  public async Task JsonToBcfSampleFilesTest() {
+    var tasks = new List<Task> {
+      _converter.JsonToBcf(
+        "Resources/Json/v2.1/AllPartsVisible",
+        "Resources/output/bcf/v2.1/AllPartsVisible.bcfzip"),
+    };
+
+    await Task.WhenAll(tasks);
+  }
 
   [Test]
   public void BcfToJsonMissingRequiredPropertyTest() {
