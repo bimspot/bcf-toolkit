@@ -119,7 +119,7 @@ public class BcfConverterTests {
   [Test]
   [Category("BCF v2.1")]
   public void ParseBcfSingleVisibleWallTest() {
-    Assert.That(async () => 
+    Assert.That(async () =>
       await BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         "Resources/Bcf/v2.1/SingleVisibleWall.bcfzip"), Throws.Exception);
     // var markup = markups.FirstOrDefault()!;
@@ -333,7 +333,7 @@ public class BcfConverterTests {
     Assert.AreEqual("MEP.ifc",
       markupMEP.Header.Files.FirstOrDefault()?.Filename);
   }
-  
+
   /// <summary>
   ///   The topic should have an assigned user.
   /// </summary>
@@ -357,11 +357,11 @@ public class BcfConverterTests {
         "Resources/Bcf/v3.0/Milestone.bcfzip");
     var type = extensions.TopicTypes.FirstOrDefault();
     Assert.AreEqual("Error", type);
-    
+
     Assert.That(async () => await BcfConverter.ParseExtensions<bcf30.Extensions>(
       "Resources/Bcf/v3.0/WithoutRequiredExtension.bcfzip"), Throws.Exception);
   }
-  
+
   /// <summary>
   ///   It should generate the bcfzip with the minimum information.
   /// </summary>
@@ -369,8 +369,7 @@ public class BcfConverterTests {
   [Category("BCF v2.1")]
   public async Task WriteBcfWithMinimumInformationTest() {
     var markup = new bcf21.Markup {
-      Topic = new bcf21.Topic
-      {
+      Topic = new bcf21.Topic {
         Guid = "3ffb4df2-0187-49a9-8a4a-23992696bafd",
         Title = "This is a new topic",
         CreationDate = new DateTime(),
@@ -384,7 +383,7 @@ public class BcfConverterTests {
       markups,
       root);
   }
-  
+
   /// <summary>
   ///   It should generate a bcf skipping the markup file.
   /// </summary>
@@ -392,8 +391,7 @@ public class BcfConverterTests {
   [Category("BCF v2.1")]
   public async Task WriteBcfWithoutTopicGuidTest() {
     var markup = new bcf21.Markup {
-      Topic = new bcf21.Topic
-      {
+      Topic = new bcf21.Topic {
         Title = "This is a new topic",
         CreationDate = new DateTime(),
         CreationAuthor = "Meszaros"
@@ -406,7 +404,7 @@ public class BcfConverterTests {
       markups,
       root);
   }
-  
+
   /// <summary>
   ///   The title is missing from the topic, it should throws an exception.
   /// </summary>

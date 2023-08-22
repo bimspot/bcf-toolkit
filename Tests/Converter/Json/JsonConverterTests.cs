@@ -5,7 +5,7 @@ using NUnit.Framework;
 using bcf21 = bcf.bcf21;
 using bcf30 = bcf.bcf30;
 
-namespace Tests.Converter.Json; 
+namespace Tests.Converter.Json;
 
 public class JsonConverterTests {
   /// <summary>
@@ -20,11 +20,11 @@ public class JsonConverterTests {
         "Resources/Json/v2.1/AllPartsVisible");
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
-    Assert.AreEqual("ee9a9498-698b-44ed-8ece-b3ae3b480a90", 
+    Assert.AreEqual("ee9a9498-698b-44ed-8ece-b3ae3b480a90",
       markup.Topic.Guid);
     Assert.AreEqual("All components of curtain wall visible",
       markup.Topic.Title);
-    Assert.AreEqual("pasi.paasiala@solibri.com", 
+    Assert.AreEqual("pasi.paasiala@solibri.com",
       markup.Topic.ModifiedAuthor);
     var visInfo =
       markup.Viewpoints.FirstOrDefault()
@@ -32,7 +32,7 @@ public class JsonConverterTests {
     Assert.AreEqual("2_hQ1Rixj6lgHTra$L72O4",
       visInfo.Components.Visibility.Exceptions.FirstOrDefault()?.IfcGuid);
   }
-  
+
   /// <summary>
   ///   It should skip the txt file, because it is not json.
   /// </summary>
@@ -45,18 +45,18 @@ public class JsonConverterTests {
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(0, markups.Count);
   }
-  
+
   /// <summary>
   ///   It should throw an exception, because of missing fields.
   /// </summary>
   [Test]
   [Category("BCF v2.1")]
   public void ParseJsonMissingRequiredFieldsTest() {
-    Assert.That( async () => await JsonConverter.ParseMarkups<bcf21.Markup>(
-        "Resources/Json/v2.1/MissingRequiredFields"), 
+    Assert.That(async () => await JsonConverter.ParseMarkups<bcf21.Markup>(
+        "Resources/Json/v2.1/MissingRequiredFields"),
       Throws.Exception);
   }
-  
+
   /// <summary>
   ///   It should have the document to ThisIsADocument.txt as given in the
   ///   _Topic_s DocumentReferences property in the markup.bcf file.
