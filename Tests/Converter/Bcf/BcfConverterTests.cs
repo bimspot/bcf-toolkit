@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using bcf21 = bcf.bcf21;
@@ -163,7 +161,7 @@ public class BcfConverterTests {
         ?.VisualizationInfo!;
     var header = markup?.Header!;
 
-    Assert.AreEqual(2, header.Files.Length);
+    Assert.AreEqual(2, header.Files.Count);
     Assert.AreEqual("Architectural.ifc",
       header.Files.FirstOrDefault()?.Filename);
     Assert.AreEqual("0KkZ20so9BsO1d1hFcfLOl",
@@ -185,7 +183,7 @@ public class BcfConverterTests {
     Assert.AreEqual(1, markups.Count);
     Assert.AreEqual(
       "http://www.buildingsmart-tech.org/specifications/bcf-releases/bcfxml-v1/markup.xsd/at_download/file",
-      markup.Topic.DocumentReferences.FirstOrDefault()?.Item);
+      markup.Topic.DocumentReferences.FirstOrDefault()?.Url);
   }
 
   /// <summary>
@@ -206,7 +204,7 @@ public class BcfConverterTests {
         "Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip");
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
-    var documentGuid = markup.Topic.DocumentReferences.FirstOrDefault()?.Item;
+    var documentGuid = markup.Topic.DocumentReferences.FirstOrDefault()?.DocumentGuid;
     var document = documentInfo?.Documents.FirstOrDefault()!;
     Assert.AreEqual("b1d1b7f0-60b9-457d-ad12-16e0fb997bc5", documentGuid);
     Assert.AreEqual(documentGuid, document.Guid);
@@ -328,10 +326,10 @@ public class BcfConverterTests {
     var markupMEP = markups.FirstOrDefault(m =>
       m.Topic.Title.Equals("Topics with different model visible - MEP"))!;
 
-    Assert.AreEqual(1, markupARC.Header.Files.Length);
+    Assert.AreEqual(1, markupARC.Header.Files.Count);
     Assert.AreEqual("Architectural.ifc",
       markupARC.Header.Files.FirstOrDefault()?.Filename);
-    Assert.AreEqual(1, markupMEP.Header.Files.Length);
+    Assert.AreEqual(1, markupMEP.Header.Files.Count);
     Assert.AreEqual("MEP.ifc",
       markupMEP.Header.Files.FirstOrDefault()?.Filename);
   }
@@ -381,7 +379,7 @@ public class BcfConverterTests {
     };
     var markups = new ConcurrentBag<bcf21.Markup> { markup };
     var root = new bcf21.Root();
-    await BcfConverter.WriteBcf<bcf21.Markup, bcf21.Root, bcf21.Version>(
+    await BcfConverter.WriteBcf<bcf21.Markup, bcf21.VisualizationInfo, bcf21.Root, bcf21.Version>(
       "Resources/output/Bcf/v2.1/MinimumInformation.bcfzip",
       markups,
       root);
@@ -403,9 +401,20 @@ public class BcfConverterTests {
     };
     var markups = new ConcurrentBag<bcf21.Markup> { markup };
     var root = new bcf21.Root();
-    await BcfConverter.WriteBcf<bcf21.Markup, bcf21.Root, bcf21.Version>(
+    await BcfConverter.WriteBcf<bcf21.Markup, bcf21.VisualizationInfo, bcf21.Root, bcf21.Version>(
       "Resources/output/Bcf/v2.1/WithoutTopicGuid.bcfzip",
       markups,
       root);
+  }
+  
+  /// <summary>
+  ///   The title is missing from the topic, it should throws an exception.
+  /// </summary>
+  [Test]
+  [Category("BCF v2.1")]
+  public void ParseBcfMissingTopicTitleTest() {
+    Assert.That(async () =>
+      await BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
+        "Resources/Bcf/v2.1/MissingTitle.bcfzip"), Throws.Exception);
   }
 }

@@ -46,12 +46,12 @@ public class Converter21 : IConverter {
   /// <param name="target">The target path where the BCF is written.</param>
   public async Task JsonToBcf(string source, string target) {
     // Parsing BCF root
-    var root = await JsonConverter.ParseObject<Root>(source);
+    var root = await JsonConverter.ParseObject<Root>($"{source}/bcfRoot.json");
 
     // Parsing markups
     var markups = await JsonConverter.ParseMarkups<Markup>(source);
 
     // Writing bcf files
-    await BcfConverter.WriteBcf<Markup, Root, Version>(target, markups, root);
+    await BcfConverter.WriteBcf<Markup, VisualizationInfo, Root, Version>(target, markups, root);
   }
 }

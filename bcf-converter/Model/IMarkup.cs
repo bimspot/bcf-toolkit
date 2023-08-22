@@ -10,7 +10,8 @@ public interface ITopic {
 }
 
 public interface IViewPoint {
-  public IVisualizationInfo? VisualizationInfo { get; set; }
+  public void SetVisualizationInfo(IVisualizationInfo? visInfo);
+  public IVisualizationInfo? GetVisualizationInfo();
   public string? SnapshotData { get; set; }
   public string Snapshot { get; set; }
 }
