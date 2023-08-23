@@ -17,7 +17,7 @@ public class JsonConverterTests {
   public async Task ParseJsonAllPartsVisibleTest() {
     var markups =
       await JsonConverter.ParseMarkups<bcf21.Markup>(
-        "Resources/Json/v2.1/AllPartsVisible");
+        "Resources/json/v2.1/AllPartsVisible");
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
     Assert.AreEqual("ee9a9498-698b-44ed-8ece-b3ae3b480a90",
@@ -41,7 +41,7 @@ public class JsonConverterTests {
   public async Task ParseJsonSkippingFilesTest() {
     var markups =
       await JsonConverter.ParseMarkups<bcf21.Markup>(
-        "Resources/Json/v2.1/SkippingFiles");
+        "Resources/json/v2.1/SkippingFiles");
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(0, markups.Count);
   }
@@ -53,7 +53,7 @@ public class JsonConverterTests {
   [Category("BCF v2.1")]
   public void ParseJsonMissingRequiredFieldsTest() {
     Assert.That(async () => await JsonConverter.ParseMarkups<bcf21.Markup>(
-        "Resources/Json/v2.1/MissingRequiredFields"),
+        "Resources/json/v2.1/MissingRequiredFields"),
       Throws.Exception);
   }
 
