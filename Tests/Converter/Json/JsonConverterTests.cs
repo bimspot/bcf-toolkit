@@ -69,10 +69,10 @@ public class JsonConverterTests {
     var markups =
       await JsonConverter
         .ParseMarkups<bcf30.Markup>(
-          "Resources/Json/v3.0/DocumentReferenceInternal");
+          "Resources/json/v3.0/DocumentReferenceInternal");
     var root =
       await JsonConverter.ParseObject<bcf30.Root>(
-        "Resources/Json/v3.0/DocumentReferenceInternal/bcfRoot.json");
+        "Resources/json/v3.0/DocumentReferenceInternal/bcfRoot.json");
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
     var documentGuid = markup.Topic.DocumentReferences.FirstOrDefault()?.DocumentGuid;
