@@ -42,7 +42,7 @@ public class Converter21Tests {
     var tasks = new List<Task> {
       _converter.JsonToBcf(
         "Resources/json/v2.1/AllPartsVisible",
-        "Resources/output/bcf/v2.1/AllPartsVisible.bcfzip"),
+        "Resources/output/bcf/v2.1/AllPartsVisible.bcfzip")
     };
 
     await Task.WhenAll(tasks);

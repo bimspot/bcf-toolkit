@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading.Tasks;
 using bcf.bcf21;
 
@@ -45,8 +46,11 @@ public class Converter21 : IConverter {
   /// <param name="source">The source folder to the JSON files.</param>
   /// <param name="target">The target path where the BCF is written.</param>
   public async Task JsonToBcf(string source, string target) {
-    // Parsing BCF root
-    var root = await JsonConverter.ParseObject<Root>($"{source}/bcfRoot.json");
+    // Parsing BCF root - it is an optional file
+    var rootPath = $"{source}/bcfRoot.json";
+    var root = Path.Exists(rootPath) 
+      ? await JsonConverter.ParseObject<Root>(rootPath) 
+      : new Root();
 
     // Parsing markups
     var markups = await JsonConverter.ParseMarkups<Markup>(source);

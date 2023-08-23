@@ -51,7 +51,7 @@ public class Converter30 : IConverter {
   /// <param name="source">The source folder to the JSON files.</param>
   /// <param name="target">The target path where the BCF is written.</param>
   public async Task JsonToBcf(string source, string target) {
-    // Parsing BCF root
+    // Parsing BCF root - required file
     var root = await JsonConverter.ParseObject<Root>($"{source}/bcfRoot.json");
 
     // Parsing markups

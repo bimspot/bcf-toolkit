@@ -1,0 +1,16 @@
+{
+    "document": {
+        "documents": [
+            {
+                "filename": "ThisIsADocument.txt",
+                "guid": "b1d1b7f0-60b9-457d-ad12-16e0fb997bc5"
+            }
+        ]
+    },
+    "project": {
+        "project": {
+            "name": "BCF 3.0 test cases",
+            "project_id": "de894a86-3a08-4ea0-b2d1-6c222b5602d1"
+        }
+    }
+}
