@@ -80,7 +80,7 @@ public class Converter30Tests {
       "Resources/Bcf/v3.0/Meszaros.bcfzip",
       "Resources/output/json/v3.0/Meszaros"), Throws.ArgumentException);
   }
-  
+
   [Test]
   public void JsonToBcfMissingBcfRootTest() {
     Assert.That(async () => await _converter.BcfToJson(
