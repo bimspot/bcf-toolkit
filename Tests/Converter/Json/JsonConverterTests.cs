@@ -85,14 +85,14 @@ public class JsonConverterTests {
   [Test]
   [Category("BCF v3.0")]
   public void ParseEmptyBcfRootTest() {
-    Assert.That( async () => await JsonConverter.ParseObject<bcf30.Root>(
+    Assert.That(async () => await JsonConverter.ParseObject<bcf30.Root>(
       "Resources/json/v3.0/EmptyBcfRoot/bcfRoot.json"), Throws.Exception);
   }
-  
+
   [Test]
   [Category("BCF v3.0")]
   public void ParseMissingRequiredBcfRootTest() {
-    Assert.That( async () => await JsonConverter.ParseObject<bcf30.Root>(
+    Assert.That(async () => await JsonConverter.ParseObject<bcf30.Root>(
       "Resources/json/v3.0/MissingExtensions/bcfRoot.json"), Throws.Exception);
   }
 }

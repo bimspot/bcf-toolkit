@@ -48,8 +48,8 @@ public class Converter21 : IConverter {
   public async Task JsonToBcf(string source, string target) {
     // Parsing BCF root - it is an optional file
     var rootPath = $"{source}/bcfRoot.json";
-    var root = Path.Exists(rootPath) 
-      ? await JsonConverter.ParseObject<Root>(rootPath) 
+    var root = Path.Exists(rootPath)
+      ? await JsonConverter.ParseObject<Root>(rootPath)
       : new Root();
 
     // Parsing markups
