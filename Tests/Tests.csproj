@@ -24,8 +24,8 @@
     <ItemGroup>
         <Folder Include="Resources\Bcf\v2.1" />
         <Folder Include="Resources\Bcf\v3.0" />
-        <Folder Include="Resources\Json\v2.1" />
-        <Folder Include="Resources\Json\v3.0" />
+        <Folder Include="Resources\json\v2.1" />
+        <Folder Include="Resources\json\v3.0" />
     </ItemGroup>
 
     <ItemGroup>
