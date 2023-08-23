@@ -4,8 +4,7 @@ using bcf.Converter;
 namespace bcf.bcf21;
 
 public class Root : IRoot {
-  //TODO generate code
-  public ProjectExtension? project;
+  public ProjectExtension? project { get; set; }
 
   public Task WriteBcf(string folder) {
     return Task.Run(async () => {

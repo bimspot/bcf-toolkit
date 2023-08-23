@@ -4,9 +4,12 @@ using bcf.Converter;
 namespace bcf.bcf30;
 
 public class Root : IRoot {
-  public DocumentInfo? document;
-  public Extensions extensions;
-  public ProjectInfo? project;
+  public DocumentInfo? document { get; set; }
+  
+  [System.ComponentModel.DataAnnotations.RequiredAttribute()]
+  public Extensions extensions { get; set; }
+  
+  public ProjectInfo? project { get; set; }
 
   public Task WriteBcf(string folder) {
     return Task.WhenAll(

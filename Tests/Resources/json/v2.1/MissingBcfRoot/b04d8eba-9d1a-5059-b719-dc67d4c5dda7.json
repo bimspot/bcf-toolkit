@@ -1,0 +1,337 @@
+{
+  "header_specified": false,
+  "comment_specified": false,
+  "viewpoints_specified": true,
+  "topic": {
+      "guid": "b04d8eba-9d1a-5059-b719-dc67d4c5dda7",
+      "title": "46 IfcCoverings are missing 8 properties",
+      "topic_type": "Error",
+      "topic_status": "Open",
+      "creation_date": "2023-08-23T13:30:45.972Z",
+      "creation_author": "bimspot.io",
+      "modified_date": "2023-08-23T13:30:45.972Z",
+      "modified_author": "bimspot.io",
+      "description": "The following properties are missing:\n- CoveredArea\n- Finish\n- Combustible\n- FragilityRating\n- FlammabilityRating\n- AcousticRating\n- FireRating\n- Material\n\n\nFrom the IfcCoverings with guids:\n- 3gX5YUgWD6v8YA_fUqjsWw\n- 3pEPdLrMD0ePZ6Jg9ZUJMA\n- 1DknavZ09EP8KGvcFih947\n- 1DknavZ09EP8KGvcFih95H\n- 0_miH5JnD20BAbq_77kTAL\n- 0_miH5JnD20BAbq_77kTRK\n- 3gX5YUgWD6v8YA_fUqjnMk\n- 0sYlMEF4fEmQrpDGBTNdhD\n- 0YShT1YfDDkBf0hD6KagAs\n- 199WDT7A9Am87UhXJD7f$Z\n- 3NWFWMV0XEqOn5GX7wAeR_\n- 1ccvaYNc13ifPw_MMWrR3o\n- 2hRGLplkf5P9sbS49f1WnA\n- 2hRGLplkf5P9sbS49f1WqX\n- 2hRGLplkf5P9sbS49f1Whj\n- 2hRGLplkf5P9sbS49f1WgS\n- 2hRGLplkf5P9sbS49f1Wlm\n- 2hRGLplkf5P9sbS49f1WkK\n- 2hRGLplkf5P9sbS49f1Wj1\n- 2hRGLplkf5P9sbS49f1WXt\n- 2hRGLplkf5P9sbS49f1Wdn\n- 2hRGLplkf5P9sbS49f1ZU3\n- 2hRGLplkf5P9sbS49f1ZTH\n- 2hRGLplkf5P9sbS49f1ZSD\n- 2hRGLplkf5P9sbS49f1ZIm\n- 2hRGLplkf5P9sbS49f1ZIS\n- 3YXTS21O9FYQrByK5nMZdt\n- 3YXTS21O9FYQrByK5nMZWp\n- 35ax8TyDn4Tg7FuAW841Mj\n- 1gK99CKx5Dngbk8UtwHsX6\n- 34Zr$1LGLFvfYzSI3ep9lc\n- 1oH4MGbVz81xpFAkuYk9gZ\n- 0hk$Y7dEz8xg4Iyaw7Eih8\n- 1YDsYi3O5Aag2BwRZaR4zW\n- 1YDsYi3O5Aag2BwRZaR4mz\n- 1YDsYi3O5Aag2BwRZaR4r0\n- 1YDsYi3O5Aag2BwRZaR4kc\n- 2BaEJXmAL1CxOuKmrvgsRA\n- 3jgesabZf1nfb12vK315RP\n- 3RvbO1jMn1JB9xCdaV$a02\n- 0_INr2a1r34QN2NV94GHVH\n- 0_INr2a1r34QN2NV94GIwP\n- 2FFb0ZP958_wQwPNT51i3c\n- 2NCiAGX195$xINn6v8atks\n- 1nlRyjU1rBOPGFV9UGfAJT\n- 3nq2jwP1v3ch5__i3Vju3L",
+      "reference_link_specified": false,
+      "index_specified": false,
+      "labels_specified": false,
+      "modified_date_specified": true,
+      "due_date_specified": false,
+      "document_reference_specified": false,
+      "related_topic_specified": false
+  },
+  "viewpoints": [
+      {
+          "guid": "4cc7bf9d-6fc3-48a0-85a0-3d551a7a1472",
+          "visualization_info": {
+              "guid": "68382c15-67a9-4997-8eb9-ef62e9a8b173",
+              "perspective_camera": {
+                  "camera_view_point": {
+                      "x": 32.69028091430664,
+                      "y": -110.04071044921875,
+                      "z": 3.319643020629883
+                  },
+                  "camera_direction": {
+                      "x": 0,
+                      "y": 1,
+                      "z": 0
+                  },
+                  "camera_up_vector": {
+                      "x": 0,
+                      "y": 0,
+                      "z": 1
+                  },
+                  "field_of_view": 60
+              },
+              "components": {
+                  "view_setup_hints": {
+                      "spaces_visible": false,
+                      "space_boundaries_visible": false,
+                      "openings_visible": false
+                  },
+                  "visibility": {
+                      "exceptions": [
+                          {
+                              "ifc_guid": "1j5LafTQT2CBYQzQkh3pjI"
+                          },
+                          {
+                              "ifc_guid": "1j5LafTQT2CBYQzQkh3pjH"
+                          },
+                          {
+                              "ifc_guid": "1j5LafTQT2CBYQzQkh3pjS"
+                          },
+                          {
+                              "ifc_guid": "1j5LafTQT2CBYQzQkh3piz"
+                          },
+                          {
+                              "ifc_guid": "1j5LafTQT2CBYQzQkh3mLJ"
+                          },
+                          {
+                              "ifc_guid": "1j5LafTQT2CBYQzQkh3nTL"
+                          },
+                          {
+                              "ifc_guid": "1FtfNgjvP9axZxvuZE2S65"
+                          },
+                          {
+                              "ifc_guid": "28QW0Rr5DF3ezaHQkip7Cr"
+                          },
+                          {
+                              "ifc_guid": "28QW0Rr5DF3ezaHQkip6vZ"
+                          },
+                          {
+                              "ifc_guid": "28QW0Rr5DF3ezaHQkip6u6"
+                          },
+                          {
+                              "ifc_guid": "28QW0Rr5DF3ezaHQkip6uu"
+                          },
+                          {
+                              "ifc_guid": "28QW0Rr5DF3ezaHQkip6uW"
+                          },
+                          {
+                              "ifc_guid": "1DknavZ09EP8KGvcFih9m8"
+                          },
+                          {
+                              "ifc_guid": "1DknavZ09EP8KGvcFih9ms"
+                          },
+                          {
+                              "ifc_guid": "1DknavZ09EP8KGvcFih9Zy"
+                          },
+                          {
+                              "ifc_guid": "1DknavZ09EP8KGvcFih9Ws"
+                          },
+                          {
+                              "ifc_guid": "0lqUoUz9D0pgSyHqgny1k8"
+                          },
+                          {
+                              "ifc_guid": "2RwTFv$KT6DA_YZr7CXKGU"
+                          },
+                          {
+                              "ifc_guid": "0AHR2l25zBWRCn2jsJ4gr5"
+                          },
+                          {
+                              "ifc_guid": "0xI4TK9vzCl8VXLoFFb7I1"
+                          },
+                          {
+                              "ifc_guid": "1vtZuDtSLAGwxBt7lUZSLZ"
+                          },
+                          {
+                              "ifc_guid": "3jloN9r493exrKoD$GnAJT"
+                          },
+                          {
+                              "ifc_guid": "3jloN9r493exrKoD$GnAJL"
+                          },
+                          {
+                              "ifc_guid": "1f$DtIKObCiwQO5B6PupZB"
+                          },
+                          {
+                              "ifc_guid": "1f$DtIKObCiwQO5B6PupY9"
+                          },
+                          {
+                              "ifc_guid": "1f$DtIKObCiwQO5B6Pupb9"
+                          },
+                          {
+                              "ifc_guid": "1f$DtIKObCiwQO5B6Pupaz"
+                          },
+                          {
+                              "ifc_guid": "1f$DtIKObCiwQO5B6Pupcz"
+                          },
+                          {
+                              "ifc_guid": "1f$DtIKObCiwQO5B6Pupca"
+                          },
+                          {
+                              "ifc_guid": "1f$DtIKObCiwQO5B6PupcR"
+                          },
+                          {
+                              "ifc_guid": "3g_nvCSeDDM97aWpf572Ds"
+                          },
+                          {
+                              "ifc_guid": "0Tfc13q2f8qxrLGCztICjn"
+                          },
+                          {
+                              "ifc_guid": "0Tfc13q2f8qxrLGCztICjp"
+                          },
+                          {
+                              "ifc_guid": "0Tfc13q2f8qxrLGCztICjr"
+                          },
+                          {
+                              "ifc_guid": "0Tfc13q2f8qxrLGCztICjt"
+                          },
+                          {
+                              "ifc_guid": "0Tfc13q2f8qxrLGCztICjv"
+                          },
+                          {
+                              "ifc_guid": "0Tfc13q2f8qxrLGCztICcl"
+                          },
+                          {
+                              "ifc_guid": "0Tfc13q2f8qxrLGCztICcw"
+                          },
+                          {
+                              "ifc_guid": "0Tfc13q2f8qxrLGCztICQJ"
+                          },
+                          {
+                              "ifc_guid": "0Tfc13q2f8qxrLGCztICBA"
+                          },
+                          {
+                              "ifc_guid": "3NE_Mrx_bAEOY2O3AuneyM"
+                          },
+                          {
+                              "ifc_guid": "3mXKSEb450lhZ4Swwvd8X9"
+                          },
+                          {
+                              "ifc_guid": "01XanTqID8JwhgGQog3TyD"
+                          },
+                          {
+                              "ifc_guid": "0kUIhWhzr5XO4cCTHqSLI_"
+                          }
+                      ],
+                      "default_visibility": true
+                  },
+                  "coloring": [],
+                  "selection": [
+                      {
+                          "ifc_guid": "1gK99CKx5Dngbk8UtwHsX6"
+                      },
+                      {
+                          "ifc_guid": "3pEPdLrMD0ePZ6Jg9ZUJMA"
+                      },
+                      {
+                          "ifc_guid": "1DknavZ09EP8KGvcFih947"
+                      },
+                      {
+                          "ifc_guid": "1DknavZ09EP8KGvcFih95H"
+                      },
+                      {
+                          "ifc_guid": "0_miH5JnD20BAbq_77kTAL"
+                      },
+                      {
+                          "ifc_guid": "0_miH5JnD20BAbq_77kTRK"
+                      },
+                      {
+                          "ifc_guid": "3gX5YUgWD6v8YA_fUqjnMk"
+                      },
+                      {
+                          "ifc_guid": "0sYlMEF4fEmQrpDGBTNdhD"
+                      },
+                      {
+                          "ifc_guid": "0YShT1YfDDkBf0hD6KagAs"
+                      },
+                      {
+                          "ifc_guid": "199WDT7A9Am87UhXJD7f$Z"
+                      },
+                      {
+                          "ifc_guid": "3gX5YUgWD6v8YA_fUqjsWw"
+                      },
+                      {
+                          "ifc_guid": "3NWFWMV0XEqOn5GX7wAeR_"
+                      },
+                      {
+                          "ifc_guid": "34Zr$1LGLFvfYzSI3ep9lc"
+                      },
+                      {
+                          "ifc_guid": "1oH4MGbVz81xpFAkuYk9gZ"
+                      },
+                      {
+                          "ifc_guid": "1ccvaYNc13ifPw_MMWrR3o"
+                      },
+                      {
+                          "ifc_guid": "0hk$Y7dEz8xg4Iyaw7Eih8"
+                      },
+                      {
+                          "ifc_guid": "1YDsYi3O5Aag2BwRZaR4zW"
+                      },
+                      {
+                          "ifc_guid": "1YDsYi3O5Aag2BwRZaR4mz"
+                      },
+                      {
+                          "ifc_guid": "1YDsYi3O5Aag2BwRZaR4r0"
+                      },
+                      {
+                          "ifc_guid": "1YDsYi3O5Aag2BwRZaR4kc"
+                      },
+                      {
+                          "ifc_guid": "2BaEJXmAL1CxOuKmrvgsRA"
+                      },
+                      {
+                          "ifc_guid": "3jgesabZf1nfb12vK315RP"
+                      },
+                      {
+                          "ifc_guid": "3RvbO1jMn1JB9xCdaV$a02"
+                      },
+                      {
+                          "ifc_guid": "0_INr2a1r34QN2NV94GHVH"
+                      },
+                      {
+                          "ifc_guid": "0_INr2a1r34QN2NV94GIwP"
+                      },
+                      {
+                          "ifc_guid": "2hRGLplkf5P9sbS49f1WnA"
+                      },
+                      {
+                          "ifc_guid": "2hRGLplkf5P9sbS49f1WqX"
+                      },
+                      {
+                          "ifc_guid": "2hRGLplkf5P9sbS49f1Whj"
+                      },
+                      {
+                          "ifc_guid": "2hRGLplkf5P9sbS49f1WgS"
+                      },
+                      {
+                          "ifc_guid": "2hRGLplkf5P9sbS49f1Wlm"
+                      },
+                      {
+                          "ifc_guid": "2hRGLplkf5P9sbS49f1WkK"
+                      },
+                      {
+                          "ifc_guid": "2hRGLplkf5P9sbS49f1Wj1"
+                      },
+                      {
+                          "ifc_guid": "2hRGLplkf5P9sbS49f1WXt"
+                      },
+                      {
+                          "ifc_guid": "2hRGLplkf5P9sbS49f1Wdn"
+                      },
+                      {
+                          "ifc_guid": "2hRGLplkf5P9sbS49f1ZU3"
+                      },
+                      {
+                          "ifc_guid": "2hRGLplkf5P9sbS49f1ZTH"
+                      },
+                      {
+                          "ifc_guid": "2hRGLplkf5P9sbS49f1ZSD"
+                      },
+                      {
+                          "ifc_guid": "2hRGLplkf5P9sbS49f1ZIm"
+                      },
+                      {
+                          "ifc_guid": "2hRGLplkf5P9sbS49f1ZIS"
+                      },
+                      {
+                          "ifc_guid": "2FFb0ZP958_wQwPNT51i3c"
+                      },
+                      {
+                          "ifc_guid": "2NCiAGX195$xINn6v8atks"
+                      },
+                      {
+                          "ifc_guid": "3YXTS21O9FYQrByK5nMZdt"
+                      },
+                      {
+                          "ifc_guid": "3YXTS21O9FYQrByK5nMZWp"
+                      },
+                      {
+                          "ifc_guid": "35ax8TyDn4Tg7FuAW841Mj"
+                      },
+                      {
+                          "ifc_guid": "1nlRyjU1rBOPGFV9UGfAJT"
+                      },
+                      {
+                          "ifc_guid": "3nq2jwP1v3ch5__i3Vju3L"
+                      }
+                  ]
+              }
+          },
+          "viewpoint": "viewpoint.bcfv",
+          "snapshot": "snapshot.png",
+          "snapshot_data": "data:image/png;base64,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"
+      }
+  ]
+}

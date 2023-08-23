@@ -266,6 +266,7 @@ public static class BcfConverter {
   /// <param name="markups">Array of `Markup` objects.</param>
   /// <param name="root">The `Root` object of the BCF, it contains all the root info.</param>
   /// <typeparam name="TMarkup">`Markup` type parameter.</typeparam>
+  /// /// <typeparam name="TVisualizationInfo">`VisualizationInfo` type parameter.</typeparam>
   /// <typeparam name="TRoot">`Root` type parameter.</typeparam>
   /// <typeparam name="TVersion">`Version` type parameter.</typeparam>
   /// <returns></returns>
