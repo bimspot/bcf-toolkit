@@ -2,6 +2,8 @@ using System;
 using System.Threading.Tasks;
 using bcf.Converter;
 
+#nullable disable
+
 namespace bcf;
 
 /// <summary>
@@ -17,7 +19,7 @@ public class Context {
   ///   The `Context` does not know the concrete class of a strategy. It should
   ///   work with all strategies via the converter strategy interface.
   /// </summary>
-  private IConverter? _converter;
+  private IConverter _converter;
 
   /// <summary>
   ///   Creates and returns an instance of `Context`. The version of the bcf
@@ -50,7 +52,7 @@ public class Context {
   ///   Sets the converter strategy.
   /// </summary>
   /// <param name="converter"></param>
-  private void SetConverter(IConverter? converter) {
+  private void SetConverter(IConverter converter) {
     _converter = converter;
   }
 
@@ -61,8 +63,8 @@ public class Context {
   /// <param name="target">Target destination for the converted results.</param>
   public async Task Convert(string source, string target) {
     if (source.EndsWith("bcfzip"))
-      await _converter?.BcfToJson(source, target)!;
+      await _converter.BcfToJson(source, target)!;
     else
-      await _converter?.JsonToBcf(source, target)!;
+      await _converter.JsonToBcf(source, target)!;
   }
 }
