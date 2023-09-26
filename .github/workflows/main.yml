@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI/CD
+name: Bcf converter CI/CD
 
 # Controls when the action will run.
 on: [push, pull_request]
@@ -10,6 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '7.0.x'
+
+      - name: "Install dotnet format"
+        run: dotnet tool update --global dotnet-format
+
+      - name: "Run dotnet format"
+        run: dotnet format --verbosity diagnostic --verify-no-changes
 
       - name: "Unit tests"
         run: dotnet test --test-adapter-path:. --logger:"junit;LogFilePath=./artifacts/test-output.xml"

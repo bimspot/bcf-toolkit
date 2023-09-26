@@ -17,7 +17,7 @@ The command line interface accepts three arguments:
  * the source bcf file or json folder
  * the target bcf file or json folder
  
-The json representation is one file for every Markup, while the BCF format
+The json representation is one file for every `Markup`, while the BCF format
 is a zipped file as per the standard.
 
 ```
@@ -27,7 +27,6 @@ is a zipped file as per the standard.
 ```
 
 ### As A Library
-
 
 
 ## File Structure
@@ -49,6 +48,7 @@ named using the `uuid` of the `Topic` within.
   |- 3395f1b1-893f-4ca0-8b7d-c2d17d7a9198.json
   |- c799e527-a413-43f8-8871-80918a52b0f0.json
   |- ...
+  |- bcfRoot.json
 ```
 
 ## Development
@@ -56,15 +56,22 @@ named using the `uuid` of the `Topic` within.
 The development of the tool is ongoing, the table below shows the currently 
 completed features.
 
-|          | XML 2.0 | XML 2.1 | JSON 2.0 | JSON 2.1 |
-|----------|:-------:|:-------:|:--------:|:--------:|
-| XML 2.0  |         |         |          |          |
-| XML 2.1  |         |         |          |     X    |
-| JSON 2.0 |         |         |          |          |
-| JSON 2.1 |         |    X    |          |          |
+|          | BCF 2.0 | BCF 2.1 | BCF 3.0 | JSON 2.0 | JSON 2.1 | JSON 3.0 |
+|----------|:-------:|:-------:|:-------:|:--------:|:--------:|:--------:|
+| BCF 2.0  |         |         |         |          |          |          |
+| BCF 2.1  |         |         |         |          |    X     |          |
+| BCF 3.0  |         |         |         |          |          |    X     |
+| JSON 2.0 |         |         |         |          |          |          |
+| JSON 2.1 |         |    X    |         |          |          |          |
+| JSON 3.0 |         |         |    X    |          |          |          |
 
 The models for the BCF in-memory representation were auto-created from the
 [latest XSDs][1] using the [`XmlSchemaClassGenerator`][2].
+
+```
+~ dotnet tool install --global dotnet-xscgen
+~ xscgen -n [namespace] version.xsd
+```
 
 To publish, run the script at `dist/publish.sh`.
 
