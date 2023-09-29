@@ -1,32 +1,37 @@
+#nullable disable
+
 using System;
 using System.Threading.Tasks;
+using bcf.Builder;
 using bcf.Converter;
-
-#nullable disable
 
 namespace bcf;
 
 /// <summary>
-///   The Context class defines the converter strategy for a specific version
-///   of BCF and performs the conversion according to the chosen type of conversion.
+///   The `ConverterContext` class defines the converter strategy for a specific
+///   version of BCF and performs the conversion according to the chosen type of
+///   conversion.
 ///   Types of the conversion:
 ///   - BCF to json
 ///   - json to BCF
+///   - model to BCF
 /// </summary>
-public class Context {
+public class ConverterContext {
   /// <summary>
-  ///   The `Context` maintains a reference to one of the Strategy objects.
-  ///   The `Context` does not know the concrete class of a strategy. It should
-  ///   work with all strategies via the converter strategy interface.
+  ///   The converter maintains a reference to one of the Strategy objects.
+  ///   It does not know the concrete class of a strategy.
+  ///   It should work with all strategies via the converter strategy interface.
   /// </summary>
   private IConverter _converter;
 
+  private IMarkupBuilder _markupBuilder;
+
   /// <summary>
-  ///   Creates and returns an instance of `Context`. The version of the bcf
-  ///   must be specified here.
+  ///   Creates and returns an instance of `ConverterContext`. The version of
+  ///   the bcf must be specified here.
   /// </summary>
   /// <param name="version">The version of the BCF.</param>
-  public Context(string version) {
+  public ConverterContext(BcfVersionEnum version) {
     SetVersion(version);
   }
 
@@ -35,12 +40,12 @@ public class Context {
   /// </summary>
   /// <param name="version">The version of the BCF.</param>
   /// <exception cref="ArgumentException"></exception>
-  private void SetVersion(string version) {
+  private void SetVersion(BcfVersionEnum version) {
     switch (version) {
-      case "2.1":
+      case BcfVersionEnum.Bcf21:
         SetConverter(new Converter21());
         break;
-      case "3.0":
+      case BcfVersionEnum.Bcf30:
         SetConverter(new Converter30());
         break;
       default:
@@ -57,6 +62,14 @@ public class Context {
   }
 
   /// <summary>
+  ///   Sets the builder strategy.
+  /// </summary>
+  /// <param name="builder"></param>
+  private void SetMarkupBuilder(IMarkupBuilder builder) {
+    _markupBuilder = builder;
+  }
+
+  /// <summary>
   ///   Converts the specified source data to the given destination.
   /// </summary>
   /// <param name="source">Source path of the file which must be converted.</param>
@@ -67,4 +80,8 @@ public class Context {
     else
       await _converter.JsonToBcf(source, target)!;
   }
+
+  // public Task ToBcf() {
+  //   return _converter.ToBcf();
+  // }
 }

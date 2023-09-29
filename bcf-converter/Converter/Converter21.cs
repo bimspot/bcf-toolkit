@@ -56,6 +56,13 @@ public class Converter21 : IConverter {
     var markups = await JsonConverter.ParseMarkups<Markup>(source);
 
     // Writing bcf files
-    await BcfConverter.WriteBcf<Markup, VisualizationInfo, Root, Version>(target, markups, root);
+    await BcfConverter.WriteBcf<Markup, VisualizationInfo, Root, Version>(
+      target, markups, root);
   }
+
+  // public async Task ToBcf(string target, ConcurrentBag<IMarkup> markups) {
+  //   //TODO fill root
+  //   var root = new Root();
+  //   await BcfConverter.WriteBcf<Markup, VisualizationInfo, Root, Version>(target, markups, root);
+  // }
 }

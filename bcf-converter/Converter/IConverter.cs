@@ -21,4 +21,6 @@ public interface IConverter {
   /// <param name="target">The target path where the BCF is written.</param>
   /// <returns></returns>
   Task JsonToBcf(string source, string target);
+
+  // Task ToBcf<T>(string target, ConcurrentBag<T> markups);
 }

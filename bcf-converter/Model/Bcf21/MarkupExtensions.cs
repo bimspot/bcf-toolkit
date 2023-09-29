@@ -17,8 +17,7 @@ public partial class Markup : IMarkup {
 public partial class Topic : ITopic { }
 
 public partial class ViewPoint : IViewPoint {
-  [XmlIgnore]
-  public VisualizationInfo? VisualizationInfo { get; set; }
+  [XmlIgnore] public VisualizationInfo? VisualizationInfo { get; set; }
 
   public void SetVisualizationInfo(IVisualizationInfo? visInfo) {
     VisualizationInfo = (VisualizationInfo?)visInfo;
@@ -37,3 +36,11 @@ public partial class ViewPoint : IViewPoint {
 }
 
 public partial class VisualizationInfo : IVisualizationInfo { }
+
+public partial class HeaderFile : IHeaderFile { }
+
+public partial class BimSnippet : IBimSnippet { }
+
+public partial class TopicDocumentReference : IDocReference { }
+
+public partial class Comment : IComment { }
