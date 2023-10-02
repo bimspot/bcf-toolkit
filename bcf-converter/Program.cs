@@ -35,10 +35,12 @@ internal static class Program {
       // await context.Convert(sourcePath, targetFolder);
 
 
-      var builder = MarkupBuilderCreator.CreateBuilder(version);
+      var builder = MarkupBuilderCreator.CreateBuilder();
+      // var builder = new Builder.Bcf21.MarkupBuilder();
 
       var markup = builder.AddHeaderFile(b => b
           .AddFileName("f"))
+        .AddServerAssignedId("")
         .Build();
       // .AddHeaderFile("p1", "s1", true, "f1", DateTime
       // .Now, "r1")

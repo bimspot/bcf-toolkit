@@ -1,16 +1,35 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using bcf.bcf21;
 
 namespace bcf.Builder.Bcf21;
 
-public class MarkupBuilder : IMarkupBuilder {
+public class MarkupBuilder : IMarkupBuilder<MarkupBuilder,
+  HeaderFileBuilder, BimSnippetBuilder, DocumentReferenceBuilder, CommentBuilder
+  , ViewPointBuilder> {
   private readonly Markup _markup = new();
 
   public MarkupBuilder() {
     _markup.Topic = new Topic();
   }
 
-  public IMarkupBuilder AddHeaderFile(Action<IHeaderFileBuilder> builder) {
+  public MarkupBuilder AddGuid(string guid) {
+    _markup.Topic.Guid = guid;
+    return this;
+  }
+
+  public MarkupBuilder AddTopicType(string type) {
+    _markup.Topic.TopicType = type;
+    return this;
+  }
+
+  public MarkupBuilder AddTopicStatus(string status) {
+    _markup.Topic.TopicStatus = status;
+    return this;
+  }
+
+  public MarkupBuilder AddHeaderFile(Action<HeaderFileBuilder> builder) {
     var file =
       (HeaderFile)BuilderUtils.BuildItem<HeaderFileBuilder, IHeaderFile>(
         builder);
@@ -18,72 +37,72 @@ public class MarkupBuilder : IMarkupBuilder {
     return this;
   }
 
-  public IMarkupBuilder AddReferenceLink(string link) {
+  public MarkupBuilder AddReferenceLink(string link) {
     _markup.Topic.ReferenceLink.Add(link);
     return this;
   }
 
-  IMarkupBuilder IMarkupBuilder.AddTitle(string title) {
+  public MarkupBuilder AddTitle(string title) {
     _markup.Topic.Title = title;
     return this;
   }
 
-  public IMarkupBuilder AddPriority(string priority) {
+  public MarkupBuilder AddPriority(string priority) {
     _markup.Topic.Priority = priority;
     return this;
   }
 
-  public IMarkupBuilder AddIndex(int inx) {
+  public MarkupBuilder AddIndex(int inx) {
     _markup.Topic.Index = inx;
     return this;
   }
 
-  public IMarkupBuilder AddLabel(string label) {
+  public MarkupBuilder AddLabel(string label) {
     _markup.Topic.Labels.Add(label);
     return this;
   }
 
-  public IMarkupBuilder AddCreationDate(DateTime date) {
+  public MarkupBuilder AddCreationDate(DateTime date) {
     _markup.Topic.CreationDate = date;
     return this;
   }
 
-  public IMarkupBuilder AddCreationAuthor(string user) {
+  public MarkupBuilder AddCreationAuthor(string user) {
     _markup.Topic.CreationAuthor = user;
     return this;
   }
 
-  public IMarkupBuilder AddModifiedDate(DateTime date) {
+  public MarkupBuilder AddModifiedDate(DateTime date) {
     _markup.Topic.ModifiedDate = date;
     return this;
   }
 
-  public IMarkupBuilder AddModifiedAuthor(string user) {
+  public MarkupBuilder AddModifiedAuthor(string user) {
     _markup.Topic.ModifiedAuthor = user;
     return this;
   }
 
-  public IMarkupBuilder AddDueDate(DateTime date) {
+  public MarkupBuilder AddDueDate(DateTime date) {
     _markup.Topic.DueDate = date;
     return this;
   }
 
-  public IMarkupBuilder AddAssignedTo(string user) {
+  public MarkupBuilder AddAssignedTo(string user) {
     _markup.Topic.AssignedTo = user;
     return this;
   }
 
-  public IMarkupBuilder AddDescription(string description) {
+  public MarkupBuilder AddDescription(string description) {
     _markup.Topic.Description = description;
     return this;
   }
 
-  public IMarkupBuilder AddStage(string stage) {
+  public MarkupBuilder AddStage(string stage) {
     _markup.Topic.Stage = stage;
     return this;
   }
 
-  public IMarkupBuilder AddBimSnippet(Action<IBimSnippetBuilder> builder) {
+  public MarkupBuilder AddBimSnippet(Action<BimSnippetBuilder> builder) {
     var bimSnippet =
       (BimSnippet)BuilderUtils.BuildItem<BimSnippetBuilder, IBimSnippet>(
         builder);
@@ -91,8 +110,8 @@ public class MarkupBuilder : IMarkupBuilder {
     return this;
   }
 
-  public IMarkupBuilder AddDocumentReference(
-    Action<IDocumentReferenceBuilder> builder) {
+  public MarkupBuilder AddDocumentReference(
+    Action<DocumentReferenceBuilder> builder) {
     var documentReference =
       (TopicDocumentReference)BuilderUtils
         .BuildItem<DocumentReferenceBuilder, IDocReference>(builder);
@@ -100,14 +119,14 @@ public class MarkupBuilder : IMarkupBuilder {
     return this;
   }
 
-  public IMarkupBuilder AddComment(Action<ICommentBuilder> builder) {
+  public MarkupBuilder AddComment(Action<CommentBuilder> builder) {
     var comment =
       (Comment)BuilderUtils.BuildItem<CommentBuilder, IComment>(builder);
     _markup.Comment.Add(comment);
     throw new NotImplementedException();
   }
 
-  public IMarkupBuilder AddViewPoint(Action<IViewPointBuilder> builder) {
+  public MarkupBuilder AddViewPoint(Action<ViewPointBuilder> builder) {
     var visInfo =
       (VisualizationInfo)BuilderUtils
         .BuildItem<ViewPointBuilder, IVisualizationInfo>(builder);
@@ -115,6 +134,14 @@ public class MarkupBuilder : IMarkupBuilder {
       VisualizationInfo = visInfo
     };
     _markup.Viewpoints.Add(viewPoint);
+    return this;
+  }
+
+  public MarkupBuilder AddRelatedTopic(string relatedTopicGuid) {
+    var relatedTopic = new TopicRelatedTopic {
+      Guid = relatedTopicGuid
+    };
+    _markup.Topic.RelatedTopic.Add(relatedTopic);
     return this;
   }
 

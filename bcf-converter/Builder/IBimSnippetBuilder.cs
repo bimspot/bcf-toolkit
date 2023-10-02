@@ -1,8 +1,8 @@
 namespace bcf.Builder;
 
-public interface IBimSnippetBuilder : IBuilder<IBimSnippet> {
-  IBimSnippetBuilder AddType(string type);
-  IBimSnippetBuilder AddIsExternal(bool isExternal);
-  IBimSnippetBuilder AddIsReference(string reference);
-  IBimSnippetBuilder AddIsSchema(string schema);
+public interface IBimSnippetBuilder<out TBuilder> : IBuilder<IBimSnippet> {
+  TBuilder AddSnippetType(string type);
+  TBuilder AddIsExternal(bool isExternal);
+  TBuilder AddReference(string reference);
+  TBuilder AddReferenceSchema(string schema);
 }

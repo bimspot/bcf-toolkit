@@ -3,35 +3,35 @@ using bcf.bcf30;
 
 namespace bcf.Builder.Bcf30;
 
-public class HeaderFileBuilder : IHeaderFileBuilder {
+public class HeaderFileBuilder : IHeaderFileBuilder<HeaderFileBuilder> {
   private readonly File _file = new();
 
-  public IHeaderFileBuilder AddIfcProject(string id) {
+  public HeaderFileBuilder AddIfcProject(string id) {
     _file.IfcProject = id;
     return this;
   }
 
-  public IHeaderFileBuilder AddIfcSpatialStructureElement(string id) {
+  public HeaderFileBuilder AddIfcSpatialStructureElement(string id) {
     _file.IfcSpatialStructureElement = id;
     return this;
   }
 
-  public IHeaderFileBuilder AddIsExternal(bool isExternal) {
+  public HeaderFileBuilder AddIsExternal(bool isExternal) {
     _file.IsExternal = isExternal;
     return this;
   }
 
-  public IHeaderFileBuilder AddFileName(string fileName) {
+  public HeaderFileBuilder AddFileName(string fileName) {
     _file.Filename = fileName;
     return this;
   }
 
-  public IHeaderFileBuilder AddDate(DateTime date) {
+  public HeaderFileBuilder AddDate(DateTime date) {
     _file.Date = date;
     return this;
   }
 
-  public IHeaderFileBuilder AddReference(string reference) {
+  public HeaderFileBuilder AddReference(string reference) {
     _file.Reference = reference;
     return this;
   }

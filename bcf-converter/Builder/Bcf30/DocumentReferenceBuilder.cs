@@ -1,25 +1,21 @@
 using System;
+using bcf.bcf30;
 
 namespace bcf.Builder.Bcf30;
 
-public class DocumentReferenceBuilder : IDocumentReferenceBuilder {
-  public IDocumentReferenceBuilder AddGuid(string guid) {
-    throw new NotImplementedException();
+public partial class DocumentReferenceBuilder : IDocumentReferenceBuilder<DocumentReferenceBuilder> {
+  private readonly DocumentReference _documentReference = new();
+  public DocumentReferenceBuilder AddGuid(string guid) {
+    _documentReference.Guid = guid;
+    return this;
   }
 
-  public IDocumentReferenceBuilder AddIsExternal(bool isExternal) {
-    throw new NotImplementedException();
-  }
-
-  public IDocumentReferenceBuilder AddReference(string reference) {
-    throw new NotImplementedException();
-  }
-
-  public IDocumentReferenceBuilder AddDescription(string description) {
-    throw new NotImplementedException();
+  public DocumentReferenceBuilder AddDescription(string description) {
+    _documentReference.Description = description;
+    return this;
   }
 
   public IDocReference Build() {
-    throw new NotImplementedException();
+    return _documentReference;
   }
 }

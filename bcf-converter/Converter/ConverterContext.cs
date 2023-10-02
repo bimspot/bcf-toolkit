@@ -24,7 +24,7 @@ public class ConverterContext {
   /// </summary>
   private IConverter _converter;
 
-  private IMarkupBuilder _markupBuilder;
+  // private IMarkupBuilder _markupBuilder;
 
   /// <summary>
   ///   Creates and returns an instance of `ConverterContext`. The version of
@@ -61,13 +61,13 @@ public class ConverterContext {
     _converter = converter;
   }
 
-  /// <summary>
-  ///   Sets the builder strategy.
-  /// </summary>
-  /// <param name="builder"></param>
-  private void SetMarkupBuilder(IMarkupBuilder builder) {
-    _markupBuilder = builder;
-  }
+  // /// <summary>
+  // ///   Sets the builder strategy.
+  // /// </summary>
+  // /// <param name="builder"></param>
+  // private void SetMarkupBuilder(IMarkupBuilder builder) {
+  //   _markupBuilder = builder;
+  // }
 
   /// <summary>
   ///   Converts the specified source data to the given destination.

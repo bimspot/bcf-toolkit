@@ -1,25 +1,30 @@
-using System;
+using bcf.bcf30;
 
 namespace bcf.Builder.Bcf30;
 
-public class BimSnippetBuilder : IBimSnippetBuilder {
-  public IBimSnippetBuilder AddType(string type) {
-    throw new NotImplementedException();
+public class BimSnippetBuilder : IBimSnippetBuilder<BimSnippetBuilder> {
+  private readonly BimSnippet _snippet = new();
+  public BimSnippetBuilder AddSnippetType(string type) {
+    _snippet.SnippetType = type;
+    return this;
   }
 
-  public IBimSnippetBuilder AddIsExternal(bool isExternal) {
-    throw new NotImplementedException();
+  public BimSnippetBuilder AddIsExternal(bool isExternal) {
+    _snippet.IsExternal = isExternal;
+    return this;
   }
 
-  public IBimSnippetBuilder AddIsReference(string reference) {
-    throw new NotImplementedException();
+  public BimSnippetBuilder AddReference(string reference) {
+    _snippet.Reference = reference;
+    return this;
   }
 
-  public IBimSnippetBuilder AddIsSchema(string schema) {
-    throw new NotImplementedException();
+  public BimSnippetBuilder AddReferenceSchema(string schema) {
+    _snippet.ReferenceSchema = schema;
+    return this;
   }
 
   public IBimSnippet Build() {
-    throw new NotImplementedException();
+    return _snippet;
   }
 }

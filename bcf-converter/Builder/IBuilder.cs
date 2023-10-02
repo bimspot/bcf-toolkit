@@ -1,5 +1,5 @@
 namespace bcf.Builder;
 
-public interface IBuilder<out T> {
-  T Build();
+public interface IBuilder<out TItem> {
+  TItem Build();
 }

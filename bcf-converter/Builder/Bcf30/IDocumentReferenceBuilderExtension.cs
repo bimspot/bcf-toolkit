@@ -1,5 +1,6 @@
 namespace bcf.Builder.Bcf30; 
 
-public class IDocumentReferenceBuilderExtension {
-  
+public interface IDocumentReferenceBuilderExtension<out TBuilder> {
+  TBuilder AddDocumentGuid(string guid);
+  TBuilder AddUrl(string url);
 }
