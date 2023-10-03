@@ -1,32 +1,36 @@
 using System;
-using System.Collections.Generic;
 
 namespace bcf.Builder;
 
-public interface IViewPointBuilder : IBuilder<IVisualizationInfo> {
-  IViewPointBuilder AddViewSetupHints(
-    bool spaceVisible,
-    bool spaceBoundariesVisible,
-    bool openingVisible);
-
-  IViewPointBuilder AddSelection(List<string> components);
-
-  IViewPointBuilder AddVisibility(
-    bool defaultVisibility,
-    List<string> exceptions);
-
-  IViewPointBuilder AddColoring(string color, List<string> components);
-
-  IViewPointBuilder AddOrthogonalCamera(Action<ICameraBuilder> cameraBuilder,
-    double viewToWorldScale);
-
-  IViewPointBuilder AddOrthogonalCamera(Action<ICameraBuilder> cameraBuilder,
-    double viewToWorldScale, double aspectRatio);
-
-  IViewPointBuilder AddPerspectiveCamera(Action<ICameraBuilder> cameraBuilder,
-    double fieldOfView);
-
-  IViewPointBuilder AddLine();
-  IViewPointBuilder AddClippingPlane();
-  IViewPointBuilder AddBitmap();
+public interface IViewPointBuilder<
+  out TBuilder, 
+  out TViewSetupHintsBuilder,
+  out TComponentBuilder, 
+  out TVisibilityBuilder, 
+  out TColorBuilder,
+  out TOrthogonalCameraBuilder,
+  out TPerspectiveCameraBuilder,
+  out TLineBuilder,
+  out TClippingPlaneBuilder,
+  out TBitmapBuilder> : IBuilder<IVisualizationInfo> {
+  TBuilder AddGuid(string guid);
+  TBuilder AddViewSetupHints(Action<TViewSetupHintsBuilder> builder);
+  TBuilder AddSelection(Action<TComponentBuilder> builder);
+  TBuilder AddVisibility(Action<TVisibilityBuilder> builder);
+  TBuilder AddColoring(Action<TColorBuilder> builder);
+  TBuilder AddOrthogonalCamera(Action<TOrthogonalCameraBuilder> builder);
+  // TODO 3.0
+  // TBuilder AddOrthogonalCamera(
+  //   Action<ICameraBuilder> cameraBuilder,
+  //   double viewToWorldScale, 
+  //   double aspectRatio);
+  TBuilder AddPerspectiveCamera(Action<TPerspectiveCameraBuilder> builder);
+  // TODO 3.0
+  // TBuilder AddPerspectiveCamera(
+  //   Action<ICameraBuilder> cameraBuilder,
+  //   double fieldOfView,
+  //   doubel aspectRatio);
+  TBuilder AddLine(Action<TLineBuilder> builder);
+  TBuilder AddClippingPlane(Action<TClippingPlaneBuilder> builder);
+  TBuilder AddBitmap(Action<TBitmapBuilder> builder);
 }

@@ -126,12 +126,13 @@ public class MarkupBuilder : IMarkupBuilder<MarkupBuilder,
     throw new NotImplementedException();
   }
 
-  public MarkupBuilder AddViewPoint(Action<ViewPointBuilder> builder) {
+  public MarkupBuilder AddViewPoint(Action<ViewPointBuilder> builder, string snapshotData) {
     var visInfo =
       (VisualizationInfo)BuilderUtils
         .BuildItem<ViewPointBuilder, IVisualizationInfo>(builder);
     var viewPoint = new ViewPoint {
-      VisualizationInfo = visInfo
+      VisualizationInfo = visInfo,
+      SnapshotData = snapshotData
     };
     _markup.Viewpoints.Add(viewPoint);
     return this;

@@ -1,70 +1,81 @@
 using System;
-using System.Collections.Generic;
 using bcf.bcf21;
 
 namespace bcf.Builder.Bcf21;
 
-public class ViewPointBuilder : IViewPointBuilder {
+public class ViewPointBuilder : IViewPointBuilder<ViewPointBuilder, ViewSetupHintsBuilder, ComponentBuilder, VisibilityBuilder, ColorBuilder, OrthogonalCameraBuilder, PerspectiveCameraBuilder, LineBuilder, ClippingPlaneBuilder, BitmapBuilder> {
   private readonly VisualizationInfo _visualizationInfo = new();
 
-  public IViewPointBuilder AddViewSetupHints(bool spaceVisible,
-    bool spaceBoundariesVisible, bool openingVisible) {
-    throw new NotImplementedException();
+  public ViewPointBuilder AddGuid(string guid) {
+    _visualizationInfo.Guid = guid;
+    return this;
   }
-
-  public IViewPointBuilder AddSelection(List<string> components) {
-    throw new NotImplementedException();
-  }
-
-  public IViewPointBuilder AddVisibility(bool defaultVisibility,
-    List<string> exceptions) {
-    throw new NotImplementedException();
-  }
-
-  public IViewPointBuilder AddColoring(string color, List<string> components) {
-    throw new NotImplementedException();
-  }
-
-  public IViewPointBuilder AddOrthogonalCamera(
-    Action<ICameraBuilder> cameraBuilder,
-    double viewToWorldScale) {
-    var builder = new CameraBuilder();
-    cameraBuilder(builder);
-    var camera = builder.Build();
-    _visualizationInfo.OrthogonalCamera = new OrthogonalCamera {
-      CameraViewPoint = (Point)camera.GetType().GetProperty("viewPoint")
-        ?.GetValue(camera, null)!,
-      CameraDirection = (Direction)camera.GetType().GetProperty("direction")
-        ?.GetValue(camera, null)!,
-      CameraUpVector = (Direction)camera.GetType().GetProperty("upVector")
-        ?.GetValue(camera, null)!,
-      ViewToWorldScale = viewToWorldScale
-    };
+  public ViewPointBuilder AddViewSetupHints(
+    Action<ViewSetupHintsBuilder> builder) {
+    var viewSetupHints =
+      (ViewSetupHints)BuilderUtils
+        .BuildItem<ViewSetupHintsBuilder, IViewSetupHints>(builder);
+    _visualizationInfo.Components.ViewSetupHints = viewSetupHints;
     return this;
   }
 
-  public IViewPointBuilder AddOrthogonalCamera(
-    Action<ICameraBuilder> cameraBuilder,
-    double viewToWorldScale, double aspectRatio) {
-    throw new NotImplementedException();
+  public ViewPointBuilder AddSelection(Action<ComponentBuilder> builder) {
+    var selection =
+      (Component)BuilderUtils.BuildItem<ComponentBuilder, IComponent>(builder);
+    _visualizationInfo.Components.Selection.Add(selection);
+    return this;
   }
 
-  public IViewPointBuilder
-    AddPerspectiveCamera(Action<ICameraBuilder> cameraBuilder,
-      double fieldOfView) {
-    throw new NotImplementedException();
+  public ViewPointBuilder AddVisibility(Action<VisibilityBuilder> builder) {
+    var visibility =
+      (ComponentVisibility)BuilderUtils
+        .BuildItem<VisibilityBuilder, IVisibility>(builder);
+    _visualizationInfo.Components.Visibility = visibility;
+    return this;
   }
 
-  public IViewPointBuilder AddLine() {
-    throw new NotImplementedException();
+  public ViewPointBuilder AddColoring(Action<ColorBuilder> builder) {
+    var color =
+      (ComponentColoringColor)BuilderUtils.BuildItem<ColorBuilder, IColor>(
+        builder);
+    _visualizationInfo.Components.Coloring.Add(color);
+    return this;
   }
 
-  public IViewPointBuilder AddClippingPlane() {
-    throw new NotImplementedException();
+  public ViewPointBuilder AddOrthogonalCamera(Action<OrthogonalCameraBuilder> builder) {
+    var camera = (OrthogonalCamera)BuilderUtils
+      .BuildItem<OrthogonalCameraBuilder, IOrthogonalCamera>(builder);
+    _visualizationInfo.OrthogonalCamera = camera;
+    return this;
   }
 
-  public IViewPointBuilder AddBitmap() {
-    throw new NotImplementedException();
+  public ViewPointBuilder AddPerspectiveCamera(Action<PerspectiveCameraBuilder> builder) {
+    var camera = (PerspectiveCamera)BuilderUtils
+      .BuildItem<PerspectiveCameraBuilder, IPerspectiveCamera>(builder);
+    _visualizationInfo.PerspectiveCamera = camera;
+    return this;
+  }
+
+  public ViewPointBuilder AddLine(Action<LineBuilder> builder) {
+    var line = (Line)BuilderUtils.BuildItem<LineBuilder, ILine>(builder);
+    _visualizationInfo.Lines.Add(line);
+    return this;
+  }
+
+  public ViewPointBuilder AddClippingPlane(Action<ClippingPlaneBuilder> builder) {
+    var clippingPlane =
+      (ClippingPlane)BuilderUtils
+        .BuildItem<ClippingPlaneBuilder, IClippingPlane>(builder);
+    _visualizationInfo.ClippingPlanes.Add(clippingPlane);
+    return this;
+  }
+
+  public ViewPointBuilder AddBitmap(Action<BitmapBuilder> builder) {
+    var bitmap =
+      (VisualizationInfoBitmap)BuilderUtils
+        .BuildItem<BitmapBuilder, IBitmap>(builder);
+    _visualizationInfo.Bitmap.Add(bitmap);
+    return this;
   }
 
   public IVisualizationInfo Build() {

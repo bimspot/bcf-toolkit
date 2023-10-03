@@ -1,5 +1,3 @@
-using System;
-
 namespace bcf.Builder;
 
 public static class MarkupBuilderCreator {

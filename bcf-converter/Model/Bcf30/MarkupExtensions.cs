@@ -36,11 +36,7 @@ public partial class ViewPoint : IViewPoint {
 }
 
 public partial class VisualizationInfo : IVisualizationInfo { }
-
 public partial class File : IHeaderFile { }
-
 public partial class BimSnippet : IBimSnippet { }
-
 public partial class DocumentReference : IDocReference { }
-
 public partial class Comment : IComment { }
