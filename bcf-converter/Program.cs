@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using bcf.Builder;
 
 namespace bcf;
 
@@ -31,29 +30,8 @@ internal static class Program {
     try {
       var version =
         (BcfVersionEnum)Enum.Parse(typeof(BcfVersionEnum), targetVersion);
-      // var context = new ConverterContext(version);
-      // await context.Convert(sourcePath, targetFolder);
-
-
-      var builder = MarkupBuilderCreator.CreateBuilder();
-      // var builder = new Builder.Bcf21.MarkupBuilder();
-
-      var markup = builder.AddHeaderFile(b => b
-          .AddFileName("f"))
-        .AddServerAssignedId("")
-        .Build();
-      // .AddHeaderFile("p1", "s1", true, "f1", DateTime
-      // .Now, "r1")
-      // .AddHeaderFile("p2", "s2", true, "f2", DateTime
-      //   .Now, "r2").Build();
-      // var markup = builder
-      //   .AddViewPoint(i => i
-      //     .AddOrthogonalCamera(c => c
-      //       .AddViewPoint(10,10,10)
-      //       .AddDirection(10,10,10)
-      //       .AddUpVector(10,10,10),
-      //       10, 10))
-      //   .Build();
+      var context = new ConverterContext(version);
+      await context.Convert(sourcePath, targetFolder);
     }
     catch (Exception e) {
       var errorWriter = Console.Error;
