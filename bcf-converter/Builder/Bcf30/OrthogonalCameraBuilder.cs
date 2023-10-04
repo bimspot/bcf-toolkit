@@ -3,7 +3,7 @@ using bcf.bcf30;
 
 namespace bcf.Builder.Bcf30;
 
-public partial class OrthogonalCameraBuilder : 
+public partial class OrthogonalCameraBuilder :
   IOrthogonalCameraBuilder<OrthogonalCameraBuilder, CameraBuilder> {
   private readonly OrthogonalCamera _camera = new();
 

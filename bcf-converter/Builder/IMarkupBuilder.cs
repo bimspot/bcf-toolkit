@@ -4,12 +4,12 @@ using System.Collections.ObjectModel;
 namespace bcf.Builder;
 
 public interface IMarkupBuilder<
-  out TBuilder, 
+  out TBuilder,
   out THeaderFileBuilder,
-  out TBimSnippetBuilder, 
-  out TDocumentReferenceBuilder, 
+  out TBimSnippetBuilder,
+  out TDocumentReferenceBuilder,
   out TCommentBuilder,
-  out TViewPointBuilder> : 
+  out TViewPointBuilder> :
   IBuilder<IMarkup> {
   TBuilder AddGuid(string guid);
   TBuilder AddTopicType(string type);

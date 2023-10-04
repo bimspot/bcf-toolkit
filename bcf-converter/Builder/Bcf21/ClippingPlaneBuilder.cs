@@ -2,7 +2,7 @@ using bcf.bcf21;
 
 namespace bcf.Builder.Bcf21;
 
-public class ClippingPlaneBuilder : 
+public class ClippingPlaneBuilder :
   IClippingPlaneBuilder<ClippingPlaneBuilder> {
   private readonly ClippingPlane _clippingPlane = new();
 

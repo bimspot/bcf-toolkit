@@ -3,7 +3,7 @@ using bcf.bcf21;
 
 namespace bcf.Builder.Bcf21;
 
-public class OrthogonalCameraBuilder : 
+public class OrthogonalCameraBuilder :
   IOrthogonalCameraBuilder<OrthogonalCameraBuilder, CameraBuilder> {
   private readonly OrthogonalCamera _camera = new();
 

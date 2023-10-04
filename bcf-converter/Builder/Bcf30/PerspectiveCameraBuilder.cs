@@ -3,7 +3,7 @@ using bcf.bcf30;
 
 namespace bcf.Builder.Bcf30;
 
-public partial class PerspectiveCameraBuilder : 
+public partial class PerspectiveCameraBuilder :
   IPerspectiveCameraBuilder<PerspectiveCameraBuilder, CameraBuilder> {
   private readonly PerspectiveCamera _camera = new();
 

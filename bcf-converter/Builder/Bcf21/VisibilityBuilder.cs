@@ -3,7 +3,7 @@ using bcf.bcf21;
 
 namespace bcf.Builder.Bcf21;
 
-public class VisibilityBuilder : 
+public class VisibilityBuilder :
   IVisibilityBuilder<VisibilityBuilder, ComponentBuilder> {
   private readonly ComponentVisibility _visibility = new();
 

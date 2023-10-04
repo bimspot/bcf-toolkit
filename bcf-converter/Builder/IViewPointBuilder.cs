@@ -11,7 +11,7 @@ public interface IViewPointBuilder<
   out TPerspectiveCameraBuilder,
   out TLineBuilder,
   out TClippingPlaneBuilder,
-  out TBitmapBuilder> : 
+  out TBitmapBuilder> :
   IBuilder<IVisualizationInfo> {
   TBuilder AddGuid(string guid);
 

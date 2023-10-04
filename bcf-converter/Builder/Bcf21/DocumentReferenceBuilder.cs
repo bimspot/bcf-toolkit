@@ -2,7 +2,7 @@ using bcf.bcf21;
 
 namespace bcf.Builder.Bcf21;
 
-public partial class DocumentReferenceBuilder : 
+public partial class DocumentReferenceBuilder :
   IDocumentReferenceBuilder<DocumentReferenceBuilder> {
   private readonly TopicDocumentReference _documentReference = new();
 

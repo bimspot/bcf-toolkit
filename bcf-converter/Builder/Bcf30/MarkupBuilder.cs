@@ -3,13 +3,13 @@ using bcf.bcf30;
 
 namespace bcf.Builder.Bcf30;
 
-public partial class MarkupBuilder : 
+public partial class MarkupBuilder :
   IMarkupBuilder<
     MarkupBuilder,
-    HeaderFileBuilder, 
-    BimSnippetBuilder, 
-    DocumentReferenceBuilder, 
-    CommentBuilder, 
+    HeaderFileBuilder,
+    BimSnippetBuilder,
+    DocumentReferenceBuilder,
+    CommentBuilder,
     ViewPointBuilder> {
   private readonly Markup _markup = new();
 
