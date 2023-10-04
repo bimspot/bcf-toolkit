@@ -1,8 +1,9 @@
 using bcf.bcf21;
 
-namespace bcf.Builder.Bcf21; 
+namespace bcf.Builder.Bcf21;
 
-public class ClippingPlaneBuilder : IClippingPlaneBuilder<ClippingPlaneBuilder> {
+public class ClippingPlaneBuilder : 
+  IClippingPlaneBuilder<ClippingPlaneBuilder> {
   private readonly ClippingPlane _clippingPlane = new();
 
   public ClippingPlaneBuilder AddLocation(double x, double y, double z) {
@@ -18,7 +19,7 @@ public class ClippingPlaneBuilder : IClippingPlaneBuilder<ClippingPlaneBuilder> 
     _clippingPlane.Direction.Z = z;
     return this;
   }
-  
+
   public IClippingPlane Build() {
     return _clippingPlane;
   }

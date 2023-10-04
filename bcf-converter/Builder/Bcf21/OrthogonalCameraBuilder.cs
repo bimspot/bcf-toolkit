@@ -1,9 +1,10 @@
 using System;
 using bcf.bcf21;
 
-namespace bcf.Builder.Bcf21; 
+namespace bcf.Builder.Bcf21;
 
-public class OrthogonalCameraBuilder : IOrthogonalCameraBuilder<OrthogonalCameraBuilder,CameraBuilder> {
+public class OrthogonalCameraBuilder : 
+  IOrthogonalCameraBuilder<OrthogonalCameraBuilder, CameraBuilder> {
   private readonly OrthogonalCamera _camera = new();
 
   public OrthogonalCameraBuilder AddCamera(Action<CameraBuilder> builder) {
@@ -24,7 +25,7 @@ public class OrthogonalCameraBuilder : IOrthogonalCameraBuilder<OrthogonalCamera
     _camera.ViewToWorldScale = scale;
     return this;
   }
-  
+
   public IOrthogonalCamera Build() {
     return _camera;
   }

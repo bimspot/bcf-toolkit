@@ -1,10 +1,11 @@
 using bcf.bcf30;
 
-namespace bcf.Builder.Bcf30; 
+namespace bcf.Builder.Bcf30;
 
-public class ViewSetupHintsBuilder : IViewSetupHintsBuilder<ViewSetupHintsBuilder>{
+public class ViewSetupHintsBuilder : 
+  IViewSetupHintsBuilder<ViewSetupHintsBuilder> {
   private readonly ViewSetupHints _viewSetupHints = new();
-  
+
   public ViewSetupHintsBuilder AddSpaceVisible(bool spaceVisible) {
     _viewSetupHints.SpacesVisible = spaceVisible;
     return this;
@@ -19,7 +20,7 @@ public class ViewSetupHintsBuilder : IViewSetupHintsBuilder<ViewSetupHintsBuilde
     _viewSetupHints.OpeningsVisible = openingVisible;
     return this;
   }
-  
+
   public IViewSetupHints Build() {
     return _viewSetupHints;
   }

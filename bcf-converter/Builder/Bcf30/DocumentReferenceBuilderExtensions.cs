@@ -1,6 +1,7 @@
-namespace bcf.Builder.Bcf30; 
+namespace bcf.Builder.Bcf30;
 
-public partial class DocumentReferenceBuilder : IDocumentReferenceBuilderExtension<DocumentReferenceBuilder> {
+public partial class DocumentReferenceBuilder : 
+  IDocumentReferenceBuilderExtension<DocumentReferenceBuilder> {
   public DocumentReferenceBuilder AddDocumentGuid(string guid) {
     _documentReference.DocumentGuid = guid;
     return this;

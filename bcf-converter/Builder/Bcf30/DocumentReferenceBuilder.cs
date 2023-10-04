@@ -1,9 +1,9 @@
-using System;
 using bcf.bcf30;
 
 namespace bcf.Builder.Bcf30;
 
-public partial class DocumentReferenceBuilder : IDocumentReferenceBuilder<DocumentReferenceBuilder> {
+public partial class DocumentReferenceBuilder : 
+  IDocumentReferenceBuilder<DocumentReferenceBuilder> {
   private readonly DocumentReference _documentReference = new();
   public DocumentReferenceBuilder AddGuid(string guid) {
     _documentReference.Guid = guid;

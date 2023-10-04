@@ -1,9 +1,10 @@
 using System;
 using bcf.bcf30;
 
-namespace bcf.Builder.Bcf30; 
+namespace bcf.Builder.Bcf30;
 
-public partial class PerspectiveCameraBuilder : IPerspectiveCameraBuilder<PerspectiveCameraBuilder, CameraBuilder> {
+public partial class PerspectiveCameraBuilder : 
+  IPerspectiveCameraBuilder<PerspectiveCameraBuilder, CameraBuilder> {
   private readonly PerspectiveCamera _camera = new();
 
   public PerspectiveCameraBuilder AddCamera(Action<CameraBuilder> builder) {
@@ -24,7 +25,7 @@ public partial class PerspectiveCameraBuilder : IPerspectiveCameraBuilder<Perspe
     _camera.FieldOfView = angle;
     return this;
   }
-  
+
   public IPerspectiveCamera Build() {
     return _camera;
   }

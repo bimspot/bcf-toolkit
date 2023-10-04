@@ -11,7 +11,8 @@ public interface IViewPointBuilder<
   out TPerspectiveCameraBuilder,
   out TLineBuilder,
   out TClippingPlaneBuilder,
-  out TBitmapBuilder> : IBuilder<IVisualizationInfo> {
+  out TBitmapBuilder> : 
+  IBuilder<IVisualizationInfo> {
   TBuilder AddGuid(string guid);
 
   TBuilder AddSelection(Action<TComponentBuilder> builder);

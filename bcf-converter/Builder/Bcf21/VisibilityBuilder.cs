@@ -1,9 +1,10 @@
 using System;
 using bcf.bcf21;
 
-namespace bcf.Builder.Bcf21; 
+namespace bcf.Builder.Bcf21;
 
-public class VisibilityBuilder : IVisibilityBuilder<VisibilityBuilder, ComponentBuilder> {
+public class VisibilityBuilder : 
+  IVisibilityBuilder<VisibilityBuilder, ComponentBuilder> {
   private readonly ComponentVisibility _visibility = new();
 
   public VisibilityBuilder AddDefaultVisibility(bool visibility) {

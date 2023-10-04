@@ -3,16 +3,16 @@ using bcf.bcf30;
 
 namespace bcf.Builder.Bcf30;
 
-public class ViewPointBuilder : 
+public class ViewPointBuilder :
   IViewPointBuilder<
-    ViewPointBuilder, 
-    ComponentBuilder, 
-    VisibilityBuilder, 
-    ColorBuilder, 
-    OrthogonalCameraBuilder, 
-    PerspectiveCameraBuilder, 
-    LineBuilder, 
-    ClippingPlaneBuilder, 
+    ViewPointBuilder,
+    ComponentBuilder,
+    VisibilityBuilder,
+    ColorBuilder,
+    OrthogonalCameraBuilder,
+    PerspectiveCameraBuilder,
+    LineBuilder,
+    ClippingPlaneBuilder,
     BitmapBuilder> {
   private readonly VisualizationInfo _visualizationInfo = new();
 

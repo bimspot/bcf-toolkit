@@ -1,5 +1,5 @@
-namespace bcf; 
+namespace bcf;
 
 public interface IColor {
-  
+
 }

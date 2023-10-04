@@ -1,4 +1,4 @@
-namespace bcf.bcf21; 
+namespace bcf.bcf21;
 
 public partial class ViewSetupHints : IViewSetupHints { }
 public partial class Component : IComponent { }

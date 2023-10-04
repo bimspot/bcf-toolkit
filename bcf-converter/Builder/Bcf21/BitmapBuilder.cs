@@ -1,7 +1,7 @@
 using System;
 using bcf.bcf21;
 
-namespace bcf.Builder.Bcf21; 
+namespace bcf.Builder.Bcf21;
 
 public class BitmapBuilder : IBitmapBuilder<BitmapBuilder> {
   private readonly VisualizationInfoBitmap _bitmap = new();
@@ -41,7 +41,7 @@ public class BitmapBuilder : IBitmapBuilder<BitmapBuilder> {
     _bitmap.Height = height;
     return this;
   }
-  
+
   public IBitmap Build() {
     return _bitmap;
   }

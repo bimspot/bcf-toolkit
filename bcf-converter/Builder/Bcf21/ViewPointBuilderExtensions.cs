@@ -1,9 +1,10 @@
 using System;
 using bcf.bcf21;
 
-namespace bcf.Builder.Bcf21; 
+namespace bcf.Builder.Bcf21;
 
-public partial class ViewPointBuilder : IViewPointBuilderExtension<ViewPointBuilder, ViewSetupHintsBuilder> {
+public partial class ViewPointBuilder : 
+  IViewPointBuilderExtension<ViewPointBuilder, ViewSetupHintsBuilder> {
   public ViewPointBuilder AddViewSetupHints(
     Action<ViewSetupHintsBuilder> builder) {
     var viewSetupHints =

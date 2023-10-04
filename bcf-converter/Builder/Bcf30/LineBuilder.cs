@@ -1,9 +1,9 @@
 using bcf.bcf30;
 
-namespace bcf.Builder.Bcf30; 
+namespace bcf.Builder.Bcf30;
 
-public class LineBuilder : ILineBuilder<LineBuilder>{
-  private readonly Line _line = new ();
+public class LineBuilder : ILineBuilder<LineBuilder> {
+  private readonly Line _line = new();
 
   public LineBuilder AddStartPoint(double x, double y, double z) {
     _line.StartPoint.X = x;
@@ -18,7 +18,7 @@ public class LineBuilder : ILineBuilder<LineBuilder>{
     _line.EndPoint.Z = z;
     return this;
   }
-  
+
   public ILine Build() {
     return _line;
   }

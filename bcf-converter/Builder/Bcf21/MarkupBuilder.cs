@@ -1,13 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using bcf.bcf21;
 
 namespace bcf.Builder.Bcf21;
 
-public class MarkupBuilder : IMarkupBuilder<MarkupBuilder,
-  HeaderFileBuilder, BimSnippetBuilder, DocumentReferenceBuilder, CommentBuilder
-  , ViewPointBuilder> {
+public class MarkupBuilder : 
+  IMarkupBuilder<
+    MarkupBuilder,
+    HeaderFileBuilder, 
+    BimSnippetBuilder, 
+    DocumentReferenceBuilder, 
+    CommentBuilder, 
+    ViewPointBuilder> {
   private readonly Markup _markup = new();
 
   public MarkupBuilder() {

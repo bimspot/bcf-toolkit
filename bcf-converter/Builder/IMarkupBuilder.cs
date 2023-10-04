@@ -3,9 +3,14 @@ using System.Collections.ObjectModel;
 
 namespace bcf.Builder;
 
-public interface IMarkupBuilder<out TBuilder, out THeaderFileBuilder,
-  out TBimSnippetBuilder, out TDocumentReferenceBuilder, out TCommentBuilder,
-  out TViewPointBuilder> : IBuilder<IMarkup> {
+public interface IMarkupBuilder<
+  out TBuilder, 
+  out THeaderFileBuilder,
+  out TBimSnippetBuilder, 
+  out TDocumentReferenceBuilder, 
+  out TCommentBuilder,
+  out TViewPointBuilder> : 
+  IBuilder<IMarkup> {
   TBuilder AddGuid(string guid);
   TBuilder AddTopicType(string type);
   TBuilder AddTopicStatus(string status);

@@ -1,6 +1,7 @@
-namespace bcf.Builder.Bcf21; 
+namespace bcf.Builder.Bcf21;
 
-public partial class DocumentReferenceBuilder : IDocumentReferenceBuilderExtension<DocumentReferenceBuilder> {
+public partial class DocumentReferenceBuilder : 
+  IDocumentReferenceBuilderExtension<DocumentReferenceBuilder> {
   public DocumentReferenceBuilder AddIsExternal(bool isExternal) {
     _documentReference.IsExternal = isExternal;
     return this;

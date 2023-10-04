@@ -1,7 +1,7 @@
 using System;
 using bcf.bcf30;
 
-namespace bcf.Builder.Bcf30; 
+namespace bcf.Builder.Bcf30;
 
 public class ColorBuilder : IColorBuilder<ColorBuilder, ComponentBuilder> {
   private readonly ComponentColoringColor _color = new();
@@ -17,7 +17,7 @@ public class ColorBuilder : IColorBuilder<ColorBuilder, ComponentBuilder> {
     _color.Components.Add(component);
     return this;
   }
-  
+
   public IColor Build() {
     return _color;
   }

@@ -1,7 +1,7 @@
 using System;
 using bcf.bcf30;
 
-namespace bcf.Builder.Bcf30; 
+namespace bcf.Builder.Bcf30;
 
 public class BitmapBuilder : IBitmapBuilder<BitmapBuilder> {
   private readonly Bitmap _bitmap = new();
@@ -41,7 +41,7 @@ public class BitmapBuilder : IBitmapBuilder<BitmapBuilder> {
     _bitmap.Height = height;
     return this;
   }
-  
+
   public IBitmap Build() {
     return _bitmap;
   }
