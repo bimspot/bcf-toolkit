@@ -1,59 +1,86 @@
 using System;
-using System.Collections.Generic;
+using bcf.bcf30;
 
 namespace bcf.Builder.Bcf30;
 
-public class
-  ViewPointBuilder : IViewPointBuilder, IBuilder<IVisualizationInfo> {
-  public IViewPointBuilder AddViewSetupHints(bool spaceVisible,
-    bool spaceBoundariesVisible, bool openingVisible) {
-    throw new NotImplementedException();
+public class ViewPointBuilder : 
+  IViewPointBuilder<
+    ViewPointBuilder, 
+    ComponentBuilder, 
+    VisibilityBuilder, 
+    ColorBuilder, 
+    OrthogonalCameraBuilder, 
+    PerspectiveCameraBuilder, 
+    LineBuilder, 
+    ClippingPlaneBuilder, 
+    BitmapBuilder> {
+  private readonly VisualizationInfo _visualizationInfo = new();
+
+  public ViewPointBuilder AddGuid(string guid) {
+    _visualizationInfo.Guid = guid;
+    return this;
   }
 
-  public IViewPointBuilder AddSelection(List<string> components) {
-    throw new NotImplementedException();
+  public ViewPointBuilder AddSelection(Action<ComponentBuilder> builder) {
+    var selection =
+      (Component)BuilderUtils.BuildItem<ComponentBuilder, IComponent>(builder);
+    _visualizationInfo.Components.Selection.Add(selection);
+    return this;
   }
 
-  public IViewPointBuilder AddVisibility(bool defaultVisibility,
-    List<string> exceptions) {
-    throw new NotImplementedException();
+  public ViewPointBuilder AddVisibility(Action<VisibilityBuilder> builder) {
+    var visibility =
+      (ComponentVisibility)BuilderUtils
+        .BuildItem<VisibilityBuilder, IVisibility>(builder);
+    _visualizationInfo.Components.Visibility = visibility;
+    return this;
   }
 
-  public IViewPointBuilder AddColoring(string color, List<string> components) {
-    throw new NotImplementedException();
+  public ViewPointBuilder AddColoring(Action<ColorBuilder> builder) {
+    var color =
+      (ComponentColoringColor)BuilderUtils.BuildItem<ColorBuilder, IColor>(
+        builder);
+    _visualizationInfo.Components.Coloring.Add(color);
+    return this;
   }
 
-  public IViewPointBuilder AddOrthogonalCamera(
-    Action<ICameraBuilder> cameraBuilder,
-    double viewToWorldScale) {
-    throw new NotImplementedException();
+  public ViewPointBuilder AddOrthogonalCamera(Action<OrthogonalCameraBuilder> builder) {
+    var camera = (OrthogonalCamera)BuilderUtils
+      .BuildItem<OrthogonalCameraBuilder, IOrthogonalCamera>(builder);
+    _visualizationInfo.OrthogonalCamera = camera;
+    return this;
   }
 
-  public IViewPointBuilder AddOrthogonalCamera(
-    Action<ICameraBuilder> cameraBuilder,
-    double viewToWorldScale, double aspectRatio) {
-    throw new NotImplementedException();
+  public ViewPointBuilder AddPerspectiveCamera(Action<PerspectiveCameraBuilder> builder) {
+    var camera = (PerspectiveCamera)BuilderUtils
+      .BuildItem<PerspectiveCameraBuilder, IPerspectiveCamera>(builder);
+    _visualizationInfo.PerspectiveCamera = camera;
+    return this;
   }
 
-  public IViewPointBuilder
-    AddPerspectiveCamera(Action<ICameraBuilder> cameraBuilder,
-      double fieldOfView) {
-    throw new NotImplementedException();
+  public ViewPointBuilder AddLine(Action<LineBuilder> builder) {
+    var line = (Line)BuilderUtils.BuildItem<LineBuilder, ILine>(builder);
+    _visualizationInfo.Lines.Add(line);
+    return this;
   }
 
-  public IViewPointBuilder AddLine() {
-    throw new NotImplementedException();
+  public ViewPointBuilder AddClippingPlane(Action<ClippingPlaneBuilder> builder) {
+    var clippingPlane =
+      (ClippingPlane)BuilderUtils
+        .BuildItem<ClippingPlaneBuilder, IClippingPlane>(builder);
+    _visualizationInfo.ClippingPlanes.Add(clippingPlane);
+    return this;
   }
 
-  public IViewPointBuilder AddClippingPlane() {
-    throw new NotImplementedException();
-  }
-
-  public IViewPointBuilder AddBitmap() {
-    throw new NotImplementedException();
+  public ViewPointBuilder AddBitmap(Action<BitmapBuilder> builder) {
+    var bitmap =
+      (Bitmap)BuilderUtils
+        .BuildItem<BitmapBuilder, IBitmap>(builder);
+    _visualizationInfo.Bitmaps.Add(bitmap);
+    return this;
   }
 
   public IVisualizationInfo Build() {
-    throw new NotImplementedException();
+    return _visualizationInfo;
   }
 }

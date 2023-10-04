@@ -1,9 +1,8 @@
-using bcf.bcf21;
+using bcf.bcf30;
 
-namespace bcf.Builder.Bcf21; 
+namespace bcf.Builder.Bcf30; 
 
-public class ViewSetupHintsBuilder : 
-  IViewSetupHintsBuilder<ViewSetupHintsBuilder> {
+public class ViewSetupHintsBuilder : IViewSetupHintsBuilder<ViewSetupHintsBuilder>{
   private readonly ViewSetupHints _viewSetupHints = new();
   
   public ViewSetupHintsBuilder AddSpaceVisible(bool spaceVisible) {

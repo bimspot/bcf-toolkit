@@ -1,12 +1,13 @@
-using bcf.bcf21;
+using bcf.bcf30;
 
-namespace bcf.Builder.Bcf21;
+namespace bcf.Builder.Bcf30; 
 
 public class CameraBuilder : ICameraBuilder {
   private readonly Direction _direction = new();
   private readonly Direction _upVector = new();
   private readonly Point _viewPoint = new();
-  
+
+
   public ICameraBuilder AddViewPoint(double x, double y, double z) {
     _viewPoint.X = x;
     _viewPoint.Y = y;

@@ -3,10 +3,9 @@ using System;
 namespace bcf.Builder;
 
 public interface IViewPointBuilder<
-  out TBuilder, 
-  out TViewSetupHintsBuilder,
-  out TComponentBuilder, 
-  out TVisibilityBuilder, 
+  out TBuilder,
+  out TComponentBuilder,
+  out TVisibilityBuilder,
   out TColorBuilder,
   out TOrthogonalCameraBuilder,
   out TPerspectiveCameraBuilder,
@@ -14,17 +13,20 @@ public interface IViewPointBuilder<
   out TClippingPlaneBuilder,
   out TBitmapBuilder> : IBuilder<IVisualizationInfo> {
   TBuilder AddGuid(string guid);
-  TBuilder AddViewSetupHints(Action<TViewSetupHintsBuilder> builder);
+
   TBuilder AddSelection(Action<TComponentBuilder> builder);
   TBuilder AddVisibility(Action<TVisibilityBuilder> builder);
   TBuilder AddColoring(Action<TColorBuilder> builder);
+
   TBuilder AddOrthogonalCamera(Action<TOrthogonalCameraBuilder> builder);
+
   // TODO 3.0
   // TBuilder AddOrthogonalCamera(
   //   Action<ICameraBuilder> cameraBuilder,
   //   double viewToWorldScale, 
   //   double aspectRatio);
   TBuilder AddPerspectiveCamera(Action<TPerspectiveCameraBuilder> builder);
+
   // TODO 3.0
   // TBuilder AddPerspectiveCamera(
   //   Action<ICameraBuilder> cameraBuilder,

@@ -29,6 +29,9 @@ public interface IMarkupBuilder<out TBuilder, out THeaderFileBuilder,
     AddDocumentReference(Action<TDocumentReferenceBuilder> builder);
 
   TBuilder AddComment(Action<TCommentBuilder> builder);
-  TBuilder AddViewPoint(Action<TViewPointBuilder> viewPointBuilder, string snapshot);
+
+  TBuilder AddViewPoint(Action<TViewPointBuilder> viewPointBuilder,
+    string snapshot);
+
   TBuilder AddRelatedTopic(string relatedTopicGuid);
 }

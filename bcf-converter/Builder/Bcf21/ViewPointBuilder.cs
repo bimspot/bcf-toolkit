@@ -3,19 +3,21 @@ using bcf.bcf21;
 
 namespace bcf.Builder.Bcf21;
 
-public class ViewPointBuilder : IViewPointBuilder<ViewPointBuilder, ViewSetupHintsBuilder, ComponentBuilder, VisibilityBuilder, ColorBuilder, OrthogonalCameraBuilder, PerspectiveCameraBuilder, LineBuilder, ClippingPlaneBuilder, BitmapBuilder> {
+public partial class ViewPointBuilder :
+  IViewPointBuilder<
+    ViewPointBuilder,
+    ComponentBuilder,
+    VisibilityBuilder,
+    ColorBuilder,
+    OrthogonalCameraBuilder,
+    PerspectiveCameraBuilder,
+    LineBuilder,
+    ClippingPlaneBuilder,
+    BitmapBuilder> {
   private readonly VisualizationInfo _visualizationInfo = new();
 
   public ViewPointBuilder AddGuid(string guid) {
     _visualizationInfo.Guid = guid;
-    return this;
-  }
-  public ViewPointBuilder AddViewSetupHints(
-    Action<ViewSetupHintsBuilder> builder) {
-    var viewSetupHints =
-      (ViewSetupHints)BuilderUtils
-        .BuildItem<ViewSetupHintsBuilder, IViewSetupHints>(builder);
-    _visualizationInfo.Components.ViewSetupHints = viewSetupHints;
     return this;
   }
 
@@ -42,14 +44,16 @@ public class ViewPointBuilder : IViewPointBuilder<ViewPointBuilder, ViewSetupHin
     return this;
   }
 
-  public ViewPointBuilder AddOrthogonalCamera(Action<OrthogonalCameraBuilder> builder) {
+  public ViewPointBuilder AddOrthogonalCamera(
+    Action<OrthogonalCameraBuilder> builder) {
     var camera = (OrthogonalCamera)BuilderUtils
       .BuildItem<OrthogonalCameraBuilder, IOrthogonalCamera>(builder);
     _visualizationInfo.OrthogonalCamera = camera;
     return this;
   }
 
-  public ViewPointBuilder AddPerspectiveCamera(Action<PerspectiveCameraBuilder> builder) {
+  public ViewPointBuilder AddPerspectiveCamera(
+    Action<PerspectiveCameraBuilder> builder) {
     var camera = (PerspectiveCamera)BuilderUtils
       .BuildItem<PerspectiveCameraBuilder, IPerspectiveCamera>(builder);
     _visualizationInfo.PerspectiveCamera = camera;
@@ -62,7 +66,8 @@ public class ViewPointBuilder : IViewPointBuilder<ViewPointBuilder, ViewSetupHin
     return this;
   }
 
-  public ViewPointBuilder AddClippingPlane(Action<ClippingPlaneBuilder> builder) {
+  public ViewPointBuilder
+    AddClippingPlane(Action<ClippingPlaneBuilder> builder) {
     var clippingPlane =
       (ClippingPlane)BuilderUtils
         .BuildItem<ClippingPlaneBuilder, IClippingPlane>(builder);
