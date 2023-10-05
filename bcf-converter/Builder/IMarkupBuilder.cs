@@ -1,5 +1,4 @@
 using System;
-using System.Collections.ObjectModel;
 
 namespace bcf.Builder;
 
@@ -29,14 +28,10 @@ public interface IMarkupBuilder<
   TBuilder AddDescription(string description);
   TBuilder AddStage(string stage);
   TBuilder AddBimSnippet(Action<TBimSnippetBuilder> builder);
-
   TBuilder
     AddDocumentReference(Action<TDocumentReferenceBuilder> builder);
-
   TBuilder AddComment(Action<TCommentBuilder> builder);
-
   TBuilder AddViewPoint(Action<TViewPointBuilder> viewPointBuilder,
     string snapshot);
-
   TBuilder AddRelatedTopic(string relatedTopicGuid);
 }

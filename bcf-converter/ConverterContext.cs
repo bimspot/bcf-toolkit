@@ -1,6 +1,7 @@
 #nullable disable
 
 using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using bcf.Builder;
 using bcf.Converter;
@@ -22,7 +23,9 @@ public class ConverterContext {
   ///   It does not know the concrete class of a strategy.
   ///   It should work with all strategies via the converter strategy interface.
   /// </summary>
-  private IConverter _converter;
+  private IConverter Converter { get; set; }
+
+  private IBuilder<IMarkup> Builder { get; set; }
 
   // private IMarkupBuilder _markupBuilder;
 
@@ -32,7 +35,7 @@ public class ConverterContext {
   /// </summary>
   /// <param name="version">The version of the BCF.</param>
   public ConverterContext(BcfVersionEnum version) {
-    SetVersion(version);
+    Init(version);
   }
 
   /// <summary>
@@ -40,34 +43,20 @@ public class ConverterContext {
   /// </summary>
   /// <param name="version">The version of the BCF.</param>
   /// <exception cref="ArgumentException"></exception>
-  private void SetVersion(BcfVersionEnum version) {
+  private void Init(BcfVersionEnum version) {
     switch (version) {
       case BcfVersionEnum.Bcf21:
-        SetConverter(new Converter21());
+        Converter = new Converter.Bcf21.Converter();
+        Builder = new Builder.Bcf21.MarkupBuilder();
         break;
       case BcfVersionEnum.Bcf30:
-        SetConverter(new Converter30());
+        Converter = new Converter.Bcf30.Converter();
+        Builder = new Builder.Bcf30.MarkupBuilder();
         break;
       default:
         throw new ArgumentException($"Unsupported BCF version: {version}");
     }
   }
-
-  /// <summary>
-  ///   Sets the converter strategy.
-  /// </summary>
-  /// <param name="converter"></param>
-  private void SetConverter(IConverter converter) {
-    _converter = converter;
-  }
-
-  // /// <summary>
-  // ///   Sets the builder strategy.
-  // /// </summary>
-  // /// <param name="builder"></param>
-  // private void SetMarkupBuilder(IMarkupBuilder builder) {
-  //   _markupBuilder = builder;
-  // }
 
   /// <summary>
   ///   Converts the specified source data to the given destination.
@@ -76,12 +65,12 @@ public class ConverterContext {
   /// <param name="target">Target destination for the converted results.</param>
   public async Task Convert(string source, string target) {
     if (source.EndsWith("bcfzip"))
-      await _converter.BcfToJson(source, target)!;
+      await Converter.BcfToJson(source, target)!;
     else
-      await _converter.JsonToBcf(source, target)!;
+      await Converter.JsonToBcf(source, target)!;
   }
 
-  // public Task ToBcf() {
-  //   return _converter.ToBcf();
-  // }
+  internal Task ToBcf(string target, ConcurrentBag<IMarkup> markups) {
+    return Converter.ToBcf(target, markups);
+  }
 }

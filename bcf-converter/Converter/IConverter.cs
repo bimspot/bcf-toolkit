@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
 namespace bcf.Converter;
@@ -22,5 +23,5 @@ public interface IConverter {
   /// <returns></returns>
   Task JsonToBcf(string source, string target);
 
-  // Task ToBcf<T>(string target, ConcurrentBag<T> markups);
+  Task ToBcf(string target, ConcurrentBag<IMarkup> markups, IRoot root);
 }

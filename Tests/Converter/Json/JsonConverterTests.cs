@@ -76,7 +76,7 @@ public class JsonConverterTests {
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
     var documentGuid = markup.Topic.DocumentReferences.FirstOrDefault()?.DocumentGuid;
-    var document = root.document?.Documents.FirstOrDefault()!;
+    var document = root.Document?.Documents.FirstOrDefault()!;
     Assert.AreEqual("b1d1b7f0-60b9-457d-ad12-16e0fb997bc5", documentGuid);
     Assert.AreEqual(documentGuid, document.Guid);
     Assert.AreEqual("ThisIsADocument.txt", document.Filename);

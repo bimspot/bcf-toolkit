@@ -1,19 +1,20 @@
+using System.Collections.Concurrent;
+using System.IO;
 using System.Threading.Tasks;
-using bcf.bcf30;
+using bcf.bcf21;
+using bcf.Converter;
 
-namespace bcf.Converter;
+namespace bcf.Converter.Bcf21;
 
 /// <summary>
-///   Converter strategy class for converting BCF 3.0 files to JSON
+///   Converter strategy class for converting BCF 2.1 files to JSON
 ///   and back.
 /// </summary>
-public class Converter30 : IConverter {
+public class Converter : IConverter {
   /// <summary>
-  ///   The method parses the BCF file of version 3.0 and writes into JSON.
+  ///   The method parses the BCF file of version 2.1 and writes into JSON.
   ///   The root of the BCF zip contains the following files:
-  ///   - extensions.xml
   ///   - project.bcfp (optional)
-  ///   - documents.xml (optional)
   ///   - bcf.version
   ///   Topic folder structure inside a BCFzip archive:
   ///   - markup.bcf
@@ -26,13 +27,9 @@ public class Converter30 : IConverter {
   /// <param name="target">The target path where the JSON is written.</param>
   public async Task BcfToJson(string source, string target) {
     // Parsing BCF root file structure
-    var extensions = await BcfConverter.ParseExtensions<Extensions>(source);
-    var projectInfo = await BcfConverter.ParseProject<ProjectInfo>(source);
-    var documentInfo = await BcfConverter.ParseDocuments<DocumentInfo>(source);
+    var project = await BcfConverter.ParseProject<ProjectExtension>(source);
     var root = new Root {
-      extensions = extensions,
-      project = projectInfo,
-      document = documentInfo
+      Project = project
     };
 
     // Parsing topics folder (markups)
@@ -44,20 +41,30 @@ public class Converter30 : IConverter {
   }
 
   /// <summary>
-  ///   The method reads the JSON files and creates BCF 3.0 version.
+  ///   The method reads the JSON files and creates BCF 2.1 version.
   ///   The json folder must contain files which are named using the
   ///   `uuid` of the `Topic` within, and `bcfRoot.json`.
   /// </summary>
   /// <param name="source">The source folder to the JSON files.</param>
   /// <param name="target">The target path where the BCF is written.</param>
   public async Task JsonToBcf(string source, string target) {
-    // Parsing BCF root - required file
-    var root = await JsonConverter.ParseObject<Root>($"{source}/bcfRoot.json");
+    // Parsing BCF root - it is an optional file
+    var rootPath = $"{source}/bcfRoot.json";
+    var root = Path.Exists(rootPath)
+      ? await JsonConverter.ParseObject<Root>(rootPath)
+      : new Root();
 
     // Parsing markups
     var markups = await JsonConverter.ParseMarkups<Markup>(source);
 
     // Writing bcf files
+    await BcfConverter.WriteBcf<Markup, VisualizationInfo, Root, Version>(
+      target, markups, root);
+  }
+
+  public async Task ToBcf(string target, ConcurrentBag<IMarkup> markups) {
+    //TODO fill root
+    var root = new Root();
     await BcfConverter.WriteBcf<Markup, VisualizationInfo, Root, Version>(target, markups, root);
   }
 }

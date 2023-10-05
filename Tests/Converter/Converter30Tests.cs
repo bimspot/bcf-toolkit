@@ -9,7 +9,7 @@ namespace Tests.Converter;
 public class Converter30Tests {
   [SetUp]
   public void Setup() {
-    _converter = new Converter30();
+    _converter = new bcf.Converter.Bcf30.Converter();
   }
 
   private IConverter _converter = null!;
