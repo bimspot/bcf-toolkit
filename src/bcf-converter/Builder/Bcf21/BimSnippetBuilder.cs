@@ -26,6 +26,6 @@ public class BimSnippetBuilder : IBimSnippetBuilder<BimSnippetBuilder> {
   }
 
   public IBimSnippet Build() {
-    return _snippet;
+    return BuilderUtils.ValidateItem(_snippet);
   }
 }

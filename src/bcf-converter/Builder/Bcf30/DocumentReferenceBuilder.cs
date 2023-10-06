@@ -18,6 +18,6 @@ public partial class DocumentReferenceBuilder :
   }
 
   public IDocReference Build() {
-    return _documentReference;
+    return BuilderUtils.ValidateItem(_documentReference);
   }
 }

@@ -22,6 +22,6 @@ public class ClippingPlaneBuilder :
   }
 
   public IClippingPlane Build() {
-    return _clippingPlane;
+    return BuilderUtils.ValidateItem(_clippingPlane);
   }
 }

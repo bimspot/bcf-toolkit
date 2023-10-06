@@ -38,6 +38,6 @@ public class HeaderFileBuilder : IHeaderFileBuilder<HeaderFileBuilder> {
   }
 
   public IHeaderFile Build() {
-    return _file;
+    return BuilderUtils.ValidateItem(_file);
   }
 }

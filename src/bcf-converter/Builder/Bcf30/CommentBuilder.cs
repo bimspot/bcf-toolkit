@@ -37,6 +37,6 @@ public class CommentBuilder : ICommentBuilder<CommentBuilder> {
   }
 
   public IComment Build() {
-    return _comment;
+    return BuilderUtils.ValidateItem(_comment);
   }
 }

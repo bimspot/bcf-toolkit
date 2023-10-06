@@ -20,6 +20,6 @@ public class VisibilityBuilder :
     return this;
   }
   public IVisibility Build() {
-    return _visibility;
+    return BuilderUtils.ValidateItem(_visibility);
   }
 }

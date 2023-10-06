@@ -17,6 +17,6 @@ public partial class ProjectBuilder : IProjectBuilder<ProjectBuilder> {
   }
 
   public IProject Build() {
-    return _project;
+    return BuilderUtils.ValidateItem(_project);
   }
 }

@@ -151,6 +151,6 @@ public class MarkupBuilder :
   }
 
   public IMarkup Build() {
-    return _markup;
+    return BuilderUtils.ValidateItem(_markup);
   }
 }

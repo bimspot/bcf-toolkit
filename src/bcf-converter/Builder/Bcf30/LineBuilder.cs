@@ -22,6 +22,6 @@ public class LineBuilder : ILineBuilder<LineBuilder> {
   }
 
   public ILine Build() {
-    return _line;
+    return BuilderUtils.ValidateItem(_line);
   }
 }

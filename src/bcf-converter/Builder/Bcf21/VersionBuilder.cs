@@ -12,6 +12,6 @@ public partial class VersionBuilder : IVersionBuilder<VersionBuilder> {
   }
 
   public IVersion Build() {
-    return _version;
+    return BuilderUtils.ValidateItem(_version);
   }
 }

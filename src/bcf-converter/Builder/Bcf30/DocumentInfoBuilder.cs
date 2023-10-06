@@ -15,6 +15,6 @@ public class DocumentInfoBuilder : IDocumentInfoBuilder<DocumentInfoBuilder, Doc
   }
 
   public IDocumentInfo Build() {
-    return _documentInfo;
+    return BuilderUtils.ValidateItem(_documentInfo);
   }
 }

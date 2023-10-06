@@ -22,6 +22,6 @@ public class DocumentBuilder : IDocumentBuilder<DocumentBuilder> {
   }
 
   public IDocument Build() {
-    return _document;
+    return BuilderUtils.ValidateItem(_document);
   }
 }

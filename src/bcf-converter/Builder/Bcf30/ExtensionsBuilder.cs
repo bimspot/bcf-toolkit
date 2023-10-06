@@ -43,6 +43,6 @@ public class ExtensionsBuilder : IExtensionsBuilder<ExtensionsBuilder> {
   }
 
   public IExtensions Build() {
-    return _extensions;
+    return BuilderUtils.ValidateItem(_extensions);
   }
 }

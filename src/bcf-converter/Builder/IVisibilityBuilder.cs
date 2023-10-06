@@ -3,8 +3,7 @@ using BcfConverter.Model;
 
 namespace BcfConverter.Builder;
 
-public interface
-  IVisibilityBuilder<
+public interface IVisibilityBuilder<
     out TBuilder,
     out TComponentBuilder> :
     IBuilder<IVisibility> {

@@ -22,6 +22,6 @@ public class ComponentBuilder : IComponentBuilder<ComponentBuilder> {
   }
 
   public IComponent Build() {
-    return _component;
+    return BuilderUtils.ValidateItem(_component);
   }
 }

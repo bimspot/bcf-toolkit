@@ -85,6 +85,6 @@ public partial class ViewPointBuilder :
   }
 
   public IVisualizationInfo Build() {
-    return _visualizationInfo;
+    return BuilderUtils.ValidateItem(_visualizationInfo);
   }
 }

@@ -20,6 +20,6 @@ public class ColorBuilder : IColorBuilder<ColorBuilder, ComponentBuilder> {
   }
 
   public IColor Build() {
-    return _color;
+    return BuilderUtils.ValidateItem(_color);
   }
 }

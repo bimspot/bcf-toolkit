@@ -44,6 +44,6 @@ public class BitmapBuilder : IBitmapBuilder<BitmapBuilder> {
   }
 
   public IBitmap Build() {
-    return _bitmap;
+    return BuilderUtils.ValidateItem(_bitmap);
   }
 }

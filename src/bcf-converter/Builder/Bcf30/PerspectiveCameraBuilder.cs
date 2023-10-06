@@ -28,6 +28,6 @@ public partial class PerspectiveCameraBuilder :
   }
 
   public IPerspectiveCamera Build() {
-    return _camera;
+    return BuilderUtils.ValidateItem(_camera);
   }
 }

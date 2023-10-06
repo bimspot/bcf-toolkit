@@ -25,6 +25,6 @@ public class ViewSetupHintsBuilder :
   }
 
   public IViewSetupHints Build() {
-    return _viewSetupHints;
+    return BuilderUtils.ValidateItem(_viewSetupHints);
   }
 }

@@ -28,6 +28,6 @@ public class OrthogonalCameraBuilder :
   }
 
   public IOrthogonalCamera Build() {
-    return _camera;
+    return BuilderUtils.ValidateItem(_camera);
   }
 }
