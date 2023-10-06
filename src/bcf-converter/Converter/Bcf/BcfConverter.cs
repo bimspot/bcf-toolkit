@@ -18,7 +18,7 @@ namespace BcfConverter.Converter;
 ///   puts their contents into the BCF models. It also writes the in
 ///   memory BCF models into BCFzip.
 /// </summary>
-internal static class BcfConverter {
+public static class BcfConverter {
   /// <summary>
   ///   The method unzips the BCFzip at the specified path into the memory,
   ///   and parses the markup xml files within to create an in memory
@@ -34,7 +34,7 @@ internal static class BcfConverter {
   /// </summary>
   /// <param name="path">The path to the BCFzip.</param>
   /// <returns>Returns a Task with a List of `Markup` models.</returns>
-  internal static Task<ConcurrentBag<TMarkup>> ParseMarkups<TMarkup,
+  public static Task<ConcurrentBag<TMarkup>> ParseMarkups<TMarkup,
     TVisualizationInfo>(string path)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo {
@@ -164,7 +164,7 @@ internal static class BcfConverter {
   /// </summary>
   /// <param name="path">The path to the BCFzip.</param>
   /// <returns>Returns a Task with an `Extensions` model.</returns>
-  internal static Task<TExtensions> ParseExtensions<TExtensions>(string path) {
+  public static Task<TExtensions> ParseExtensions<TExtensions>(string path) {
     return ParseRequired<TExtensions>(path, entry => entry.IsExtensions());
   }
 
@@ -179,7 +179,7 @@ internal static class BcfConverter {
   /// </summary>
   /// <param name="path">The path to the BCFzip.</param>
   /// <returns>Returns a Task with an `ProjectInfo` model.</returns>
-  internal static Task<TProjectInfo?> ParseProject<TProjectInfo>(string path) {
+  public static Task<TProjectInfo?> ParseProject<TProjectInfo>(string path) {
     return ParseOptional<TProjectInfo>(path, entry => entry.IsProject());
   }
 
@@ -193,7 +193,7 @@ internal static class BcfConverter {
   /// </summary>
   /// <param name="path">The path to the BCFzip.</param>
   /// <returns>Returns a Task with an `DocumentInfo` model.</returns>
-  internal static Task<TDocumentInfo?>
+  public static Task<TDocumentInfo?>
     ParseDocuments<TDocumentInfo>(string path) {
     return ParseOptional<TDocumentInfo>(path, entry => entry.IsDocuments());
   }
@@ -272,7 +272,7 @@ internal static class BcfConverter {
   /// <typeparam name="TVersion">`Version` type parameter.</typeparam>
   /// <returns></returns>
   /// <exception cref="ApplicationException"></exception>
-  internal static Task WriteBcf<TMarkup, TVisualizationInfo, TRoot, TVersion>(string targetFile,
+  public static Task WriteBcf<TMarkup, TVisualizationInfo, TRoot, TVersion>(string targetFile,
     ConcurrentBag<TMarkup> markups, TRoot root)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo
@@ -350,7 +350,7 @@ internal static class BcfConverter {
   /// <param name="obj">The object which will be written.</param>
   /// <typeparam name="T">Generic type parameter.</typeparam>
   /// <returns></returns>
-  internal static Task WriteBcfFile<T>(string folder, string file, T? obj) {
+  public static Task WriteBcfFile<T>(string folder, string file, T? obj) {
     return Task.Run(async () => {
       if (obj != null) {
         await using var writer =

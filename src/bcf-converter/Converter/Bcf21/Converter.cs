@@ -11,7 +11,7 @@ namespace BcfConverter.Converter.Bcf21;
 ///   Converter strategy class for converting BCF 2.1 files to JSON
 ///   and back.
 /// </summary>
-internal class Converter : IConverter {
+public class Converter : IConverter {
   /// <summary>
   ///   The method parses the BCF file of version 2.1 and writes into JSON.
   ///   The root of the BCF zip contains the following files:
