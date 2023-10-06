@@ -59,7 +59,7 @@ public class Converter30Tests {
   public async Task JsonToBcfSampleFilesTest() {
     var tasks = new List<Task> {
       _converter.JsonToBcf(
-        "Resources/json/v3.0/DocumentReferenceInternal",
+        "Resources/Json/v3.0/DocumentReferenceInternal",
         "Resources/output/Bcf/v3.0/DocumentReferenceInternal.bcfzip"),
     };
 
