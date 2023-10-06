@@ -35,7 +35,8 @@ public static class JsonConverter {
   /// <returns></returns>
   /// <exception cref="ApplicationException"></exception>
   public static Task<ConcurrentBag<TMarkup>> ParseMarkups<TMarkup>(
-    string sourceFolder) {
+    string sourceFolder)
+    where TMarkup : IMarkup {
     return Task.Run(async () => {
       // A thread-safe storage for the parsed topics.
       var markups = new ConcurrentBag<TMarkup>();
@@ -100,8 +101,10 @@ public static class JsonConverter {
   /// <param name="markups">The list of `Markup` objects.</param>
   /// <param name="root">The `Root` object.</param>
   /// <returns></returns>
-  public static Task WriteJson<TMarkup, TRoot>(string targetFolder,
-    ConcurrentBag<TMarkup> markups, TRoot root) {
+  public static Task WriteJson<TMarkup, TRoot>(
+    string targetFolder,
+    ConcurrentBag<TMarkup> markups,
+    TRoot root) {
     return Task.Run(async () => {
       // TODO make a default serializer to avoid code repeat
       var contractResolver = new DefaultContractResolver {

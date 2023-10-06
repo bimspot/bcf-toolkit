@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Threading.Tasks;
-using bcf.Converter;
 using NUnit.Framework;
-using bcf21 = bcf.bcf21;
-using bcf30 = bcf.bcf30;
+using bcf21 = BcfConverter.Model.Bcf21;
+using bcf30 = BcfConverter.Model.Bcf30;
+using BcfConverter.Converter;
 
 namespace Tests.Converter.Json;
 
@@ -18,7 +18,7 @@ public class JsonConverterTests {
     var markups =
       await JsonConverter.ParseMarkups<bcf21.Markup>(
         "Resources/json/v2.1/AllPartsVisible");
-    var markup = markups.FirstOrDefault()!;
+    var markup = (bcf21.Markup)markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
     Assert.AreEqual("ee9a9498-698b-44ed-8ece-b3ae3b480a90",
       markup.Topic.Guid);
@@ -42,7 +42,7 @@ public class JsonConverterTests {
     var markups =
       await JsonConverter.ParseMarkups<bcf21.Markup>(
         "Resources/json/v2.1/SkippingFiles");
-    var markup = markups.FirstOrDefault()!;
+    var markup = (bcf21.Markup)markups.FirstOrDefault()!;
     Assert.AreEqual(0, markups.Count);
   }
 
@@ -73,7 +73,7 @@ public class JsonConverterTests {
     var root =
       await JsonConverter.ParseObject<bcf30.Root>(
         "Resources/json/v3.0/DocumentReferenceInternal/bcfRoot.json");
-    var markup = markups.FirstOrDefault()!;
+    var markup = (bcf30.Markup)markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
     var documentGuid = markup.Topic.DocumentReferences.FirstOrDefault()?.DocumentGuid;
     var document = root.Document?.Documents.FirstOrDefault()!;

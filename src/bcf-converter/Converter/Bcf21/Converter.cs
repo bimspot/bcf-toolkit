@@ -62,9 +62,9 @@ public class Converter : IConverter {
       target, markups, root);
   }
 
-  public async Task ToBcf(string target, ConcurrentBag<IMarkup> markups) {
+  public async Task ToBcf(string target, ConcurrentBag<IMarkup> markups, IRoot root) {
     //TODO fill root
-    var root = new Root();
-    await BcfConverter.WriteBcf<Markup, VisualizationInfo, Root, Version>(target, markups, root);
+    //var root = new Root();
+    //await BcfConverter.WriteBcf<Markup, VisualizationInfo, Root, Version>(target, markups, root);
   }
 }

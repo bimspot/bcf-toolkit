@@ -70,7 +70,7 @@ public class ConverterContext {
       await Converter.JsonToBcf(source, target)!;
   }
 
-  internal Task ToBcf(string target, ConcurrentBag<IMarkup> markups) {
-    return Converter.ToBcf(target, markups);
+  internal Task ToBcf(string target, ConcurrentBag<IMarkup> markups, IRoot root) {
+    return Converter.ToBcf(target, markups, root);
   }
 }
