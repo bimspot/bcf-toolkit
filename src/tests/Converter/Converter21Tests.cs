@@ -41,7 +41,7 @@ public class Converter21Tests {
   public async Task JsonToBcfSampleFilesTest() {
     var tasks = new List<Task> {
       _converter.JsonToBcf(
-        "Resources/json/v2.1/AllPartsVisible",
+        "Resources/Json/v2.1/AllPartsVisible",
         "Resources/output/bcf/v2.1/AllPartsVisible.bcfzip")
     };
 

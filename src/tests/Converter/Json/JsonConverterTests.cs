@@ -69,10 +69,10 @@ public class JsonConverterTests {
     var markups =
       await JsonConverter
         .ParseMarkups<bcf30.Markup>(
-          "Resources/json/v3.0/DocumentReferenceInternal");
+          "Resources/Json/v3.0/DocumentReferenceInternal");
     var root =
       await JsonConverter.ParseObject<bcf30.Root>(
-        "Resources/json/v3.0/DocumentReferenceInternal/bcfRoot.json");
+        "Resources/Json/v3.0/DocumentReferenceInternal/bcfRoot.json");
     var markup = (bcf30.Markup)markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
     var documentGuid = markup.Topic.DocumentReferences.FirstOrDefault()?.DocumentGuid;
@@ -86,13 +86,13 @@ public class JsonConverterTests {
   [Category("BCF v3.0")]
   public void ParseEmptyBcfRootTest() {
     Assert.That(async () => await JsonConverter.ParseObject<bcf30.Root>(
-      "Resources/json/v3.0/EmptyBcfRoot/bcfRoot.json"), Throws.Exception);
+      "Resources/Json/v3.0/EmptyBcfRoot/bcfRoot.json"), Throws.Exception);
   }
 
   [Test]
   [Category("BCF v3.0")]
   public void ParseMissingRequiredBcfRootTest() {
     Assert.That(async () => await JsonConverter.ParseObject<bcf30.Root>(
-      "Resources/json/v3.0/MissingExtensions/bcfRoot.json"), Throws.Exception);
+      "Resources/Json/v3.0/MissingExtensions/bcfRoot.json"), Throws.Exception);
   }
 }
