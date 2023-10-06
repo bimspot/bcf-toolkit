@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using BcfConverter.Model;
 using BcfConverter.Model.Bcf21;
@@ -62,9 +63,21 @@ public class Converter : IConverter {
       target, markups, root);
   }
 
-  public async Task ToBcf(string target, ConcurrentBag<IMarkup> markups, IRoot root) {
-    //TODO fill root
-    //var root = new Root();
-    //await BcfConverter.WriteBcf<Markup, VisualizationInfo, Root, Version>(target, markups, root);
+  /// <summary>
+  ///   The method writes the specified BCF 2.1 models to BCF 2.1 files.
+  /// </summary>
+  /// <param name="target">The target path where the BCF is written.</param>
+  /// <param name="markups">Array of `IMarkup` interface objects.</param>
+  /// <param name="root">The `IRoot` interface of the BCF, it contains all the root info.</param>
+  /// <returns></returns>
+  public async Task ToBcf(
+    string target,
+    ConcurrentBag<IMarkup> markups,
+    IRoot root) {
+    var convertedMarkups =
+      new ConcurrentBag<Markup>(markups.Select(m => (Markup)m));
+    var convertedRoot = (Root)root;
+    await BcfConverter.WriteBcf<Markup, VisualizationInfo, Root, Version>(
+      target, convertedMarkups, convertedRoot);
   }
 }

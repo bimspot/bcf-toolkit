@@ -25,7 +25,7 @@ public class ConverterContext {
   /// </summary>
   private IConverter Converter { get; set; }
 
-  private IBuilder<IMarkup> Builder { get; set; }
+  //public IBuilder<IMarkup> Builder { get; set; }
 
   // private IMarkupBuilder _markupBuilder;
 
@@ -47,11 +47,11 @@ public class ConverterContext {
     switch (version) {
       case BcfVersionEnum.Bcf21:
         Converter = new Converter.Bcf21.Converter();
-        Builder = new Builder.Bcf21.MarkupBuilder();
+        //Builder = new Builder.Bcf21.MarkupBuilder();
         break;
       case BcfVersionEnum.Bcf30:
         Converter = new Converter.Bcf30.Converter();
-        Builder = new Builder.Bcf30.MarkupBuilder();
+        //Builder = new Builder.Bcf30.MarkupBuilder();
         break;
       default:
         throw new ArgumentException($"Unsupported BCF version: {version}");
@@ -70,7 +70,14 @@ public class ConverterContext {
       await Converter.JsonToBcf(source, target)!;
   }
 
-  internal Task ToBcf(string target, ConcurrentBag<IMarkup> markups, IRoot root) {
+  /// <summary>
+  ///   The method writes the specified BCF models to BCF files.
+  /// </summary>
+  /// <param name="target">The target path where the BCF is written.</param>
+  /// <param name="markups">Array of `IMarkup` interface objects.</param>
+  /// <param name="root">The `IRoot` interface of the BCF, it contains all the root info.</param>
+  /// <returns></returns>
+  public Task ToBcf(string target, ConcurrentBag<IMarkup> markups, IRoot root) {
     return Converter.ToBcf(target, markups, root);
   }
 }
