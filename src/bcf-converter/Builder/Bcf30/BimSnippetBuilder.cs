@@ -1,6 +1,8 @@
-using bcf.bcf30;
 
-namespace bcf.Builder.Bcf30;
+using BcfConverter.Model;
+using BcfConverter.Model.Bcf30;
+
+namespace BcfConverter.Builder.Bcf30;
 
 public class BimSnippetBuilder : IBimSnippetBuilder<BimSnippetBuilder> {
   private readonly BimSnippet _snippet = new();

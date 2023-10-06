@@ -9,8 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using BcfConverter.Model;
 
-namespace bcf.Converter;
+namespace BcfConverter.Converter;
 
 /// <summary>
 ///   The `BcfConverter` static class unzips and parses BCF zips and

@@ -1,4 +1,4 @@
-namespace bcf;
+namespace BcfConverter.Model;
 
 public enum BcfVersionEnum {
   Bcf21,

@@ -1,6 +1,7 @@
-using bcf.bcf30;
+using BcfConverter.Model;
+using BcfConverter.Model.Bcf30;
 
-namespace bcf.Builder.Bcf30;
+namespace BcfConverter.Builder.Bcf30;
 
 public class DocumentBuilder : IDocumentBuilder<DocumentBuilder> {
   private readonly Document _document = new();

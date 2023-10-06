@@ -1,6 +1,7 @@
 using System;
+using BcfConverter.Model;
 
-namespace bcf.Builder;
+namespace BcfConverter.Builder;
 
 public interface
   IPerspectiveCameraBuilder<

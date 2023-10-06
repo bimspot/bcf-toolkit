@@ -6,11 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using BcfConverter.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RecursiveDataAnnotationsValidation;
 
-namespace bcf.Converter;
+namespace BcfConverter.Converter;
 
 /// <summary>
 ///   The `JsonConverter` static class opens and parses the BCF json files

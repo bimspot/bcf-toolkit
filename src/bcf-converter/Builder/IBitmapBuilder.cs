@@ -1,4 +1,6 @@
-namespace bcf.Builder;
+using BcfConverter.Model;
+
+namespace BcfConverter.Builder;
 
 public interface IBitmapBuilder<out TBuilder> : IBuilder<IBitmap> {
   TBuilder AddFormat(string format);

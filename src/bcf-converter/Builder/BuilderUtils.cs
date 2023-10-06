@@ -1,6 +1,6 @@
 using System;
 
-namespace bcf.Builder;
+namespace BcfConverter.Builder;
 
 public static class BuilderUtils {
   public static TItem BuildItem<TBuilder, TItem>(Action<TBuilder> itemBuilder)

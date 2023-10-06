@@ -1,7 +1,8 @@
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using BcfConverter.Model;
 
-namespace bcf.Converter;
+namespace BcfConverter.Converter;
 
 /// <summary>
 ///   Converter strategy interface.

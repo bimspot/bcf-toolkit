@@ -1,8 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using bcf.Builder;
+using BcfConverter.Converter;
+using BcfConverter.Model;
 
-namespace bcf;
+namespace BcfConverter;
 
 internal static class Program {
   private static async Task Main(string[] args) {

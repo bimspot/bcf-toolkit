@@ -1,4 +1,6 @@
-namespace bcf.Builder;
+using BcfConverter.Model;
+
+namespace BcfConverter.Builder;
 
 public interface ILineBuilder<out TBuilder> : IBuilder<ILine> {
   TBuilder AddStartPoint(double x, double y, double z);

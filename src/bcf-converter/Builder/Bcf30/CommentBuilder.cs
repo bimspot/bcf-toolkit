@@ -1,7 +1,8 @@
 using System;
-using bcf.bcf30;
+using BcfConverter.Model;
+using BcfConverter.Model.Bcf30;
 
-namespace bcf.Builder.Bcf30;
+namespace BcfConverter.Builder.Bcf30;
 
 public class CommentBuilder : ICommentBuilder<CommentBuilder> {
   private readonly Comment _comment = new();

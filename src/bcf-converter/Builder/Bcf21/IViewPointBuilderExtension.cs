@@ -1,6 +1,6 @@
 using System;
 
-namespace bcf.Builder.Bcf21;
+namespace BcfConverter.Builder.Bcf21;
 
 public interface IViewPointBuilderExtension<
   out TBuilder,

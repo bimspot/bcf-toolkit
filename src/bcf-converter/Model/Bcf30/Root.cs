@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
-using bcf.Converter;
 
-namespace bcf.bcf30;
+namespace BcfConverter.Model.Bcf30;
 
 public class Root : IRoot {
   public DocumentInfo? Document { get; set; }
@@ -14,11 +13,11 @@ public class Root : IRoot {
   public Task WriteBcf(string folder) {
     return Task.WhenAll(
       Task.Run(() =>
-        BcfConverter.WriteBcfFile(folder, "extensions.xml", Extensions)),
+        Converter.BcfConverter.WriteBcfFile(folder, "extensions.xml", Extensions)),
       Task.Run(() =>
-        BcfConverter.WriteBcfFile(folder, "project.bcfp", Project)),
+        Converter.BcfConverter.WriteBcfFile(folder, "project.bcfp", Project)),
       Task.Run(() =>
-        BcfConverter.WriteBcfFile(folder, "documents.xml", Document))
+        Converter.BcfConverter.WriteBcfFile(folder, "documents.xml", Document))
     );
   }
 }

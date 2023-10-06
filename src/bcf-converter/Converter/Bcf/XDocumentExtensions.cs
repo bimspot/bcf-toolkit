@@ -6,7 +6,7 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using RecursiveDataAnnotationsValidation;
 
-namespace bcf.Converter;
+namespace BcfConverter.Converter;
 
 /// <summary>
 ///   A list of convenience extension methods on the XDocument class.

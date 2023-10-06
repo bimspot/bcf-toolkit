@@ -1,4 +1,4 @@
-namespace bcf.bcf30;
+namespace BcfConverter.Model.Bcf30;
 
 public partial class Version : IVersion {
   public Version() {

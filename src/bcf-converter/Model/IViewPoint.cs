@@ -1,4 +1,4 @@
-namespace bcf;
+namespace BcfConverter.Model;
 
 public interface IViewPoint {
   public string? SnapshotData { get; set; }

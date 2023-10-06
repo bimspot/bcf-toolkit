@@ -1,8 +1,9 @@
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using bcf.bcf30;
+using BcfConverter.Model;
+using BcfConverter.Model.Bcf30;
 
-namespace bcf.Converter.Bcf30;
+namespace BcfConverter.Converter.Bcf30;
 
 /// <summary>
 ///   Converter strategy class for converting BCF 3.0 files to JSON

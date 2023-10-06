@@ -3,10 +3,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using bcf.Builder;
-using bcf.Converter;
+using BcfConverter.Builder;
+using BcfConverter.Model;
 
-namespace bcf;
+namespace BcfConverter.Converter;
 
 /// <summary>
 ///   The `ConverterContext` class defines the converter strategy for a specific

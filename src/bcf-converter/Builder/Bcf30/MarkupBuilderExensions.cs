@@ -1,4 +1,4 @@
-namespace bcf.Builder.Bcf30;
+namespace BcfConverter.Builder.Bcf30;
 
 public partial class MarkupBuilder : IMarkupBuilderExtension<MarkupBuilder> {
   public MarkupBuilder AddServerAssignedId(string id) {

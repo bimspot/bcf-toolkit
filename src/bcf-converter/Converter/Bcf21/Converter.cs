@@ -1,10 +1,10 @@
 using System.Collections.Concurrent;
 using System.IO;
 using System.Threading.Tasks;
-using bcf.bcf21;
-using bcf.Converter;
+using BcfConverter.Model;
+using BcfConverter.Model.Bcf21;
 
-namespace bcf.Converter.Bcf21;
+namespace BcfConverter.Converter.Bcf21;
 
 /// <summary>
 ///   Converter strategy class for converting BCF 2.1 files to JSON

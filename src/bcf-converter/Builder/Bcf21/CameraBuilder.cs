@@ -1,6 +1,7 @@
-using bcf.bcf21;
 
-namespace bcf.Builder.Bcf21;
+using BcfConverter.Model.Bcf21;
+
+namespace BcfConverter.Builder.Bcf21;
 
 public class CameraBuilder : ICameraBuilder {
   private readonly Direction _direction = new();

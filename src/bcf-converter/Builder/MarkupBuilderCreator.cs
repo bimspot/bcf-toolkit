@@ -1,4 +1,4 @@
-namespace bcf.Builder;
+namespace BcfConverter.Builder;
 
 public static class MarkupBuilderCreator {
   public static Bcf30.MarkupBuilder CreateBuilder() {

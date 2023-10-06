@@ -1,4 +1,4 @@
-namespace bcf.Builder.Bcf21;
+namespace BcfConverter.Builder.Bcf21;
 
 public partial class DocumentReferenceBuilder :
   IDocumentReferenceBuilderExtension<DocumentReferenceBuilder> {

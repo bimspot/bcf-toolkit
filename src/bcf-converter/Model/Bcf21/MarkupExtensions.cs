@@ -2,7 +2,7 @@ using System.Linq;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 
-namespace bcf.bcf21;
+namespace BcfConverter.Model.Bcf21;
 
 public partial class Markup : IMarkup {
   public ITopic GetTopic() {

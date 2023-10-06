@@ -1,4 +1,6 @@
-namespace bcf.Builder;
+using BcfConverter.Model;
+
+namespace BcfConverter.Builder;
 
 public interface IExtensionsBuilder<out TBuilder> : IBuilder<IExtensions> {
   TBuilder AddTopicType(string type);
