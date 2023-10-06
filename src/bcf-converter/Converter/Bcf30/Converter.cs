@@ -73,7 +73,7 @@ public class Converter : IConverter {
   /// <param name="root">The `IRoot` interface of the BCF, it contains all the root info.</param>
   /// <returns></returns>
   public async Task ToBcf(
-    string target, 
+    string target,
     ConcurrentBag<IMarkup> markups,
     IRoot root) {
     var convertedMarkups =

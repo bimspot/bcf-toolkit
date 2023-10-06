@@ -10,7 +10,7 @@ public static class BuilderCreator {
   public static MarkupBuilder CreateMarkupBuilder() {
     return new MarkupBuilder();
   }
-  
+
   /// <summary>
   ///   Creates a new instance of `ProjectBuilder` object.
   /// </summary>
@@ -18,7 +18,7 @@ public static class BuilderCreator {
   public static ProjectBuilder CreateProjectBuilder() {
     return new ProjectBuilder();
   }
-  
+
   /// <summary>
   ///   Creates a new instance of `ExtensionsBuilder` object.
   /// </summary>
@@ -26,7 +26,7 @@ public static class BuilderCreator {
   public static ExtensionsBuilder CreateExtensionsBuilder() {
     return new ExtensionsBuilder();
   }
-  
+
   /// <summary>
   ///   Creates a new instance of `DocumentInfoBuilder` object.
   /// </summary>
