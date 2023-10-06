@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace BcfConverter.Converter;
 
-public static class ZipArchiveEntryExtensions {
+internal static class ZipArchiveEntryExtensions {
   /// <summary>
   ///   A convenience method returns true if the file in the entry has the
   ///   extension of `.bcf`.
@@ -14,7 +14,7 @@ public static class ZipArchiveEntryExtensions {
   ///   Returns true if the file in the entry has the
   ///   extension of `.bcf`.
   /// </returns>
-  public static bool IsBcf(this ZipArchiveEntry entry) {
+  internal static bool IsBcf(this ZipArchiveEntry entry) {
     return entry.FullName.EndsWith(".bcf",
       StringComparison.OrdinalIgnoreCase);
   }
@@ -28,7 +28,7 @@ public static class ZipArchiveEntryExtensions {
   ///   Returns true if the file in the entry has the
   ///   extension of `.bcfv`.
   /// </returns>
-  public static bool IsBcfViewpoint(this ZipArchiveEntry entry) {
+  internal static bool IsBcfViewpoint(this ZipArchiveEntry entry) {
     return entry.FullName.EndsWith(".bcfv",
       StringComparison.OrdinalIgnoreCase);
   }
@@ -42,7 +42,7 @@ public static class ZipArchiveEntryExtensions {
   ///   Returns true if the file in the entry has the
   ///   extension of `.png` or `.jpg`
   /// </returns>
-  public static bool IsSnapshot(this ZipArchiveEntry entry) {
+  internal static bool IsSnapshot(this ZipArchiveEntry entry) {
     return entry.FullName.EndsWith(".png",
              StringComparison.OrdinalIgnoreCase) ||
            entry.FullName.EndsWith(".jpg",
@@ -57,7 +57,7 @@ public static class ZipArchiveEntryExtensions {
   /// <returns>
   ///   Returns true if the file in the entry is `extensions.xml` exactly.
   /// </returns>
-  public static bool IsExtensions(this ZipArchiveEntry entry) {
+  internal static bool IsExtensions(this ZipArchiveEntry entry) {
     return entry.FullName.Equals("extensions.xml",
       StringComparison.OrdinalIgnoreCase);
   }
@@ -71,7 +71,7 @@ public static class ZipArchiveEntryExtensions {
   ///   Returns true if the file in the entry has the
   ///   extension of `.bcfp`.
   /// </returns>
-  public static bool IsProject(this ZipArchiveEntry entry) {
+  internal static bool IsProject(this ZipArchiveEntry entry) {
     return entry.FullName.EndsWith(".bcfp",
       StringComparison.OrdinalIgnoreCase);
   }
@@ -84,7 +84,7 @@ public static class ZipArchiveEntryExtensions {
   /// <returns>
   ///   Returns true if the file in the entry is `documents.xml` exactly.
   /// </returns>
-  public static bool IsDocuments(this ZipArchiveEntry entry) {
+  internal static bool IsDocuments(this ZipArchiveEntry entry) {
     return entry.FullName.Equals("documents.xml",
       StringComparison.OrdinalIgnoreCase);
   }
@@ -96,7 +96,7 @@ public static class ZipArchiveEntryExtensions {
   /// </summary>
   /// <param name="entry">The ZipArchiveEntry containing the image.</param>
   /// <returns>Returns the base64 encoded image as a string.</returns>
-  public static string Snapshot(this ZipArchiveEntry entry) {
+  internal static string Snapshot(this ZipArchiveEntry entry) {
     var extension = entry.FullName.Split(".").Last();
     var mime = $"data:image/{extension};base64";
     var buffer = new byte[entry.Length];

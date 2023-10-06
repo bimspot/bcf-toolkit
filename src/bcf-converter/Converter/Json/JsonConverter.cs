@@ -18,7 +18,7 @@ namespace BcfConverter.Converter;
 ///   and puts their contents into the BCF models. It also writes the in
 ///   memory BCF models into json files.
 /// </summary>
-public static class JsonConverter {
+internal static class JsonConverter {
   /// <summary>
   ///   The method parses the markup json files to create an in memory
   ///   representation of the data.
@@ -34,7 +34,7 @@ public static class JsonConverter {
   /// <param name="sourceFolder"></param>
   /// <returns></returns>
   /// <exception cref="ApplicationException"></exception>
-  public static Task<ConcurrentBag<TMarkup>> ParseMarkups<TMarkup>(
+  internal static Task<ConcurrentBag<TMarkup>> ParseMarkups<TMarkup>(
     string sourceFolder)
     where TMarkup : IMarkup {
     return Task.Run(async () => {
@@ -72,7 +72,7 @@ public static class JsonConverter {
   /// <param name="source">The source path of the json file.</param>
   /// <typeparam name="T">The json file is deserializes to this type.</typeparam>
   /// <returns></returns>
-  public static Task<T> ParseObject<T>(string source) {
+  internal static Task<T> ParseObject<T>(string source) {
     return Task.Run(() => {
       var contractResolver = new DefaultContractResolver {
         NamingStrategy = new SnakeCaseNamingStrategy()
@@ -101,7 +101,7 @@ public static class JsonConverter {
   /// <param name="markups">The list of `Markup` objects.</param>
   /// <param name="root">The `Root` object.</param>
   /// <returns></returns>
-  public static Task WriteJson<TMarkup, TRoot>(
+  internal static Task WriteJson<TMarkup, TRoot>(
     string targetFolder,
     ConcurrentBag<TMarkup> markups,
     TRoot root) {

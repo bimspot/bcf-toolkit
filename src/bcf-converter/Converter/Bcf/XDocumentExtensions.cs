@@ -12,8 +12,8 @@ namespace BcfConverter.Converter;
 ///   A list of convenience extension methods on the XDocument class.
 ///   The BCF version specific parsing logic is defined here.
 /// </summary>
-public static class XDocumentExtensions {
-  public static T BcfObject<T>(this XDocument document) {
+internal static class XDocumentExtensions {
+  internal static T BcfObject<T>(this XDocument document) {
     var s = new XmlSerializer(typeof(T));
     var deserialized = (T)s.Deserialize(document.CreateReader())!;
     var validator = new RecursiveDataAnnotationValidator();

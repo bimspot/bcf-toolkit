@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using BcfConverter.Builder;
 using BcfConverter.Model;
 
 namespace BcfConverter.Converter;
