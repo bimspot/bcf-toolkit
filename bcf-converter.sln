@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bcf-converter", "bcf-converter\bcf-converter.csproj", "{BA2B4897-AA4A-4AD2-874A-3E5E4FCE4E9C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bcf-converter", "src\bcf-converter\bcf-converter.csproj", "{BA2B4897-AA4A-4AD2-874A-3E5E4FCE4E9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{8113526D-8A68-4E3E-B4DB-CE235875DDD1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "src\tests\tests.csproj", "{8113526D-8A68-4E3E-B4DB-CE235875DDD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
