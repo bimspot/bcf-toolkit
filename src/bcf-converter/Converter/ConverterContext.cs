@@ -44,18 +44,11 @@ public class ConverterContext {
   /// <param name="version">The version of the BCF.</param>
   /// <exception cref="ArgumentException"></exception>
   private void Init(BcfVersionEnum version) {
-    switch (version) {
-      case BcfVersionEnum.Bcf21:
-        Converter = new Converter.Bcf21.Converter();
-        //Builder = new Builder.Bcf21.MarkupBuilder();
-        break;
-      case BcfVersionEnum.Bcf30:
-        Converter = new Converter.Bcf30.Converter();
-        //Builder = new Builder.Bcf30.MarkupBuilder();
-        break;
-      default:
-        throw new ArgumentException($"Unsupported BCF version: {version}");
-    }
+    Converter = version switch {
+      BcfVersionEnum.Bcf21 => new Converter.Bcf21.Converter(),
+      BcfVersionEnum.Bcf30 => new Converter.Bcf30.Converter(),
+      _ => throw new ArgumentException($"Unsupported BCF version: {version}")
+    };
   }
 
   /// <summary>

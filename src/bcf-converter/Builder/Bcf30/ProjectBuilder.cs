@@ -7,6 +7,10 @@ namespace BcfConverter.Builder.Bcf30;
 public class ProjectBuilder : IProjectBuilder<ProjectBuilder> {
   private readonly ProjectInfo _project = new();
 
+  public ProjectBuilder() {
+    _project.Project = new Project();
+  }
+
   public ProjectBuilder AddProjectName(string name) {
     _project.Project.Name = name;
     return this;
