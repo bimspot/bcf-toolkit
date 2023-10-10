@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BcfConverter.Converter;
+using BcfToolkit.Converter;
 using NUnit.Framework;
 
 namespace Tests.Converter;
@@ -9,7 +9,7 @@ namespace Tests.Converter;
 public class Converter21Tests {
   [SetUp]
   public void Setup() {
-    _converter = new BcfConverter.Converter.Bcf21.Converter();
+    _converter = new BcfToolkit.Converter.Bcf21.Converter();
   }
 
   private IConverter _converter = null!;

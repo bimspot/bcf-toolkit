@@ -1,5 +1,5 @@
-using BcfConverter.Builder;
-using BcfConverter.Model.Bcf30;
+using BcfToolkit.Builder;
+using BcfToolkit.Model.Bcf30;
 using NUnit.Framework;
 
 namespace Tests.Builder;

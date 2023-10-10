@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\bcf-converter\bcf-converter.csproj" />
+        <ProjectReference Include="..\bcf-toolkit\bcf-toolkit.csproj" />
     </ItemGroup>
 
     <ItemGroup>

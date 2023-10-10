@@ -1,4 +1,4 @@
-using BcfConverter.Builder.Bcf30;
+using BcfToolkit.Builder.Bcf30;
 using NUnit.Framework;
 
 namespace Tests.Builder;

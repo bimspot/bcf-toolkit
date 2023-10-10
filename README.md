@@ -1,4 +1,4 @@
-# bcf-converter
+# bcf-toolkit
 
 A .NET library and a command line utility for converting `BCF` (Building 
 Collaboration Format) files into `json` and vice versa.

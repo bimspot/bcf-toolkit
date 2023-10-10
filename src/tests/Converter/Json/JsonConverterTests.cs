@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using bcf21 = BcfConverter.Model.Bcf21;
-using bcf30 = BcfConverter.Model.Bcf30;
-using BcfConverter.Converter;
+using bcf21 = BcfToolkit.Model.Bcf21;
+using bcf30 = BcfToolkit.Model.Bcf30;
+using BcfToolkit.Converter;
 
 namespace Tests.Converter.Json;
 

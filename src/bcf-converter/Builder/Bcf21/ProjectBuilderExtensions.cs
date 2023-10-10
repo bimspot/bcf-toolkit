@@ -1,8 +1,0 @@
-namespace BcfConverter.Builder.Bcf21;
-
-public partial class ProjectBuilder : IProjectBuilderExtension<ProjectBuilder> {
-  public ProjectBuilder AddExtensionSchema(string schema) {
-    _project.ExtensionSchema = schema;
-    return this;
-  }
-}
