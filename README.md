@@ -27,7 +27,7 @@ is a zipped file as per the standard.
 ```
 
 ### As A Library
-This C# NuGet library allows you to easily build up convert data into BCF files.
+This C# NuGet library allows you to easily build up and convert data into BCF files.
 It gives you a straightforward API to build your BCF objects exactly how you want
 in your order.
 
