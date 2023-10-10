@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
+        <PackageId>Bimspot.Bcf.Converter</PackageId>
+        <Version>0.0.1</Version>
         <OutputType>Exe</OutputType>
         <TargetFramework>net7.0</TargetFramework>
         <LangVersion>latest</LangVersion>
@@ -9,6 +10,8 @@
         <Authors>bimspot.io</Authors>
         <Copyright>bimspot.io</Copyright>
         <PackageProjectUrl>bimspot.io</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,7 +22,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Resources\Bcf21" />
+        <None Include="LICENSE" Pack="true" PackagePath=""/>
+        <None Include="README.md" Pack="true" PackagePath=""/>
     </ItemGroup>
 
 </Project>
