@@ -140,7 +140,7 @@ public interface IMarkupBuilder<
   /// <param name="snapshot">Snapshot data.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder AddViewPoint(
-    Action<TViewPointBuilder> builder, 
+    Action<TViewPointBuilder> builder,
     string snapshot);
   /// <summary>
   ///   Returns the builder object extended with `RelatedTopic`.

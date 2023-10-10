@@ -3,10 +3,10 @@ It gives you a straightforward API to build your BCF objects exactly how you wan
 in your order.
 
 ## Installation
-You can install the `BcfConverter` library via NuGet Package Manager or by adding
+You can install the `BcfToolkit` library via NuGet Package Manager or by adding
 it to your project's .csproj file.
 ```
-nuget install BCFConverter
+nuget install Smino.Bcf.Toolkit
 ```
 
 ## Usage
@@ -20,7 +20,7 @@ objects.
 Here's an example:
 
 ```csharp
-using BCFConverter;
+using BcfToolkit;
 
 // Create a markup builder
 var markupBuilder = BuilderCreator.CreateMarkupBuilder();
