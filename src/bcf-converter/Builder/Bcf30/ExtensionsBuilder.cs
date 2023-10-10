@@ -1,4 +1,4 @@
-
+using System.Collections.Generic;
 using BcfConverter.Model;
 using BcfConverter.Model.Bcf30;
 
@@ -12,8 +12,18 @@ public class ExtensionsBuilder : IExtensionsBuilder<ExtensionsBuilder> {
     return this;
   }
 
+  public ExtensionsBuilder AddTopicTypes(List<string> types) {
+    types.ForEach(t => _extensions.TopicTypes.Add(t));
+    return this;
+  }
+
   public ExtensionsBuilder AddTopicStatus(string status) {
     _extensions.TopicStatuses.Add(status);
+    return this;
+  }
+
+  public ExtensionsBuilder AddTopicStatuses(List<string> statuses) {
+    statuses.ForEach(s => _extensions.TopicStatuses.Add(s));
     return this;
   }
 
@@ -22,8 +32,18 @@ public class ExtensionsBuilder : IExtensionsBuilder<ExtensionsBuilder> {
     return this;
   }
 
+  public ExtensionsBuilder AddPriorities(List<string> priorities) {
+    priorities.ForEach(p => _extensions.Priorities.Add(p));
+    return this;
+  }
+
   public ExtensionsBuilder AddTopicLabel(string label) {
     _extensions.TopicLabels.Add(label);
+    return this;
+  }
+
+  public ExtensionsBuilder AddTopicLabels(List<string> labels) {
+    labels.ForEach(l => _extensions.TopicLabels.Add(l));
     return this;
   }
 
@@ -32,13 +52,28 @@ public class ExtensionsBuilder : IExtensionsBuilder<ExtensionsBuilder> {
     return this;
   }
 
+  public ExtensionsBuilder AddUsers(List<string> users) {
+    users.ForEach(u => _extensions.Users.Add(u));
+    return this;
+  }
+
   public ExtensionsBuilder AddSnippetType(string type) {
     _extensions.SnippetTypes.Add(type);
     return this;
   }
 
+  public ExtensionsBuilder AddSnippetTypes(List<string> types) {
+    types.ForEach(t => _extensions.SnippetTypes.Add(t));
+    return this;
+  }
+
   public ExtensionsBuilder AddStage(string stage) {
     _extensions.Stages.Add(stage);
+    return this;
+  }
+
+  public ExtensionsBuilder AddStages(List<string> stages) {
+    stages.ForEach(s => _extensions.Stages.Add(s));
     return this;
   }
 
