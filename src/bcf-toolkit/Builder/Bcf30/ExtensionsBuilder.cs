@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using BcfConverter.Model;
-using BcfConverter.Model.Bcf30;
+using BcfToolkit.Model;
+using BcfToolkit.Model.Bcf30;
 
-namespace BcfConverter.Builder.Bcf30;
+namespace BcfToolkit.Builder.Bcf30;
 
 public class ExtensionsBuilder : IExtensionsBuilder<ExtensionsBuilder> {
   private readonly Extensions _extensions = new();
