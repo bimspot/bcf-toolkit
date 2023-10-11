@@ -22,11 +22,8 @@ Here's an example:
 ```csharp
 using BcfToolkit;
 
-// Create a markup builder
-var markupBuilder = BuilderCreator.CreateMarkupBuilder();
-
 // Build the BCF Markup
-var bcfMarkup = markupBuilder
+var markup = BcfBuilder.Markup()
     .AddTitle("Simple title")
     .AddDescription("This is a description")
     .AddLabel("Architecture")
@@ -44,30 +41,21 @@ var bcfMarkup = markupBuilder
         snapshotData) // Provide snapshot data here
     .Build();
 
-// Create a project builder
-var projectBuilder = BuilderCreator.CreateProjectBuilder();
-
 // Build the BCF Project
-var project = projectBuilder
+var project = BcfBuilder.Project()
     .AddProjectId("projectId")
     .AddProjectName("My project")
     .Build();
-    
-// Create a document builder
-var documentBuilder = BuilderCreator.CreateDocumentBuilder();
 
 // Build the BCF Document
-var document = builder
+var document = BcfBuilder.Document()
     .AddDocument(d => d
     .AddFileName("document.pdf")
     .AddDescription("This is a document"))
     .Build();
 
-// Create an extensions builder
-var extBuilder = BuilderCreator.CreateExtensionsBuilder();
-
 // Build the BCF Extensions
-var extensions = builder
+var extensions = BcfBuilder.Extensions()
     .AddPriority("Critical")
     .AddPriority("Major")
     .AddPriority("Normal")

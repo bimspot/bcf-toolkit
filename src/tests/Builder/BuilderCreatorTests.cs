@@ -8,7 +8,7 @@ public class BuilderCreatorTests {
 
   [Test]
   public void BuildMarkup() {
-    var builder = BuilderCreator.CreateMarkupBuilder();
+    var builder = BcfBuilder.Markup();
     var markup = (Markup)builder
       .AddTitle("Title")
       .AddGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
@@ -23,7 +23,7 @@ public class BuilderCreatorTests {
 
   [Test]
   public void BuildProject() {
-    var builder = BuilderCreator.CreateProjectBuilder();
+    var builder = BcfBuilder.Project();
     var project = (ProjectInfo)builder
       .AddProjectId("3ZSh2muKX7S8MCESk95seC")
       .AddProjectName("Project")
@@ -36,7 +36,7 @@ public class BuilderCreatorTests {
 
   [Test]
   public void BuildExtensions() {
-    var builder = BuilderCreator.CreateExtensionsBuilder();
+    var builder = BcfBuilder.Extensions();
     var extensions = (Extensions)builder
       .AddTopicType("Fault")
       .AddTopicType("Clash")
@@ -50,7 +50,7 @@ public class BuilderCreatorTests {
 
   [Test]
   public void BuildDocument() {
-    var builder = BuilderCreator.CreateDocumentBuilder();
+    var builder = BcfBuilder.Document();
     var document = (DocumentInfo)builder
       .AddDocument(doc => doc
         .AddFileName("File")

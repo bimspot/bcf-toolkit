@@ -1,5 +1,5 @@
 namespace BcfToolkit.Model;
 
-public class IProject {
+public interface IProject {
 
 }

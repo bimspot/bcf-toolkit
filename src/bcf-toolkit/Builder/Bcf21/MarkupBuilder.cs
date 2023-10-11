@@ -127,8 +127,7 @@ public class MarkupBuilder :
     var comment =
       (Comment)BuilderUtils.BuildItem<CommentBuilder, IComment>(builder);
     _markup.Comment.Add(comment);
-    //TODO finish 
-    throw new NotImplementedException();
+    return this;
   }
 
   public MarkupBuilder AddViewPoint(Action<ViewPointBuilder> builder, string snapshotData) {

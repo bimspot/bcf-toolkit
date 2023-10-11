@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageId>Smino.Bcf.Toolkit</PackageId>
-        <Version>0.0.1</Version>
         <OutputType>Exe</OutputType>
         <TargetFramework>net7.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <Title>bcf-toolkit</Title>
-        <Authors>bimspot.io</Authors>
-        <Copyright>bimspot.io</Copyright>
-        <PackageProjectUrl>bimspot.io</PackageProjectUrl>
+        <Authors>smino</Authors>
+        <Copyright>smino</Copyright>
+        <PackageProjectUrl>https://github.com/bimspot/</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/bimspot/bcf-toolkit</RepositoryUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <RootNamespace>bcf-converter</RootNamespace>
+        <RootNamespace>BcfToolkit</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

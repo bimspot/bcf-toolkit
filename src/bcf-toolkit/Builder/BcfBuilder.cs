@@ -2,12 +2,12 @@ using BcfToolkit.Builder.Bcf30;
 
 namespace BcfToolkit.Builder;
 
-public static class BuilderCreator {
+public static class BcfBuilder {
   /// <summary>
   ///   Creates a new instance of `MarkupBuilder` object.
   /// </summary>
   /// <returns></returns>
-  public static MarkupBuilder CreateMarkupBuilder() {
+  public static MarkupBuilder Markup() {
     return new MarkupBuilder();
   }
 
@@ -15,7 +15,7 @@ public static class BuilderCreator {
   ///   Creates a new instance of `ProjectBuilder` object.
   /// </summary>
   /// <returns></returns>
-  public static ProjectBuilder CreateProjectBuilder() {
+  public static ProjectBuilder Project() {
     return new ProjectBuilder();
   }
 
@@ -23,7 +23,7 @@ public static class BuilderCreator {
   ///   Creates a new instance of `ExtensionsBuilder` object.
   /// </summary>
   /// <returns></returns>
-  public static ExtensionsBuilder CreateExtensionsBuilder() {
+  public static ExtensionsBuilder Extensions() {
     return new ExtensionsBuilder();
   }
 
@@ -31,7 +31,7 @@ public static class BuilderCreator {
   ///   Creates a new instance of `DocumentInfoBuilder` object.
   /// </summary>
   /// <returns></returns>
-  public static DocumentInfoBuilder CreateDocumentBuilder() {
+  public static DocumentInfoBuilder Document() {
     return new DocumentInfoBuilder();
   }
 }
