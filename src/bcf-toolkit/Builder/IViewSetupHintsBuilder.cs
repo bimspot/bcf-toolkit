@@ -4,7 +4,26 @@ namespace BcfToolkit.Builder;
 
 public interface
   IViewSetupHintsBuilder<out TBuilder> : IBuilder<IViewSetupHints> {
-  TBuilder AddSpaceVisible(bool spaceVisible);
-  TBuilder AddSpaceBoundariesVisible(bool spaceBoundariesVisible);
-  TBuilder AddOpeningVisible(bool openingVisible);
+  /// <summary>
+  ///   Returns the builder object set with the `SpaceVisible`.
+  /// </summary>
+  /// <param name="spaceVisible">The visibility of spaces by default.</param>
+  /// <returns>Returns the builder object.</returns>
+  TBuilder SetSpaceVisible(bool spaceVisible);
+  /// <summary>
+  ///   Returns the builder object set with the `SpaceBoundariesVisible`.
+  /// </summary>
+  /// <param name="spaceBoundariesVisible">
+  ///   The visibility of space boundaries by default.
+  /// </param>
+  /// <returns>Returns the builder object.</returns>
+  TBuilder SetSpaceBoundariesVisible(bool spaceBoundariesVisible);
+  /// <summary>
+  ///   Returns the builder object set with the `OpeningVisible`.
+  /// </summary>
+  /// <param name="openingVisible">
+  ///   The visibility of openings by default.
+  /// </param>
+  /// <returns>Returns the builder object.</returns>
+  TBuilder SetOpeningVisible(bool openingVisible);
 }

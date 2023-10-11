@@ -5,10 +5,11 @@ using BcfToolkit.Model.Bcf30;
 namespace BcfToolkit.Builder.Bcf30;
 
 public partial class PerspectiveCameraBuilder :
-  IPerspectiveCameraBuilder<PerspectiveCameraBuilder, CameraBuilder> {
+  IPerspectiveCameraBuilder<PerspectiveCameraBuilder, CameraBuilder>,
+  IDefaultBuilder<PerspectiveCameraBuilder> {
   private readonly PerspectiveCamera _camera = new();
 
-  public PerspectiveCameraBuilder AddCamera(Action<CameraBuilder> builder) {
+  public PerspectiveCameraBuilder SetCamera(Action<CameraBuilder> builder) {
     var b = new CameraBuilder();
     builder(b);
     var camera = b.Build();
@@ -22,8 +23,16 @@ public partial class PerspectiveCameraBuilder :
     return this;
   }
 
-  public PerspectiveCameraBuilder AddFieldOfView(double angle) {
+  public PerspectiveCameraBuilder SetFieldOfView(double angle) {
     _camera.FieldOfView = angle;
+    return this;
+  }
+
+  public PerspectiveCameraBuilder WithDefaults() {
+    this
+      .SetCamera(cam => cam.WithDefaults())
+      .SetFieldOfView(0.0)
+      .AddAspectRatio(1.0);
     return this;
   }
 

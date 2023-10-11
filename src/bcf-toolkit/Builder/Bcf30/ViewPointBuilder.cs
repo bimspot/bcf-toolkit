@@ -14,10 +14,11 @@ public class ViewPointBuilder :
     PerspectiveCameraBuilder,
     LineBuilder,
     ClippingPlaneBuilder,
-    BitmapBuilder> {
+    BitmapBuilder>,
+  IDefaultBuilder<ViewPointBuilder> {
   private readonly VisualizationInfo _visualizationInfo = new();
 
-  public ViewPointBuilder AddGuid(string guid) {
+  public ViewPointBuilder SetGuid(string guid) {
     _visualizationInfo.Guid = guid;
     return this;
   }
@@ -29,7 +30,7 @@ public class ViewPointBuilder :
     return this;
   }
 
-  public ViewPointBuilder AddVisibility(Action<VisibilityBuilder> builder) {
+  public ViewPointBuilder SetVisibility(Action<VisibilityBuilder> builder) {
     var visibility =
       (ComponentVisibility)BuilderUtils
         .BuildItem<VisibilityBuilder, IVisibility>(builder);
@@ -45,14 +46,14 @@ public class ViewPointBuilder :
     return this;
   }
 
-  public ViewPointBuilder AddOrthogonalCamera(Action<OrthogonalCameraBuilder> builder) {
+  public ViewPointBuilder SetOrthogonalCamera(Action<OrthogonalCameraBuilder> builder) {
     var camera = (OrthogonalCamera)BuilderUtils
       .BuildItem<OrthogonalCameraBuilder, IOrthogonalCamera>(builder);
     _visualizationInfo.OrthogonalCamera = camera;
     return this;
   }
 
-  public ViewPointBuilder AddPerspectiveCamera(Action<PerspectiveCameraBuilder> builder) {
+  public ViewPointBuilder SetPerspectiveCamera(Action<PerspectiveCameraBuilder> builder) {
     var camera = (PerspectiveCamera)BuilderUtils
       .BuildItem<PerspectiveCameraBuilder, IPerspectiveCamera>(builder);
     _visualizationInfo.PerspectiveCamera = camera;
@@ -78,6 +79,11 @@ public class ViewPointBuilder :
       (Bitmap)BuilderUtils
         .BuildItem<BitmapBuilder, IBitmap>(builder);
     _visualizationInfo.Bitmaps.Add(bitmap);
+    return this;
+  }
+
+  public ViewPointBuilder WithDefaults() {
+    this.SetGuid(Guid.NewGuid().ToString());
     return this;
   }
 

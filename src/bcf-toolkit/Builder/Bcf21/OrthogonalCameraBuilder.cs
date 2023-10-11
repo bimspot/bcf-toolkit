@@ -5,10 +5,11 @@ using BcfToolkit.Model.Bcf21;
 namespace BcfToolkit.Builder.Bcf21;
 
 public class OrthogonalCameraBuilder :
-  IOrthogonalCameraBuilder<OrthogonalCameraBuilder, CameraBuilder> {
+  IOrthogonalCameraBuilder<OrthogonalCameraBuilder, CameraBuilder>,
+  IDefaultBuilder<OrthogonalCameraBuilder> {
   private readonly OrthogonalCamera _camera = new();
 
-  public OrthogonalCameraBuilder AddCamera(Action<CameraBuilder> builder) {
+  public OrthogonalCameraBuilder SetCamera(Action<CameraBuilder> builder) {
     var b = new CameraBuilder();
     builder(b);
     var camera = b.Build();
@@ -22,8 +23,15 @@ public class OrthogonalCameraBuilder :
     return this;
   }
 
-  public OrthogonalCameraBuilder AddViewToWorldScale(double scale) {
+  public OrthogonalCameraBuilder SetViewToWorldScale(double scale) {
     _camera.ViewToWorldScale = scale;
+    return this;
+  }
+
+  public OrthogonalCameraBuilder WithDefaults() {
+    this
+      .SetCamera(cam => cam.WithDefaults())
+      .SetViewToWorldScale(0.0);
     return this;
   }
 

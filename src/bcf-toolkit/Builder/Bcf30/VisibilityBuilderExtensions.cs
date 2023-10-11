@@ -6,7 +6,7 @@ namespace BcfToolkit.Builder.Bcf30;
 
 public partial class VisibilityBuilder :
   IVisibilityBuilderExtension<VisibilityBuilder, ViewSetupHintsBuilder> {
-  public VisibilityBuilder AddViewSetupHints(
+  public VisibilityBuilder SetViewSetupHints(
     Action<ViewSetupHintsBuilder> builder) {
     var viewSetupHints =
       (ViewSetupHints)BuilderUtils

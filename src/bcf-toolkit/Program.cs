@@ -30,8 +30,9 @@ internal static class Program {
     var targetVersion = args.Length > 2 ? args[2] : "2.1";
 
     try {
-      var version =
-        (BcfVersionEnum)Enum.Parse(typeof(BcfVersionEnum), targetVersion);
+      // var version =
+      //   (BcfVersionEnum)Enum.Parse(typeof(BcfVersionEnum), targetVersion);
+      var version = BcfVersion.Parse(targetVersion);
       var context = new ConverterContext(version);
       await context.Convert(sourcePath, targetFolder);
     }

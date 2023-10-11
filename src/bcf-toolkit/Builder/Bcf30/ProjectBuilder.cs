@@ -1,22 +1,30 @@
+using System;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public class ProjectBuilder : IProjectBuilder<ProjectBuilder> {
+public class ProjectBuilder :
+  IProjectBuilder<ProjectBuilder>,
+  IDefaultBuilder<ProjectBuilder> {
   private readonly ProjectInfo _project = new();
 
   public ProjectBuilder() {
     _project.Project = new Project();
   }
 
-  public ProjectBuilder AddProjectName(string name) {
+  public ProjectBuilder SetProjectName(string name) {
     _project.Project.Name = name;
     return this;
   }
 
-  public ProjectBuilder AddProjectId(string id) {
+  public ProjectBuilder SetProjectId(string id) {
     _project.Project.ProjectId = id;
+    return this;
+  }
+
+  public ProjectBuilder WithDefaults() {
+    this.SetProjectId(Guid.NewGuid().ToString());
     return this;
   }
 

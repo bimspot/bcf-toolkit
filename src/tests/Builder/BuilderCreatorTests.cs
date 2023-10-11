@@ -25,8 +25,8 @@ public class BuilderCreatorTests {
   public void BuildProject() {
     var builder = BcfBuilder.Project();
     var project = (ProjectInfo)builder
-      .AddProjectId("3ZSh2muKX7S8MCESk95seC")
-      .AddProjectName("Project")
+      .SetProjectId("3ZSh2muKX7S8MCESk95seC")
+      .SetProjectName("Project")
       .Build();
 
     Assert.AreEqual(

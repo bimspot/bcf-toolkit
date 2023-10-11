@@ -15,8 +15,8 @@ public class ProjectBuilderTests {
   [Test]
   public void BuildProject() {
     var project = (ProjectInfo)_builder
-      .AddProjectId("3ZSh2muKX7S8MCESk95seC")
-      .AddProjectName("Project")
+      .SetProjectId("3ZSh2muKX7S8MCESk95seC")
+      .SetProjectName("Project")
       .Build();
 
     Assert.AreEqual(
@@ -27,15 +27,15 @@ public class ProjectBuilderTests {
   [Test]
   public void BuildProjectWithoutRequiredFields() {
     _builder
-      .AddProjectName("Project");
+      .SetProjectName("Project");
     Assert.That(() => _builder.Build(), Throws.ArgumentException);
   }
 
   [Test]
   public void BuildProjectWithEmptyId() {
     _builder
-      .AddProjectId("")
-      .AddProjectName("Project");
+      .SetProjectId("")
+      .SetProjectName("Project");
     Assert.That(() => _builder.Build(), Throws.ArgumentException);
   }
 }

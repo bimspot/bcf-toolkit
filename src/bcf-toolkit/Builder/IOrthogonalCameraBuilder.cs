@@ -14,11 +14,11 @@ public interface
   /// </summary>
   /// <param name="builder">The builder for camera objects.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddCamera(Action<TCameraBuilder> builder);
+  TBuilder SetCamera(Action<TCameraBuilder> builder);
   /// <summary>
   ///   Returns the builder object extended with `ViewToWorldScale`.
   /// </summary>
   /// <param name="scale">Scaling from view to world.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddViewToWorldScale(double scale);
+  TBuilder SetViewToWorldScale(double scale);
 }

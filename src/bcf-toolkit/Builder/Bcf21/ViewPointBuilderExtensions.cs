@@ -6,7 +6,7 @@ namespace BcfToolkit.Builder.Bcf21;
 
 public partial class ViewPointBuilder :
   IViewPointBuilderExtension<ViewPointBuilder, ViewSetupHintsBuilder> {
-  public ViewPointBuilder AddViewSetupHints(
+  public ViewPointBuilder SetViewSetupHints(
     Action<ViewSetupHintsBuilder> builder) {
     var viewSetupHints =
       (ViewSetupHints)BuilderUtils
