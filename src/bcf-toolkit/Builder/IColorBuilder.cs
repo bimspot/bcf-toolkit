@@ -10,7 +10,7 @@ public interface
   /// </summary>
   /// <param name="color">The color in ARGB format.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddColor(string color);
+  TBuilder SetColor(string color);
   /// <summary>
   ///   Returns the builder object extended with `Component` which is colored.
   /// </summary>

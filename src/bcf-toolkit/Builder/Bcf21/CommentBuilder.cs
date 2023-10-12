@@ -4,35 +4,52 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
 
-public class CommentBuilder : ICommentBuilder<CommentBuilder> {
+public class CommentBuilder : 
+  ICommentBuilder<CommentBuilder>,
+  IDefaultBuilder<CommentBuilder> {
   private readonly Comment _comment = new();
-  public CommentBuilder AddDate(DateTime date) {
+  
+  public CommentBuilder SetGuid(string guid) {
+    _comment.Guid = guid;
+    return this;
+  }
+  
+  public CommentBuilder SetDate(DateTime date) {
     _comment.Date = date;
     return this;
   }
 
-  public CommentBuilder AddAuthor(string user) {
+  public CommentBuilder SetAuthor(string user) {
     _comment.Author = user;
     return this;
   }
 
-  public CommentBuilder AddComment(string comment) {
+  public CommentBuilder SetComment(string comment) {
     _comment.CommentProperty = comment;
     return this;
   }
 
-  public CommentBuilder AddViewPoint(string guid) {
+  public CommentBuilder SetViewPoint(string guid) {
     _comment.Viewpoint.Guid = guid;
     return this;
   }
 
-  public CommentBuilder AddModifiedDate(DateTime date) {
+  public CommentBuilder SetModifiedDate(DateTime date) {
     _comment.ModifiedDate = date;
     return this;
   }
 
-  public CommentBuilder AddModifiedAuthor(string user) {
+  public CommentBuilder SetModifiedAuthor(string user) {
     _comment.ModifiedAuthor = user;
+    return this;
+  }
+
+  public CommentBuilder WithDefaults() {
+    this
+      .SetDate(DateTime.Now)
+      .SetAuthor("Default user")
+      .SetComment("Default comment.")
+      .SetGuid(Guid.NewGuid().ToString());
     return this;
   }
 

@@ -15,11 +15,11 @@ public class MarkupBuilderTests {
   public void BuildMarkupWithComplexFields() {
     // TODO add more complex
     var markup = _builder
-      .AddTitle("Title")
-      .AddGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
-      .AddCreationAuthor("Meszaros")
-      .AddTopicType("Issue")
-      .AddTopicStatus("Open")
+      .SetTitle("Title")
+      .SetGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
+      .SetCreationAuthor("Meszaros")
+      .SetTopicType("Issue")
+      .SetTopicStatus("Open")
       .Build();
     Assert.AreEqual(
       "3ffb4df2-0187-49a9-8a4a-23992696bafd",
@@ -30,11 +30,11 @@ public class MarkupBuilderTests {
   public void BuildMarkupWithRequiredFields() {
 
     var markup = _builder
-      .AddTitle("Title")
-      .AddGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
-      .AddCreationAuthor("Meszaros")
-      .AddTopicType("Issue")
-      .AddTopicStatus("Open")
+      .SetTitle("Title")
+      .SetGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
+      .SetCreationAuthor("Meszaros")
+      .SetTopicType("Issue")
+      .SetTopicStatus("Open")
       .Build();
     Assert.AreEqual(
       "3ffb4df2-0187-49a9-8a4a-23992696bafd",
@@ -44,20 +44,20 @@ public class MarkupBuilderTests {
   [Test]
   public void BuildMarkupWithoutRequiredFields() {
     _builder
-      .AddTitle("Title")
-      .AddGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
-      .AddTopicStatus("Open");
+      .SetTitle("Title")
+      .SetGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
+      .SetTopicStatus("Open");
     Assert.That(() => _builder.Build(), Throws.ArgumentException);
   }
 
   [Test]
   public void BuildMarkupWithNonConformId() {
     _builder
-      .AddTitle("Title")
-      .AddGuid("guid")
-      .AddCreationAuthor("Meszaros")
-      .AddTopicType("Issue")
-      .AddTopicStatus("Open");
+      .SetTitle("Title")
+      .SetGuid("guid")
+      .SetCreationAuthor("Meszaros")
+      .SetTopicType("Issue")
+      .SetTopicStatus("Open");
     Assert.That(() => _builder.Build(), Throws.ArgumentException);
   }
 }

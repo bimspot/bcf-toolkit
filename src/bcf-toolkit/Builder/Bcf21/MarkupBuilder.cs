@@ -11,24 +11,25 @@ public class MarkupBuilder :
     BimSnippetBuilder,
     DocumentReferenceBuilder,
     CommentBuilder,
-    ViewPointBuilder> {
+    ViewPointBuilder>,
+  IDefaultBuilder<MarkupBuilder> {
   private readonly Markup _markup = new();
 
   public MarkupBuilder() {
     _markup.Topic = new Topic();
   }
 
-  public MarkupBuilder AddGuid(string guid) {
+  public MarkupBuilder SetGuid(string guid) {
     _markup.Topic.Guid = guid;
     return this;
   }
 
-  public MarkupBuilder AddTopicType(string type) {
+  public MarkupBuilder SetTopicType(string type) {
     _markup.Topic.TopicType = type;
     return this;
   }
 
-  public MarkupBuilder AddTopicStatus(string status) {
+  public MarkupBuilder SetTopicStatus(string status) {
     _markup.Topic.TopicStatus = status;
     return this;
   }
@@ -46,17 +47,17 @@ public class MarkupBuilder :
     return this;
   }
 
-  public MarkupBuilder AddTitle(string title) {
+  public MarkupBuilder SetTitle(string title) {
     _markup.Topic.Title = title;
     return this;
   }
 
-  public MarkupBuilder AddPriority(string priority) {
+  public MarkupBuilder SetPriority(string priority) {
     _markup.Topic.Priority = priority;
     return this;
   }
 
-  public MarkupBuilder AddIndex(int inx) {
+  public MarkupBuilder SetIndex(int inx) {
     _markup.Topic.Index = inx;
     return this;
   }
@@ -66,47 +67,47 @@ public class MarkupBuilder :
     return this;
   }
 
-  public MarkupBuilder AddCreationDate(DateTime date) {
+  public MarkupBuilder SetCreationDate(DateTime date) {
     _markup.Topic.CreationDate = date;
     return this;
   }
 
-  public MarkupBuilder AddCreationAuthor(string user) {
+  public MarkupBuilder SetCreationAuthor(string user) {
     _markup.Topic.CreationAuthor = user;
     return this;
   }
 
-  public MarkupBuilder AddModifiedDate(DateTime date) {
+  public MarkupBuilder SetModifiedDate(DateTime date) {
     _markup.Topic.ModifiedDate = date;
     return this;
   }
 
-  public MarkupBuilder AddModifiedAuthor(string user) {
+  public MarkupBuilder SetModifiedAuthor(string user) {
     _markup.Topic.ModifiedAuthor = user;
     return this;
   }
 
-  public MarkupBuilder AddDueDate(DateTime date) {
+  public MarkupBuilder SetDueDate(DateTime date) {
     _markup.Topic.DueDate = date;
     return this;
   }
 
-  public MarkupBuilder AddAssignedTo(string user) {
+  public MarkupBuilder SetAssignedTo(string user) {
     _markup.Topic.AssignedTo = user;
     return this;
   }
 
-  public MarkupBuilder AddDescription(string description) {
+  public MarkupBuilder SetDescription(string description) {
     _markup.Topic.Description = description;
     return this;
   }
 
-  public MarkupBuilder AddStage(string stage) {
+  public MarkupBuilder SetStage(string stage) {
     _markup.Topic.Stage = stage;
     return this;
   }
 
-  public MarkupBuilder AddBimSnippet(Action<BimSnippetBuilder> builder) {
+  public MarkupBuilder SetBimSnippet(Action<BimSnippetBuilder> builder) {
     var bimSnippet =
       (BimSnippet)BuilderUtils.BuildItem<BimSnippetBuilder, IBimSnippet>(
         builder);
@@ -147,6 +148,15 @@ public class MarkupBuilder :
       Guid = relatedTopicGuid
     };
     _markup.Topic.RelatedTopic.Add(relatedTopic);
+    return this;
+  }
+  
+  public MarkupBuilder WithDefaults() {
+    this
+      .SetTitle("Default title")
+      .SetCreationDate(DateTime.Now)
+      .SetCreationAuthor("Default user")
+      .SetGuid(Guid.NewGuid().ToString());
     return this;
   }
 

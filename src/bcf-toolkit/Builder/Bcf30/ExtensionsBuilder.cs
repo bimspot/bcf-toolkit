@@ -4,7 +4,9 @@ using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public class ExtensionsBuilder : IExtensionsBuilder<ExtensionsBuilder> {
+public class ExtensionsBuilder : 
+  IExtensionsBuilder<ExtensionsBuilder>,
+  IDefaultBuilder<ExtensionsBuilder> {
   private readonly Extensions _extensions = new();
 
   public ExtensionsBuilder AddTopicType(string type) {
@@ -74,6 +76,33 @@ public class ExtensionsBuilder : IExtensionsBuilder<ExtensionsBuilder> {
 
   public ExtensionsBuilder AddStages(List<string> stages) {
     stages.ForEach(s => _extensions.Stages.Add(s));
+    return this;
+  }
+  
+  public ExtensionsBuilder WithDefaults() {
+    var types = new List<string> {
+      "ERROR",
+      "WARNING",
+      "INFORMATION",
+      "CLASH",
+      "OTHER"
+    };
+    var statuses = new List<string> {
+      "OPEN",
+      "IN_PROGRESS",
+      "SOLVED",
+      "CLOSED"
+    };
+    var priorities = new List<string> {
+      "LOW",
+      "MEDIUM",
+      "HIGH",
+      "CRITICAL"
+    };
+    this
+      .AddTopicTypes(types)
+      .AddTopicStatuses(statuses)
+      .AddPriorities(priorities);
     return this;
   }
 

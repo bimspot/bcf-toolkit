@@ -4,47 +4,50 @@ namespace BcfToolkit.Builder;
 
 public interface IBitmapBuilder<out TBuilder> : IBuilder<IBitmap> {
   /// <summary>
-  ///   Returns the builder object extended with `Format`.
+  ///   Returns the builder object set with the `Format`.
   /// </summary>
   /// <param name="format">Format of the bitmap (PNG/JPG)</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddFormat(string format);
+  TBuilder SetFormat(string format);
   /// <summary>
-  ///   Returns the builder object extended with `Reference`.
+  ///   Returns the builder object set with the `Reference`.
   /// </summary>
-  /// <param name="reference">Name of the bitmap file in the topic folder
+  /// <param name="reference">
+  ///   Name of the bitmap file in the topic folder.
   /// </param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddReference(string reference);
+  TBuilder SetReference(string reference);
   /// <summary>
-  ///   Returns the builder object extended with `Location` of the center of
+  ///   Returns the builder object set with the `Location` of the center of
   ///   the bitmap in world coordinates.
   /// </summary>
-  /// <param name="x">X</param>
-  /// <param name="y">Y</param>
-  /// <param name="z">Z</param>
+  /// <param name="x">X coordinate of the normal location.</param>
+  /// <param name="y">Y coordinate of the normal location.</param>
+  /// <param name="z">Z coordinate of the normal location.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddLocation(double x, double y, double z);
+  TBuilder SetLocation(double x, double y, double z);
   /// <summary>
-  ///   Returns the builder object extended with `Normal` vector of the bitmap.
+  ///   Returns the builder object set with the `Normal` vector of the bitmap.
   /// </summary>
-  /// <param name="x">X</param>
-  /// <param name="y">Y</param>
-  /// <param name="z">Z</param>
+  /// <param name="x">X coordinate of the normal vector.</param>
+  /// <param name="y">Y coordinate of the normal vector.</param>
+  /// <param name="z">Z coordinate of the normal vector.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddNormal(double x, double y, double z);
+  TBuilder SetNormal(double x, double y, double z);
   /// <summary>
-  ///   Returns the builder object extended with `Up` vector of the bitmap.
+  ///   Returns the builder object set with the `Up` vector of the bitmap.
   /// </summary>
-  /// <param name="x">X</param>
-  /// <param name="y">Y</param>
-  /// <param name="z">Z</param>
+  /// <param name="x">X coordinate of the up vector.</param>
+  /// <param name="y">Y coordinate of the up vector.</param>
+  /// <param name="z">Z coordinate of the up vector.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddUp(double x, double y, double z);
+  TBuilder SetUp(double x, double y, double z);
   /// <summary>
-  ///   Returns the builder object extended with `Height`.
+  ///   Returns the builder object set with the `Height`.
   /// </summary>
-  /// <param name="height">Format of the bitmap (PNG/JPG)</param>
+  /// <param name="height">
+  ///   The height of the bitmap in the model, in meters.
+  /// </param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddHeight(double height);
+  TBuilder SetHeight(double height);
 }

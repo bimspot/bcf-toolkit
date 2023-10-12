@@ -28,7 +28,7 @@ namespace BcfToolkit.Model.Bcf30
         /// <summary>
         /// <para xml:lang="en">Minimum length: 1.</para>
         /// </summary>
-        [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
+        // [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.Xml.Serialization.XmlArrayAttribute("TopicTypes", Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("TopicType", Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public System.Collections.ObjectModel.Collection<string> TopicTypes

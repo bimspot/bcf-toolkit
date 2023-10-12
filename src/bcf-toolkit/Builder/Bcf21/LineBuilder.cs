@@ -3,20 +3,29 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
 
-public class LineBuilder : ILineBuilder<LineBuilder> {
+public class LineBuilder : 
+  ILineBuilder<LineBuilder>, 
+  IDefaultBuilder<LineBuilder> {
   private readonly Line _line = new();
 
-  public LineBuilder AddStartPoint(double x, double y, double z) {
+  public LineBuilder SetStartPoint(double x, double y, double z) {
     _line.StartPoint.X = x;
     _line.StartPoint.Y = y;
     _line.StartPoint.Z = z;
     return this;
   }
 
-  public LineBuilder AddEndPoint(double x, double y, double z) {
+  public LineBuilder SetEndPoint(double x, double y, double z) {
     _line.EndPoint.X = x;
     _line.EndPoint.Y = y;
     _line.EndPoint.Z = z;
+    return this;
+  }
+  
+  public LineBuilder WithDefaults() {
+    this
+      .SetStartPoint(0.0, 0.0, 0.0)
+      .SetEndPoint(1.0, 0.0, 0.0);
     return this;
   }
 

@@ -10,11 +10,11 @@ public class BuilderCreatorTests {
   public void BuildMarkup() {
     var builder = BcfBuilder.Markup();
     var markup = (Markup)builder
-      .AddTitle("Title")
-      .AddGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
-      .AddCreationAuthor("Meszaros")
-      .AddTopicType("Issue")
-      .AddTopicStatus("Open")
+      .SetTitle("Title")
+      .SetGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
+      .SetCreationAuthor("Meszaros")
+      .SetTopicType("Issue")
+      .SetTopicStatus("Open")
       .Build();
     Assert.AreEqual(
       "3ffb4df2-0187-49a9-8a4a-23992696bafd",
@@ -53,8 +53,8 @@ public class BuilderCreatorTests {
     var builder = BcfBuilder.Document();
     var document = (DocumentInfo)builder
       .AddDocument(doc => doc
-        .AddFileName("File")
-        .AddGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd"))
+        .SetFileName("File")
+        .SetGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd"))
       .Build();
 
     Assert.AreEqual(

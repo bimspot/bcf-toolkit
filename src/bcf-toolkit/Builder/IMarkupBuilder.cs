@@ -12,25 +12,25 @@ public interface IMarkupBuilder<
   out TViewPointBuilder> :
   IBuilder<IMarkup> {
   /// <summary>
-  ///   Returns the builder object extended with `Guid`.
+  ///   Returns the builder object set with the `Guid`.
   /// </summary>
   /// <param name="guid">Guid of the topic, in lowercase.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddGuid(string guid);
+  TBuilder SetGuid(string guid);
   /// <summary>
-  ///   Returns the builder object extended with `TopicType`.
+  ///   Returns the builder object set with the `TopicType`.
   /// </summary>
   /// <param name="type">Type of the topic.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddTopicType(string type);
+  TBuilder SetTopicType(string type);
   /// <summary>
-  ///   Returns the builder object extended with `TopicStatus`.
+  ///   Returns the builder object set with the `TopicStatus`.
   /// </summary>
   /// <param name="status">Status of the topic.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddTopicStatus(string status);
+  TBuilder SetTopicStatus(string status);
   /// <summary>
-  ///   Returns the builder object extended with new `HeaderFile` in header.
+  ///   Returns the builder object extended with `HeaderFile` in header.
   /// </summary>
   /// <param name="builder">Builder of the header file.</param>
   /// <returns>Returns the builder object.</returns>
@@ -42,23 +42,23 @@ public interface IMarkupBuilder<
   /// <returns>Returns the builder object.</returns>
   TBuilder AddReferenceLink(string link);
   /// <summary>
-  ///   Returns the builder object extended with `Title`.
+  ///   Returns the builder object set with the `Title`.
   /// </summary>
   /// <param name="title">Title of the topic.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddTitle(string title);
+  TBuilder SetTitle(string title);
   /// <summary>
-  ///   Returns the builder object extended with `Priority`.
+  ///   Returns the builder object set with the `Priority`.
   /// </summary>
   /// <param name="priority">Topic priority .</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddPriority(string priority);
+  TBuilder SetPriority(string priority);
   /// <summary>
-  ///   Returns the builder object extended with `Index`.
+  ///   Returns the builder object set with the `Index`.
   /// </summary>
   /// <param name="inx">Number to maintain the order of the topics.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddIndex(int inx);
+  TBuilder SetIndex(int inx);
   /// <summary>
   ///   Returns the builder object extended with `Label`.
   /// </summary>
@@ -66,61 +66,61 @@ public interface IMarkupBuilder<
   /// <returns>Returns the builder object.</returns>
   TBuilder AddLabel(string label);
   /// <summary>
-  ///   Returns the builder object extended with `CreationDate`.
+  ///   Returns the builder object set with the `CreationDate`.
   /// </summary>
   /// <param name="date">Date when the topic was created..</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddCreationDate(DateTime date);
+  TBuilder SetCreationDate(DateTime date);
   /// <summary>
-  ///   Returns the builder object extended with `CreationAuthor`.
+  ///   Returns the builder object set with the `CreationAuthor`.
   /// </summary>
   /// <param name="user">User who created the topic.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddCreationAuthor(string user);
+  TBuilder SetCreationAuthor(string user);
   /// <summary>
-  ///   Returns the builder object extended with `ModifiedDate`.
+  ///   Returns the builder object set with the `ModifiedDate`.
   /// </summary>
   /// <param name="date">Date when the topic was last modified.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddModifiedDate(DateTime date);
+  TBuilder SetModifiedDate(DateTime date);
   /// <summary>
-  ///   Returns the builder object extended with `ModifiedAuthor`.
+  ///   Returns the builder object set with the `ModifiedAuthor`.
   /// </summary>
   /// <param name="user">User who modified the topic.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddModifiedAuthor(string user);
+  TBuilder SetModifiedAuthor(string user);
   /// <summary>
-  ///   Returns the builder object extended with `DueDate`.
+  ///   Returns the builder object set with the `DueDate`.
   /// </summary>
   /// <param name="date">
   ///   Date until when the topics issue needs to be resolved.
   /// </param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddDueDate(DateTime date);
+  TBuilder SetDueDate(DateTime date);
   /// <summary>
-  ///   Returns the builder object extended with `AssignedTo`.
+  ///   Returns the builder object set with the `AssignedTo`.
   /// </summary>
   /// <param name="user">The user to whom this topic is assigned to.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddAssignedTo(string user);
+  TBuilder SetAssignedTo(string user);
   /// <summary>
-  ///   Returns the builder object extended with `Description`.
+  ///   Returns the builder object set with the `Description`.
   /// </summary>
   /// <param name="description">Description of the topic.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddDescription(string description);
+  TBuilder SetDescription(string description);
   /// <summary>
-  ///   Returns the builder object extended with `Stage`.
+  ///   Returns the builder object set with the `Stage`.
   /// </summary>
   /// <param name="stage">Stage this topic is part of.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddStage(string stage);
+  TBuilder SetStage(string stage);
   /// <summary>
-  ///   Returns the builder object extended with `BimSnippet`.
+  ///   Returns the builder object set with the `BimSnippet`.
   /// </summary>
   /// <param name="builder">The builder for `BimSnippet`.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddBimSnippet(Action<TBimSnippetBuilder> builder);
+  TBuilder SetBimSnippet(Action<TBimSnippetBuilder> builder);
   /// <summary>
   ///   Returns the builder object extended with `DocumentReference`.
   /// </summary>

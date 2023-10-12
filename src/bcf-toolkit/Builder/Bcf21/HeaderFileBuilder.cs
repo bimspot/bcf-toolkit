@@ -7,32 +7,32 @@ namespace BcfToolkit.Builder.Bcf21;
 public class HeaderFileBuilder : IHeaderFileBuilder<HeaderFileBuilder> {
   private readonly HeaderFile _file = new();
 
-  public HeaderFileBuilder AddIfcProject(string id) {
+  public HeaderFileBuilder SetIfcProject(string id) {
     _file.IfcProject = id;
     return this;
   }
 
-  public HeaderFileBuilder AddIfcSpatialStructureElement(string id) {
+  public HeaderFileBuilder SetIfcSpatialStructureElement(string id) {
     _file.IfcSpatialStructureElement = id;
     return this;
   }
 
-  public HeaderFileBuilder AddIsExternal(bool isExternal) {
+  public HeaderFileBuilder SetIsExternal(bool isExternal) {
     _file.IsExternal = isExternal;
     return this;
   }
 
-  public HeaderFileBuilder AddFileName(string fileName) {
+  public HeaderFileBuilder SetFileName(string fileName) {
     _file.Filename = fileName;
     return this;
   }
 
-  public HeaderFileBuilder AddDate(DateTime date) {
+  public HeaderFileBuilder SetDate(DateTime date) {
     _file.Date = date;
     return this;
   }
 
-  public HeaderFileBuilder AddReference(string reference) {
+  public HeaderFileBuilder SetReference(string reference) {
     _file.Reference = reference;
     return this;
   }

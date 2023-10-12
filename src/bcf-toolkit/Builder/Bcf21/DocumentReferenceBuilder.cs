@@ -7,12 +7,12 @@ public partial class DocumentReferenceBuilder :
   IDocumentReferenceBuilder<DocumentReferenceBuilder> {
   private readonly TopicDocumentReference _documentReference = new();
 
-  public DocumentReferenceBuilder AddGuid(string guid) {
+  public DocumentReferenceBuilder SetGuid(string guid) {
     _documentReference.Guid = guid;
     return this;
   }
 
-  public DocumentReferenceBuilder AddDescription(string description) {
+  public DocumentReferenceBuilder SetDescription(string description) {
     _documentReference.Description = description;
     return this;
   }

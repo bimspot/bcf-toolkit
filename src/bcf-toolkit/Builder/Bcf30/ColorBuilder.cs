@@ -4,10 +4,12 @@ using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public class ColorBuilder : IColorBuilder<ColorBuilder, ComponentBuilder> {
+public class ColorBuilder : 
+  IColorBuilder<ColorBuilder, ComponentBuilder>,
+  IDefaultBuilder<ColorBuilder> {
   private readonly ComponentColoringColor _color = new();
 
-  public ColorBuilder AddColor(string color) {
+  public ColorBuilder SetColor(string color) {
     _color.Color = color;
     return this;
   }
@@ -16,6 +18,13 @@ public class ColorBuilder : IColorBuilder<ColorBuilder, ComponentBuilder> {
     var component =
       (Component)BuilderUtils.BuildItem<ComponentBuilder, IComponent>(builder);
     _color.Components.Add(component);
+    return this;
+  }
+  
+  public ColorBuilder WithDefaults() {
+    this
+      .SetColor("40E0D0")
+      .AddComponent(comp => comp.WithDefaults());
     return this;
   }
 
