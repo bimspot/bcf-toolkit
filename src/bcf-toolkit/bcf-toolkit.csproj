@@ -9,6 +9,11 @@
         <Authors>smino</Authors>
         <Copyright>smino</Copyright>
         <PackageProjectUrl>https://github.com/bimspot/</PackageProjectUrl>
+        <PackageDescription>
+            This C# NuGet library allows you to easily build up and convert data 
+            into BCF files. It gives you a straightforward API to build your BCF 
+            objects exactly how you want in your order.
+        </PackageDescription>
         <RepositoryUrl>https://github.com/bimspot/bcf-toolkit</RepositoryUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -26,5 +31,4 @@
         <None Include="LICENSE" Pack="true" PackagePath="" />
         <None Include="README.md" Pack="true" PackagePath="" />
     </ItemGroup>
-
 </Project>
