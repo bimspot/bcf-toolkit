@@ -4,8 +4,8 @@ using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public class BitmapBuilder : 
-  IBitmapBuilder<BitmapBuilder>, 
+public class BitmapBuilder :
+  IBitmapBuilder<BitmapBuilder>,
   IDefaultBuilder<BitmapBuilder> {
   private readonly Bitmap _bitmap = new();
 
@@ -44,14 +44,14 @@ public class BitmapBuilder :
     _bitmap.Height = height;
     return this;
   }
-  
+
   public BitmapBuilder WithDefaults() {
     this
       .SetFormat("PNG")
       .SetReference("Default bitmap file")
-      .SetLocation(0.0,0.0,0.0)
-      .SetNormal(1.0,0.0,0.0)
-      .SetUp(0.0,0.0,1.0)
+      .SetLocation(0.0, 0.0, 0.0)
+      .SetNormal(1.0, 0.0, 0.0)
+      .SetUp(0.0, 0.0, 1.0)
       .SetHeight(1.0);
     return this;
   }
@@ -60,5 +60,5 @@ public class BitmapBuilder :
     return BuilderUtils.ValidateItem(_bitmap);
   }
 
-  
+
 }

@@ -4,7 +4,7 @@ using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public class ColorBuilder : 
+public class ColorBuilder :
   IColorBuilder<ColorBuilder, ComponentBuilder>,
   IDefaultBuilder<ColorBuilder> {
   private readonly ComponentColoringColor _color = new();
@@ -20,7 +20,7 @@ public class ColorBuilder :
     _color.Components.Add(component);
     return this;
   }
-  
+
   public ColorBuilder WithDefaults() {
     this
       .SetColor("40E0D0")

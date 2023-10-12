@@ -1,7 +1,7 @@
 using BcfToolkit.Builder.Bcf30;
 using NUnit.Framework;
 
-namespace Tests.Builder; 
+namespace Tests.Builder;
 
 public class DocumentReferenceBuilderTests {
   private DocumentReferenceBuilder _builder;

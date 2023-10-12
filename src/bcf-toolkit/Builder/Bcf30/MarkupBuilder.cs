@@ -151,7 +151,7 @@ public partial class MarkupBuilder :
     _markup.Topic.RelatedTopics.Add(topic);
     return this;
   }
-  
+
   public MarkupBuilder WithDefaults() {
     this
       .SetTitle("Default title")

@@ -4,16 +4,16 @@ using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public class CommentBuilder : 
+public class CommentBuilder :
   ICommentBuilder<CommentBuilder>,
   IDefaultBuilder<CommentBuilder> {
   private readonly Comment _comment = new();
-  
+
   public CommentBuilder SetGuid(string guid) {
     _comment.Guid = guid;
     return this;
   }
-  
+
   public CommentBuilder SetDate(DateTime date) {
     _comment.Date = date;
     return this;
@@ -43,7 +43,7 @@ public class CommentBuilder :
     _comment.ModifiedAuthor = user;
     return this;
   }
-  
+
   public CommentBuilder WithDefaults() {
     this
       .SetDate(DateTime.Now)

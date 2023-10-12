@@ -3,8 +3,8 @@ using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public class LineBuilder : 
-  ILineBuilder<LineBuilder>, 
+public class LineBuilder :
+  ILineBuilder<LineBuilder>,
   IDefaultBuilder<LineBuilder> {
   private readonly Line _line = new();
 
@@ -21,7 +21,7 @@ public class LineBuilder :
     _line.EndPoint.Z = z;
     return this;
   }
-  
+
   public LineBuilder WithDefaults() {
     this
       .SetStartPoint(0.0, 0.0, 0.0)

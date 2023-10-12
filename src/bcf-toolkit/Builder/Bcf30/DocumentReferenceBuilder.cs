@@ -17,7 +17,7 @@ public partial class DocumentReferenceBuilder :
     _documentReference.Description = description;
     return this;
   }
-  
+
   public DocumentReferenceBuilder WithDefaults() {
     this
       .SetGuid(Guid.NewGuid().ToString());

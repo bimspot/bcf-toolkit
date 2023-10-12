@@ -4,7 +4,7 @@ using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public class ExtensionsBuilder : 
+public class ExtensionsBuilder :
   IExtensionsBuilder<ExtensionsBuilder>,
   IDefaultBuilder<ExtensionsBuilder> {
   private readonly Extensions _extensions = new();
@@ -78,7 +78,7 @@ public class ExtensionsBuilder :
     stages.ForEach(s => _extensions.Stages.Add(s));
     return this;
   }
-  
+
   public ExtensionsBuilder WithDefaults() {
     var types = new List<string> {
       "ERROR",

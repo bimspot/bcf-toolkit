@@ -3,7 +3,7 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
 
-public class ComponentBuilder : 
+public class ComponentBuilder :
   IComponentBuilder<ComponentBuilder>,
   IDefaultBuilder<ComponentBuilder> {
   private readonly Component _component = new();

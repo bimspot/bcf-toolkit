@@ -4,7 +4,7 @@ using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public class DocumentBuilder : 
+public class DocumentBuilder :
   IDocumentBuilder<DocumentBuilder>,
   IDefaultBuilder<DocumentBuilder> {
   private readonly Document _document = new();
@@ -23,7 +23,7 @@ public class DocumentBuilder :
     _document.Description = description;
     return this;
   }
-  
+
   public DocumentBuilder WithDefaults() {
     this
       .SetFileName("Default file name")

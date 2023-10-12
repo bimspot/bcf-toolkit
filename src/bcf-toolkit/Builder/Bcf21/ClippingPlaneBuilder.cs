@@ -21,7 +21,7 @@ public class ClippingPlaneBuilder :
     _clippingPlane.Direction.Z = z;
     return this;
   }
-  
+
   public ClippingPlaneBuilder WithDefaults() {
     this
       .SetLocation(0.0, 0.0, 0.0)
