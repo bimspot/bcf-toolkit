@@ -15,7 +15,8 @@ namespace BcfToolkit.Converter;
 ///   Types of the conversion:
 ///   - BCF to json
 ///   - json to BCF
-///   - model to BCF
+///   - in memory model to BCF
+///   - in memory model to JSON
 /// </summary>
 public class ConverterContext {
   /// <summary>
@@ -54,7 +55,9 @@ public class ConverterContext {
   /// <summary>
   ///   Converts the specified source data to the given destination.
   /// </summary>
-  /// <param name="source">Source path of the file which must be converted.</param>
+  /// <param name="source">
+  ///   Source path of the file which must be converted.
+  /// </param>
   /// <param name="target">Target destination for the converted results.</param>
   public async Task Convert(string source, string target) {
     if (source.EndsWith("bcfzip"))
@@ -68,9 +71,30 @@ public class ConverterContext {
   /// </summary>
   /// <param name="target">The target path where the BCF is written.</param>
   /// <param name="markups">Array of `IMarkup` interface objects.</param>
-  /// <param name="root">The `IRoot` interface of the BCF, it contains all the root info.</param>
+  /// <param name="root">
+  ///   The `IRoot` interface of the BCF, it contains all the root info.
+  /// </param>
   /// <returns></returns>
-  public Task ToBcf(string target, ConcurrentBag<IMarkup> markups, IRoot root) {
+  public Task ToBcf(
+    string target,
+    ConcurrentBag<IMarkup> markups,
+    IRoot root) {
+    return Converter.ToBcf(target, markups, root);
+  }
+
+  /// <summary>
+  ///   The method writes the specified BCF models to JSON files.
+  /// </summary>
+  /// <param name="target">The target path where the JSON is written.</param>
+  /// <param name="markups">Array of `IMarkup` interface objects.</param>
+  /// <param name="root">
+  ///   The `IRoot` interface of the BCF, it contains all the root info.
+  /// </param>
+  /// <returns></returns>
+  public Task ToJson(
+    string target,
+    ConcurrentBag<IMarkup> markups,
+    IRoot root) {
     return Converter.ToBcf(target, markups, root);
   }
 }

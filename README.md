@@ -111,6 +111,16 @@ var extensions = builder
     .Build();
 ```
 
+You can also use the default builders if you prefer not to deal with filling the required fields.
+The `builder.WithDefaults()` function serves this for you. However in certain cases you may need
+to replace the component IDs of IFC objects with their actual GUIDs during the build process.
+
+```csharp
+var markup = BcfBuilder.Markup()
+  .WithDefaults()
+  .Build();
+```
+
 ## File Structure
 
 The structure of the BCF is per [the standard][3]. There is, however, no 

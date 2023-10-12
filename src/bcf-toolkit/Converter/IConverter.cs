@@ -29,7 +29,20 @@ public interface IConverter {
   /// </summary>
   /// <param name="target">The target path where the BCF is written.</param>
   /// <param name="markups">Array of `IMarkup` interface objects.</param>
-  /// <param name="root">The `IRoot` interface of the BCF, it contains all the root info.</param>
+  /// <param name="root">
+  ///   The `IRoot` interface of the BCF, it contains all the root info.
+  /// </param>
   /// <returns></returns>
   Task ToBcf(string target, ConcurrentBag<IMarkup> markups, IRoot root);
+
+  /// <summary>
+  ///   The method writes the specified BCF models to JSON files.
+  /// </summary>
+  /// <param name="target">The target path where the JSON is written.</param>
+  /// <param name="markups">Array of `IMarkup` interface objects.</param>
+  /// <param name="root">
+  ///   The `IRoot` interface of the BCF, it contains all the root info.
+  /// </param>
+  /// <returns></returns>
+  Task ToJson(string target, ConcurrentBag<IMarkup> markups, IRoot root);
 }
