@@ -34,9 +34,8 @@ jobs:
       - name: Create Nuget package
         working-directory: ./src/bcf-toolkit
         if: github.ref_type == 'tag'
-        run: dotnet pack --no-build -p:PackageVersion=${{ github.ref_name }} --configuration Release bcf-toolkit.csproj --output .
+        run: dotnet pack -p:PackageVersion=${{ github.ref_name }} --configuration Release bcf-toolkit.csproj --output ../../dist
       
       - name: Publish package to Nuget
         if: github.ref_type == 'tag'
-        working-directory: ./src/bcf-toolkit
         run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --no-symbols --api-key ${{ secrets.SMINO_NUGET_API_KEY }} --skip-duplicate
