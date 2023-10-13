@@ -15,18 +15,28 @@ jobs:
         with:
           dotnet-version: '7.0.x'
 
-      - name: "Install dotnet format"
+      - name: Install dotnet format
         run: dotnet tool update --global dotnet-format
 
-      - name: "Run dotnet format"
+      - name: Run dotnet format
         run: dotnet format --verbosity diagnostic --verify-no-changes
 
-      - name: "Unit tests"
+      - name: Unit tests
         run: dotnet test --test-adapter-path:. --logger:"junit;LogFilePath=./artifacts/test-output.xml"
 
-      - name: Publish Unit Test Results
+      - name: Publish unit test results
         uses: EnricoMi/publish-unit-test-result-action@v1.6
         if: always()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           files: ./artifacts/*.xml
+
+      - name: Create Nuget package
+        working-directory: ./src/bcf-toolkit
+        if: github.ref_type == 'tag'
+        run: dotnet pack --no-build -p:PackageVersion=${{ github.ref_name }} --configuration Release bcf-toolkit.csproj --output .
+      
+      - name: Publish package to Nuget
+        if: github.ref_type == 'tag'
+        working-directory: ./src/bcf-toolkit
+        run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --no-symbols --api-key ${{ secrets.SMINO_NUGET_API_KEY }} --skip-duplicate
