@@ -5,4 +5,5 @@ obj
 TestOutput
 TestInput
 dist/*.tar.gz
+dist/*.nupgk
 .DS_Store
