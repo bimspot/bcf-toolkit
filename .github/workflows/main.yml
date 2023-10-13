@@ -38,4 +38,4 @@ jobs:
       
       - name: Publish package to Nuget
         if: github.ref_type == 'tag'
-        run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --no-symbols --api-key ${{ secrets.SMINO_NUGET_API_KEY }} --skip-duplicate
+        run: dotnet nuget push dist/*.nupkg --source https://api.nuget.org/v3/index.json --no-symbols --api-key ${{ secrets.SMINO_NUGET_API_KEY }} --skip-duplicate
