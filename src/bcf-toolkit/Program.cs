@@ -2,39 +2,60 @@ using System;
 using System.Threading.Tasks;
 using BcfToolkit.Converter;
 using BcfToolkit.Model;
+using System.CommandLine;
 
 namespace BcfToolkit;
 
 internal static class Program {
   private static async Task Main(string[] args) {
-    if (args.Length < 2) {
-      // TODO: make a proper arg parser
-      Console.WriteLine(
-        "Please specify the path to the source and target files.");
-      Console.WriteLine(@"
-        Usage:
 
-        $ bcf-toolkit /path/to/source.bcfzip /path/to/target/folder 2.1
+    await HandleArguments(args);
+  }
+  private static async Task HandleArguments(string[] args) {
+    var sourcePathOption = new Option<string>(
+      name: "--source",
+      description: "The absolute path of the source file.") { IsRequired = true };
+    sourcePathOption.AddAlias("-s");
 
-        $ bcf-toolkit /path/to/json/folder /path/to/target/bcf.bcfzip 2.1
+    var targetFolderOption = new Option<string>(
+      name: "--target",
+      description: "The absolute path of the target folder.") { IsRequired = true };
+    targetFolderOption.AddAlias("-t");
 
-      ");
-      Environment.Exit(1);
-    }
+    var versionOption = new Option<string>(
+        name: "--bcfVersion",
+        description:
+        "The target version of the bcf parser, by default 2.1 is used.") { IsRequired = false };
+    versionOption.AddAlias("-b");
+    versionOption.SetDefaultValue("2.1");
 
-    var sourcePath = args[0].TrimEnd('/');
-    var targetFolder = args[1].TrimEnd('/');
+    var rootCommand = new RootCommand {
+      Description =
+      "Bcf toolkit is command line utility for converting BCF (Building Collaboration Format) files into json and vice versa. " +
+      "The tool converts BCF information across formats and versions."
+    };
 
+    rootCommand.AddOption(sourcePathOption);
+    rootCommand.AddOption(targetFolderOption);
+    rootCommand.AddOption(versionOption);
+
+    rootCommand.SetHandler(
+      async (arguments) => { await DoRootCommand(arguments); },
+      new InputArgumentsBinder(
+        sourcePathOption,
+        targetFolderOption,
+        versionOption));
+    await rootCommand.InvokeAsync(args);
+  }
+
+  private static async Task DoRootCommand(InputArguments arguments) {
     // TODO: read bcf.version and decide on the parser version
     // by default 2.1 version is used
-    var targetVersion = args.Length > 2 ? args[2] : "2.1";
 
     try {
-      // var version =
-      //   (BcfVersionEnum)Enum.Parse(typeof(BcfVersionEnum), targetVersion);
-      var version = BcfVersion.Parse(targetVersion);
+      var version = BcfVersion.Parse(arguments.TargetVersion);
       var context = new ConverterContext(version);
-      await context.Convert(sourcePath, targetFolder);
+      await context.Convert(arguments.SourcePath, arguments.TargetFolder);
     }
     catch (Exception e) {
       var errorWriter = Console.Error;
