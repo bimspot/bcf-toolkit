@@ -64,7 +64,7 @@ public static class BcfConverter {
 
       var topicEntries = archive.Entries
         .Where(entry =>
-          Regex.IsMatch(entry.FullName.Split("/")[0].Replace("-", ""),
+          Regex.IsMatch((string)entry.FullName.Split("/")[0].Replace("-", ""),
             "^[a-fA-F0-9]+$"))
         .ToList();
 
@@ -249,96 +249,6 @@ public static class BcfConverter {
       if (isRequired && obj == null)
         throw new InvalidDataException($"{objType} is not found in BCF.");
       return obj;
-    });
-  }
-
-  /// <summary>
-  ///   The method writes the BCF content from the given objects to the
-  ///   specified target and compresses it.
-  ///   The markups will be written into the topic folder structure:
-  ///   * markup.bcf
-  ///   * viewpoint files (.bcfv)
-  ///   * snapshot files (PNG, JPEG)
-  ///   The root files depend on the version of the BCF.
-  ///   * project.bcfp (optional)
-  ///   * bcf.version
-  /// </summary>
-  /// <param name="targetFile">The target file name of the BCFzip.</param>
-  /// <param name="markups">Array of `Markup` objects.</param>
-  /// <param name="root">The `Root` object of the BCF, it contains all the root info.</param>
-  /// <typeparam name="TMarkup">`Markup` type parameter.</typeparam>
-  /// /// <typeparam name="TVisualizationInfo">`VisualizationInfo` type parameter.</typeparam>
-  /// <typeparam name="TRoot">`Root` type parameter.</typeparam>
-  /// <typeparam name="TVersion">`Version` type parameter.</typeparam>
-  /// <returns></returns>
-  /// <exception cref="ApplicationException"></exception>
-  public static Task WriteBcf<TMarkup, TVisualizationInfo, TRoot, TVersion>(string targetFile,
-    ConcurrentBag<TMarkup> markups, TRoot root)
-    where TMarkup : IMarkup
-    where TVisualizationInfo : IVisualizationInfo
-    where TRoot : IRoot
-    where TVersion : new() {
-    return Task.Run(async () => {
-      var targetFolder = Path.GetDirectoryName(targetFile);
-      if (targetFolder == null)
-        throw new ApplicationException(
-          $"Target folder not found ${targetFolder}");
-
-      // Will create a tmp folder for the intermediate files.
-      var tmpFolder = $"{targetFolder}/tmp";
-      if (Directory.Exists(tmpFolder)) Directory.Delete(tmpFolder, true);
-      Directory.CreateDirectory(tmpFolder);
-
-      var tasks = new List<Task>();
-
-      // Creating the version file
-      var version = new TVersion();
-      tasks.Add(WriteBcfFile(tmpFolder, "bcf.version", version));
-
-      // Writing markup folders and files
-      foreach (var markup in markups) {
-        // Creating the target folder
-        var guid = markup.GetTopic()?.Guid;
-        if (guid == null) {
-          Console.WriteLine(
-            " - Topic Guid is missing, skipping markup");
-          continue;
-        }
-
-        var topicFolder = $"{tmpFolder}/{guid}";
-        Directory.CreateDirectory(topicFolder);
-
-        // Markup
-        tasks.Add(WriteBcfFile(topicFolder, "markup.bcf", markup));
-
-        // Viewpoint
-        var visInfo =
-          (TVisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
-        tasks.Add(WriteBcfFile(topicFolder, "viewpoint.bcfv",
-          visInfo));
-
-        // Snapshot
-        var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
-        var base64String = markup.GetFirstViewPoint()?.SnapshotData;
-        if (snapshotFileName == null || base64String == null) continue;
-        var result = Regex.Replace(base64String,
-          @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
-        tasks.Add(File.WriteAllBytesAsync(
-          $"{topicFolder}/{snapshotFileName}",
-          Convert.FromBase64String(result)));
-      }
-
-      // Writing root files
-      tasks.Add(root.WriteBcf(tmpFolder));
-
-      // Waiting for all the file writing
-      await Task.WhenAll(tasks);
-
-      // zip shit
-      Console.WriteLine($"Zipping the output: {targetFile}");
-      if (File.Exists(targetFile)) File.Delete(targetFile);
-      ZipFile.CreateFromDirectory(tmpFolder, targetFile);
-      Directory.Delete(tmpFolder, true);
     });
   }
 
