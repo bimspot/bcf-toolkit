@@ -93,7 +93,8 @@ public class Converter : IConverter {
   /// <summary>
   ///   The method reads the JSON files and creates BCF 3.0 version.
   ///   The json folder must contain files which are named using the
-  ///   `uuid` of the `Topic` within, and `bcfRoot.json`.
+  ///   `uuid` of the `Topic` within, `extensions.json`,
+  ///   project.json (optional) and documents.json (optional).
   /// </summary>
   /// <param name="source">The source folder to the JSON files.</param>
   /// <param name="target">The target path where the BCF is written.</param>
@@ -207,8 +208,8 @@ public class Converter : IConverter {
   /// <param name="target">The target path where the BCF is written.</param>
   /// <param name="bcf">The `IBcf` interface of the BCF.</param>
   /// <returns></returns>
-  public async Task ToBcf(string target, IBcf bcf) {
-    await WriteBcf(target, (Bcf)bcf);
+  public Task ToBcf(string target, IBcf bcf) {
+    return WriteBcf(target, (Bcf)bcf);
   }
 
   /// <summary>
@@ -217,7 +218,7 @@ public class Converter : IConverter {
   /// <param name="target">The target path where the JSON is written.</param>
   /// <param name="bcf">The `IBcf` interface of the BCF.</param>
   /// <returns></returns>
-  public async Task ToJson(string target, IBcf bcf) {
-    await WriteJson(target, (Bcf)bcf);
+  public Task ToJson(string target, IBcf bcf) {
+    return WriteJson(target, (Bcf)bcf);
   }
 }
