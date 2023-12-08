@@ -88,7 +88,7 @@ public class JsonConverterTests {
     Assert.That(async () => await JsonConverter.ParseObject<bcf30.ProjectInfo>(
       "Resources/Json/v3.0/EmptyBcfRoot/project.json"), Throws.Exception);
   }
-  
+
   // [Test]
   // [Category("BCF v3.0")]
   // public void ParseEmptyBcfDocumentTest() {
