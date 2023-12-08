@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BcfToolkit.Converter;
+using BcfToolkit.Model.Bcf21;
 using NUnit.Framework;
 
 namespace Tests.Converter;
@@ -60,5 +63,46 @@ public class Converter21Tests {
     Assert.That(async () => await _converter.BcfToJson(
       "Resources/Bcf/v3.0/Meszaros.bcfzip",
       "Resources/output/json/v2.1/Meszaros"), Throws.ArgumentException);
+  }
+
+  /// <summary>
+  ///   It should generate the bcfzip with the minimum information.
+  /// </summary>
+  [Test]
+  [Category("BCF v2.1")]
+  public async Task WriteBcfWithMinimumInformationTest() {
+    var markup = new Markup {
+      Topic = new Topic {
+        Guid = "3ffb4df2-0187-49a9-8a4a-23992696bafd",
+        Title = "This is a new topic",
+        CreationDate = new DateTime(),
+        CreationAuthor = "Meszaros"
+      }
+    };
+    var markups = new ConcurrentBag<Markup> { markup };
+    var bcf = new BcfToolkit.Model.Bcf21.Bcf {
+      Markups = markups
+    };
+    await _converter.ToBcf("Resources/output/Bcf/v2.1/MinimumInformation.bcfzip", bcf);
+  }
+
+  /// <summary>
+  ///   It should generate a bcf skipping the markup file.
+  /// </summary>
+  [Test]
+  [Category("BCF v2.1")]
+  public async Task WriteBcfWithoutTopicGuidTest() {
+    var markup = new Markup {
+      Topic = new Topic {
+        Title = "This is a new topic",
+        CreationDate = new DateTime(),
+        CreationAuthor = "Meszaros"
+      }
+    };
+    var markups = new ConcurrentBag<Markup> { markup };
+    var bcf = new BcfToolkit.Model.Bcf21.Bcf {
+      Markups = markups
+    };
+    await _converter.ToBcf("Resources/output/Bcf/v2.1/WithoutTopicGuid.bcfzip", bcf);
   }
 }
