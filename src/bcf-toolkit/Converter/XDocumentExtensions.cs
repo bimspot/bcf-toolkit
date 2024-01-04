@@ -23,7 +23,7 @@ public static class XDocumentExtensions {
     var errors = string.Join(
       "\n",
       validationErrors.Select(r =>
-        $"Validation failed for members: '{string.Join(",", r.MemberNames)}' with the error: '{r.ErrorMessage}'."
+        $"Validation failed for members: '{string.Join((string?)",", (IEnumerable<string?>)r.MemberNames)}' with the error: '{r.ErrorMessage}'."
       ));
     throw new ArgumentException($"Validation failed:\n{errors}");
   }

@@ -361,49 +361,6 @@ public class BcfConverterTests {
   }
 
   /// <summary>
-  ///   It should generate the bcfzip with the minimum information.
-  /// </summary>
-  [Test]
-  [Category("BCF v2.1")]
-  public async Task WriteBcfWithMinimumInformationTest() {
-    var markup = new bcf21.Markup {
-      Topic = new bcf21.Topic {
-        Guid = "3ffb4df2-0187-49a9-8a4a-23992696bafd",
-        Title = "This is a new topic",
-        CreationDate = new DateTime(),
-        CreationAuthor = "Meszaros"
-      }
-    };
-    var markups = new ConcurrentBag<bcf21.Markup> { markup };
-    var root = new bcf21.Root();
-    await BcfToolkit.Converter.BcfConverter.WriteBcf<bcf21.Markup, bcf21.VisualizationInfo, bcf21.Root, bcf21.Version>(
-      "Resources/output/Bcf/v2.1/MinimumInformation.bcfzip",
-      markups,
-      root);
-  }
-
-  /// <summary>
-  ///   It should generate a bcf skipping the markup file.
-  /// </summary>
-  [Test]
-  [Category("BCF v2.1")]
-  public async Task WriteBcfWithoutTopicGuidTest() {
-    var markup = new bcf21.Markup {
-      Topic = new bcf21.Topic {
-        Title = "This is a new topic",
-        CreationDate = new DateTime(),
-        CreationAuthor = "Meszaros"
-      }
-    };
-    var markups = new ConcurrentBag<bcf21.Markup> { markup };
-    var root = new bcf21.Root();
-    await BcfToolkit.Converter.BcfConverter.WriteBcf<bcf21.Markup, bcf21.VisualizationInfo, bcf21.Root, bcf21.Version>(
-      "Resources/output/Bcf/v2.1/WithoutTopicGuid.bcfzip",
-      markups,
-      root);
-  }
-
-  /// <summary>
   ///   The title is missing from the topic, it should throws an exception.
   /// </summary>
   [Test]
