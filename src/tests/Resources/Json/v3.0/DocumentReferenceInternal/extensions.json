@@ -1,0 +1,29 @@
+{
+  "topic_types": [
+    "ERROR",
+    "WARNING",
+    "INFORMATION",
+    "CLASH",
+    "OTHER"
+  ],
+  "topic_statuses": [
+    "OPEN",
+    "IN_PROGRESS",
+    "SOLVED",
+    "CLOSED"
+  ],
+  "priorities": [
+    "LOW",
+    "MEDIUM",
+    "HIGH",
+    "CRITICAL"
+  ],
+  "topic_labels": [],
+  "users": [
+    "Architect@example.com",
+    "Engineer@example.com",
+    "MEPDesigner@example.com"
+  ],
+  "snippet_types": [],
+  "stages": []
+}

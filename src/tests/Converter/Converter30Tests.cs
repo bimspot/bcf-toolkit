@@ -15,7 +15,7 @@ public class Converter30Tests {
   private IConverter _converter = null!;
 
   [Test]
-  public async Task BcfToJsonSampleFilesTest() {
+  public Task BcfToJsonSampleFilesTest() {
     var tasks = new List<Task> {
       _converter.BcfToJson(
         "Resources/Bcf/v3.0/ComponentSelection.bcfzip",
@@ -52,18 +52,18 @@ public class Converter30Tests {
         "Resources/output/json/v3.0/UserAssignment")
     };
 
-    await Task.WhenAll(tasks);
+    return Task.WhenAll(tasks);
   }
 
   [Test]
-  public async Task JsonToBcfSampleFilesTest() {
+  public Task JsonToBcfSampleFilesTest() {
     var tasks = new List<Task> {
       _converter.JsonToBcf(
         "Resources/Json/v3.0/DocumentReferenceInternal",
         "Resources/output/Bcf/v3.0/DocumentReferenceInternal.bcfzip"),
     };
 
-    await Task.WhenAll(tasks);
+    return Task.WhenAll(tasks);
   }
 
   [Test]

@@ -44,7 +44,7 @@ public static class JsonConverter {
       var files = new List<string>(Directory.EnumerateFiles(sourceFolder));
       var topicFiles = files
         .Where(file =>
-          Regex.IsMatch(Path.GetFileNameWithoutExtension(file).Replace("-", ""),
+          Regex.IsMatch(Path.GetFileNameWithoutExtension((string?)file).Replace("-", ""),
             "^[a-fA-F0-9]+$"))
         .ToList();
 
@@ -95,16 +95,12 @@ public static class JsonConverter {
   }
 
   /// <summary>
-  ///   The method writes the BCF objects to json file.
+  ///   The method writes an object to json file.
   /// </summary>
-  /// <param name="targetFolder">The target folder where the json files will be saved.</param>
-  /// <param name="markups">The list of `Markup` objects.</param>
-  /// <param name="root">The `Root` object.</param>
+  /// <param name="path">The target path where the json files will be saved.</param>
+  /// <param name="obj">The object which will be written.</param>
   /// <returns></returns>
-  public static Task WriteJson<TMarkup, TRoot>(
-    string targetFolder,
-    ConcurrentBag<TMarkup> markups,
-    TRoot root) {
+  public static Task WriteJson<T>(string path, T obj) {
     return Task.Run(async () => {
       // TODO make a default serializer to avoid code repeat
       var contractResolver = new DefaultContractResolver {
@@ -115,32 +111,13 @@ public static class JsonConverter {
         ContractResolver = contractResolver
       };
 
-      // Creating the target folder
-      if (Directory.Exists(targetFolder)) Directory.Delete(targetFolder, true);
-      Directory.CreateDirectory(targetFolder);
-
-      // Writing markups to disk, one markup per file.
-      foreach (var markup in markups) {
-        var jsonMarkup = JsonConvert
-          .SerializeObject(
-            markup,
-            Formatting.None,
-            jsonSerializerSettings);
-
-        var pathMarkup =
-          $"{targetFolder}/{((IMarkup)markup!).GetTopic()!.Guid}.json";
-        await using var writerM = File.CreateText(pathMarkup);
-        await writerM.WriteAsync(jsonMarkup);
-      }
-
-      // Writing BCF root file
       var json = JsonConvert
         .SerializeObject(
-          root,
+          obj,
           Formatting.None, jsonSerializerSettings);
-      var path = $"{targetFolder}/bcfRoot.json";
-      await using var writerR = File.CreateText(path);
-      await writerR.WriteAsync(json);
+
+      await using var writerM = File.CreateText(path);
+      await writerM.WriteAsync(json);
     });
   }
 }

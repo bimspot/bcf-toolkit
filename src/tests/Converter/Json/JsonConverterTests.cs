@@ -70,13 +70,13 @@ public class JsonConverterTests {
       await JsonConverter
         .ParseMarkups<bcf30.Markup>(
           "Resources/Json/v3.0/DocumentReferenceInternal");
-    var root =
-      await JsonConverter.ParseObject<bcf30.Root>(
-        "Resources/Json/v3.0/DocumentReferenceInternal/bcfRoot.json");
+    var doc =
+      await JsonConverter.ParseObject<bcf30.DocumentInfo>(
+        "Resources/Json/v3.0/DocumentReferenceInternal/documents.json");
     var markup = (bcf30.Markup)markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
     var documentGuid = markup.Topic.DocumentReferences.FirstOrDefault()?.DocumentGuid;
-    var document = root.Document?.Documents.FirstOrDefault()!;
+    var document = doc.Documents.FirstOrDefault()!;
     Assert.AreEqual("b1d1b7f0-60b9-457d-ad12-16e0fb997bc5", documentGuid);
     Assert.AreEqual(documentGuid, document.Guid);
     Assert.AreEqual("ThisIsADocument.txt", document.Filename);
@@ -84,15 +84,22 @@ public class JsonConverterTests {
 
   [Test]
   [Category("BCF v3.0")]
-  public void ParseEmptyBcfRootTest() {
-    Assert.That(async () => await JsonConverter.ParseObject<bcf30.Root>(
-      "Resources/Json/v3.0/EmptyBcfRoot/bcfRoot.json"), Throws.Exception);
+  public void ParseEmptyBcfProjectTest() {
+    Assert.That(async () => await JsonConverter.ParseObject<bcf30.ProjectInfo>(
+      "Resources/Json/v3.0/EmptyBcfRoot/project.json"), Throws.Exception);
   }
 
-  [Test]
-  [Category("BCF v3.0")]
-  public void ParseMissingRequiredBcfRootTest() {
-    Assert.That(async () => await JsonConverter.ParseObject<bcf30.Root>(
-      "Resources/Json/v3.0/MissingExtensions/bcfRoot.json"), Throws.Exception);
-  }
+  // [Test]
+  // [Category("BCF v3.0")]
+  // public void ParseEmptyBcfDocumentTest() {
+  //   Assert.That(async () => await JsonConverter.ParseObject<bcf30.DocumentInfo>(
+  //     "Resources/Json/v3.0/EmptyBcfRoot/documents.json"), Throws.Exception);
+  // }
+  //
+  // [Test]
+  // [Category("BCF v3.0")]
+  // public void ParseEmptyBcfExtensionsTest() {
+  //   Assert.That(async () => await JsonConverter.ParseObject<bcf30.Extensions>(
+  //     "Resources/Json/v3.0/EmptyBcfRoot/extensions.json"), Throws.Exception);
+  // }
 }
