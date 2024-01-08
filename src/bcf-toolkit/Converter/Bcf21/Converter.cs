@@ -67,7 +67,7 @@ public class Converter : IConverter {
       await BcfToJson(fileStream, target);
     }
     catch (Exception ex) {
-      throw new ArgumentException("Source path is not readable.");
+      throw new ArgumentException($"Source path is not readable. {ex.Message}", ex);
     }
   }
 
