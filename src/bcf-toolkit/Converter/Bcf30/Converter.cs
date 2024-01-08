@@ -33,9 +33,9 @@ public class Converter : IConverter {
   ///   - Snapshot files (PNG/JPEG)
   ///   - Bitmaps
   /// </summary>
-  /// <param name="source">The source path to the BCFzip.</param>
+  /// <param name="source">The source stream of the BCFzip.</param>
   /// <param name="target">The target path where the JSON is written.</param>
-  public async Task BcfToJson(string source, string target) {
+  public async Task BcfToJson(Stream source, string target) {
     // Parsing BCF root file structure
     var extensions = await BcfConverter.ParseExtensions<Extensions>(source);
     var projectInfo = await BcfConverter.ParseProject<ProjectInfo>(source);
@@ -54,6 +54,33 @@ public class Converter : IConverter {
 
     // Writing json files
     await WriteJson(target, bcf);
+  }
+
+  /// <summary>
+  ///   The method parses the BCF file of version 3.0 and writes into JSON.
+  ///   The root of the BCF zip contains the following files:
+  ///   - extensions.xml
+  ///   - project.bcfp (optional)
+  ///   - documents.xml (optional)
+  ///   - bcf.version
+  ///   Topic folder structure inside a BCFzip archive:
+  ///   - markup.bcf
+  ///   Additionally:
+  ///   - Viewpoint files (BCFV)
+  ///   - Snapshot files (PNG/JPEG)
+  ///   - Bitmaps
+  /// </summary>
+  /// <param name="source">The source path of the BCFzip.</param>
+  /// <param name="target">The target path where the JSON is written.</param>
+  public async Task BcfToJson(string source, string target) {
+    try {
+      await using FileStream fileStream = new FileStream(source, FileMode.Open, FileAccess.Read);
+      await BcfToJson(fileStream, target);
+    }
+    catch (Exception ex) {
+      // Handle or log the exception as needed
+      throw new ArgumentException("Source path is not readable.");
+    }
   }
 
   /// <summary>
