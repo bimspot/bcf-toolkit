@@ -15,44 +15,41 @@ public class Converter30Tests {
   private IConverter _converter = null!;
 
   [Test]
-  public Task BcfToJsonSampleFilesTest() {
-    var tasks = new List<Task> {
-      _converter.BcfToJson(
-        "Resources/Bcf/v3.0/ComponentSelection.bcfzip",
-        "Resources/output/json/v3.0/ComponentSelection"),
-      _converter.BcfToJson(
-        "Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip",
-        "Resources/output/json/v3.0/DocumentReferenceExternal"),
-      _converter.BcfToJson(
-        "Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip",
-        "Resources/output/json/v3.0/DocumentReferenceInternal"),
-      _converter.BcfToJson(
-        "Resources/Bcf/v3.0/DueDate.bcfzip",
-        "Resources/output/json/v3.0/DueDate"),
-      _converter.BcfToJson(
-        "Resources/Bcf/v3.0/Labels.bcfzip",
-        "Resources/output/json/v3.0/Labels"),
-      _converter.BcfToJson(
-        "Resources/Bcf/v3.0/Milestone.bcfzip",
-        "Resources/output/json/v3.0/Milestone"),
-      _converter.BcfToJson(
-        "Resources/Bcf/v3.0/RelatedTopics.bcfzip",
-        "Resources/output/json/v3.0/RelatedTopics"),
-      _converter.BcfToJson(
-        "Resources/Bcf/v3.0/SingleInvisibleWall.bcfzip",
-        "Resources/output/json/v3.0/SingleInvisibleWall"),
-      _converter.BcfToJson(
-        "Resources/Bcf/v3.0/TestBcf30.bcfzip",
-        "Resources/output/json/v3.0/TestBcf30"),
-      _converter.BcfToJson(
-        "Resources/Bcf/v3.0/TopicsWithDifferentModelsVisible.bcfzip",
-        "Resources/output/json/v3.0/TopicsWithDifferentModelsVisible"),
-      _converter.BcfToJson(
-        "Resources/Bcf/v3.0/UserAssignment.bcfzip",
-        "Resources/output/json/v3.0/UserAssignment")
-    };
+  public void BcfToJsonSampleFilesTest() {
 
-    return Task.WhenAll(tasks);
+    _converter.BcfToJson(
+      "Resources/Bcf/v3.0/ComponentSelection.bcfzip",
+      "Resources/output/json/v3.0/ComponentSelection");
+    _converter.BcfToJson(
+      "Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip",
+      "Resources/output/json/v3.0/DocumentReferenceExternal");
+    _converter.BcfToJson(
+      "Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip",
+      "Resources/output/json/v3.0/DocumentReferenceInternal");
+    _converter.BcfToJson(
+      "Resources/Bcf/v3.0/DueDate.bcfzip",
+      "Resources/output/json/v3.0/DueDate");
+    _converter.BcfToJson(
+      "Resources/Bcf/v3.0/Labels.bcfzip",
+      "Resources/output/json/v3.0/Labels");
+    _converter.BcfToJson(
+      "Resources/Bcf/v3.0/Milestone.bcfzip",
+      "Resources/output/json/v3.0/Milestone");
+    _converter.BcfToJson(
+      "Resources/Bcf/v3.0/RelatedTopics.bcfzip",
+      "Resources/output/json/v3.0/RelatedTopics");
+    _converter.BcfToJson(
+      "Resources/Bcf/v3.0/SingleInvisibleWall.bcfzip",
+      "Resources/output/json/v3.0/SingleInvisibleWall");
+    _converter.BcfToJson(
+      "Resources/Bcf/v3.0/TestBcf30.bcfzip",
+      "Resources/output/json/v3.0/TestBcf30");
+    _converter.BcfToJson(
+      "Resources/Bcf/v3.0/TopicsWithDifferentModelsVisible.bcfzip",
+      "Resources/output/json/v3.0/TopicsWithDifferentModelsVisible");
+    _converter.BcfToJson(
+      "Resources/Bcf/v3.0/UserAssignment.bcfzip",
+      "Resources/output/json/v3.0/UserAssignment");
   }
 
   [Test]

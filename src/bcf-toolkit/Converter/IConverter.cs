@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.IO;
 using System.Threading.Tasks;
 using BcfToolkit.Model;
 
@@ -15,6 +16,14 @@ public interface IConverter {
   /// <param name="target">The target path where the JSON is written.</param>
   /// <returns></returns>
   Task BcfToJson(string source, string target);
+
+  /// <summary>
+  ///   The method parses the BCFzip archive, then writes to json.
+  /// </summary>
+  /// <param name="source">The source stream of the BCFzip.</param>
+  /// <param name="target">The target path where the JSON is written.</param>
+  /// <returns></returns>
+  Task BcfToJson(Stream source, string target);
 
   /// <summary>
   ///   The method reads the json, then creates and writes to BCF.
