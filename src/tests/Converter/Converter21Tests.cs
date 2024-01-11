@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using BcfToolkit.Converter;
 using BcfToolkit.Model.Bcf21;
@@ -18,26 +19,21 @@ public class Converter21Tests {
   private IConverter _converter = null!;
 
   [Test]
-  public Task BcfToJsonSampleFilesTest() {
-    var tasks = new List<Task> {
-      _converter.BcfToJson(
-        "Resources/Bcf/v2.1/AllPartsVisible.bcfzip",
-        "Resources/output/json/v2.1/AllPartsVisible"),
-      _converter.BcfToJson(
-        "Resources/Bcf/v2.1/ComponentSelection.bcfzip",
-        "Resources/output/json/v2.1/ComponentSelection"),
-      _converter.BcfToJson(
-        "Resources/Bcf/v2.1/ExternalBIMSnippet.bcfzip",
-        "Resources/output/json/v2.1/ExternalBIMSnippet"),
-      _converter.BcfToJson(
-        "Resources/Bcf/v2.1/MaximumInformation.bcfzip",
-        "Resources/output/json/v2.1/MaximumInformation"),
-      _converter.BcfToJson(
-        "Resources/Bcf/v2.1/UserAssignment.bcfzip",
-        "Resources/output/json/v2.1/UserAssignment")
-    };
-
-    return Task.WhenAll(tasks);
+  public void BcfToJsonSampleFilesTest() {
+    _converter.BcfToJson("Resources/Bcf/v2.1/AllPartsVisible.bcfzip",
+      "Resources/output/json/v2.1/AllPartsVisible");
+    _converter.BcfToJson(
+      "Resources/Bcf/v2.1/ComponentSelection.bcfzip",
+      "Resources/output/json/v2.1/ComponentSelection");
+    _converter.BcfToJson(
+      "Resources/Bcf/v2.1/ExternalBIMSnippet.bcfzip",
+      "Resources/output/json/v2.1/ExternalBIMSnippet");
+    _converter.BcfToJson(
+      "Resources/Bcf/v2.1/MaximumInformation.bcfzip",
+      "Resources/output/json/v2.1/MaximumInformation");
+    _converter.BcfToJson(
+      "Resources/Bcf/v2.1/UserAssignment.bcfzip",
+      "Resources/output/json/v2.1/UserAssignment");
   }
 
   [Test]
