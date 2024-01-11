@@ -226,7 +226,7 @@ public static class BcfConverter {
     Func<ZipArchiveEntry, bool> filterFn, bool isRequired = false) {
 
     if (stream == null || !stream.CanRead)
-      throw new ArgumentException("Source stream is not readablejhgjh.");
+      throw new ArgumentException("Source stream is not readable.");
 
     var objType = typeof(T);
     Console.WriteLine($"\nProcessing {objType.Name}\n");
