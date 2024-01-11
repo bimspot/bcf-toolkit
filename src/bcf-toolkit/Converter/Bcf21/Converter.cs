@@ -63,7 +63,7 @@ public class Converter : IConverter {
   /// <param name="target">The target path where the JSON is written.</param>
   public async Task BcfToJson(string source, string target) {
     try {
-      await using FileStream fileStream = new FileStream(source, FileMode.Open, FileAccess.Read);
+      await using var fileStream = new FileStream(source, FileMode.Open, FileAccess.Read);
       await BcfToJson(fileStream, target);
     }
     catch (Exception ex) {
