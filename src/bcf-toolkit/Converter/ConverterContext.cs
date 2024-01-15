@@ -46,8 +46,8 @@ public class ConverterContext {
   /// <exception cref="ArgumentException"></exception>
   private void Init(BcfVersionEnum version) {
     Converter = version switch {
-      BcfVersionEnum.Bcf21 => new Converter.Bcf21.Converter(),
-      BcfVersionEnum.Bcf30 => new Converter.Bcf30.Converter(),
+      BcfVersionEnum.Bcf21 => new Worker.Bcf21.Converter(),
+      BcfVersionEnum.Bcf30 => new Worker.Bcf30.Converter(),
       _ => throw new ArgumentException($"Unsupported BCF version: {version}")
     };
   }

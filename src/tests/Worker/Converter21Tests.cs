@@ -1,19 +1,18 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using BcfToolkit.Converter;
 using BcfToolkit.Model.Bcf21;
 using NUnit.Framework;
 
-namespace Tests.Converter;
+namespace tests.Worker;
 
 [TestFixture]
 public class Converter21Tests {
   [SetUp]
   public void Setup() {
-    _converter = new BcfToolkit.Converter.Bcf21.Converter();
+    _converter = new BcfToolkit.Worker.Bcf21.Converter();
   }
 
   private IConverter _converter = null!;

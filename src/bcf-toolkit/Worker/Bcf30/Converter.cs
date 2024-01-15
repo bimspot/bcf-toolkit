@@ -5,21 +5,25 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using BcfToolkit.Converter;
 using BcfToolkit.Model;
-using BcfToolkit.Model.Bcf21;
-using Version = BcfToolkit.Model.Bcf21.Version;
+using BcfToolkit.Model.Bcf30;
+using File = System.IO.File;
+using Version = BcfToolkit.Model.Bcf30.Version;
 
-namespace BcfToolkit.Converter.Bcf21;
+namespace BcfToolkit.Worker.Bcf30;
 
 /// <summary>
-///   Converter strategy class for converting BCF 2.1 files to JSON
+///   Converter strategy class for converting BCF 3.0 files to JSON
 ///   and back.
 /// </summary>
 public class Converter : IConverter {
   /// <summary>
-  ///   The method parses the BCF file of version 2.1 and writes into JSON.
+  ///   The method parses the BCF file of version 3.0 and writes into JSON.
   ///   The root of the BCF zip contains the following files:
+  ///   - extensions.xml
   ///   - project.bcfp (optional)
+  ///   - documents.xml (optional)
   ///   - bcf.version
   ///   Topic folder structure inside a BCFzip archive:
   ///   - markup.bcf
@@ -32,7 +36,9 @@ public class Converter : IConverter {
   /// <param name="target">The target path where the JSON is written.</param>
   public async Task BcfToJson(Stream source, string target) {
     // Parsing BCF root file structure
-    var project = await BcfConverter.ParseProject<ProjectExtension>(source);
+    var extensions = await BcfConverter.ParseExtensions<Extensions>(source);
+    var projectInfo = await BcfConverter.ParseProject<ProjectInfo>(source);
+    var documentInfo = await BcfConverter.ParseDocuments<DocumentInfo>(source);
 
     // Parsing topics folder (markups)
     var markups =
@@ -40,7 +46,9 @@ public class Converter : IConverter {
 
     var bcf = new Bcf {
       Markups = markups,
-      Project = project
+      Extensions = extensions,
+      Project = projectInfo,
+      Document = documentInfo
     };
 
     // Writing json files
@@ -48,9 +56,11 @@ public class Converter : IConverter {
   }
 
   /// <summary>
-  ///   The method parses the BCF file of version 2.1 and writes into JSON.
+  ///   The method parses the BCF file of version 3.0 and writes into JSON.
   ///   The root of the BCF zip contains the following files:
+  ///   - extensions.xml
   ///   - project.bcfp (optional)
+  ///   - documents.xml (optional)
   ///   - bcf.version
   ///   Topic folder structure inside a BCFzip archive:
   ///   - markup.bcf
@@ -59,7 +69,7 @@ public class Converter : IConverter {
   ///   - Snapshot files (PNG/JPEG)
   ///   - Bitmaps
   /// </summary>
-  /// <param name="source">The path to the BCFzip.</param>
+  /// <param name="source">The source path of the BCFzip.</param>
   /// <param name="target">The target path where the JSON is written.</param>
   public async Task BcfToJson(string source, string target) {
     try {
@@ -86,37 +96,50 @@ public class Converter : IConverter {
     var tasks = bcf.Markups
       .Select(markup => {
         var pathMarkup = $"{target}/{markup.GetTopic().Guid}.json";
-        return JsonConverter.WriteJson(pathMarkup, markup);
+        return JsonConverter.WriteJson<Markup>(pathMarkup, markup);
       })
       .ToList();
+
+    // Writing BCF extensions file
+    var pathExt = $"{target}/extensions.json";
+    tasks.Add(JsonConverter.WriteJson(pathExt, bcf.Extensions));
 
     // Writing BCF project file
     var pathProject = $"{target}/project.json";
     tasks.Add(JsonConverter.WriteJson(pathProject, bcf.Project));
 
+    // Writing BCF document file
+    var pathDoc = $"{target}/documents.json";
+    tasks.Add(JsonConverter.WriteJson(pathDoc, bcf.Document));
+
     await Task.WhenAll(tasks);
   }
 
   /// <summary>
-  ///   The method reads the JSON files and creates BCF 2.1 version.
+  ///   The method reads the JSON files and creates BCF 3.0 version.
   ///   The json folder must contain files which are named using the
-  ///   `uuid` of the `Topic` within, and `project.json` optionally.
+  ///   `uuid` of the `Topic` within, `extensions.json`,
+  ///   project.json (optional) and documents.json (optional).
   /// </summary>
   /// <param name="source">The source folder to the JSON files.</param>
   /// <param name="target">The target path where the BCF is written.</param>
   public async Task JsonToBcf(string source, string target) {
-    // Parsing BCF project - it is an optional file
-    var projectPath = $"{source}/project.json";
-    var project = Path.Exists(projectPath)
-      ? await JsonConverter.ParseObject<ProjectExtension>(projectPath)
-      : new ProjectExtension();
+    // Parsing BCF root files
+    var extensions =
+      await JsonConverter.ParseObject<Extensions>($"{source}/extensions.json");
+    var project =
+      await JsonConverter.ParseObject<ProjectInfo>($"{source}/project.json");
+    var documents =
+      await JsonConverter.ParseObject<DocumentInfo>($"{source}/documents.json");
 
     // Parsing markups
     var markups = await JsonConverter.ParseMarkups<Markup>(source);
 
     var bcf = new Bcf {
       Markups = markups,
-      Project = project
+      Extensions = extensions,
+      Project = project,
+      Document = documents
     };
 
     // Writing bcf files
@@ -187,8 +210,12 @@ public class Converter : IConverter {
         Convert.FromBase64String(result)));
     }
 
+    // Writing extensions file
+    tasks.Add(BcfConverter.WriteBcfFile(tmpFolder, "extensions.xml", bcf.Extensions));
     // Writing project file
     tasks.Add(BcfConverter.WriteBcfFile(tmpFolder, "project.bcfp", bcf.Project));
+    // Writing documents file
+    tasks.Add(BcfConverter.WriteBcfFile(tmpFolder, "documents.xml", bcf.Document));
 
     // Waiting for all the file writing
     await Task.WhenAll(tasks);
@@ -201,7 +228,7 @@ public class Converter : IConverter {
   }
 
   /// <summary>
-  ///   The method writes the specified BCF 2.1 models to BCF 2.1 files.
+  ///   The method writes the specified BCF 3.0 models to BCF 3.0 files.
   /// </summary>
   /// <param name="target">The target path where the BCF is written.</param>
   /// <param name="bcf">The `IBcf` interface of the BCF.</param>
@@ -211,7 +238,7 @@ public class Converter : IConverter {
   }
 
   /// <summary>
-  ///   The method writes the specified BCF 2.1 models to JSON files.
+  ///   The method writes the specified BCF 3.0 models to JSON files.
   /// </summary>
   /// <param name="target">The target path where the JSON is written.</param>
   /// <param name="bcf">The `IBcf` interface of the BCF.</param>
