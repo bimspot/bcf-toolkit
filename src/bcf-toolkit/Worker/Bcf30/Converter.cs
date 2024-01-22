@@ -147,6 +147,27 @@ public class Converter : IConverter {
   }
 
   /// <summary>
+  ///   The method handles the BCF content from the given objects to the
+  ///   specified stream.
+  /// </summary>
+  /// <param name="bcf">The BCF object.</param>
+  /// <returns></returns>
+  /// <exception cref="FileNotFoundException"></exception>
+  private static async Task<FileStream> BcfStream(Bcf bcf) {
+    var bcfTmp = "bcf.bcfzip";
+
+    var tmpFolder = await WriteBcf(bcfTmp, bcf, false);
+
+    await using var stream = new FileStream(bcfTmp, FileMode.Open, FileAccess.Read);
+
+    // After the filestream is ready we can delete the folders
+    Directory.Delete(tmpFolder, true);
+    Directory.Delete(bcfTmp, true);
+
+    return stream;
+  }
+
+  /// <summary>
   ///   The method writes the BCF content from the given objects to the
   ///   specified target and compresses it.
   ///   The markups will be written into the topic folder structure:
@@ -159,9 +180,10 @@ public class Converter : IConverter {
   /// </summary>
   /// <param name="target">The target file name of the BCFzip.</param>
   /// <param name="bcf">The BCF object.</param>
-  /// <returns></returns>
+  /// <param name="delete">Should delete the generated tmp folder now or later.</param>
+  /// <returns>Temp folder path</returns>
   /// <exception cref="ApplicationException"></exception>
-  private static async Task WriteBcf(string target, Bcf bcf) {
+  private static async Task<string> WriteBcf(string target, Bcf bcf, bool delete = true) {
     var targetFolder = Path.GetDirectoryName(target);
     if (targetFolder == null)
       throw new ApplicationException(
@@ -224,7 +246,11 @@ public class Converter : IConverter {
     Console.WriteLine($"Zipping the output: {target}");
     if (File.Exists(target)) File.Delete(target);
     ZipFile.CreateFromDirectory(tmpFolder, target);
-    Directory.Delete(tmpFolder, true);
+
+    if (delete)
+      Directory.Delete(tmpFolder, true);
+
+    return tmpFolder;
   }
 
   /// <summary>
