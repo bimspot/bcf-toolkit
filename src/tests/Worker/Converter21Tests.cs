@@ -3,8 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using BcfToolkit.Converter;
 using BcfToolkit.Model.Bcf21;
+using BcfToolkit.Worker;
 using NUnit.Framework;
 
 namespace tests.Worker;
@@ -13,25 +13,25 @@ namespace tests.Worker;
 public class Converter21Tests {
   [SetUp]
   public void Setup() {
-    _converter = new BcfToolkit.Worker.Bcf21.Converter();
+    _converterWorker = new BcfToolkit.Worker.Bcf21.ConverterWorker();
   }
 
-  private IConverter _converter = null!;
+  private IConverterWorker _converterWorker = null!;
 
   [Test]
   public void BcfToJsonSampleFilesTest() {
-    _converter.BcfToJson("Resources/Bcf/v2.1/AllPartsVisible.bcfzip",
+    _converterWorker.BcfZipToJson("Resources/Bcf/v2.1/AllPartsVisible.bcfzip",
       "Resources/output/json/v2.1/AllPartsVisible");
-    _converter.BcfToJson(
+    _converterWorker.BcfZipToJson(
       "Resources/Bcf/v2.1/ComponentSelection.bcfzip",
       "Resources/output/json/v2.1/ComponentSelection");
-    _converter.BcfToJson(
+    _converterWorker.BcfZipToJson(
       "Resources/Bcf/v2.1/ExternalBIMSnippet.bcfzip",
       "Resources/output/json/v2.1/ExternalBIMSnippet");
-    _converter.BcfToJson(
+    _converterWorker.BcfZipToJson(
       "Resources/Bcf/v2.1/MaximumInformation.bcfzip",
       "Resources/output/json/v2.1/MaximumInformation");
-    _converter.BcfToJson(
+    _converterWorker.BcfZipToJson(
       "Resources/Bcf/v2.1/UserAssignment.bcfzip",
       "Resources/output/json/v2.1/UserAssignment");
   }
@@ -39,7 +39,7 @@ public class Converter21Tests {
   [Test]
   public Task JsonToBcfSampleFilesTest() {
     var tasks = new List<Task> {
-      _converter.JsonToBcf(
+      _converterWorker.JsonToBcfZip(
         "Resources/Json/v2.1/AllPartsVisible",
         "Resources/output/bcf/v2.1/AllPartsVisible.bcfzip")
     };
@@ -62,7 +62,7 @@ public class Converter21Tests {
       Markups = markups
     };
 
-    var stream = await _converter.BcfStream(bcf);
+    var stream = await _converterWorker.BcfStream(bcf);
 
     Assert.IsNotNull(stream);
     Assert.IsTrue(stream.CanRead);
@@ -72,14 +72,14 @@ public class Converter21Tests {
 
   [Test]
   public void BcfToJsonMissingRequiredPropertyTest() {
-    Assert.That(async () => await _converter.BcfToJson(
+    Assert.That(async () => await _converterWorker.BcfZipToJson(
       "Resources/Bcf/v2.1/RelatedTopics.bcfzip",
        "Resources/output/json/v2.1/RelatedTopics"), Throws.ArgumentException);
   }
 
   [Test]
   public void BcfToJsonWrongPathTest() {
-    Assert.That(async () => await _converter.BcfToJson(
+    Assert.That(async () => await _converterWorker.BcfZipToJson(
       "Resources/Bcf/v3.0/Meszaros.bcfzip",
       "Resources/output/json/v2.1/Meszaros"), Throws.ArgumentException);
   }
@@ -102,7 +102,7 @@ public class Converter21Tests {
     var bcf = new BcfToolkit.Model.Bcf21.Bcf {
       Markups = markups
     };
-    return _converter.ToBcf("Resources/output/Bcf/v2.1/MinimumInformation.bcfzip", bcf);
+    return _converterWorker.ToBcfZip("Resources/output/Bcf/v2.1/MinimumInformation.bcfzip", bcf);
   }
 
   /// <summary>
@@ -122,6 +122,6 @@ public class Converter21Tests {
     var bcf = new BcfToolkit.Model.Bcf21.Bcf {
       Markups = markups
     };
-    return _converter.ToBcf("Resources/output/Bcf/v2.1/WithoutTopicGuid.bcfzip", bcf);
+    return _converterWorker.ToBcfZip("Resources/output/Bcf/v2.1/WithoutTopicGuid.bcfzip", bcf);
   }
 }
