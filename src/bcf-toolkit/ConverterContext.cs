@@ -1,12 +1,11 @@
 #nullable disable
 
 using System;
-using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using BcfToolkit.Builder;
 using BcfToolkit.Model;
+using BcfToolkit.Worker;
 
-namespace BcfToolkit.Converter;
+namespace BcfToolkit;
 
 /// <summary>
 ///   The `ConverterContext` class defines the converter strategy for a specific
@@ -24,7 +23,7 @@ public class ConverterContext {
   ///   It does not know the concrete class of a strategy.
   ///   It should work with all strategies via the converter strategy interface.
   /// </summary>
-  private IConverter Converter { get; set; }
+  private IConverterWorker ConverterWorker { get; set; }
 
   //public IBuilder<IMarkup> Builder { get; set; }
 
@@ -45,9 +44,9 @@ public class ConverterContext {
   /// <param name="version">The version of the BCF.</param>
   /// <exception cref="ArgumentException"></exception>
   private void Init(BcfVersionEnum version) {
-    Converter = version switch {
-      BcfVersionEnum.Bcf21 => new Worker.Bcf21.Converter(),
-      BcfVersionEnum.Bcf30 => new Worker.Bcf30.Converter(),
+    ConverterWorker = version switch {
+      BcfVersionEnum.Bcf21 => new Worker.Bcf21.ConverterWorker(),
+      BcfVersionEnum.Bcf30 => new Worker.Bcf30.ConverterWorker(),
       _ => throw new ArgumentException($"Unsupported BCF version: {version}")
     };
   }
@@ -59,11 +58,10 @@ public class ConverterContext {
   ///   Source path of the file which must be converted.
   /// </param>
   /// <param name="target">Target destination for the converted results.</param>
-  public async Task Convert(string source, string target) {
-    if (source.EndsWith("bcfzip"))
-      await Converter.BcfToJson(source, target)!;
-    else
-      await Converter.JsonToBcf(source, target)!;
+  public Task Convert(string source, string target) {
+    return source.EndsWith("bcfzip")
+      ? ConverterWorker.BcfZipToJson(source, target)!
+      : ConverterWorker.JsonToBcfZip(source, target)!;
   }
 
   /// <summary>
@@ -74,7 +72,7 @@ public class ConverterContext {
   /// </param>
   /// <returns></returns>
   public Task ToBcf(string target, IBcf bcf) {
-    return Converter.ToBcf(target, bcf);
+    return ConverterWorker.ToBcfZip(target, bcf);
   }
 
   /// <summary>
@@ -85,6 +83,6 @@ public class ConverterContext {
   /// </param>
   /// <returns></returns>
   public Task ToJson(string target, IBcf bcf) {
-    return Converter.ToJson(target, bcf);
+    return ConverterWorker.ToJson(target, bcf);
   }
 }
