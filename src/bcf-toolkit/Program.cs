@@ -17,10 +17,10 @@ internal static class Program {
       description: "The absolute path of the source file.") { IsRequired = true };
     sourcePathOption.AddAlias("-s");
 
-    var targetFolderOption = new Option<string>(
+    var targetOption = new Option<string>(
       name: "--target",
-      description: "The absolute path of the target folder.") { IsRequired = true };
-    targetFolderOption.AddAlias("-t");
+      description: "The absolute path of the target.") { IsRequired = true };
+    targetOption.AddAlias("-t");
 
     var versionOption = new Option<string>(
         name: "--bcfVersion",
@@ -36,14 +36,14 @@ internal static class Program {
     };
 
     rootCommand.AddOption(sourcePathOption);
-    rootCommand.AddOption(targetFolderOption);
+    rootCommand.AddOption(targetOption);
     rootCommand.AddOption(versionOption);
 
     rootCommand.SetHandler(
       async (arguments) => { await DoRootCommand(arguments); },
       new InputArgumentsBinder(
         sourcePathOption,
-        targetFolderOption,
+        targetOption,
         versionOption));
     await rootCommand.InvokeAsync(args);
   }
@@ -55,7 +55,7 @@ internal static class Program {
     try {
       var version = BcfVersion.Parse(arguments.TargetVersion);
       var context = new ConverterContext(version);
-      await context.Convert(arguments.SourcePath, arguments.TargetFolder);
+      await context.Convert(arguments.SourcePath, arguments.Target);
     }
     catch (Exception e) {
       var errorWriter = Console.Error;
