@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using BcfToolkit.Converter;
 using BcfToolkit.Model.Bcf21;
@@ -44,6 +45,29 @@ public class Converter21Tests {
     };
 
     return Task.WhenAll(tasks);
+  }
+
+  [Test]
+  public async Task BcfStream_ShouldReturnFileStream() {
+    var markup = new Markup {
+      Topic = new Topic {
+        Guid = "3ffb4df2-0187-49a9-8a4a-23992696bafd",
+        Title = "This is a new topic",
+        CreationDate = new DateTime(),
+        CreationAuthor = "Meszaros"
+      }
+    };
+    var markups = new ConcurrentBag<Markup> { markup };
+    var bcf = new BcfToolkit.Model.Bcf21.Bcf {
+      Markups = markups
+    };
+
+    var stream = await _converter.BcfStream(bcf);
+
+    Assert.IsNotNull(stream);
+    Assert.IsTrue(stream.CanRead);
+
+    await stream.DisposeAsync();
   }
 
   [Test]

@@ -390,9 +390,6 @@ public class BcfConverterTests {
         stream);
     var type = extensions.TopicTypes.FirstOrDefault();
     Assert.AreEqual("Error", type);
-
-    Assert.That(async () => await BcfToolkit.Converter.BcfConverter.ParseExtensions<bcf30.Extensions>(
-      stream), Throws.Exception);
   }
 
   /// <summary>

@@ -20,7 +20,7 @@ public abstract class ArgumentHandlerTest {
 
       // Test case 1: valid arguments with default bcfVersion value
       var input1 = new List<string>
-        {"--source", "sourcePath", "--target", "targetFolder"};
+        {"--source", "sourcePath", "--target", "target"};
       var result1 = parser.Parse(input1);
       Assert.AreEqual(0, result1.Errors.Count);
       var bcfVersionOption = rootCommand.Options.FirstOrDefault(opt => opt.Aliases.Contains("--bcfVersion"));
@@ -32,14 +32,14 @@ public abstract class ArgumentHandlerTest {
       }
 
       // Test case 2: missing required argument (--source)
-      var input2 = new List<string> { "--target", "targetFolder" };
+      var input2 = new List<string> { "--target", "target" };
       var result2 = parser.Parse(input2);
       Assert.AreEqual(1, result2.Errors.Count);
       StringAssert.Contains("Option '--source' is required.", result2.Errors[0].Message);
 
       // Test case 3: valid arguments with optional argument (--bcfVersion)
       var input3 = new List<string> {
-        "--source", "sourcePath", "--target", "targetFolder", "--bcfVersion",
+        "--source", "sourcePath", "--target", "target", "--bcfVersion",
         "3.0"
       };
       var result3 = parser.Parse(input3);
@@ -62,7 +62,7 @@ public abstract class ArgumentHandlerTest {
 
       // Test case 1: valid arguments with default bcfVersion value
       var input1 = new List<string>
-        {"-s", "sourcePath", "-t", "targetFolder"};
+        {"-s", "sourcePath", "-t", "target"};
       var result1 = parser.Parse(input1);
       Assert.AreEqual(0, result1.Errors.Count);
       var bcfVersionOption = rootCommand.Options.FirstOrDefault(opt => opt.Aliases.Contains("-b"));
@@ -74,14 +74,14 @@ public abstract class ArgumentHandlerTest {
       }
 
       // Test case 2: missing required argument (--source)
-      var input2 = new List<string> { "-t", "targetFolder" };
+      var input2 = new List<string> { "-t", "target" };
       var result2 = parser.Parse(input2);
       Assert.AreEqual(1, result2.Errors.Count);
       StringAssert.Contains("Option '--source' is required.", result2.Errors[0].Message);
 
       // Test case 3: valid arguments with optional argument (--bcfVersion)
       var input3 = new List<string> {
-        "-s", "sourcePath", "-t", "targetFolder", "-b",
+        "-s", "sourcePath", "-t", "target", "-b",
         "3.0"
       };
       var result3 = parser.Parse(input3);
@@ -101,9 +101,9 @@ public abstract class ArgumentHandlerTest {
       IsRequired = true
     };
 
-    var targetFolderOption = new Option<string>(
+    var targetOption = new Option<string>(
       aliases: new[] { "--target", "-t" },
-      description: "The absolute path of the target folder.") {
+      description: "The absolute path of the target.") {
       IsRequired = true
     };
 
@@ -121,7 +121,7 @@ public abstract class ArgumentHandlerTest {
     };
 
     rootCommand.AddOption(sourcePathOption);
-    rootCommand.AddOption(targetFolderOption);
+    rootCommand.AddOption(targetOption);
     rootCommand.AddOption(versionOption);
 
     return rootCommand;
