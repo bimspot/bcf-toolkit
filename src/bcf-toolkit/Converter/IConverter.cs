@@ -34,6 +34,15 @@ public interface IConverter {
   Task JsonToBcf(string source, string target);
 
   /// <summary>
+  ///   The method handles the BCF content from the given objects to the
+  ///   specified stream.
+  /// </summary>
+  /// <param name="bcf">The BCF object.</param>
+  /// <returns></returns>
+  /// <exception cref="FileNotFoundException"></exception>
+  Task<Stream> BcfStream(IBcf bcf);
+
+  /// <summary>
   ///   The method writes the specified BCF models to BCF files.
   /// </summary>
   /// <param name="target">The target path where the BCF is written.</param>
