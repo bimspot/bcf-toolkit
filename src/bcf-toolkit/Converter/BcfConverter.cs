@@ -31,6 +31,8 @@ public static class BcfConverter {
   ///   * Viewpoint files
   ///   * Snapshot files
   ///   * Bitmaps
+  ///
+  ///   Notification: This function adjusts the stream position back to 0 in order to use it again.
   /// </summary>
   /// <param name="stream">The source stream of the BCFzip.</param>
   /// <returns>Returns a Task with a List of `Markup` models.</returns>
@@ -49,7 +51,7 @@ public static class BcfConverter {
     var markups = new ConcurrentBag<TMarkup>();
 
     // Unzipping the bcfzip
-    using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
+    using var archive = new ZipArchive(stream, ZipArchiveMode.Read, true);
 
     // This iterates through the archive file-by-file and the sub-folders
     // being just in the names of the entries.
@@ -125,6 +127,8 @@ public static class BcfConverter {
           currentUuid, ref markups);
     }
 
+    // Stream must be positioned back to 0 in order to use it again
+    stream.Position = 0;
     return markups;
   }
 
@@ -215,6 +219,8 @@ public static class BcfConverter {
   ///   filters and searches for the desired file using the provided filter function,
   ///   and parses it into the specified object type. If the file is marked as required,
   ///   an exception is thrown if it is missing.
+  ///
+  ///   Notification: This function adjusts the stream position back to 0 in order to use it again.
   /// </summary>
   /// <param name="stream">The stream containing the BCFzip data.</param>
   /// <param name="filterFn">The filter function used to identify the desired file.</param>
@@ -234,7 +240,7 @@ public static class BcfConverter {
     var obj = default(T);
 
     // Unzipping the bcfzip
-    using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
+    using var archive = new ZipArchive(stream, ZipArchiveMode.Read, true);
 
     foreach (var entry in archive.Entries) {
       if (!filterFn(entry)) continue;
@@ -248,6 +254,8 @@ public static class BcfConverter {
       obj = document.BcfObject<T>();
     }
 
+    // Stream must be positioned back to 0 in order to use it again
+    stream.Position = 0;
     if (isRequired && obj == null)
       throw new InvalidDataException($"{objType} is not found in BCF.");
     return obj;

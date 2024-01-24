@@ -129,19 +129,20 @@ public class Converter : IConverter {
   ///   The method handles the BCF content from the given objects to the
   ///   specified stream.
   /// </summary>
-  /// <param name="bcf">The BCF object.</param>
+  /// <param name="bcf">The `IBcf` interface of the BCF.</param>
   /// <returns></returns>
   /// <exception cref="FileNotFoundException"></exception>
-  private static async Task<Stream> BcfStream(Bcf bcf) {
-    var bcfTmp = "bcf.bcfzip";
+  public async Task<Stream> BcfStream(IBcf bcf) {
+    var workingDir = Directory.GetCurrentDirectory();
+    var bcfTargetPath = workingDir + "/bcf.bcfzip";
 
-    var tmpFolder = await WriteBcf(bcfTmp, bcf, false);
+    var tmpFolder = await WriteBcf(bcfTargetPath, (Bcf)bcf, false);
 
-    await using var stream = new FileStream(bcfTmp, FileMode.Open, FileAccess.Read);
+    var stream = new FileStream(bcfTargetPath, FileMode.Open, FileAccess.Read);
 
     // After the filestream is ready we can delete the folders
     Directory.Delete(tmpFolder, true);
-    Directory.Delete(bcfTmp, true);
+    File.Delete(bcfTargetPath);
 
     return stream;
   }
@@ -163,7 +164,6 @@ public class Converter : IConverter {
   /// <returns>Generated temp folder path</returns>
   /// <exception cref="ApplicationException"></exception>
   private static async Task<string> WriteBcf(string target, Bcf bcf, bool delete = true) {
-
     var targetFolder = Path.GetDirectoryName(target);
     if (targetFolder == null)
       throw new ApplicationException(
@@ -171,7 +171,9 @@ public class Converter : IConverter {
 
     // Will create a tmp folder for the intermediate files.
     var tmpFolder = $"{targetFolder}/tmp";
+
     if (Directory.Exists(tmpFolder)) Directory.Delete(tmpFolder, true);
+
     Directory.CreateDirectory(tmpFolder);
 
     var tasks = new List<Task>();
@@ -221,6 +223,7 @@ public class Converter : IConverter {
     // zip shit
     Console.WriteLine($"Zipping the output: {target}");
     if (File.Exists(target)) File.Delete(target);
+    ZipFile.CreateFromDirectory(tmpFolder, target);
 
     if (delete)
       Directory.Delete(tmpFolder, true);

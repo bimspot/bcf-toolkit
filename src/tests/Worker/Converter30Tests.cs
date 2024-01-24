@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using BcfToolkit.Converter;
+using BcfToolkit.Model.Bcf30;
 using NUnit.Framework;
 
 namespace tests.Worker;
@@ -61,6 +63,33 @@ public class Converter30Tests {
     };
 
     return Task.WhenAll(tasks);
+  }
+
+  [Test]
+  public async Task BcfStream_ShouldReturnFileStream() {
+    await using var stream = new FileStream("Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip", FileMode.Open, FileAccess.Read);
+
+    var extensions =
+      await BcfConverter.ParseExtensions<Extensions>(stream);
+    var projectInfo = await BcfConverter.ParseProject<ProjectInfo>(stream);
+    var documentInfo = await BcfConverter.ParseDocuments<DocumentInfo>(stream);
+
+    var markups =
+      await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(stream);
+
+    var bcf = new Bcf {
+      Markups = markups,
+      Extensions = extensions,
+      Project = projectInfo,
+      Document = documentInfo
+    };
+
+    var streamResult = await _converter.BcfStream(bcf);
+
+    Assert.IsNotNull(streamResult);
+    Assert.IsTrue(streamResult.CanRead);
+
+    await streamResult.DisposeAsync();
   }
 
   [Test]
