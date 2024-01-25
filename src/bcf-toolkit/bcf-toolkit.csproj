@@ -2,7 +2,7 @@
     <PropertyGroup>
         <PackageId>Smino.Bcf.Toolkit</PackageId>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <Title>bcf-toolkit</Title>
