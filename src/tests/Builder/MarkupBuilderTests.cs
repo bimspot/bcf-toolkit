@@ -17,7 +17,7 @@ public class MarkupBuilderTests {
     var markup = _builder
       .SetTitle("Title")
       .SetGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
-      .SetCreationAuthor("Meszaros")
+      .SetCreationAuthor("Creator")
       .SetTopicType("Issue")
       .SetTopicStatus("Open")
       .Build();
@@ -32,7 +32,7 @@ public class MarkupBuilderTests {
     var markup = _builder
       .SetTitle("Title")
       .SetGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
-      .SetCreationAuthor("Meszaros")
+      .SetCreationAuthor("Creator")
       .SetTopicType("Issue")
       .SetTopicStatus("Open")
       .Build();
@@ -55,7 +55,7 @@ public class MarkupBuilderTests {
     _builder
       .SetTitle("Title")
       .SetGuid("guid")
-      .SetCreationAuthor("Meszaros")
+      .SetCreationAuthor("Creator")
       .SetTopicType("Issue")
       .SetTopicStatus("Open");
     Assert.That(() => _builder.Build(), Throws.ArgumentException);

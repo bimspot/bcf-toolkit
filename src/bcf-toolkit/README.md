@@ -1,6 +1,6 @@
-This C# NuGet library allows you to easily build up and convert data into BCF files.
-It gives you a straightforward API to build your BCF objects exactly how you want
-in your order.
+This C# NuGet library allows you to easily build up and convert data into BCF 
+files. It gives you a straightforward API to build your BCF objects exactly how 
+you want in your order.
 
 ## Installation
 You can install the `BcfToolkit` library via NuGet Package Manager or by adding
@@ -11,9 +11,10 @@ nuget install Smino.Bcf.Toolkit
 
 ## Usage
 ### Creating BCF objects
-To create a BCF Model, you can use the BuilderCreator class to obtain a builder object.
-Then, you can use various functions provided by the builder to fulfill the BCF model
-objects.
+To create a BCF Model, you can use the BuilderCreator class to obtain a builder 
+object.
+Then, you can use various functions provided by the builder to fulfill the BCF 
+model objects.
 
 **IMPORTANT:** The builder always uses the latest (BCF 3.0) models.
 
@@ -70,9 +71,10 @@ var extensions = BcfBuilder.Extensions()
     .Build();
 ```
 
-You can also use the default builders if you prefer not to deal with filling the required fields.
-The `builder.WithDefaults()` function serves this for you. However in certain cases you may need 
-to replace the component IDs of IFC objects with their actual GUIDs during the build process.
+You can also use the default builders if you prefer not to deal with filling the 
+required fields. The `builder.WithDefaults()` function serves this for you. 
+However in certain cases you may need to replace the component IDs of IFC 
+objects with their actual GUIDs during the build process.
 
 ```csharp
 var markup = BcfBuilder.Markup()

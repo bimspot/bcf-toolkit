@@ -3,7 +3,12 @@ using BcfToolkit.Model;
 
 namespace BcfToolkit.Builder;
 
-public interface IBcfBuilder<out TBuilder, out TMarkupBuilder, out TProjectBuilder> : IBuilder<IBcf> {
+public interface IBcfBuilder<
+  out TBuilder,
+  out TMarkupBuilder,
+  out TProjectBuilder> :
+  IBuilder<IBcf>,
+  IFromStreamBuilder<IBcf> {
   /// <summary>
   ///   Returns the builder object extended with a new `Markup`.
   /// </summary>
