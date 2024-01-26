@@ -6,7 +6,7 @@ public class Bcf : IBcf {
   public Bcf() {
     this.Markups = new ConcurrentBag<Markup>();
   }
-  
+
   [System.ComponentModel.DataAnnotations.RequiredAttribute]
   public ConcurrentBag<Markup> Markups { get; set; }
 
