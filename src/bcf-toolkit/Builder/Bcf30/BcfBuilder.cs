@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using BcfToolkit.Converter;
@@ -15,11 +16,18 @@ public partial class BcfBuilder : IBcfBuilder<
     MarkupBuilder,
     ProjectBuilder>,
   IDefaultBuilder<BcfBuilder> {
+
   private readonly Bcf _bcf = new();
+
   public BcfBuilder AddMarkup(Action<MarkupBuilder> builder) {
     var markup =
       (Markup)BuilderUtils.BuildItem<MarkupBuilder, IMarkup>(builder);
     _bcf.Markups.Add(markup);
+    return this;
+  }
+
+  public BcfBuilder AddMarkups(List<Markup> markups) {
+    markups.ForEach(m => _bcf.Markups.Add(m));
     return this;
   }
 
