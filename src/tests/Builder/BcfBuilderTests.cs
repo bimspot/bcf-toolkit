@@ -14,7 +14,7 @@ public class BcfBuilderTests {
   public void Setup() {
     _builder = new BcfBuilder();
   }
-  
+
   [Test]
   public void BuildBcfWithComplexFields() {
     var bcf = (Bcf)_builder
@@ -36,30 +36,30 @@ public class BcfBuilderTests {
     Assert.AreEqual(true, bcf.Extensions.TopicTypesSpecified);
     Assert.AreEqual("Project", bcf.Project?.Project.Name);
   }
-  
+
   [Test]
   public void BuildBcfWithMissingRequiredFields() {
     Assert.That(() => _builder.Build(), Throws.ArgumentException);
   }
-  
+
   [Test]
   public async Task BuildBcfFromStream() {
     await using var stream = new FileStream(
       "Resources/Bcf/v3.0/UserAssignment.bcfzip",
-      FileMode.Open, 
+      FileMode.Open,
       FileAccess.Read);
-    var bcf = (Bcf) await _builder.BuildFromStream(stream);
+    var bcf = (Bcf)await _builder.BuildFromStream(stream);
     Assert.AreEqual(1, bcf.Markups.Count);
     Assert.AreEqual(
-      "Architect@example.com", 
+      "Architect@example.com",
       bcf.Markups.FirstOrDefault()?.Topic.AssignedTo);
   }
   [Test]
   public async Task BuildEmptyBcfFromStream() {
     await using var stream = new FileStream(
       "Resources/Bcf/v3.0/Empty.bcfzip",
-      FileMode.Open, 
+      FileMode.Open,
       FileAccess.Read);
-    Assert.That (() => _builder.BuildFromStream(stream), Throws.ArgumentException);
+    Assert.That(() => _builder.BuildFromStream(stream), Throws.ArgumentException);
   }
 }

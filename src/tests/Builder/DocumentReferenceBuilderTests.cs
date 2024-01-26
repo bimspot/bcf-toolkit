@@ -20,7 +20,7 @@ public class DocumentReferenceBuilderTests {
       .SetGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
       .Build();
   }
-  
+
   [Test]
   public void BuildDocumentReferenceWithoutRequiredFields() {
     Assert.That(() => _builder.Build(), Throws.ArgumentException);
