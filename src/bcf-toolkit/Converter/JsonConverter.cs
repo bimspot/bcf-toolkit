@@ -103,8 +103,8 @@ public static class JsonConverter {
   /// <returns></returns>
   public static Task WriteJson<T>(string path, T obj) {
     return Task.Run(async () => {
-      if (obj is null)  return;
-      
+      if (obj is null) return;
+
       // TODO make a default serializer to avoid code repeat
       var contractResolver = new DefaultContractResolver {
         NamingStrategy = new SnakeCaseNamingStrategy()
