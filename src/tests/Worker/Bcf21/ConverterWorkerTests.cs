@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using BcfToolkit.Model.Bcf21;
 using BcfToolkit.Worker;
 using NUnit.Framework;
 
-namespace tests.Worker;
+namespace tests.Worker.Bcf21;
 
 [TestFixture]
-public class Converter21Tests {
+public class ConverterWorkerTests {
   [SetUp]
   public void Setup() {
     _converterWorker = new BcfToolkit.Worker.Bcf21.ConverterWorker();
@@ -54,7 +53,7 @@ public class Converter21Tests {
         Guid = "3ffb4df2-0187-49a9-8a4a-23992696bafd",
         Title = "This is a new topic",
         CreationDate = new DateTime(),
-        CreationAuthor = "Meszaros"
+        CreationAuthor = "Creator"
       }
     };
     var markups = new ConcurrentBag<Markup> { markup };
@@ -80,8 +79,8 @@ public class Converter21Tests {
   [Test]
   public void BcfToJsonWrongPathTest() {
     Assert.That(async () => await _converterWorker.BcfZipToJson(
-      "Resources/Bcf/v3.0/Meszaros.bcfzip",
-      "Resources/output/json/v2.1/Meszaros"), Throws.ArgumentException);
+      "Resources/Bcf/v3.0/Wrong.bcfzip",
+      "Resources/output/json/v2.1/Wrong"), Throws.ArgumentException);
   }
 
   /// <summary>
@@ -95,11 +94,11 @@ public class Converter21Tests {
         Guid = "3ffb4df2-0187-49a9-8a4a-23992696bafd",
         Title = "This is a new topic",
         CreationDate = new DateTime(),
-        CreationAuthor = "Meszaros"
+        CreationAuthor = "Creator"
       }
     };
     var markups = new ConcurrentBag<Markup> { markup };
-    var bcf = new BcfToolkit.Model.Bcf21.Bcf {
+    var bcf = new Bcf {
       Markups = markups
     };
     return _converterWorker.ToBcfZip("Resources/output/Bcf/v2.1/MinimumInformation.bcfzip", bcf);
@@ -115,11 +114,11 @@ public class Converter21Tests {
       Topic = new Topic {
         Title = "This is a new topic",
         CreationDate = new DateTime(),
-        CreationAuthor = "Meszaros"
+        CreationAuthor = "Creator"
       }
     };
     var markups = new ConcurrentBag<Markup> { markup };
-    var bcf = new BcfToolkit.Model.Bcf21.Bcf {
+    var bcf = new Bcf {
       Markups = markups
     };
     return _converterWorker.ToBcfZip("Resources/output/Bcf/v2.1/WithoutTopicGuid.bcfzip", bcf);

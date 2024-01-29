@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using BcfToolkit.Builder.Bcf21;
 using BcfToolkit.Converter;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
@@ -32,17 +33,8 @@ public class ConverterWorker : IConverterWorker {
   /// <param name="source">The source stream of the BCFzip.</param>
   /// <param name="targetPath">The target path where the JSON is written.</param>
   public async Task BcfZipToJson(Stream source, string targetPath) {
-    // Parsing BCF root file structure
-    var project = await BcfConverter.ParseProject<ProjectExtension>(source);
-
-    // Parsing topics folder (markups)
-    var markups =
-      await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(source);
-
-    var bcf = new Bcf {
-      Markups = markups,
-      Project = project
-    };
+    var builder = new BcfBuilder();
+    var bcf = (Bcf)await builder.BuildFromStream(source);
 
     // Writing json files
     await WriteJson(targetPath, bcf);

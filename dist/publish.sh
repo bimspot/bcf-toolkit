@@ -16,11 +16,11 @@ for id in "${RuntimeIdentifiers[@]}"
 do
   printf "[x] Packaging for runtime: $id\n\n"
 
-  dotnet publish ../bcf-toolkit/bcf-toolkit.csproj \
+  dotnet publish ../src/bcf-toolkit/bcf-toolkit.csproj \
     -c Release \
     -r $id \
     --self-contained false \
-    --output ../dist/bcf-toolkit-$id || exit 9
+    --output bcf-toolkit-$id || exit 9
 
   # zip -r $id.zip $id
   tar -zcvf bcf-toolkit-$id.tar.gz bcf-toolkit-$id || exit 9

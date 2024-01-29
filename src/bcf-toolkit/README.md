@@ -1,6 +1,6 @@
-This C# NuGet library allows you to easily build up and convert data into BCF files.
-It gives you a straightforward API to build your BCF objects exactly how you want
-in your order.
+This C# NuGet library allows you to easily build up and convert data into BCF 
+files. It gives you a straightforward API to build your BCF objects exactly how 
+you want in your order.
 
 ## Installation
 You can install the `BcfToolkit` library via NuGet Package Manager or by adding
@@ -11,51 +11,33 @@ nuget install Smino.Bcf.Toolkit
 
 ## Usage
 ### Creating BCF objects
-To create a BCF Model, you can use the BuilderCreator class to obtain a builder object.
-Then, you can use various functions provided by the builder to fulfill the BCF model
-objects.
+To create a BCF Model, `BuilderBuilder` class can be used. Then, various
+functions provided by the builder can be used to fulfill the BCF model objects.
 
-**IMPORTANT:** The builder always uses the latest (BCF 3.0) models.
-
-Here's an example:
+Here are some examples:
 
 ```csharp
-using BcfToolkit;
+using BcfToolkit.Builder.Bcf30;
 
-// Build the BCF Markup
-var markup = BcfBuilder.Markup()
-    .AddTitle("Simple title")
-    .AddDescription("This is a description")
+var builder = new BcfBuilder();
+var bcf = builder
+  .AddMarkup(m => m
+    .SetTitle("Simple title")
+    .SetDescription("This is a description")
     .AddLabel("Architecture")
-    .AddPriority("Critical")
-    .AddTopicType("Clash")
-    .AddTopicStatus("Active")
+    .SetPriority("Critical")
+    .SetTopicType("Clash")
+    .SetTopicStatus("Active")
     .AddComment(c => c
-        .AddComment("This is a comment")
-        .AddDate(DateTime.Now)
-        .AddAuthor("jimmy@page.com"))
+      .SetComment("This is a comment")
+      .SetDate(DateTime.Now)
+      .SetAuthor("jimmy@page.com"))
     .AddViewPoint(v => v
-        .AddPerspectiveCamera(pCam => pCam
-            .AddCamera(cam => cam
-                .AddViewPoint(10, 10, 10))),
-        snapshotData) // Provide snapshot data here
-    .Build();
-
-// Build the BCF Project
-var project = BcfBuilder.Project()
-    .AddProjectId("projectId")
-    .AddProjectName("My project")
-    .Build();
-
-// Build the BCF Document
-var document = BcfBuilder.Document()
-    .AddDocument(d => d
-    .AddFileName("document.pdf")
-    .AddDescription("This is a document"))
-    .Build();
-
-// Build the BCF Extensions
-var extensions = BcfBuilder.Extensions()
+        .SetPerspectiveCamera(pCam => pCam
+          .SetCamera(cam => cam
+            .SetViewPoint(10, 10, 10))),
+      snapshotData)) // Provide a snapshot data here
+  .SetExtensions(e => e
     .AddPriority("Critical")
     .AddPriority("Major")
     .AddPriority("Normal")
@@ -66,16 +48,69 @@ var extensions = BcfBuilder.Extensions()
     .AddTopicType("Remark")
     .AddTopicLabel("Architecture")
     .AddTopicLabel("Structure")
-    .AddTopicLabel("MEP")
-    .Build();
+    .AddTopicLabel("MEP"))
+  .SetProject(p => p
+    .SetProjectId("projectId")
+    .SetProjectName("My project"))
+  .SetDocumentInfo(dI => dI
+    .AddDocument(d => d
+      .SetFileName("document.pdf")
+      .SetDescription("This is a document")))
+  .Build();
 ```
 
-You can also use the default builders if you prefer not to deal with filling the required fields.
-The `builder.WithDefaults()` function serves this for you. However in certain cases you may need 
-to replace the component IDs of IFC objects with their actual GUIDs during the build process.
+The `BcfBuilder` class can also consume BCF files as a stream and build up the
+model objects.
 
 ```csharp
-var markup = BcfBuilder.Markup()
-  .WithDefaults()
-  .Build();
+using BcfToolkit.Builder.Bcf30;
+
+await using var stream = new FileStream(source, FileMode.Open, FileAccess.Read);
+var builder = new BcfBuilder();
+var bcf = await builder
+    .BuildFromStream(stream);
+```
+
+The default builders can be used if the user prefers not to deal with filling
+the required fields. The `builder.WithDefaults()` function serves this.
+However in certain cases the user may need to replace the component IDs of IFC
+objects with the actual GUIDs during the build process.
+
+```csharp
+using BcfToolkit.Builder.Bcf30;
+
+var builder = new BcfBuilder();
+var bcf = builder
+    .WithDefaults()
+    .Build();
+```
+##### Using BCF workers
+The workers are implemented to use predefined workflows to convert `BCF` files
+into `json`. The aimed BCF version must be set first then `ConverterContext`
+class lets the nested object to do the conversion accordingly.
+
+```csharp
+using BcfToolkit;
+using BcfToolkit.Model;
+
+var version = BcfVersion.Parse(arguments.TargetVersion);
+var context = new ConverterContext(version);
+await context.Convert("sourcePath", "targetPath");
+```
+
+The exact worker can be called directly as well for both converting directions,
+`BCF` into `json` and back.
+
+```csharp
+using BcfToolkit.Worker.Bcf30;
+
+var worker = new ConverterWorker()
+worker.BcfZipToJson(source, target);
+```
+
+```csharp
+using BcfToolkit.Worker.Bcf30;
+
+var worker = new ConverterWorker()
+worker.JsonToBcfZip(source, target);
 ```

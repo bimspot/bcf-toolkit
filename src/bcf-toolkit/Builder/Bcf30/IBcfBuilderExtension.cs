@@ -13,9 +13,9 @@ public interface IBcfBuilderExtension<
   /// <returns>Returns the builder object.</returns>
   TBuilder SetExtensions(Action<TExtensionsBuilder> builder);
   /// <summary>
-  ///   Returns the builder object extended with a new `DocumentInfo`.
+  ///   Returns the builder object set with the `DocumentInfo`.
   /// </summary>
   /// <param name="builder">Builder of the document info.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddDocumentInfo(Action<TDocumentInfoBuilder> builder);
+  TBuilder SetDocumentInfo(Action<TDocumentInfoBuilder> builder);
 }

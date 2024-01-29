@@ -133,8 +133,10 @@ public static class BcfConverter {
   }
 
   private static void WritingOutMarkup<TMarkup, TVisualizationInfo>(
-    ref TMarkup? markup, ref TVisualizationInfo? viewpoint,
-    ref string? snapshot, string currentUuid,
+    ref TMarkup? markup,
+    ref TVisualizationInfo? viewpoint,
+    ref string? snapshot,
+    string currentUuid,
     ref ConcurrentBag<TMarkup> markups)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo {
@@ -170,8 +172,8 @@ public static class BcfConverter {
   /// </summary>
   /// <param name="stream">The file stream of the BCFzip.</param>
   /// <returns>Returns a Task with an `Extensions` model.</returns>
-  public static async Task<TExtensions?> ParseExtensions<TExtensions>(Stream stream) {
-    return await ParseRequired<TExtensions>(stream, entry => entry.IsExtensions());
+  public static Task<TExtensions> ParseExtensions<TExtensions>(Stream stream) {
+    return ParseRequired<TExtensions>(stream, entry => entry.IsExtensions());
   }
 
   /// <summary>
@@ -185,8 +187,8 @@ public static class BcfConverter {
   /// </summary>
   /// <param name="stream">The stream of the BCFzip.</param>
   /// <returns>Returns a Task with an `ProjectInfo` model.</returns>
-  public static async Task<TProjectInfo?> ParseProject<TProjectInfo>(Stream stream) {
-    return await ParseOptional<TProjectInfo>(stream, entry => entry.IsProject());
+  public static Task<TProjectInfo?> ParseProject<TProjectInfo>(Stream stream) {
+    return ParseOptional<TProjectInfo>(stream, entry => entry.IsProject());
   }
 
   /// <summary>
@@ -199,19 +201,24 @@ public static class BcfConverter {
   /// </summary>
   /// <param name="stream">The stream of to the BCFzip.</param>
   /// <returns>Returns a Task with an `DocumentInfo` model.</returns>
-  public static async Task<TDocumentInfo?>
+  public static Task<TDocumentInfo?>
     ParseDocuments<TDocumentInfo>(Stream stream) {
-    return await ParseOptional<TDocumentInfo>(stream, entry => entry.IsDocuments());
+    return ParseOptional<TDocumentInfo>(stream, entry => entry.IsDocuments());
   }
 
-  private static async Task<T?> ParseRequired<T>(Stream stream,
+  private static Task<T> ParseRequired<T>(
+    Stream stream,
     Func<ZipArchiveEntry, bool> filterFn) {
-    return await ParseObject<T>(stream, filterFn, true);
+    var obj = ParseObject<T>(stream, filterFn, true);
+    if (obj == null)
+      throw new InvalidDataException($"{typeof(T)} is not found in BCF.");
+    return obj!;
   }
 
-  private static async Task<T?> ParseOptional<T>(Stream stream,
+  private static Task<T?> ParseOptional<T>(
+    Stream stream,
     Func<ZipArchiveEntry, bool> filterFn) {
-    return await ParseObject<T>(stream, filterFn)!;
+    return ParseObject<T>(stream, filterFn);
   }
 
   /// <summary>
@@ -228,8 +235,10 @@ public static class BcfConverter {
   /// <typeparam name="T">The generic type parameter representing the desired object type.</typeparam>
   /// <returns>Returns a Task with a model of type `T`.</returns>
   /// <exception cref="InvalidDataException">Thrown if the file is marked as required but is missing.</exception>
-  private static async Task<T?> ParseObject<T>(Stream stream,
-    Func<ZipArchiveEntry, bool> filterFn, bool isRequired = false) {
+  private static async Task<T?> ParseObject<T>(
+    Stream stream,
+    Func<ZipArchiveEntry, bool> filterFn,
+    bool isRequired = false) {
 
     if (stream == null || !stream.CanRead)
       throw new ArgumentException("Source stream is not readable.");
@@ -256,8 +265,6 @@ public static class BcfConverter {
 
     // Stream must be positioned back to 0 in order to use it again
     stream.Position = 0;
-    if (isRequired && obj == null)
-      throw new InvalidDataException($"{objType} is not found in BCF.");
     return obj;
   }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
 
@@ -13,7 +14,7 @@ public partial class BcfBuilder :
     return this;
   }
 
-  public BcfBuilder AddDocumentInfo(Action<DocumentInfoBuilder> builder) {
+  public BcfBuilder SetDocumentInfo(Action<DocumentInfoBuilder> builder) {
     var documentInfo =
       (DocumentInfo)BuilderUtils.BuildItem<DocumentInfoBuilder, IDocumentInfo>(builder);
     _bcf.Document = documentInfo;

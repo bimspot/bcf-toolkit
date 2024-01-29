@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 

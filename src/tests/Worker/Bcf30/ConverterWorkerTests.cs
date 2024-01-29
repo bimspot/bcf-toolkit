@@ -6,10 +6,10 @@ using BcfToolkit.Model.Bcf30;
 using BcfToolkit.Worker;
 using NUnit.Framework;
 
-namespace tests.Worker;
+namespace tests.Worker.Bcf30;
 
 [TestFixture]
-public class Converter30Tests {
+public class ConverterWorkerTests {
   [SetUp]
   public void Setup() {
     _converterWorker = new BcfToolkit.Worker.Bcf30.ConverterWorker();
@@ -104,8 +104,8 @@ public class Converter30Tests {
   [Test]
   public void BcfToJsonWrongPathTest() {
     Assert.That(async () => await _converterWorker.BcfZipToJson(
-      "Resources/Bcf/v3.0/Meszaros.bcfzip",
-      "Resources/output/json/v3.0/Meszaros"), Throws.Exception);
+      "Resources/Bcf/v3.0/Wrong.bcfzip",
+      "Resources/output/json/v3.0/Wrong"), Throws.Exception);
   }
 
   [Test]

@@ -7,7 +7,6 @@ namespace BcfToolkit;
 
 internal static class Program {
   private static async Task Main(string[] args) {
-
     await HandleArguments(args);
   }
   private static async Task HandleArguments(string[] args) {

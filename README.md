@@ -9,7 +9,7 @@ The tool converts `BCF` information across formats ~~and versions~~.
 
 ## Requirements
 
-- dotnet 7
+- dotnet 8
 
 ### CLI
 
@@ -27,76 +27,46 @@ is a zipped file as per the standard.
 ```
 
 ### As A Library
-This C# NuGet library allows you to easily build up and convert data into BCF files.
-It gives you a straightforward API to build your BCF objects exactly how you want
-in your order.
+This C# NuGet library allows the user to easily build up and convert data into 
+BCF files. It gives a straightforward API to build the BCF objects exactly in 
+the order of the user's choice.
 
 #### Installation
-You can install the `BcfConverter` library via NuGet Package Manager or by adding 
-it to your project's .csproj file.
+`BcfConverter` library can be installed via NuGet Package Manager or by adding 
+it to the project's .csproj file.
 ```
 nuget install BCFConverter
 ```
 
 #### Usage
 ##### Creating BCF objects
-To create a BCF Model, you can use the BuilderCreator class to obtain a builder object. 
-Then, you can use various functions provided by the builder to fulfill the BCF model 
-objects. 
+To create a BCF Model, `BuilderBuilder` class can be used. Then, various 
+functions provided by the builder can be used to fulfill the BCF model objects. 
 
-**IMPORTANT:** The builder always creates BCF 3.0 models.
-
-Here's an example:
+Here are some examples:
 
 ```csharp
-using BCFConverter;
+using BcfToolkit.Builder.Bcf30;
 
-// Create a markup builder
-var markupBuilder = BuilderCreator.CreateMarkupBuilder();
-
-// Build the BCF Markup
-var bcfMarkup = markupBuilder
-    .AddTitle("Simple title")
-    .AddDescription("This is a description")
+var builder = new BcfBuilder();
+var bcf = builder
+  .AddMarkup(m => m
+    .SetTitle("Simple title")
+    .SetDescription("This is a description")
     .AddLabel("Architecture")
-    .AddPriority("Critical")
-    .AddTopicType("Clash")
-    .AddTopicStatus("Active")
+    .SetPriority("Critical")
+    .SetTopicType("Clash")
+    .SetTopicStatus("Active")
     .AddComment(c => c
-        .AddComment("This is a comment")
-        .AddDate(DateTime.Now)
-        .AddAuthor("jimmy@page.com"))
+      .SetComment("This is a comment")
+      .SetDate(DateTime.Now)
+      .SetAuthor("jimmy@page.com"))
     .AddViewPoint(v => v
-        .AddPerspectiveCamera(pCam => pCam
-            .AddCamera(cam => cam
-                .AddViewPoint(10, 10, 10))),
-        snapshotData) // Provide snapshot data here
-    .Build();
-
-// Create a project builder
-var projectBuilder = BuilderCreator.CreateProjectBuilder();
-
-// Build the BCF Project
-var project = projectBuilder
-    .AddProjectId("projectId")
-    .AddProjectName("My project")
-    .Build();
-    
-// Create a document builder
-var documentBuilder = BuilderCreator.CreateDocumentBuilder();
-
-// Build the BCF Document
-var document = builder
-    .AddDocument(d => d
-    .AddFileName("document.pdf")
-    .AddDescription("This is a document"))
-    .Build();
-
-// Create an extensions builder
-var extBuilder = BuilderCreator.CreateExtensionsBuilder();
-
-// Build the BCF Extensions
-var extensions = builder
+        .SetPerspectiveCamera(pCam => pCam
+          .SetCamera(cam => cam
+            .SetViewPoint(10, 10, 10))),
+      snapshotData)) // Provide a snapshot data here
+  .SetExtensions(e => e
     .AddPriority("Critical")
     .AddPriority("Major")
     .AddPriority("Normal")
@@ -107,18 +77,71 @@ var extensions = builder
     .AddTopicType("Remark")
     .AddTopicLabel("Architecture")
     .AddTopicLabel("Structure")
-    .AddTopicLabel("MEP")
-    .Build();
+    .AddTopicLabel("MEP"))
+  .SetProject(p => p
+    .SetProjectId("projectId")
+    .SetProjectName("My project"))
+  .SetDocumentInfo(dI => dI
+    .AddDocument(d => d
+      .SetFileName("document.pdf")
+      .SetDescription("This is a document")))
+  .Build();
 ```
 
-You can also use the default builders if you prefer not to deal with filling the required fields.
-The `builder.WithDefaults()` function serves this for you. However in certain cases you may need
-to replace the component IDs of IFC objects with their actual GUIDs during the build process.
+The `BcfBuilder` class can also consume BCF files as a stream and build up the
+model objects.
 
 ```csharp
-var markup = BcfBuilder.Markup()
-  .WithDefaults()
-  .Build();
+using BcfToolkit.Builder.Bcf30;
+
+await using var stream = new FileStream(source, FileMode.Open, FileAccess.Read);
+var builder = new BcfBuilder();
+var bcf = await builder
+    .BuildFromStream(stream);
+```
+
+The default builders can be used if the user prefers not to deal with filling 
+the required fields. The `builder.WithDefaults()` function serves this. 
+However in certain cases the user may need to replace the component IDs of IFC 
+objects with the actual GUIDs during the build process.
+
+```csharp
+using BcfToolkit.Builder.Bcf30;
+
+var builder = new BcfBuilder();
+var bcf = builder
+    .WithDefaults()
+    .Build();
+```
+##### Using BCF workers
+The workers are implemented to use predefined workflows to convert `BCF` files 
+into `json`. The aimed BCF version must be set first then `ConverterContext` 
+class lets the nested object to do the conversion accordingly.
+
+```csharp
+using BcfToolkit;
+using BcfToolkit.Model;
+
+var version = BcfVersion.Parse(arguments.TargetVersion);
+var context = new ConverterContext(version);
+await context.Convert("sourcePath", "targetPath");
+```
+
+The exact worker can be called directly as well for both converting directions,
+`BCF` into `json` and back.
+
+```csharp
+using BcfToolkit.Worker.Bcf30;
+
+var worker = new ConverterWorker()
+worker.BcfZipToJson(source, target);
+```
+
+```csharp
+using BcfToolkit.Worker.Bcf30;
+
+var worker = new ConverterWorker()
+worker.JsonToBcfZip(source, target);
 ```
 
 ## File Structure
@@ -140,7 +163,9 @@ named using the `uuid` of the `Topic` within.
   |- 3395f1b1-893f-4ca0-8b7d-c2d17d7a9198.json
   |- c799e527-a413-43f8-8871-80918a52b0f0.json
   |- ...
-  |- bcfRoot.json
+  |- project.json
+  |- extensions.json
+  |- documents.json
 ```
 
 ## Development
@@ -173,7 +198,7 @@ To publish, run the script at `dist/publish.sh`.
 
 ### Contribution
 
-Code style guide can be found in the `bcf-converter.sln.DotSettings` file.
+Code style guide can be found in the `bcf-toolkit.sln.DotSettings` file.
 
 [1]: https://github.com/buildingSMART/BCF-XML/tree/master/Schemas
 [2]: https://github.com/mganss/XmlSchemaClassGenerator
