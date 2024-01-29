@@ -96,12 +96,15 @@ public static class JsonConverter {
 
   /// <summary>
   ///   The method writes an object to json file.
+  ///   If the object is not null.
   /// </summary>
   /// <param name="path">The target path where the json files will be saved.</param>
   /// <param name="obj">The object which will be written.</param>
   /// <returns></returns>
   public static Task WriteJson<T>(string path, T obj) {
     return Task.Run(async () => {
+      if (obj is null) return;
+
       // TODO make a default serializer to avoid code repeat
       var contractResolver = new DefaultContractResolver {
         NamingStrategy = new SnakeCaseNamingStrategy()

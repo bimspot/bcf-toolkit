@@ -1,6 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using BcfToolkit.Converter;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
+using Bcf = BcfToolkit.Model.Bcf30.Bcf;
+using Markup = BcfToolkit.Model.Bcf30.Markup;
+using VisualizationInfo = BcfToolkit.Model.Bcf30.VisualizationInfo;
 
 namespace BcfToolkit.Builder.Bcf30;
 
@@ -9,11 +16,18 @@ public partial class BcfBuilder : IBcfBuilder<
     MarkupBuilder,
     ProjectBuilder>,
   IDefaultBuilder<BcfBuilder> {
+
   private readonly Bcf _bcf = new();
+
   public BcfBuilder AddMarkup(Action<MarkupBuilder> builder) {
     var markup =
       (Markup)BuilderUtils.BuildItem<MarkupBuilder, IMarkup>(builder);
     _bcf.Markups.Add(markup);
+    return this;
+  }
+
+  public BcfBuilder AddMarkups(List<Markup> markups) {
+    markups.ForEach(m => _bcf.Markups.Add(m));
     return this;
   }
 
@@ -29,6 +43,14 @@ public partial class BcfBuilder : IBcfBuilder<
       .AddMarkup(m => m.WithDefaults())
       .SetExtensions(e => e.WithDefaults());
     return this;
+  }
+
+  public async Task<IBcf> BuildFromStream(Stream source) {
+    _bcf.Markups = await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(source);
+    _bcf.Extensions = await BcfConverter.ParseExtensions<Extensions>(source);
+    _bcf.Project = await BcfConverter.ParseProject<ProjectInfo>(source);
+    _bcf.Document = await BcfConverter.ParseDocuments<DocumentInfo>(source);
+    return BuilderUtils.ValidateItem(_bcf);
   }
 
   public IBcf Build() {
