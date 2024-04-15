@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf21;
-using BcfToolkit.Converter;
+using BcfToolkit.Utils;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 using Version = BcfToolkit.Model.Bcf21.Version;
@@ -80,13 +80,13 @@ public class ConverterWorker : IConverterWorker {
     var tasks = bcf.Markups
       .Select(markup => {
         var pathMarkup = $"{targetPath}/{markup.GetTopic().Guid}.json";
-        return JsonConverter.WriteJson(pathMarkup, markup);
+        return JsonExtensions.WriteJson(pathMarkup, markup);
       })
       .ToList();
 
     // Writing BCF project file
     var pathProject = $"{targetPath}/project.json";
-    tasks.Add(JsonConverter.WriteJson(pathProject, bcf.Project));
+    tasks.Add(JsonExtensions.WriteJson(pathProject, bcf.Project));
 
     return Task.WhenAll(tasks);
   }
@@ -102,11 +102,11 @@ public class ConverterWorker : IConverterWorker {
     // Parsing BCF project - it is an optional file
     var projectPath = $"{source}/project.json";
     var project = Path.Exists(projectPath)
-      ? await JsonConverter.ParseObject<ProjectExtension>(projectPath)
+      ? await JsonExtensions.ParseObject<ProjectExtension>(projectPath)
       : new ProjectExtension();
 
     // Parsing markups
-    var markups = await JsonConverter.ParseMarkups<Markup>(source);
+    var markups = await JsonExtensions.ParseMarkups<Markup>(source);
 
     var bcf = new Bcf {
       Markups = markups,
@@ -124,7 +124,7 @@ public class ConverterWorker : IConverterWorker {
   /// <param name="bcf">The `IBcf` interface of the BCF.</param>
   /// <returns></returns>
   /// <exception cref="FileNotFoundException"></exception>
-  public async Task<Stream> BcfStream(IBcf bcf) {
+  public async Task<Stream> ToBcfStream(IBcf bcf) {
     var workingDir = Directory.GetCurrentDirectory();
     var bcfTargetPath = workingDir + "/bcf.bcfzip";
 
@@ -171,7 +171,7 @@ public class ConverterWorker : IConverterWorker {
     var tasks = new List<Task>();
 
     // Creating the version file
-    tasks.Add(BcfConverter.WriteBcfFile(tmpFolder, "bcf.version", new Version()));
+    tasks.Add(BcfExtensions.WriteBcfFile(tmpFolder, "bcf.version", new Version()));
 
     // Writing markup folders and files
     foreach (var markup in bcf.Markups) {
@@ -187,12 +187,12 @@ public class ConverterWorker : IConverterWorker {
       Directory.CreateDirectory(topicFolder);
 
       // Markup
-      tasks.Add(BcfConverter.WriteBcfFile(topicFolder, "markup.bcf", markup));
+      tasks.Add(BcfExtensions.WriteBcfFile(topicFolder, "markup.bcf", markup));
 
       // Viewpoint
       var visInfo =
         (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
-      tasks.Add(BcfConverter.WriteBcfFile(topicFolder, "viewpoint.bcfv",
+      tasks.Add(BcfExtensions.WriteBcfFile(topicFolder, "viewpoint.bcfv",
         visInfo));
 
       // Snapshot
@@ -207,7 +207,7 @@ public class ConverterWorker : IConverterWorker {
     }
 
     // Writing project file
-    tasks.Add(BcfConverter.WriteBcfFile(tmpFolder, "project.bcfp", bcf.Project));
+    tasks.Add(BcfExtensions.WriteBcfFile(tmpFolder, "project.bcfp", bcf.Project));
 
     // Waiting for all the file writing
     await Task.WhenAll(tasks);

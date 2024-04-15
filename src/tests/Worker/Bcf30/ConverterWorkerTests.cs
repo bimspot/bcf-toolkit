@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using BcfToolkit.Converter;
+using BcfToolkit.Utils;
 using BcfToolkit.Model.Bcf30;
 using BcfToolkit.Worker;
 using NUnit.Framework;
@@ -71,12 +71,12 @@ public class ConverterWorkerTests {
     await using var stream = new FileStream("Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip", FileMode.Open, FileAccess.Read);
 
     var extensions =
-      await BcfConverter.ParseExtensions<Extensions>(stream);
-    var projectInfo = await BcfConverter.ParseProject<ProjectInfo>(stream);
-    var documentInfo = await BcfConverter.ParseDocuments<DocumentInfo>(stream);
+      await BcfExtensions.ParseExtensions<Extensions>(stream);
+    var projectInfo = await BcfExtensions.ParseProject<ProjectInfo>(stream);
+    var documentInfo = await BcfExtensions.ParseDocuments<DocumentInfo>(stream);
 
     var markups =
-      await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(stream);
+      await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(stream);
 
     var bcf = new Bcf {
       Markups = markups,
@@ -85,7 +85,7 @@ public class ConverterWorkerTests {
       Document = documentInfo
     };
 
-    var streamResult = await _converterWorker.BcfStream(bcf);
+    var streamResult = await _converterWorker.ToBcfStream(bcf);
 
     Assert.IsNotNull(streamResult);
     Assert.IsTrue(streamResult.CanRead);

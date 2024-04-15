@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using bcf21 = BcfToolkit.Model.Bcf21;
 using bcf30 = BcfToolkit.Model.Bcf30;
-using BcfToolkit.Converter;
+using BcfToolkit.Utils;
 
-namespace Tests.Converter.Json;
+namespace Tests.Utils.Json;
 
-public class JsonConverterTests {
+public class JsonExtensionsTests {
   /// <summary>
   ///   Topic with guid ee9a9498-698b-44ed-8ece-b3ae3b480a90 should have all
   ///   parts of decomposed wall (2_hQ1Rixj6lgHTra$L72O4) visible.
@@ -16,7 +16,7 @@ public class JsonConverterTests {
   [Category("BCF v2.1")]
   public async Task ParseJsonAllPartsVisibleTest() {
     var markups =
-      await JsonConverter.ParseMarkups<bcf21.Markup>(
+      await JsonExtensions.ParseMarkups<bcf21.Markup>(
         "Resources/Json/v2.1/AllPartsVisible");
     var markup = (bcf21.Markup)markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
@@ -40,7 +40,7 @@ public class JsonConverterTests {
   [Category("BCF v2.1")]
   public async Task ParseJsonSkippingFilesTest() {
     var markups =
-      await JsonConverter.ParseMarkups<bcf21.Markup>(
+      await JsonExtensions.ParseMarkups<bcf21.Markup>(
         "Resources/Json/v2.1/SkippingFiles");
     var markup = (bcf21.Markup)markups.FirstOrDefault()!;
     Assert.AreEqual(0, markups.Count);
@@ -52,7 +52,7 @@ public class JsonConverterTests {
   [Test]
   [Category("BCF v2.1")]
   public void ParseJsonMissingRequiredFieldsTest() {
-    Assert.That(async () => await JsonConverter.ParseMarkups<bcf21.Markup>(
+    Assert.That(async () => await JsonExtensions.ParseMarkups<bcf21.Markup>(
         "Resources/Json/v2.1/MissingRequiredFields"),
       Throws.Exception);
   }
@@ -67,11 +67,11 @@ public class JsonConverterTests {
   [Category("BCF v3.0")]
   public async Task ParseBcfDocumentRefInternalTest() {
     var markups =
-      await JsonConverter
+      await JsonExtensions
         .ParseMarkups<bcf30.Markup>(
           "Resources/Json/v3.0/DocumentReferenceInternal");
     var doc =
-      await JsonConverter.ParseObject<bcf30.DocumentInfo>(
+      await JsonExtensions.ParseObject<bcf30.DocumentInfo>(
         "Resources/Json/v3.0/DocumentReferenceInternal/documents.json");
     var markup = (bcf30.Markup)markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
@@ -85,7 +85,7 @@ public class JsonConverterTests {
   [Test]
   [Category("BCF v3.0")]
   public void ParseEmptyBcfProjectTest() {
-    Assert.That(async () => await JsonConverter.ParseObject<bcf30.ProjectInfo>(
+    Assert.That(async () => await JsonExtensions.ParseObject<bcf30.ProjectInfo>(
       "Resources/Json/v3.0/EmptyBcfRoot/project.json"), Throws.Exception);
   }
 

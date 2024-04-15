@@ -5,15 +5,13 @@ Collaboration Format) files into `json` and vice versa.
 
 The tool converts `BCF` information across formats ~~and versions~~. 
 
-## Usage
-
 ## Requirements
 
 - dotnet 8
 
 ### CLI
 
-The command line interface accepts three arguments:
+The command line interface accepts 2 arguments:
  * the source bcf file or json folder
  * the target bcf file or json folder
  
@@ -21,9 +19,9 @@ The json representation is one file for every `Markup`, while the BCF format
 is a zipped file as per the standard.
 
 ```
-~ bcf-converter /path/to/source.bcfzip /path/to/target/json/folder
+~ bcf-toolkit /path/to/source.bcfzip /path/to/target/json/folder
 
-~ bcf-converter /path/to/source/json/folder /path/to/target.bcfzip
+~ bcf-toolkit /path/to/source/json/folder /path/to/target.bcfzip
 ```
 
 ### As A Library
@@ -32,15 +30,15 @@ BCF files. It gives a straightforward API to build the BCF objects exactly in
 the order of the user's choice.
 
 #### Installation
-`BcfConverter` library can be installed via NuGet Package Manager or by adding 
+`Smino.Bcf.Toolkit` library can be installed via NuGet Package Manager or by adding 
 it to the project's .csproj file.
 ```
-nuget install BCFConverter
+nuget install Smino.Bcf.Toolkit
 ```
 
 #### Usage
 ##### Creating BCF objects
-To create a BCF Model, `BuilderBuilder` class can be used. Then, various 
+To create a BCF Model, `BcfBuilder` class can be used. Then, various 
 functions provided by the builder can be used to fulfill the BCF model objects. 
 
 Here are some examples:

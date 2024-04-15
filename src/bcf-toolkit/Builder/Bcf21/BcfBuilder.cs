@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using BcfToolkit.Converter;
+using BcfToolkit.Utils;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 
@@ -42,8 +42,8 @@ public class BcfBuilder : IBcfBuilder<
   }
 
   public async Task<IBcf> BuildFromStream(Stream source) {
-    _bcf.Markups = await BcfConverter.ParseMarkups<Markup, VisualizationInfo>(source);
-    _bcf.Project = await BcfConverter.ParseProject<ProjectExtension>(source);
+    _bcf.Markups = await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);
+    _bcf.Project = await BcfExtensions.ParseProject<ProjectExtension>(source);
     return BuilderUtils.ValidateItem(_bcf);
   }
 

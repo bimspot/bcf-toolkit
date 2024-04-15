@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Tests.Builder;
 
 public class DocumentReferenceBuilderTests {
-  private DocumentReferenceBuilder _builder;
+  private DocumentReferenceBuilder _builder = null!;
 
   [SetUp]
   public void Setup() {

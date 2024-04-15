@@ -7,7 +7,7 @@ namespace BcfToolkit.Builder.Bcf30;
 public class ExtensionsBuilder :
   IExtensionsBuilder<ExtensionsBuilder>,
   IDefaultBuilder<ExtensionsBuilder> {
-  private readonly Extensions _extensions = new();
+  private readonly Model.Bcf30.Extensions _extensions = new();
 
   public ExtensionsBuilder AddTopicType(string type) {
     _extensions.TopicTypes.Add(type);

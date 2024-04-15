@@ -1,18 +1,14 @@
-using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using bcf21 = BcfToolkit.Model.Bcf21;
 using bcf30 = BcfToolkit.Model.Bcf30;
-using BcfToolkit;
-using BcfToolkit.Model;
 using NUnit.Framework;
 
-namespace Tests.Converter.Bcf;
+namespace Tests.Utils.Bcf;
 
 [TestFixture]
-public class BcfConverterTests {
+public class BcfExtensionsTests {
   /// <summary>
   ///   Topic with guid ee9a9498-698b-44ed-8ece-b3ae3b480a90 should have all
   ///   parts of decomposed wall (2_hQ1Rixj6lgHTra$L72O4) visible.
@@ -23,7 +19,7 @@ public class BcfConverterTests {
     await using var stream = new FileStream("Resources/Bcf/v2.1/AllPartsVisible.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
-      await BcfToolkit.Converter.BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
+      await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         stream);
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
@@ -47,7 +43,7 @@ public class BcfConverterTests {
     await using var stream = new FileStream("Resources/Bcf/v2.1/ComponentSelection.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
-      await BcfToolkit.Converter.BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
+      await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         stream);
     var markup = markups.FirstOrDefault();
     Assert.AreEqual(1, markups.Count);
@@ -72,7 +68,7 @@ public class BcfConverterTests {
     await using var stream = new FileStream("Resources/Bcf/v2.1/ExternalBIMSnippet.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
-      await BcfToolkit.Converter.BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
+      await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         stream);
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
@@ -89,7 +85,7 @@ public class BcfConverterTests {
     await using var stream = new FileStream("Resources/Bcf/v2.1/MaximumInformation.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
-      await BcfToolkit.Converter.BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
+      await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         stream);
     Assert.AreEqual(2, markups.Count);
   }
@@ -104,7 +100,7 @@ public class BcfConverterTests {
 
     Assert.That(async () => {
       await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-      await BcfToolkit.Converter.BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(fileStream);
+      await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(fileStream);
     }, Throws.Exception);
   }
 
@@ -119,7 +115,7 @@ public class BcfConverterTests {
 
     Assert.That(async () => {
       await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-      await BcfToolkit.Converter.BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(fileStream);
+      await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(fileStream);
     }, Throws.Exception);
   }
 
@@ -134,7 +130,7 @@ public class BcfConverterTests {
 
     Assert.That(async () => {
       await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-      await BcfToolkit.Converter.BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(fileStream);
+      await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(fileStream);
     }, Throws.Exception);
   }
 
@@ -148,7 +144,7 @@ public class BcfConverterTests {
     await using var stream = new FileStream("Resources/Bcf/v2.1/UserAssignment.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
-      await BcfToolkit.Converter.BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
+      await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         stream);
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual("jon.anders.sollien@catenda.no", markup.Topic.AssignedTo);
@@ -163,7 +159,7 @@ public class BcfConverterTests {
     await using var stream = new FileStream("Resources/Bcf/v3.0/ComponentSelection.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
-      await BcfToolkit.Converter.BcfConverter.ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
+      await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
         stream);
     var markup = markups.FirstOrDefault();
     Assert.AreEqual(1, markups.Count);
@@ -189,7 +185,7 @@ public class BcfConverterTests {
     await using var stream = new FileStream("Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
-      await BcfToolkit.Converter.BcfConverter.ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
+      await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           stream);
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
@@ -211,10 +207,10 @@ public class BcfConverterTests {
     await using var documentInfoStream = new FileStream("Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
-      await BcfToolkit.Converter.BcfConverter.ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
+      await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
         markupStream);
     var documentInfo =
-      await BcfToolkit.Converter.BcfConverter.ParseDocuments<bcf30.DocumentInfo>(
+      await BcfToolkit.Utils.BcfExtensions.ParseDocuments<bcf30.DocumentInfo>(
         documentInfoStream);
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual(1, markups.Count);
@@ -234,7 +230,7 @@ public class BcfConverterTests {
     await using var stream = new FileStream("Resources/Bcf/v3.0/DueDate.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
-      await BcfToolkit.Converter.BcfConverter
+      await BcfToolkit.Utils.BcfExtensions
         .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           stream);
     var markup = markups.FirstOrDefault()!;
@@ -255,12 +251,12 @@ public class BcfConverterTests {
 
 
     var markups =
-      await BcfToolkit.Converter.BcfConverter
+      await BcfToolkit.Utils.BcfExtensions
         .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           markupsStream);
     var markup = markups.FirstOrDefault()!;
     var extensions =
-      await BcfToolkit.Converter.BcfConverter.ParseExtensions<bcf30.Extensions>(
+      await BcfToolkit.Utils.BcfExtensions.ParseExtensions<bcf30.Extensions>(
         extensionsStream);
     Assert.AreEqual(1, markups.Count);
     var label = markup.Topic.Labels.FirstOrDefault();
@@ -279,12 +275,12 @@ public class BcfConverterTests {
     await using var extensionsStream = new FileStream("Resources/Bcf/v3.0/Milestone.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
-      await BcfToolkit.Converter.BcfConverter
+      await BcfToolkit.Utils.BcfExtensions
         .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           markupsStream);
     var markup = markups.FirstOrDefault()!;
     var extensions =
-      await BcfToolkit.Converter.BcfConverter.ParseExtensions<bcf30.Extensions>(
+      await BcfToolkit.Utils.BcfExtensions.ParseExtensions<bcf30.Extensions>(
         extensionsStream);
     Assert.AreEqual(1, markups.Count);
     var stage = markup.Topic.Stage;
@@ -302,7 +298,7 @@ public class BcfConverterTests {
     await using var stream = new FileStream("Resources/Bcf/v3.0/RelatedTopics.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
-      await BcfToolkit.Converter.BcfConverter
+      await BcfToolkit.Utils.BcfExtensions
         .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           stream);
     var markup1 = markups.FirstOrDefault()!;
@@ -322,7 +318,7 @@ public class BcfConverterTests {
     await using var stream = new FileStream("Resources/Bcf/v3.0/SingleInvisibleWall.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
-      await BcfToolkit.Converter.BcfConverter
+      await BcfToolkit.Utils.BcfExtensions
         .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           stream);
     var markup = markups.FirstOrDefault()!;
@@ -346,7 +342,7 @@ public class BcfConverterTests {
     await using var stream = new FileStream("Resources/Bcf/v3.0/TopicsWithDifferentModelsVisible.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
-      await BcfToolkit.Converter.BcfConverter
+      await BcfToolkit.Utils.BcfExtensions
         .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           stream);
     var markupARC = markups.FirstOrDefault(m =>
@@ -372,7 +368,7 @@ public class BcfConverterTests {
     await using var stream = new FileStream("Resources/Bcf/v3.0/UserAssignment.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
-      await BcfToolkit.Converter.BcfConverter.ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
+      await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
         stream);
     var markup = markups.FirstOrDefault()!;
     Assert.AreEqual("Architect@example.com", markup.Topic.AssignedTo);
@@ -386,7 +382,7 @@ public class BcfConverterTests {
     await using var stream = new FileStream("Resources/Bcf/v3.0/Milestone.bcfzip", FileMode.Open, FileAccess.Read);
 
     var extensions =
-      await BcfToolkit.Converter.BcfConverter.ParseExtensions<bcf30.Extensions>(
+      await BcfToolkit.Utils.BcfExtensions.ParseExtensions<bcf30.Extensions>(
         stream);
     var type = extensions.TopicTypes.FirstOrDefault();
     Assert.AreEqual("Error", type);
@@ -402,7 +398,7 @@ public class BcfConverterTests {
 
     Assert.That(async () => {
       await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-      await BcfToolkit.Converter.BcfConverter.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(fileStream);
+      await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(fileStream);
     }, Throws.Exception);
   }
 

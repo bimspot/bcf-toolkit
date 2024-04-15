@@ -39,7 +39,7 @@ public interface IConverterWorker {
   /// <param name="bcf">The BCF object.</param>
   /// <returns></returns>
   /// <exception cref="FileNotFoundException"></exception>
-  Task<Stream> BcfStream(IBcf bcf);
+  Task<Stream> ToBcfStream(IBcf bcf);
 
   /// <summary>
   ///   The method writes the specified BCF model to BCFzip files.

@@ -11,14 +11,14 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RecursiveDataAnnotationsValidation;
 
-namespace BcfToolkit.Converter;
+namespace BcfToolkit.Utils;
 
 /// <summary>
 ///   The `JsonConverter` static class opens and parses the BCF json files
 ///   and puts their contents into the BCF models. It also writes the in
 ///   memory BCF models into json files.
 /// </summary>
-public static class JsonConverter {
+public static class JsonExtensions {
   /// <summary>
   ///   The method parses the markup json files to create an in memory
   ///   representation of the data.

@@ -61,7 +61,7 @@ public class ConverterWorkerTests {
       Markups = markups
     };
 
-    var stream = await _converterWorker.BcfStream(bcf);
+    var stream = await _converterWorker.ToBcfStream(bcf);
 
     Assert.IsNotNull(stream);
     Assert.IsTrue(stream.CanRead);

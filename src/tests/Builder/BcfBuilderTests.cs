@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace Tests.Builder;
 
 public class BcfBuilderTests {
-  private BcfBuilder _builder;
+  private BcfBuilder _builder = null!;
 
   [SetUp]
   public void Setup() {

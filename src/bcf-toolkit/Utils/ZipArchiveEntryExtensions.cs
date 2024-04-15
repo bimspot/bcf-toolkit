@@ -2,7 +2,7 @@ using System;
 using System.IO.Compression;
 using System.Linq;
 
-namespace BcfToolkit.Converter;
+namespace BcfToolkit.Utils;
 
 public static class ZipArchiveEntryExtensions {
   /// <summary>

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -11,14 +10,14 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using BcfToolkit.Model;
 
-namespace BcfToolkit.Converter;
+namespace BcfToolkit.Utils;
 
 /// <summary>
-///   The `BcfConverter` static class unzips and parses BCF zips and
+///   The `BcfExtensions` static class unzips and parses BCF zips and
 ///   puts their contents into the BCF models. It also writes the in
 ///   memory BCF models into BCFzip.
 /// </summary>
-public static class BcfConverter {
+public static class BcfExtensions {
   /// <summary>
   ///   The method unzips the BCFzip from a stream,
   ///   and parses the markup xml files within to create an in memory

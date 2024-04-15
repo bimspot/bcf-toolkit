@@ -5,12 +5,7 @@ using NUnit.Framework;
 namespace Tests.Builder;
 
 public class ProjectBuilderTests {
-  private ProjectBuilder _builder;
-
-  [SetUp]
-  public void Setup() {
-    _builder = new ProjectBuilder();
-  }
+  private readonly ProjectBuilder _builder = new();
 
   [Test]
   public void BuildProject() {
