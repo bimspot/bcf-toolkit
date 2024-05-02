@@ -106,4 +106,17 @@ public static class ZipArchiveEntryExtensions {
     var base64String = Convert.ToBase64String(buffer);
     return $"{mime},{base64String}";
   }
+  
+  /// <summary>
+  ///   A convenience method returns true if the file in the entry is
+  ///   `bcf.version` exactly.
+  /// </summary>
+  /// <param name="entry">The ZipArchiveEntry.</param>
+  /// <returns>
+  ///   Returns true if the file in the entry is `bcf.version` exactly.
+  /// </returns>
+  public static bool IsVersion(this ZipArchiveEntry entry) {
+    return entry.FullName.Equals("bcf.version",
+      StringComparison.OrdinalIgnoreCase);
+  }
 }
