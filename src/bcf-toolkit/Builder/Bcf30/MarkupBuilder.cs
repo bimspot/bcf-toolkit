@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using BcfToolkit.Builder.Bcf30.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
 
@@ -7,11 +10,11 @@ namespace BcfToolkit.Builder.Bcf30;
 public partial class MarkupBuilder :
   IMarkupBuilder<
     MarkupBuilder,
-    HeaderFileBuilder,
+    FileBuilder,
     BimSnippetBuilder,
     DocumentReferenceBuilder,
     CommentBuilder,
-    ViewPointBuilder>,
+    VisualizationInfoBuilder>,
   IDefaultBuilder<MarkupBuilder> {
   private readonly Markup _markup = new();
 
@@ -36,15 +39,25 @@ public partial class MarkupBuilder :
   }
 
   public MarkupBuilder AddHeaderFile(
-    Action<HeaderFileBuilder> builder) {
+    Action<FileBuilder> builder) {
     var file =
-      (File)BuilderUtils.BuildItem<HeaderFileBuilder, IHeaderFile>(builder);
+      (File)BuilderUtils.BuildItem<FileBuilder, IHeaderFile>(builder);
     _markup.Header.Files.Add(file);
+    return this;
+  }
+  
+  public MarkupBuilder AddHeaderFiles(List<File> files) {
+    files.ForEach(_markup.Header.Files.Add);
     return this;
   }
 
   public MarkupBuilder AddReferenceLink(string link) {
     _markup.Topic.ReferenceLinks.Add(link);
+    return this;
+  }
+  
+  public MarkupBuilder AddReferenceLinks(List<string> links) {
+    links.ForEach(_markup.Topic.ReferenceLinks.Add);
     return this;
   }
 
@@ -65,6 +78,11 @@ public partial class MarkupBuilder :
 
   public MarkupBuilder AddLabel(string label) {
     _markup.Topic.Labels.Add(label);
+    return this;
+  }
+  
+  public MarkupBuilder AddLabels(List<string> labels) {
+    labels.ForEach(_markup.Topic.Labels.Add);
     return this;
   }
 
@@ -131,14 +149,23 @@ public partial class MarkupBuilder :
     _markup.Topic.Comments.Add(comment);
     return this;
   }
+  
+  public MarkupBuilder AddComments(List<Comment> comments) {
+    comments.ForEach(_markup.Topic.Comments.Add);
+    return this;
+  }
 
-  public MarkupBuilder AddViewPoint(Action<ViewPointBuilder> builder, string snapshotData) {
+  public MarkupBuilder AddViewPoint(string viewpoint, string snapshot, string snapshotData, int index, string guid, Action<VisualizationInfoBuilder> builder) {
     var visInfo =
       (VisualizationInfo)BuilderUtils
-        .BuildItem<ViewPointBuilder, IVisualizationInfo>(builder);
+        .BuildItem<VisualizationInfoBuilder, IVisualizationInfo>(builder);
     var viewPoint = new ViewPoint {
+      Viewpoint = viewpoint,
+      Snapshot = snapshot,
+      SnapshotData = snapshotData,
+      Index = index,
+      Guid = guid,
       VisualizationInfo = visInfo,
-      SnapshotData = snapshotData
     };
     _markup.Topic.Viewpoints.Add(viewPoint);
     return this;
@@ -149,6 +176,16 @@ public partial class MarkupBuilder :
       Guid = relatedTopicGuid
     };
     _markup.Topic.RelatedTopics.Add(topic);
+    return this;
+  }
+  
+  public MarkupBuilder AddRelatedTopics(List<string> relatedTopicGuids) {
+    relatedTopicGuids.ForEach(id => {
+      var topic = new TopicRelatedTopicsRelatedTopic {
+        Guid = id
+      };
+      _markup.Topic.RelatedTopics.Add(topic);
+    });
     return this;
   }
 
@@ -163,7 +200,7 @@ public partial class MarkupBuilder :
     return this;
   }
 
-  public IMarkup Build() {
+  public Markup Build() {
     return BuilderUtils.ValidateItem(_markup);
   }
 }

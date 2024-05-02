@@ -1,22 +1,73 @@
 using System;
 using System.Collections.Generic;
-using BcfToolkit.Model;
+using System.Linq;
+using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Model.Bcf30;
+using BcfToolkit.Utils;
 
 namespace BcfToolkit.Builder.Bcf30;
 
 public partial class BcfBuilder :
   IBcfBuilderExtension<BcfBuilder, ExtensionsBuilder, DocumentInfoBuilder> {
+  
+  public BcfBuilder AddMarkups(List<Markup> markups, bool update = false) {
+    markups.ForEach(m => {
+      _bcf.Markups.Add(m);
+
+      if (update) {
+        // updating Extensions
+        UpdateExtensions(m.Topic);
+      
+        // updating Document info
+        // UpdateDocumentInfo(m.Topic);
+      }
+    });
+    return this;
+  }
+
+  /// <summary>
+  /// TODO
+  /// </summary>
+  /// <param name="topic"></param>
+  private void UpdateExtensions(Topic topic) {
+    var users = new HashSet<string> {
+      topic.AssignedTo, 
+      topic.CreationAuthor, 
+      topic.ModifiedAuthor
+    };
+    
+    var commenters = topic.Comments.SelectMany(c => new HashSet<string> { c.Author, c.ModifiedAuthor});
+    
+    var ext = new {
+      topic.TopicType,
+      topic.TopicStatus,
+      topic.Priority,
+      Labels = new HashSet<string>(topic.Labels).ToList(),
+      Users = users.Concat(commenters).ToList(),
+      topic.BimSnippet.SnippetType,
+      topic.Stage
+    };
+    
+    _bcf.Extensions.TopicTypes.AddIfNotExists(ext.TopicType);
+    _bcf.Extensions.TopicStatuses.AddIfNotExists(ext.TopicStatus);
+    _bcf.Extensions.Priorities.AddIfNotExists(ext.Priority);
+    _bcf.Extensions.SnippetTypes.AddIfNotExists(ext.SnippetType);
+    _bcf.Extensions.Stages.AddIfNotExists(ext.Stage);
+    
+    ext.Labels.ForEach(l => _bcf.Extensions.TopicLabels.AddIfNotExists(l));
+    ext.Users.ForEach(u => _bcf.Extensions.Users.AddIfNotExists(u));
+  }
+  
   public BcfBuilder SetExtensions(Action<ExtensionsBuilder> builder) {
     var extensions =
-      (Extensions)BuilderUtils.BuildItem<ExtensionsBuilder, IExtensions>(builder);
+      BuilderUtils.BuildItem<ExtensionsBuilder, Extensions>(builder);
     _bcf.Extensions = extensions;
     return this;
   }
 
   public BcfBuilder SetDocumentInfo(Action<DocumentInfoBuilder> builder) {
     var documentInfo =
-      (DocumentInfo)BuilderUtils.BuildItem<DocumentInfoBuilder, IDocumentInfo>(builder);
+      BuilderUtils.BuildItem<DocumentInfoBuilder, DocumentInfo>(builder);
     _bcf.Document = documentInfo;
     return this;
   }

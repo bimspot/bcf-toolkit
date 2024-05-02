@@ -1,5 +1,6 @@
 using System;
-using BcfToolkit.Model;
+using BcfToolkit.Builder.Bcf30.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
@@ -36,7 +37,7 @@ public partial class PerspectiveCameraBuilder :
     return this;
   }
 
-  public IPerspectiveCamera Build() {
+  public PerspectiveCamera Build() {
     return BuilderUtils.ValidateItem(_camera);
   }
 }

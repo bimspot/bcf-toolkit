@@ -1,4 +1,5 @@
-using BcfToolkit.Model;
+using BcfToolkit.Builder.Bcf30.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
@@ -28,7 +29,7 @@ public class ComponentBuilder :
     return this;
   }
 
-  public IComponent Build() {
+  public Component Build() {
     return BuilderUtils.ValidateItem(_component);
   }
 }

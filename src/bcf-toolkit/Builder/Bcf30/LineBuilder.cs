@@ -1,3 +1,5 @@
+using BcfToolkit.Builder.Bcf30.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
 
@@ -29,7 +31,7 @@ public class LineBuilder :
     return this;
   }
 
-  public ILine Build() {
+  public Line Build() {
     return BuilderUtils.ValidateItem(_line);
   }
 }

@@ -1,4 +1,4 @@
-using BcfToolkit.Model;
+using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
@@ -22,7 +22,7 @@ public class ViewSetupHintsBuilder :
     return this;
   }
 
-  public IViewSetupHints Build() {
+  public ViewSetupHints Build() {
     return BuilderUtils.ValidateItem(_viewSetupHints);
   }
 }

@@ -1,4 +1,6 @@
 using System;
+using BcfToolkit.Builder.Bcf30.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
 
@@ -14,12 +16,12 @@ public partial class VisibilityBuilder :
   }
 
   public VisibilityBuilder AddException(Action<ComponentBuilder> builder) {
-    var exception =
-      (Component)BuilderUtils.BuildItem<ComponentBuilder, IComponent>(builder);
-    _visibility.Exceptions.Add(exception);
+    var component =
+      BuilderUtils.BuildItem<ComponentBuilder, Component>(builder);
+    _visibility.Exceptions.Add(component);
     return this;
   }
-  public IVisibility Build() {
+  public ComponentVisibility Build() {
     return BuilderUtils.ValidateItem(_visibility);
   }
 }

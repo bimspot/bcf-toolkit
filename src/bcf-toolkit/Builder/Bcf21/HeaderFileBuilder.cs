@@ -1,5 +1,5 @@
 using System;
-using BcfToolkit.Model;
+using BcfToolkit.Builder.Bcf21.Interfaces;
 using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
@@ -37,7 +37,7 @@ public class HeaderFileBuilder : IHeaderFileBuilder<HeaderFileBuilder> {
     return this;
   }
 
-  public IHeaderFile Build() {
+  public HeaderFile Build() {
     return BuilderUtils.ValidateItem(_file);
   }
 }

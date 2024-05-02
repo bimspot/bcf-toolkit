@@ -1,3 +1,5 @@
+using BcfToolkit.Builder.Bcf21.Interfaces;
+
 namespace BcfToolkit.Builder.Bcf21;
 
 public partial class ProjectBuilder : IProjectBuilderExtension<ProjectBuilder> {

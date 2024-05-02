@@ -1,4 +1,5 @@
-using BcfToolkit.Model;
+using BcfToolkit.Builder.Bcf30.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
@@ -36,7 +37,7 @@ public class BimSnippetBuilder :
     return this;
   }
 
-  public IBimSnippet Build() {
+  public BimSnippet Build() {
     return BuilderUtils.ValidateItem(_snippet);
   }
 }

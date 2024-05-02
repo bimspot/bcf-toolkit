@@ -1,4 +1,6 @@
 using System;
+using BcfToolkit.Builder.Bcf21.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 
@@ -28,7 +30,7 @@ public class ColorBuilder :
     return this;
   }
 
-  public IColor Build() {
+  public ComponentColoringColor Build() {
     return BuilderUtils.ValidateItem(_color);
   }
 }

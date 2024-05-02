@@ -1,3 +1,5 @@
+using BcfToolkit.Builder.Bcf21.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 
@@ -29,7 +31,7 @@ public class ClippingPlaneBuilder :
     return this;
   }
 
-  public IClippingPlane Build() {
+  public ClippingPlane Build() {
     return BuilderUtils.ValidateItem(_clippingPlane);
   }
 }

@@ -1,5 +1,6 @@
 using System;
-using BcfToolkit.Model;
+using BcfToolkit.Builder.Bcf30.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
@@ -43,6 +44,11 @@ public class CommentBuilder :
     _comment.ModifiedAuthor = user;
     return this;
   }
+  
+  public CommentBuilder SetCommentProperty(string property) {
+    _comment.CommentProperty = property;
+    return this;
+  }
 
   public CommentBuilder WithDefaults() {
     this
@@ -53,7 +59,7 @@ public class CommentBuilder :
     return this;
   }
 
-  public IComment Build() {
+  public Comment Build() {
     return BuilderUtils.ValidateItem(_comment);
   }
 }

@@ -1,5 +1,6 @@
 using System;
-using BcfToolkit.Model;
+using BcfToolkit.Builder.Bcf30.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
@@ -24,7 +25,7 @@ public partial class DocumentReferenceBuilder :
     return this;
   }
 
-  public IDocReference Build() {
+  public DocumentReference Build() {
     return BuilderUtils.ValidateItem(_documentReference);
   }
 }

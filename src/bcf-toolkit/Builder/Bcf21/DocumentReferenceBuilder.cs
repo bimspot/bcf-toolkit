@@ -1,4 +1,4 @@
-using BcfToolkit.Model;
+using BcfToolkit.Builder.Bcf21.Interfaces;
 using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
@@ -17,7 +17,7 @@ public partial class DocumentReferenceBuilder :
     return this;
   }
 
-  public IDocReference Build() {
+  public TopicDocumentReference Build() {
     return BuilderUtils.ValidateItem(_documentReference);
   }
 }

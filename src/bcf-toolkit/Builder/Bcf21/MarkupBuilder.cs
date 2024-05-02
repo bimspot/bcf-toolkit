@@ -1,5 +1,6 @@
 using System;
-using System.IO;
+using BcfToolkit.Builder.Bcf21.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 
@@ -12,7 +13,7 @@ public class MarkupBuilder :
     BimSnippetBuilder,
     DocumentReferenceBuilder,
     CommentBuilder,
-    ViewPointBuilder>,
+    VisualizationInfoBuilder>,
   IDefaultBuilder<MarkupBuilder> {
   private readonly Markup _markup = new();
 
@@ -132,10 +133,10 @@ public class MarkupBuilder :
     return this;
   }
 
-  public MarkupBuilder AddViewPoint(Action<ViewPointBuilder> builder, string snapshotData) {
+  public MarkupBuilder AddViewPoint(Action<VisualizationInfoBuilder> builder, string snapshotData) {
     var visInfo =
       (VisualizationInfo)BuilderUtils
-        .BuildItem<ViewPointBuilder, IVisualizationInfo>(builder);
+        .BuildItem<VisualizationInfoBuilder, IVisualizationInfo>(builder);
     var viewPoint = new ViewPoint {
       VisualizationInfo = visInfo,
       SnapshotData = snapshotData
@@ -161,7 +162,7 @@ public class MarkupBuilder :
     return this;
   }
 
-  public IMarkup Build() {
+  public Markup Build() {
     return BuilderUtils.ValidateItem(_markup);
   }
 }

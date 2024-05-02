@@ -1,4 +1,5 @@
 using System;
+using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
 

@@ -1,4 +1,5 @@
 using System;
+using BcfToolkit.Builder.Bcf21.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 
@@ -19,7 +20,7 @@ public class VisibilityBuilder :
     _visibility.Exceptions.Add(exception);
     return this;
   }
-  public IVisibility Build() {
+  public ComponentVisibility Build() {
     return BuilderUtils.ValidateItem(_visibility);
   }
 }

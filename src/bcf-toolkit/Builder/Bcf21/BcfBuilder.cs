@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using BcfToolkit.Utils;
+using BcfToolkit.Builder.Bcf21.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
 
-public class BcfBuilder : IBcfBuilder<
+public partial class BcfBuilder : IBcfBuilder<
   BcfBuilder,
   MarkupBuilder,
   ProjectBuilder>,
@@ -41,13 +40,7 @@ public class BcfBuilder : IBcfBuilder<
     return this;
   }
 
-  public async Task<IBcf> BuildFromStream(Stream source) {
-    _bcf.Markups = await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);
-    _bcf.Project = await BcfExtensions.ParseProject<ProjectExtension>(source);
-    return BuilderUtils.ValidateItem(_bcf);
-  }
-
-  public IBcf Build() {
+  public Bcf Build() {
     return BuilderUtils.ValidateItem(_bcf);
   }
 }

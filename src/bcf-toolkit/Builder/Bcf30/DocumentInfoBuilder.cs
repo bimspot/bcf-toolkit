@@ -1,4 +1,5 @@
 using System;
+using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
 
@@ -14,7 +15,7 @@ public class DocumentInfoBuilder : IDocumentInfoBuilder<DocumentInfoBuilder, Doc
     return this;
   }
 
-  public IDocumentInfo Build() {
+  public DocumentInfo Build() {
     return BuilderUtils.ValidateItem(_documentInfo);
   }
 }

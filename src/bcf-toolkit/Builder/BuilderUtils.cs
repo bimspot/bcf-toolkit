@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using BcfToolkit.Builder.Interfaces;
 using RecursiveDataAnnotationsValidation;
 
 namespace BcfToolkit.Builder;

@@ -1,5 +1,6 @@
 using System;
-using BcfToolkit.Model;
+using BcfToolkit.Builder.Bcf21.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
@@ -30,7 +31,7 @@ public partial class ProjectBuilder :
     return this;
   }
 
-  public IProject Build() {
+  public ProjectExtension Build() {
     return BuilderUtils.ValidateItem(_project);
   }
 }
