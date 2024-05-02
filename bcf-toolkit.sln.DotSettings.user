@@ -1,5 +1,27 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">/Users/balintbende/Library/Caches/JetBrains/Rider2023.3/resharper-host/temp/Rider/vAny/CoverageData/_bcf-toolkit.-1315391344/Snapshot/snapshot.utdcvr</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=207eee2e_002Da4ce_002D4afc_002D8bf1_002D5eeb2bd4e9f4/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="BuildBcfFromV21StreamTest #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net8.0::Tests.WorkerTests.BuildBcfFromV21StreamTest&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net8.0::Tests.WorkerTests.BuildBcfFromV30StreamTest&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net8.0::Tests.Converter.Bcf30.ConverterTests.BcfStream_ShouldReturnFileStream&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=69156f6d_002D4f0a_002D4f92_002Dae69_002Da7ef11a55cba/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Solution /&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=72729c38_002D4e9f_002D47ec_002D9270_002Dc82079da0565/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="BuildBcfFromV21StreamTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net8.0::Tests.WorkerTests.BuildBcfFromV21StreamTest&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=896d8c2a_002D90e7_002D436c_002Da21a_002D89fac15c147e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="BuildBcfFromV21StreamTest #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net8.0::Tests.WorkerTests.BuildBcfFromV21StreamTest&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	
 	
 	
 	

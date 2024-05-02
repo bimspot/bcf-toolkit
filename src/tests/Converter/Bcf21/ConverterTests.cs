@@ -2,35 +2,35 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BcfToolkit.Converter;
 using BcfToolkit.Model.Bcf21;
-using BcfToolkit.Worker;
 using NUnit.Framework;
 
-namespace tests.Worker.Bcf21;
+namespace Tests.Converter.Bcf21;
 
 [TestFixture]
-public class ConverterWorkerTests {
+public class ConverterTests {
   [SetUp]
   public void Setup() {
-    _converterWorker = new BcfToolkit.Worker.Bcf21.ConverterWorker();
+    _converter = new BcfToolkit.Converter.Bcf21.Converter();
   }
 
-  private IConverterWorker _converterWorker = null!;
+  private IConverter _converter = null!;
 
   [Test]
   public void BcfToJsonSampleFilesTest() {
-    _converterWorker.BcfZipToJson("Resources/Bcf/v2.1/AllPartsVisible.bcfzip",
+    _converter.BcfZipToJson("Resources/Bcf/v2.1/AllPartsVisible.bcfzip",
       "Resources/output/json/v2.1/AllPartsVisible");
-    _converterWorker.BcfZipToJson(
+    _converter.BcfZipToJson(
       "Resources/Bcf/v2.1/ComponentSelection.bcfzip",
       "Resources/output/json/v2.1/ComponentSelection");
-    _converterWorker.BcfZipToJson(
+    _converter.BcfZipToJson(
       "Resources/Bcf/v2.1/ExternalBIMSnippet.bcfzip",
       "Resources/output/json/v2.1/ExternalBIMSnippet");
-    _converterWorker.BcfZipToJson(
+    _converter.BcfZipToJson(
       "Resources/Bcf/v2.1/MaximumInformation.bcfzip",
       "Resources/output/json/v2.1/MaximumInformation");
-    _converterWorker.BcfZipToJson(
+    _converter.BcfZipToJson(
       "Resources/Bcf/v2.1/UserAssignment.bcfzip",
       "Resources/output/json/v2.1/UserAssignment");
   }
@@ -38,7 +38,7 @@ public class ConverterWorkerTests {
   [Test]
   public Task JsonToBcfSampleFilesTest() {
     var tasks = new List<Task> {
-      _converterWorker.JsonToBcfZip(
+      _converter.JsonToBcfZip(
         "Resources/Json/v2.1/AllPartsVisible",
         "Resources/output/bcf/v2.1/AllPartsVisible.bcfzip")
     };
@@ -61,7 +61,7 @@ public class ConverterWorkerTests {
       Markups = markups
     };
 
-    var stream = await _converterWorker.ToBcfStream(bcf);
+    var stream = await _converter.ToBcfStream(bcf);
 
     Assert.IsNotNull(stream);
     Assert.IsTrue(stream.CanRead);
@@ -71,14 +71,14 @@ public class ConverterWorkerTests {
 
   [Test]
   public void BcfToJsonMissingRequiredPropertyTest() {
-    Assert.That(async () => await _converterWorker.BcfZipToJson(
+    Assert.That(async () => await _converter.BcfZipToJson(
       "Resources/Bcf/v2.1/RelatedTopics.bcfzip",
-       "Resources/output/json/v2.1/RelatedTopics"), Throws.ArgumentException);
+      "Resources/output/json/v2.1/RelatedTopics"), Throws.ArgumentException);
   }
 
   [Test]
   public void BcfToJsonWrongPathTest() {
-    Assert.That(async () => await _converterWorker.BcfZipToJson(
+    Assert.That(async () => await _converter.BcfZipToJson(
       "Resources/Bcf/v3.0/Wrong.bcfzip",
       "Resources/output/json/v2.1/Wrong"), Throws.ArgumentException);
   }
@@ -101,7 +101,7 @@ public class ConverterWorkerTests {
     var bcf = new Bcf {
       Markups = markups
     };
-    return _converterWorker.ToBcfZip("Resources/output/Bcf/v2.1/MinimumInformation.bcfzip", bcf);
+    return _converter.ToBcfZip(bcf, "Resources/output/Bcf/v2.1/MinimumInformation.bcfzip");
   }
 
   /// <summary>
@@ -121,6 +121,20 @@ public class ConverterWorkerTests {
     var bcf = new Bcf {
       Markups = markups
     };
-    return _converterWorker.ToBcfZip("Resources/output/Bcf/v2.1/WithoutTopicGuid.bcfzip", bcf);
+    return _converter.ToBcfZip(bcf,"Resources/output/Bcf/v2.1/WithoutTopicGuid.bcfzip");
   }
+  
+  // /// <summary>
+  // ///   It should generate a bcf skipping the markup file.
+  // /// </summary>
+  // [Test]
+  // [Category("BCF v2.1")]
+  // public async Task Test() {
+  //   var builder = new BcfBuilder();
+  //   await using var stream =
+  //     new FileStream("Resources/output/Bcf/v2.1/MinimumInformation.bcfzip", FileMode.Open, FileAccess.Read);
+  //   // var bcf = await builder.BuildFromStream(stream);
+  //   var bcf = await _converter.BuildBcfFromStream<BcfToolkit.Model.Bcf30.Bcf>(stream, BcfVersionEnum.Bcf30);
+  //   
+  // }
 }

@@ -2,7 +2,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf30;
-using BcfToolkit.Model.Bcf30;
 using NUnit.Framework;
 
 namespace Tests.Builder;
@@ -17,7 +16,7 @@ public class BcfBuilderTests {
 
   [Test]
   public void BuildBcfWithComplexFields() {
-    var bcf = (Bcf)_builder
+    var bcf = _builder
       .AddMarkup(m => m
         .SetTitle("Title")
         .SetGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
@@ -48,7 +47,7 @@ public class BcfBuilderTests {
       "Resources/Bcf/v3.0/UserAssignment.bcfzip",
       FileMode.Open,
       FileAccess.Read);
-    var bcf = (Bcf)await _builder.BuildFromStream(stream);
+    var bcf = await _builder.BuildFromStream(stream);
     Assert.AreEqual(1, bcf.Markups.Count);
     Assert.AreEqual(
       "Architect@example.com",
