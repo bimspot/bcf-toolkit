@@ -2,12 +2,12 @@ using System.IO;
 using System.Threading.Tasks;
 using BcfToolkit.Model;
 
-namespace BcfToolkit.Worker;
+namespace BcfToolkit.Converter;
 
 /// <summary>
 ///   Converter worker interface.
 /// </summary>
-public interface IConverterWorker {
+public interface IConverter {
   /// <summary>
   ///   The method parses the BCFzip archive, then writes to json.
   /// </summary>
@@ -16,13 +16,13 @@ public interface IConverterWorker {
   /// <returns></returns>
   Task BcfZipToJson(string source, string target);
 
-  // /// <summary>
-  // ///   The method parses the BCFzip archive stream, then writes to json.
-  // /// </summary>
-  // /// <param name="source">The source path to the BCFzip.</param>
-  // /// <param name="target">The target path where the JSON is written.</param>
-  // /// <returns></returns>
-  // Task BcfZipToJson(Stream source, string target);
+  /// <summary>
+  ///   The method parses the BCFzip archive stream, then writes to json.
+  /// </summary>
+  /// <param name="source">The file stream of the source BCFzip.</param>
+  /// <param name="target">The target path where the JSON is written.</param>
+  /// <returns></returns>
+  Task BcfZipToJson(Stream source, string target);
 
   /// <summary>
   ///   The method reads the json, then creates and writes to BCFzip.
@@ -44,18 +44,24 @@ public interface IConverterWorker {
   /// <summary>
   ///   The method writes the specified BCF model to BCFzip files.
   /// </summary>
+  /// <param name="bcf">The `IBcf` interface of the BCF.</param>
   /// <param name="target">The target path where the BCF is written.</param>
-  /// <param name="bcf">The `IBcf` interface of the BCF.
-  /// </param>
   /// <returns></returns>
-  Task ToBcfZip(string target, IBcf bcf);
+  Task ToBcfZip(IBcf bcf, string target);
 
   /// <summary>
   ///   The method writes the specified BCF model to JSON files.
   /// </summary>
+  /// <param name="bcf">The `IBcf` interface of the BCF.</param>
   /// <param name="target">The target path where the JSON is written.</param>
-  /// <param name="bcf">The `IBcf` interface of the BCF.
-  /// </param>
   /// <returns></returns>
-  Task ToJson(string target, IBcf bcf);
+  Task ToJson(IBcf bcf, string target);
+
+  /// <summary>
+  ///   The function builds a BCF in memory representation of the specified
+  ///   target version from the given stream.
+  /// </summary>
+  /// <param name="stream">The BCF file stream.</param>
+  /// <returns>Returns the `Bcf` object.</returns>
+  Task<T> BuildBcfFromStream<T>(Stream stream);
 }

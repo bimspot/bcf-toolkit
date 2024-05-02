@@ -1,14 +1,17 @@
 #nullable disable
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
+using BcfToolkit.Converter;
 using BcfToolkit.Model;
-using BcfToolkit.Worker;
+using BcfToolkit.Model.Bcf30;
+using BcfToolkit.Utils;
 
 namespace BcfToolkit;
 
 /// <summary>
-///   The `ConverterContext` class defines the converter strategy for a specific
+///   The `Worker` class defines the converter strategy for a specific
 ///   version of BCF and performs the conversion according to the chosen type of
 ///   conversion.
 ///   Types of the conversion:
@@ -16,25 +19,25 @@ namespace BcfToolkit;
 ///   - json to BCF
 ///   - in memory model to BCF
 ///   - in memory model to JSON
+///   - file stream to in memory model
 /// </summary>
-public class ConverterContext {
+public class Worker {
   /// <summary>
   ///   The converter maintains a reference to one of the Strategy objects.
   ///   It does not know the concrete class of a strategy.
   ///   It should work with all strategies via the converter strategy interface.
   /// </summary>
-  private IConverterWorker ConverterWorker { get; set; }
-
-  //public IBuilder<IMarkup> Builder { get; set; }
-
-  // private IMarkupBuilder _markupBuilder;
+  private IConverter _converter { get; set; }
 
   /// <summary>
-  ///   Creates and returns an instance of `ConverterContext`. The version of
-  ///   the bcf must be specified here.
+  ///   Creates and returns a default instance of `Worker`.
   /// </summary>
-  /// <param name="version">The version of the BCF.</param>
-  public ConverterContext(BcfVersionEnum version) {
+  public Worker() { }
+  
+  /// <summary>
+  ///   Creates and returns an instance of `Worker` with the specified version.
+  /// </summary>
+  public Worker(BcfVersionEnum version) {
     Init(version);
   }
 
@@ -43,10 +46,10 @@ public class ConverterContext {
   /// </summary>
   /// <param name="version">The version of the BCF.</param>
   /// <exception cref="ArgumentException"></exception>
-  private void Init(BcfVersionEnum version) {
-    ConverterWorker = version switch {
-      BcfVersionEnum.Bcf21 => new Worker.Bcf21.ConverterWorker(),
-      BcfVersionEnum.Bcf30 => new Worker.Bcf30.ConverterWorker(),
+  private void Init(BcfVersionEnum? version) {
+    _converter = version switch {
+      BcfVersionEnum.Bcf21 => new Converter.Bcf21.Converter(),
+      BcfVersionEnum.Bcf30 => new Converter.Bcf30.Converter(),
       _ => throw new ArgumentException($"Unsupported BCF version: {version}")
     };
   }
@@ -60,29 +63,41 @@ public class ConverterContext {
   /// <param name="target">Target destination for the converted results.</param>
   public Task Convert(string source, string target) {
     return source.EndsWith("bcfzip")
-      ? ConverterWorker.BcfZipToJson(source, target)!
-      : ConverterWorker.JsonToBcfZip(source, target)!;
+      ? _converter.BcfZipToJson(source, target)!
+      : _converter.JsonToBcfZip(source, target)!;
+
   }
 
   /// <summary>
   ///   The method writes the specified BCF models to BCF files.
   /// </summary>
+  /// 
+  /// <param name="bcf">The `IBcf` interface of the BCF.</param>
   /// <param name="target">The target path where the BCF is written.</param>
-  /// <param name="bcf">The `IBcf` interface of the BCF.
-  /// </param>
   /// <returns></returns>
-  public Task ToBcf(string target, IBcf bcf) {
-    return ConverterWorker.ToBcfZip(target, bcf);
+  public Task ToBcfZip(IBcf bcf, string target) {
+    return _converter?.ToBcfZip(bcf, target);
   }
 
   /// <summary>
   ///   The method writes the specified BCF models to JSON files.
   /// </summary>
+  /// <param name="bcf">The `IBcf` interface of the BCF.</param>
   /// <param name="target">The target path where the JSON is written.</param>
-  /// <param name="bcf">The `IBcf` interface of the BCF.
-  /// </param>
   /// <returns></returns>
-  public Task ToJson(string target, IBcf bcf) {
-    return ConverterWorker.ToJson(target, bcf);
+  public Task ToJson(IBcf bcf, string target) {
+    return _converter?.ToJson(bcf, target);
+  }
+
+  /// <summary>
+  ///   The method builds and returns an instance of BCF 3.0 object from the
+  ///   specified file stream, independently the input version.
+  /// </summary>
+  /// <param name="stream"></param>
+  /// <returns></returns>
+  public async Task<Bcf> BuildBcfFromStream(Stream stream) {
+    var currentVersion = await BcfExtensions.GetVersion(stream);
+    Init(currentVersion);
+    return await _converter.BuildBcfFromStream<Bcf>(stream);
   }
 }

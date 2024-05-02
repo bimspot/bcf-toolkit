@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using BcfToolkit.Model;
 using System.CommandLine;
 
 namespace BcfToolkit;
@@ -51,9 +50,8 @@ internal static class Program {
     // by default 2.1 version is used
 
     try {
-      var version = BcfVersion.Parse(arguments.TargetVersion);
-      var context = new ConverterContext(version);
-      await context.Convert(arguments.SourcePath, arguments.Target);
+      var worker = new Worker();
+      await worker.Convert(arguments.SourcePath, arguments.Target);
     }
     catch (Exception e) {
       var errorWriter = Console.Error;
