@@ -8,7 +8,7 @@ public enum BcfVersionEnum {
 }
 
 public static class BcfVersion {
-  public static BcfVersionEnum Parse(string version) {
+  public static BcfVersionEnum Parse(string? version) {
     return version switch {
       "2.1" => BcfVersionEnum.Bcf21,
       "3.0" => BcfVersionEnum.Bcf30,

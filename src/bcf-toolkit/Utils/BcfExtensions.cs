@@ -284,4 +284,29 @@ public static class BcfExtensions {
       }
     });
   }
+
+  /// <summary>
+  ///   TODO
+  /// </summary>
+  /// <param name="stream"></param>
+  /// <returns></returns>
+  public static async Task<BcfVersionEnum?> GetVersion(Stream stream) { 
+    using var archive = new ZipArchive(stream, ZipArchiveMode.Read, true);
+    BcfVersionEnum? version = null;
+    
+    foreach (var entry in archive.Entries) {
+      if (!entry.IsVersion()) continue;
+
+      Console.WriteLine(entry.FullName);
+
+      var document = await XDocument.LoadAsync(
+        entry.Open(),
+        LoadOptions.None,
+        CancellationToken.None);
+      version = BcfVersion.Parse(document.Root?.Attribute("VersionId")?.Value);
+      stream.Position = 0;
+      return version;
+    }
+    return version;
+  }
 }
