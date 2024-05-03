@@ -133,13 +133,18 @@ public class MarkupBuilder :
     return this;
   }
 
-  public MarkupBuilder AddViewPoint(Action<VisualizationInfoBuilder> builder, string snapshotData) {
+  public MarkupBuilder AddViewPoint(string viewpoint, string snapshot,
+    string snapshotData, int index, string guid, Action<VisualizationInfoBuilder> builder) {
     var visInfo =
       (VisualizationInfo)BuilderUtils
         .BuildItem<VisualizationInfoBuilder, IVisualizationInfo>(builder);
     var viewPoint = new ViewPoint {
+      Viewpoint = viewpoint,
+      Snapshot = snapshot,
+      SnapshotData = snapshotData,
+      Index = index,
+      Guid = guid,
       VisualizationInfo = visInfo,
-      SnapshotData = snapshotData
     };
     _markup.Viewpoints.Add(viewPoint);
     return this;

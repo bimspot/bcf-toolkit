@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model.Bcf30;
@@ -32,8 +33,9 @@ public class VisualizationInfoBuilder :
     return this;
   }
 
-  public VisualizationInfoBuilder AddSelections(List<Component> selections) {
-    selections.ForEach(_visualizationInfo.Components.Selection.Add);
+  public VisualizationInfoBuilder AddSelections(List<Component>? selections) {
+    _visualizationInfo.Components ??= new Components();
+    selections?.ForEach(_visualizationInfo.Components.Selection.Add);
     return this;
   }
 
@@ -53,8 +55,9 @@ public class VisualizationInfoBuilder :
     return this;
   }
 
-  public VisualizationInfoBuilder AddColorings(List<ComponentColoringColor> colors) {
-    colors.ForEach(_visualizationInfo.Components.Coloring.Add);
+  public VisualizationInfoBuilder AddColorings(List<ComponentColoringColor>? colors) {
+    _visualizationInfo.Components ??= new Components();
+    colors?.ForEach(_visualizationInfo.Components.Coloring.Add);
     return this;
   }
 
@@ -78,8 +81,8 @@ public class VisualizationInfoBuilder :
     return this;
   }
 
-  public VisualizationInfoBuilder AddLines(List<Line> lines) {
-    lines.ForEach(_visualizationInfo.Lines.Add);
+  public VisualizationInfoBuilder AddLines(List<Line>? lines) {
+    lines?.ForEach(_visualizationInfo.Lines.Add);
     return this;
   }
 
@@ -91,8 +94,8 @@ public class VisualizationInfoBuilder :
     return this;
   }
 
-  public VisualizationInfoBuilder AddClippingPlanes(List<ClippingPlane> clippingPlanes) {
-    clippingPlanes.ForEach(_visualizationInfo.ClippingPlanes.Add);
+  public VisualizationInfoBuilder AddClippingPlanes(List<ClippingPlane>? clippingPlanes) {
+    clippingPlanes?.ForEach(_visualizationInfo.ClippingPlanes.Add);
     return this;
   }
 
@@ -104,8 +107,8 @@ public class VisualizationInfoBuilder :
     return this;
   }
 
-  public VisualizationInfoBuilder AddBitmaps(List<Bitmap> bitmaps) {
-    bitmaps.ForEach(_visualizationInfo.Bitmaps.Add);
+  public VisualizationInfoBuilder AddBitmaps(List<Bitmap>? bitmaps) {
+    bitmaps?.ForEach(_visualizationInfo.Bitmaps.Add);
     return this;
   }
 

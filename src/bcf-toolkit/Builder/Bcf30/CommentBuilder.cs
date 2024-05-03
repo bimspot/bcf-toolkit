@@ -30,7 +30,9 @@ public class CommentBuilder :
     return this;
   }
 
-  public CommentBuilder SetViewPoint(string guid) {
+  public CommentBuilder SetViewPoint(string? guid) {
+    if (guid == null) return this;
+    _comment.Viewpoint ??= new CommentViewpoint();
     _comment.Viewpoint.Guid = guid;
     return this;
   }

@@ -26,7 +26,7 @@ public partial class BcfBuilder :
   }
 
   /// <summary>
-  /// TODO
+  /// TODO description
   /// </summary>
   /// <param name="topic"></param>
   private void UpdateExtensions(Topic topic) {
@@ -44,10 +44,11 @@ public partial class BcfBuilder :
       topic.Priority,
       Labels = new HashSet<string>(topic.Labels).ToList(),
       Users = users.Concat(commenters).ToList(),
-      topic.BimSnippet.SnippetType,
+      topic.BimSnippet?.SnippetType,
       topic.Stage
     };
 
+    _bcf.Extensions = new Extensions();
     _bcf.Extensions.TopicTypes.AddIfNotExists(ext.TopicType);
     _bcf.Extensions.TopicStatuses.AddIfNotExists(ext.TopicStatus);
     _bcf.Extensions.Priorities.AddIfNotExists(ext.Priority);

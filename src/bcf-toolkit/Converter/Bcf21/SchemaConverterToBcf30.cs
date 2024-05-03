@@ -18,7 +18,7 @@ public static class SchemaConverterToBcf30 {
   private static Model.Bcf30.Markup ConvertMarkup(Model.Bcf21.Markup from) {
     var builder = new MarkupBuilder();
     var topic = from.Topic;
-    return builder
+    builder
       .AddHeaderFiles(from.Header.Select(ConvertHeaderFile).ToList())
       .AddReferenceLinks(topic.ReferenceLink.ToList())
       .SetTitle(topic.Title)
@@ -33,16 +33,24 @@ public static class SchemaConverterToBcf30 {
       .SetAssignedTo(topic.AssignedTo)
       .SetStage(topic.Stage)
       .SetDescription(topic.Description)
-      .SetBimSnippet(b => b
-        .SetReference(topic.BimSnippet.Reference)
-        .SetReferenceSchema(topic.BimSnippet.ReferenceSchema)
-        .SetSnippetType(topic.BimSnippet.SnippetType)
-        .SetIsExternal(topic.BimSnippet.IsExternal))
-      //.AddDocumentReferences(from.Topic.DocumentReference.Select(ConvertDocumentReference).ToList()) TODO
       .AddRelatedTopics(topic.RelatedTopic.Select(t => t.Guid).ToList())
       .AddComments(from.Comment.Select(ConvertComment).ToList())
       .AddViewPoints(from.Viewpoints.Select(ConvertViewPoint).ToList())
-      .Build();
+      .SetGuid(from.Topic.Guid)
+      .SetTopicType(from.Topic.TopicType ??= "ERROR")
+      .SetTopicStatus(from.Topic.TopicStatus ??= "OPEN");
+    //.AddDocumentReferences(from.Topic.DocumentReference.Select(ConvertDocumentReference).ToList()) TODO
+
+    var bimSnippet = topic.BimSnippet;
+    if (bimSnippet != null)
+      builder
+        .SetBimSnippet(b => b
+          .SetReference(bimSnippet.Reference)
+          .SetReferenceSchema(bimSnippet.ReferenceSchema)
+          .SetSnippetType(bimSnippet.SnippetType)
+          .SetIsExternal(bimSnippet.IsExternal));
+
+    return builder.Build();
   }
 
   private static Model.Bcf30.File ConvertHeaderFile(Model.Bcf21.HeaderFile from) {
@@ -70,36 +78,67 @@ public static class SchemaConverterToBcf30 {
 
   private static Model.Bcf30.Comment ConvertComment(Model.Bcf21.Comment from) {
     var builder = new CommentBuilder();
-    return builder
+    builder
       .SetDate(from.Date)
       .SetAuthor(from.Author)
       .SetCommentProperty(from.CommentProperty)
-      .SetViewPoint(from.Viewpoint.Guid)
       .SetModifiedDate(from.ModifiedDate)
       .SetModifiedAuthor(from.ModifiedAuthor)
-      .Build();
+      .SetGuid(from.Guid);
+
+    if (from.Viewpoint != null)
+      builder.SetViewPoint(from.Viewpoint?.Guid);
+
+    return builder.Build();
   }
 
   private static Model.Bcf30.ViewPoint ConvertViewPoint(
     Model.Bcf21.ViewPoint from) {
+    return new ViewPoint {
+      Viewpoint = from.Viewpoint,
+      Snapshot = from.Snapshot,
+      SnapshotData = from.SnapshotData,
+      Index = from.Index,
+      Guid = from.Guid,
+      VisualizationInfo = ConvertVisualizationInfo(from.VisualizationInfo)
+    };
+  }
+
+  private static Model.Bcf30.VisualizationInfo? ConvertVisualizationInfo(
+    Model.Bcf21.VisualizationInfo? from) {
+    if (from == null) return null;
+
     var builder = new VisualizationInfoBuilder();
-    var visInfoSource = from.VisualizationInfo!;
-    var viewSetupHints = visInfoSource.Components.ViewSetupHints;
-    var visibility = visInfoSource.Components.Visibility;
-    var coloring = visInfoSource.Components.Coloring;
-    var orthoCamera = visInfoSource.OrthogonalCamera;
-    var perspCamera = visInfoSource.PerspectiveCamera;
-    var visInfo = builder
-      .AddSelections(visInfoSource.Components.Selection.Select(ConvertComponent).ToList())
-      .SetVisibility(vis => vis
-        .SetViewSetupHints(hints => hints
-          .SetSpaceVisible(viewSetupHints.SpacesVisible)
-          .SetSpaceBoundariesVisible(viewSetupHints.SpaceBoundariesVisible)
-          .SetOpeningVisible(viewSetupHints.OpeningsVisible))
-        .AddExceptions(visibility.Exceptions.Select(ConvertComponent).ToList())
-        .SetDefaultVisibility(visibility.DefaultVisibility))
-      .AddColorings(coloring.Select(ConvertColor).ToList())
-      .SetOrthogonalCamera(oC => oC
+    var components = from.Components;
+    var selection = components?.Selection;
+    var viewSetupHints = components?.ViewSetupHints;
+    var visibility = components?.Visibility;
+    var coloring = components?.Coloring;
+    var lines = from.Lines;
+    var clippingPlanes = from.ClippingPlanes;
+    var bitmaps = from.Bitmap;
+    var orthoCamera = from.OrthogonalCamera;
+    var perspCamera = from.PerspectiveCamera;
+
+    builder
+      .AddSelections(selection?.Select(ConvertComponent).ToList())
+      .AddColorings(coloring?.Select(ConvertColor).ToList())
+      .AddLines(lines?.Select(ConvertLine).ToList())
+      .AddClippingPlanes(clippingPlanes?.Select(ConvertClippingPlane).ToList())
+      .AddBitmaps(bitmaps?.Select(ConvertBitmap).ToList())
+      .SetGuid(from.Guid);
+
+    if (visibility != null)
+      builder
+        .SetVisibility(vis => vis
+          .SetViewSetupHints(hints => hints
+            .SetSpaceVisible(viewSetupHints.SpacesVisible)
+            .SetSpaceBoundariesVisible(viewSetupHints.SpaceBoundariesVisible)
+            .SetOpeningVisible(viewSetupHints.OpeningsVisible))
+          .AddExceptions(visibility.Exceptions.Select(ConvertComponent).ToList())
+          .SetDefaultVisibility(visibility.DefaultVisibility));
+    if (orthoCamera != null)
+      builder.SetOrthogonalCamera(oC => oC
         .SetCamera(c => c
           .SetViewPoint(
             orthoCamera.CameraViewPoint.X,
@@ -114,8 +153,10 @@ public static class SchemaConverterToBcf30 {
             orthoCamera.CameraUpVector.Y,
             orthoCamera.CameraUpVector.Z))
         .SetViewToWorldScale(orthoCamera.ViewToWorldScale)
-        .SetAspectRatio(1.0)) //by default
-      .SetPerspectiveCamera(pC => pC
+        .SetAspectRatio(1.0)); //by default
+
+    if (perspCamera != null)
+      builder.SetPerspectiveCamera(pC => pC
         .SetCamera(c => c
           .SetViewPoint(
             perspCamera.CameraViewPoint.X,
@@ -130,20 +171,9 @@ public static class SchemaConverterToBcf30 {
             perspCamera.CameraUpVector.Y,
             perspCamera.CameraUpVector.Z))
         .SetFieldOfView(perspCamera.FieldOfView)
-        .SetAspectRatio(1.0)) //by default
-      .AddLines(visInfoSource.Lines.Select(ConvertLine).ToList())
-      .AddClippingPlanes(visInfoSource.ClippingPlanes.Select(ConvertClippingPlane).ToList())
-      .AddBitmaps(visInfoSource.Bitmap.Select(ConvertBitmap).ToList())
-      .SetGuid(visInfoSource.Guid)
-      .Build();
-    return new ViewPoint {
-      Viewpoint = from.Viewpoint,
-      Snapshot = from.Snapshot,
-      SnapshotData = from.SnapshotData,
-      Index = from.Index,
-      Guid = from.Guid,
-      VisualizationInfo = visInfo
-    };
+        .SetAspectRatio(1.0)); //by default
+
+    return builder.Build();
   }
 
   private static Model.Bcf30.Component ConvertComponent(
