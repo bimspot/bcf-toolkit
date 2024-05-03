@@ -33,7 +33,7 @@ public partial class OrthogonalCameraBuilder :
     this
       .SetCamera(cam => cam.WithDefaults())
       .SetViewToWorldScale(0.0)
-      .AddAspectRatio(1.0);
+      .SetAspectRatio(1.0);
     return this;
   }
 

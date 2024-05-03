@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
@@ -20,6 +21,11 @@ public class ColorBuilder :
     var component =
       (Component)BuilderUtils.BuildItem<ComponentBuilder, IComponent>(builder);
     _color.Components.Add(component);
+    return this;
+  }
+  
+  public ColorBuilder AddComponents(List<Component> components) {
+    components.ForEach(_color.Components.Add);
     return this;
   }
 

@@ -9,5 +9,5 @@ public interface IPerspectiveCameraBuilderExtension<out TBuilder> {
   ///   view (w/h).
   /// </param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder AddAspectRatio(double ratio);
+  TBuilder SetAspectRatio(double ratio);
 }

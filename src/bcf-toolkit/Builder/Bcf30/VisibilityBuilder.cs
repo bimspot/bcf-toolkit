@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
@@ -21,6 +22,12 @@ public partial class VisibilityBuilder :
     _visibility.Exceptions.Add(component);
     return this;
   }
+  
+  public VisibilityBuilder AddExceptions(List<Component> exceptions) {
+    exceptions.ForEach(_visibility.Exceptions.Add);
+    return this;
+  }
+  
   public ComponentVisibility Build() {
     return BuilderUtils.ValidateItem(_visibility);
   }

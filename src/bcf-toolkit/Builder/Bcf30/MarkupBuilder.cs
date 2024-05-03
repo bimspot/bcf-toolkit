@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
@@ -168,6 +169,11 @@ public partial class MarkupBuilder :
       VisualizationInfo = visInfo,
     };
     _markup.Topic.Viewpoints.Add(viewPoint);
+    return this;
+  }
+  
+  public MarkupBuilder AddViewPoints(List<ViewPoint> viewpoints) {
+    viewpoints.ForEach(_markup.Topic.Viewpoints.Add);
     return this;
   }
 
