@@ -5,7 +5,7 @@ using BcfToolkit.Model.Bcf21;
 namespace BcfToolkit.Builder.Bcf21.Interfaces;
 
 public interface
-  IColorBuilder<out TBuilder, out TComponentBuilder> 
+  IColorBuilder<out TBuilder, out TComponentBuilder>
   : IBuilder<ComponentColoringColor> {
   /// <summary>
   ///   Returns the builder object extended with `Color`. For example, 40E0D0

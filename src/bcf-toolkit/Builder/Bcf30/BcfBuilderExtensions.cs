@@ -9,7 +9,7 @@ namespace BcfToolkit.Builder.Bcf30;
 
 public partial class BcfBuilder :
   IBcfBuilderExtension<BcfBuilder, ExtensionsBuilder, DocumentInfoBuilder> {
-  
+
   public BcfBuilder AddMarkups(List<Markup> markups, bool update = false) {
     markups.ForEach(m => {
       _bcf.Markups.Add(m);
@@ -17,7 +17,7 @@ public partial class BcfBuilder :
       if (update) {
         // updating Extensions
         UpdateExtensions(m.Topic);
-      
+
         // updating Document info
         // UpdateDocumentInfo(m.Topic);
       }
@@ -31,13 +31,13 @@ public partial class BcfBuilder :
   /// <param name="topic"></param>
   private void UpdateExtensions(Topic topic) {
     var users = new HashSet<string> {
-      topic.AssignedTo, 
-      topic.CreationAuthor, 
+      topic.AssignedTo,
+      topic.CreationAuthor,
       topic.ModifiedAuthor
     };
-    
-    var commenters = topic.Comments.SelectMany(c => new HashSet<string> { c.Author, c.ModifiedAuthor});
-    
+
+    var commenters = topic.Comments.SelectMany(c => new HashSet<string> { c.Author, c.ModifiedAuthor });
+
     var ext = new {
       topic.TopicType,
       topic.TopicStatus,
@@ -47,17 +47,17 @@ public partial class BcfBuilder :
       topic.BimSnippet.SnippetType,
       topic.Stage
     };
-    
+
     _bcf.Extensions.TopicTypes.AddIfNotExists(ext.TopicType);
     _bcf.Extensions.TopicStatuses.AddIfNotExists(ext.TopicStatus);
     _bcf.Extensions.Priorities.AddIfNotExists(ext.Priority);
     _bcf.Extensions.SnippetTypes.AddIfNotExists(ext.SnippetType);
     _bcf.Extensions.Stages.AddIfNotExists(ext.Stage);
-    
+
     ext.Labels.ForEach(l => _bcf.Extensions.TopicLabels.AddIfNotExists(l));
     ext.Users.ForEach(u => _bcf.Extensions.Users.AddIfNotExists(u));
   }
-  
+
   public BcfBuilder SetExtensions(Action<ExtensionsBuilder> builder) {
     var extensions =
       BuilderUtils.BuildItem<ExtensionsBuilder, Extensions>(builder);

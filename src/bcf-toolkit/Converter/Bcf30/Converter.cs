@@ -19,7 +19,7 @@ namespace BcfToolkit.Converter.Bcf30;
 ///   and back.
 /// </summary>
 public class Converter : IConverter {
-  
+
   private BcfBuilder _builder = new();
 
   private readonly Dictionary<Type, Func<IBcf, IBcf>> _converterFnMapper = new();
@@ -28,20 +28,20 @@ public class Converter : IConverter {
     _converterFnMapper[typeof(Model.Bcf21.Bcf)] = SchemaConverterToBcf21.Convert;
     _converterFnMapper[typeof(Bcf)] = b => b;
   }
-  
+
   public async Task BcfZipToJson(Stream source, string target) {
     var builder = new BcfBuilder();
     var bcf = await builder.BuildFromStream(source);
 
     // Writing json files
-    await WriteJson(bcf,target);
+    await WriteJson(bcf, target);
   }
-  
+
   public async Task BcfZipToJson(string source, string target) {
     await using var fileStream = new FileStream(source, FileMode.Open, FileAccess.Read);
     await BcfZipToJson(fileStream, target);
   }
-  
+
   public async Task JsonToBcfZip(string source, string target) {
     // Parsing BCF root files
     var extensions =
@@ -62,14 +62,14 @@ public class Converter : IConverter {
     };
 
     // Writing bcf files
-    await WriteBcf(bcf,target);
+    await WriteBcf(bcf, target);
   }
-  
+
   public async Task<Stream> ToBcfStream(IBcf bcf) {
     var workingDir = Directory.GetCurrentDirectory();
     var bcfTargetPath = workingDir + "/bcf.bcfzip";
 
-    var tmpFolder = await WriteBcf((Bcf)bcf, bcfTargetPath,false);
+    var tmpFolder = await WriteBcf((Bcf)bcf, bcfTargetPath, false);
 
     var stream = new FileStream(bcfTargetPath, FileMode.Open, FileAccess.Read);
 
@@ -79,13 +79,13 @@ public class Converter : IConverter {
 
     return stream;
   }
-  
+
   public Task ToBcfZip(IBcf bcf, string target) {
-    return WriteBcf((Bcf)bcf,target);
+    return WriteBcf((Bcf)bcf, target);
   }
-  
+
   public Task ToJson(IBcf bcf, string target) {
-    return WriteJson((Bcf)bcf,target);
+    return WriteJson((Bcf)bcf, target);
   }
 
   public async Task<T> BuildBcfFromStream<T>(Stream stream) {
@@ -94,7 +94,7 @@ public class Converter : IConverter {
     var converterFn = _converterFnMapper[targetVersion];
     return (T)converterFn(bcf);
   }
-  
+
   /// <summary>
   ///   The method writes the BCF object to json file.
   /// </summary>
@@ -128,7 +128,7 @@ public class Converter : IConverter {
 
     return Task.WhenAll(tasks);
   }
-  
+
   /// <summary>
   ///   The method writes the BCF content from the given objects to the
   ///   specified target and compresses it.

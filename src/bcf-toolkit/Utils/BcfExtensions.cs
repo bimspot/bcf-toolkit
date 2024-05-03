@@ -290,10 +290,10 @@ public static class BcfExtensions {
   /// </summary>
   /// <param name="stream"></param>
   /// <returns></returns>
-  public static async Task<BcfVersionEnum?> GetVersion(Stream stream) { 
+  public static async Task<BcfVersionEnum?> GetVersion(Stream stream) {
     using var archive = new ZipArchive(stream, ZipArchiveMode.Read, true);
     BcfVersionEnum? version = null;
-    
+
     foreach (var entry in archive.Entries) {
       if (!entry.IsVersion()) continue;
 

@@ -9,19 +9,19 @@ public partial class MarkupBuilder : IMarkupBuilderExtension<MarkupBuilder> {
     _markup.Topic.ServerAssignedId = id;
     return this;
   }
-  
+
   public MarkupBuilder AddDocumentReferences(
     List<DocumentReference> documentReferences) {
     documentReferences.ForEach(_markup.Topic.DocumentReferences.Add);
     return this;
   }
-  
+
   public MarkupBuilder AddDocumentReferencesWithInfo(
     List<DocumentReference> documentReferences) {
     documentReferences.ForEach(documentReference => {
       _markup.Topic.DocumentReferences.Add(documentReference);
-      
-      
+
+
     });
     return this;
   }

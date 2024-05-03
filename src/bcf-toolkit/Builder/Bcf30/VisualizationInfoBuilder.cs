@@ -31,7 +31,7 @@ public class VisualizationInfoBuilder :
     _visualizationInfo.Components.Selection.Add(selection);
     return this;
   }
-  
+
   public VisualizationInfoBuilder AddSelections(List<Component> selections) {
     selections.ForEach(_visualizationInfo.Components.Selection.Add);
     return this;
@@ -52,7 +52,7 @@ public class VisualizationInfoBuilder :
     _visualizationInfo.Components.Coloring.Add(color);
     return this;
   }
-  
+
   public VisualizationInfoBuilder AddColorings(List<ComponentColoringColor> colors) {
     colors.ForEach(_visualizationInfo.Components.Coloring.Add);
     return this;
@@ -77,7 +77,7 @@ public class VisualizationInfoBuilder :
     _visualizationInfo.Lines.Add(line);
     return this;
   }
-  
+
   public VisualizationInfoBuilder AddLines(List<Line> lines) {
     lines.ForEach(_visualizationInfo.Lines.Add);
     return this;
@@ -90,7 +90,7 @@ public class VisualizationInfoBuilder :
     _visualizationInfo.ClippingPlanes.Add(clippingPlane);
     return this;
   }
-  
+
   public VisualizationInfoBuilder AddClippingPlanes(List<ClippingPlane> clippingPlanes) {
     clippingPlanes.ForEach(_visualizationInfo.ClippingPlanes.Add);
     return this;
@@ -103,7 +103,7 @@ public class VisualizationInfoBuilder :
     _visualizationInfo.Bitmaps.Add(bitmap);
     return this;
   }
-  
+
   public VisualizationInfoBuilder AddBitmaps(List<Bitmap> bitmaps) {
     bitmaps.ForEach(_visualizationInfo.Bitmaps.Add);
     return this;

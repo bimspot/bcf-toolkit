@@ -18,7 +18,7 @@ namespace BcfToolkit.Converter.Bcf21;
 ///   JSON, and BCFzip.
 /// </summary>
 public class Converter : IConverter {
-  
+
   private BcfBuilder _builder = new();
 
   private readonly Dictionary<Type, Func<Bcf, IBcf>> _converterFnMapper = new();
@@ -27,14 +27,14 @@ public class Converter : IConverter {
     _converterFnMapper[typeof(Model.Bcf30.Bcf)] = SchemaConverterToBcf30.Convert;
     _converterFnMapper[typeof(Bcf)] = b => b;
   }
-  
+
   public async Task BcfZipToJson(Stream source, string target) {
     var bcf = await _builder.BuildFromStream(source);
-  
+
     // Writing json files
     await WriteJson(target, bcf);
   }
-  
+
   public async Task BcfZipToJson(string sourcePath, string target) {
     try {
       await using var fileStream =
@@ -45,7 +45,7 @@ public class Converter : IConverter {
       throw new ArgumentException($"Source path is not readable. {ex.Message}", ex);
     }
   }
-  
+
   public async Task JsonToBcfZip(string source, string target) {
     // Parsing BCF project - it is an optional file
     var projectPath = $"{source}/project.json";
@@ -64,12 +64,12 @@ public class Converter : IConverter {
     // Writing bcf files
     await WriteBcf(bcf, target);
   }
-  
+
   public async Task<Stream> ToBcfStream(IBcf bcf) {
     var workingDir = Directory.GetCurrentDirectory();
     var bcfTargetPath = workingDir + "/bcf.bcfzip";
 
-    var tmpFolder = await WriteBcf((Bcf)bcf, bcfTargetPath,false);
+    var tmpFolder = await WriteBcf((Bcf)bcf, bcfTargetPath, false);
 
     var stream = new FileStream(bcfTargetPath, FileMode.Open, FileAccess.Read);
 
@@ -79,11 +79,11 @@ public class Converter : IConverter {
 
     return stream;
   }
-  
+
   public Task ToBcfZip(IBcf bcf, string target) {
-    return WriteBcf((Bcf)bcf,target);
+    return WriteBcf((Bcf)bcf, target);
   }
-  
+
   public Task ToJson(IBcf bcf, string target) {
     return WriteJson(target, (Bcf)bcf);
   }
@@ -120,7 +120,7 @@ public class Converter : IConverter {
 
     return Task.WhenAll(tasks);
   }
-  
+
   /// <summary>
   ///   The method writes the BCF content from the given objects to the
   ///   specified target and compresses it.

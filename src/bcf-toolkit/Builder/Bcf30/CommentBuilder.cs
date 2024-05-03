@@ -44,7 +44,7 @@ public class CommentBuilder :
     _comment.ModifiedAuthor = user;
     return this;
   }
-  
+
   public CommentBuilder SetCommentProperty(string property) {
     _comment.CommentProperty = property;
     return this;

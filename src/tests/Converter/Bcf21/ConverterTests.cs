@@ -121,9 +121,9 @@ public class ConverterTests {
     var bcf = new Bcf {
       Markups = markups
     };
-    return _converter.ToBcfZip(bcf,"Resources/output/Bcf/v2.1/WithoutTopicGuid.bcfzip");
+    return _converter.ToBcfZip(bcf, "Resources/output/Bcf/v2.1/WithoutTopicGuid.bcfzip");
   }
-  
+
   // /// <summary>
   // ///   It should generate a bcf skipping the markup file.
   // /// </summary>

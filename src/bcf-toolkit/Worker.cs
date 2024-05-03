@@ -33,7 +33,7 @@ public class Worker {
   ///   Creates and returns a default instance of `Worker`.
   /// </summary>
   public Worker() { }
-  
+
   /// <summary>
   ///   Creates and returns an instance of `Worker` with the specified version.
   /// </summary>

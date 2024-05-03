@@ -23,7 +23,7 @@ public class ColorBuilder :
     _color.Components.Add(component);
     return this;
   }
-  
+
   public ColorBuilder AddComponents(List<Component> components) {
     components.ForEach(_color.Components.Add);
     return this;

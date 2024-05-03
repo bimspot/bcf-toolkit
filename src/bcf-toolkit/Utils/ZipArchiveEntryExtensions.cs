@@ -106,7 +106,7 @@ public static class ZipArchiveEntryExtensions {
     var base64String = Convert.ToBase64String(buffer);
     return $"{mime},{base64String}";
   }
-  
+
   /// <summary>
   ///   A convenience method returns true if the file in the entry is
   ///   `bcf.version` exactly.

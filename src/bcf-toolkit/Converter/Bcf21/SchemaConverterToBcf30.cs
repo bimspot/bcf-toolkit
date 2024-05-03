@@ -5,7 +5,7 @@ using BcfToolkit.Model.Bcf30;
 namespace BcfToolkit.Converter.Bcf21;
 
 public static class SchemaConverterToBcf30 {
-  
+
   public static Model.Bcf30.Bcf Convert(Model.Bcf21.Bcf from) {
     var builder = new BcfBuilder();
     return builder
@@ -102,8 +102,8 @@ public static class SchemaConverterToBcf30 {
       .SetOrthogonalCamera(oC => oC
         .SetCamera(c => c
           .SetViewPoint(
-            orthoCamera.CameraViewPoint.X, 
-            orthoCamera.CameraViewPoint.Y, 
+            orthoCamera.CameraViewPoint.X,
+            orthoCamera.CameraViewPoint.Y,
             orthoCamera.CameraViewPoint.Z)
           .SetDirection(
             orthoCamera.CameraDirection.X,
@@ -118,8 +118,8 @@ public static class SchemaConverterToBcf30 {
       .SetPerspectiveCamera(pC => pC
         .SetCamera(c => c
           .SetViewPoint(
-            perspCamera.CameraViewPoint.X, 
-            perspCamera.CameraViewPoint.Y, 
+            perspCamera.CameraViewPoint.X,
+            perspCamera.CameraViewPoint.Y,
             perspCamera.CameraViewPoint.Z)
           .SetDirection(
             perspCamera.CameraDirection.X,
@@ -155,7 +155,7 @@ public static class SchemaConverterToBcf30 {
       .SetIfcGuid(from.IfcGuid)
       .Build();
   }
-  
+
   private static Model.Bcf30.ComponentColoringColor ConvertColor(
     Model.Bcf21.ComponentColoringColor from) {
     var builder = new ColorBuilder();
@@ -164,13 +164,13 @@ public static class SchemaConverterToBcf30 {
       .SetColor(from.Color)
       .Build();
   }
-  
+
   private static Model.Bcf30.Line ConvertLine(Model.Bcf21.Line from) {
     var builder = new LineBuilder();
     return builder
       .SetStartPoint(
-        from.StartPoint.X, 
-        from.StartPoint.Y, 
+        from.StartPoint.X,
+        from.StartPoint.Y,
         from.StartPoint.Z)
       .SetEndPoint(
         from.EndPoint.X,

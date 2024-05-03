@@ -46,7 +46,7 @@ public partial class MarkupBuilder :
     _markup.Header.Files.Add(file);
     return this;
   }
-  
+
   public MarkupBuilder AddHeaderFiles(List<File> files) {
     files.ForEach(_markup.Header.Files.Add);
     return this;
@@ -56,7 +56,7 @@ public partial class MarkupBuilder :
     _markup.Topic.ReferenceLinks.Add(link);
     return this;
   }
-  
+
   public MarkupBuilder AddReferenceLinks(List<string> links) {
     links.ForEach(_markup.Topic.ReferenceLinks.Add);
     return this;
@@ -81,7 +81,7 @@ public partial class MarkupBuilder :
     _markup.Topic.Labels.Add(label);
     return this;
   }
-  
+
   public MarkupBuilder AddLabels(List<string> labels) {
     labels.ForEach(_markup.Topic.Labels.Add);
     return this;
@@ -150,7 +150,7 @@ public partial class MarkupBuilder :
     _markup.Topic.Comments.Add(comment);
     return this;
   }
-  
+
   public MarkupBuilder AddComments(List<Comment> comments) {
     comments.ForEach(_markup.Topic.Comments.Add);
     return this;
@@ -171,7 +171,7 @@ public partial class MarkupBuilder :
     _markup.Topic.Viewpoints.Add(viewPoint);
     return this;
   }
-  
+
   public MarkupBuilder AddViewPoints(List<ViewPoint> viewpoints) {
     viewpoints.ForEach(_markup.Topic.Viewpoints.Add);
     return this;
@@ -184,7 +184,7 @@ public partial class MarkupBuilder :
     _markup.Topic.RelatedTopics.Add(topic);
     return this;
   }
-  
+
   public MarkupBuilder AddRelatedTopics(List<string> relatedTopicGuids) {
     relatedTopicGuids.ForEach(id => {
       var topic = new TopicRelatedTopicsRelatedTopic {

@@ -19,11 +19,11 @@ public class WorkerTests {
     await using var stream = new FileStream("Resources/Bcf/v2.1/AllPartsVisible.bcfzip", FileMode.Open, FileAccess.Read);
     var bcf = await _worker.BuildBcfFromStream(stream);
   }
-  
+
   [Test]
   public async Task BuildBcfFromV30StreamTest() {
     await using var stream = new FileStream("Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip", FileMode.Open, FileAccess.Read);
     var bcf = await _worker.BuildBcfFromStream(stream);
-    
+
   }
 }

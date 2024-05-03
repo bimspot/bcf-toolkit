@@ -5,7 +5,7 @@ using BcfToolkit.Model;
 namespace BcfToolkit.Converter.Bcf30;
 
 public static class SchemaConverterToBcf21 {
-  
+
   public static Model.Bcf21.Bcf Convert(IBcf from) {
     var result = new Model.Bcf21.Bcf();
     var sourceProperties = from.GetType().GetProperties();
@@ -18,7 +18,7 @@ public static class SchemaConverterToBcf21 {
         targetProperty.SetValue(result, sourceProperty.GetValue(from));
       }
     }
-    
+
     //TODO Handle manually the differencies
     return BuilderUtils.ValidateItem(result);
   }
