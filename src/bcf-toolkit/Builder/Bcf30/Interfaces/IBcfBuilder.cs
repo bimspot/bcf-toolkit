@@ -7,7 +7,9 @@ namespace BcfToolkit.Builder.Bcf30.Interfaces;
 public interface IBcfBuilder<
   out TBuilder,
   out TMarkupBuilder,
-  out TProjectBuilder> :
+  out TProjectBuilder,
+  out TExtensionsBuilder,
+  out TDocumentInfoBuilder> :
   IBuilder<Bcf>,
   IFromStreamBuilder<Bcf> {
   /// <summary>
@@ -22,4 +24,16 @@ public interface IBcfBuilder<
   /// <param name="builder">Builder of the project.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetProject(Action<TProjectBuilder> builder);
+  /// <summary>
+  ///   Returns the builder object set with the `Extensions`.
+  /// </summary>
+  /// <param name="builder">Builder of the markup.</param>
+  /// <returns>Returns the builder object.</returns>
+  TBuilder SetExtensions(Action<TExtensionsBuilder> builder);
+  /// <summary>
+  ///   Returns the builder object set with the `DocumentInfo`.
+  /// </summary>
+  /// <param name="builder">Builder of the document info.</param>
+  /// <returns>Returns the builder object.</returns>
+  TBuilder SetDocumentInfo(Action<TDocumentInfoBuilder> builder);
 }

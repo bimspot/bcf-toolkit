@@ -1,15 +1,21 @@
-using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using BcfToolkit.Builder.Bcf30.Interfaces;
+using System.Threading.Tasks;
 using BcfToolkit.Model.Bcf30;
 using BcfToolkit.Utils;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public partial class BcfBuilder :
-  IBcfBuilderExtension<BcfBuilder, ExtensionsBuilder, DocumentInfoBuilder> {
+public partial class BcfBuilder {
 
+  /// <summary>
+  ///   Returns the builder object extended with a set of `Markup` items.
+  ///   Optionally the `Extensions` could be updated.
+  /// </summary>
+  /// <param name="markups">The list of `Markup` items.</param>
+  /// <param name="update">Is the `Extensions` updated.</param>
+  /// <returns>Returns the builder object.</returns>
   public BcfBuilder AddMarkups(List<Markup> markups, bool update = false) {
     markups.ForEach(m => {
       _bcf.Markups.Add(m);
@@ -21,17 +27,26 @@ public partial class BcfBuilder :
   }
 
   /// <summary>
-  /// TODO: add description
+  ///   Updates the `Extensions` with users, priorities, labels, stages, types
+  ///   and statuses of the topics, Bim snippet types, etc.
   /// </summary>
-  /// <param name="topic"></param>
+  /// <param name="topic">
+  /// The topic which contains the values which must be included.
+  /// </param>
   private void UpdateExtensions(Topic topic) {
+    // collecting authors and assigned users
     var users = new HashSet<string> {
       topic.AssignedTo,
       topic.CreationAuthor,
       topic.ModifiedAuthor
     };
 
-    var commenters = topic.Comments.SelectMany(c => new HashSet<string> { c.Author, c.ModifiedAuthor });
+    // collecting commenters
+    var commenters = topic.Comments
+      .SelectMany(c => new HashSet<string> {
+        c.Author, 
+        c.ModifiedAuthor
+      });
 
     var ext = new {
       topic.TopicType,
@@ -54,17 +69,17 @@ public partial class BcfBuilder :
     ext.Users.ForEach(u => _bcf.Extensions.Users.AddIfNotExists(u));
   }
 
-  public BcfBuilder SetExtensions(Action<ExtensionsBuilder> builder) {
-    var extensions =
-      BuilderUtils.BuildItem<ExtensionsBuilder, Extensions>(builder);
-    _bcf.Extensions = extensions;
-    return this;
-  }
-
-  public BcfBuilder SetDocumentInfo(Action<DocumentInfoBuilder> builder) {
-    var documentInfo =
-      BuilderUtils.BuildItem<DocumentInfoBuilder, DocumentInfo>(builder);
-    _bcf.Document = documentInfo;
-    return this;
+  /// <summary>
+  ///   The method builds and returns an instance of BCF 3.0 object from the
+  ///   specified file stream.
+  /// </summary>
+  /// <param name="source">The file stream.</param>
+  /// <returns>Returns the built object.</returns>
+  public async Task<Bcf> BuildFromStream(Stream source) {
+    _bcf.Markups = await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);
+    _bcf.Extensions = await BcfExtensions.ParseExtensions<Extensions>(source);
+    _bcf.Project = await BcfExtensions.ParseProject<ProjectInfo>(source);
+    _bcf.Document = await BcfExtensions.ParseDocuments<DocumentInfo>(source);
+    return BuilderUtils.ValidateItem(_bcf);
   }
 }

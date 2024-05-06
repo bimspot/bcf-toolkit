@@ -1,20 +1,18 @@
 using System;
-using System.IO;
-using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Builder.Interfaces;
-using BcfToolkit.Utils;
 using BcfToolkit.Model.Bcf30;
 using Bcf = BcfToolkit.Model.Bcf30.Bcf;
 using Markup = BcfToolkit.Model.Bcf30.Markup;
-using VisualizationInfo = BcfToolkit.Model.Bcf30.VisualizationInfo;
 
 namespace BcfToolkit.Builder.Bcf30;
 
 public partial class BcfBuilder : IBcfBuilder<
     BcfBuilder,
     MarkupBuilder,
-    ProjectBuilder>,
+    ProjectBuilder,
+    ExtensionsBuilder,
+    DocumentInfoBuilder>,
   IDefaultBuilder<BcfBuilder> {
 
   private readonly Bcf _bcf = new();
@@ -33,21 +31,27 @@ public partial class BcfBuilder : IBcfBuilder<
     return this;
   }
 
+  public BcfBuilder SetExtensions(Action<ExtensionsBuilder> builder) {
+    var extensions =
+      BuilderUtils.BuildItem<ExtensionsBuilder, Extensions>(builder);
+    _bcf.Extensions = extensions;
+    return this;
+  }
+
+  public BcfBuilder SetDocumentInfo(Action<DocumentInfoBuilder> builder) {
+    var documentInfo =
+      BuilderUtils.BuildItem<DocumentInfoBuilder, DocumentInfo>(builder);
+    _bcf.Document = documentInfo;
+    return this;
+  }
+  
   public BcfBuilder WithDefaults() {
     this
       .AddMarkup(m => m.WithDefaults())
       .SetExtensions(e => e.WithDefaults());
     return this;
   }
-
-  public async Task<Bcf> BuildFromStream(Stream source) {
-    _bcf.Markups = await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);
-    _bcf.Extensions = await BcfExtensions.ParseExtensions<Extensions>(source);
-    _bcf.Project = await BcfExtensions.ParseProject<ProjectInfo>(source);
-    _bcf.Document = await BcfExtensions.ParseDocuments<DocumentInfo>(source);
-    return BuilderUtils.ValidateItem(_bcf);
-  }
-
+  
   public Bcf Build() {
     return BuilderUtils.ValidateItem(_bcf);
   }
