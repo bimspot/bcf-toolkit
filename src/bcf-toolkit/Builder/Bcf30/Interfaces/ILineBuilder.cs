@@ -12,6 +12,7 @@ public interface ILineBuilder<out TBuilder> : IBuilder<Line> {
   /// <param name="z">Z coordinate of the point.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetStartPoint(double x, double y, double z);
+
   /// <summary>
   ///   Returns the builder object set with the `EndPoint`.
   /// </summary>

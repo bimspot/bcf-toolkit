@@ -5,14 +5,17 @@ using BcfToolkit.Model.Bcf30;
 namespace BcfToolkit.Builder.Bcf30.Interfaces;
 
 public interface
-  IColorBuilder<out TBuilder, out TComponentBuilder>
-  : IBuilder<ComponentColoringColor> {
+  IColorBuilder<
+    out TBuilder, 
+    out TComponentBuilder> : 
+  IBuilder<ComponentColoringColor> {
   /// <summary>
   ///   Returns the builder object extended with `Color`. For example, 40E0D0
   /// </summary>
   /// <param name="color">The color in ARGB format.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetColor(string color);
+
   /// <summary>
   ///   Returns the builder object extended with `Component` which is colored.
   /// </summary>

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
@@ -7,7 +6,7 @@ using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public class ColorBuilder :
+public partial class ColorBuilder :
   IColorBuilder<ColorBuilder, ComponentBuilder>,
   IDefaultBuilder<ColorBuilder> {
   private readonly ComponentColoringColor _color = new();
@@ -24,19 +23,14 @@ public class ColorBuilder :
     return this;
   }
 
-  public ColorBuilder AddComponents(List<Component> components) {
-    components.ForEach(_color.Components.Add);
-    return this;
+  public ComponentColoringColor Build() {
+    return BuilderUtils.ValidateItem(_color);
   }
-
+  
   public ColorBuilder WithDefaults() {
     this
       .SetColor("40E0D0")
       .AddComponent(comp => comp.WithDefaults());
     return this;
-  }
-
-  public ComponentColoringColor Build() {
-    return BuilderUtils.ValidateItem(_color);
   }
 }

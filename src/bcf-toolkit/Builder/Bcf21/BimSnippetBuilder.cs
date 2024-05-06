@@ -8,6 +8,7 @@ public class BimSnippetBuilder :
   IBimSnippetBuilder<BimSnippetBuilder>,
   IDefaultBuilder<BimSnippetBuilder> {
   private readonly BimSnippet _snippet = new();
+
   public BimSnippetBuilder SetSnippetType(string type) {
     _snippet.SnippetType = type;
     return this;
@@ -36,7 +37,7 @@ public class BimSnippetBuilder :
       .SetIsExternal(true);
     return this;
   }
-
+  
   public BimSnippet Build() {
     return BuilderUtils.ValidateItem(_snippet);
   }

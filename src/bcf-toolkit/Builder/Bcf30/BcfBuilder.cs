@@ -14,7 +14,6 @@ public partial class BcfBuilder : IBcfBuilder<
     ExtensionsBuilder,
     DocumentInfoBuilder>,
   IDefaultBuilder<BcfBuilder> {
-
   private readonly Bcf _bcf = new();
 
   public BcfBuilder AddMarkup(Action<MarkupBuilder> builder) {
@@ -51,7 +50,7 @@ public partial class BcfBuilder : IBcfBuilder<
       .SetExtensions(e => e.WithDefaults());
     return this;
   }
-  
+
   public Bcf Build() {
     return BuilderUtils.ValidateItem(_bcf);
   }

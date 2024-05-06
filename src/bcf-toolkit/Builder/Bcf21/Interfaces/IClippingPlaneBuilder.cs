@@ -13,6 +13,7 @@ public interface IClippingPlaneBuilder<out TBuilder> :
   /// <param name="z">Z coordinate of the location.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetLocation(double x, double y, double z);
+
   /// <summary>
   ///   Returns the builder object set with the `Direction`.
   /// </summary>

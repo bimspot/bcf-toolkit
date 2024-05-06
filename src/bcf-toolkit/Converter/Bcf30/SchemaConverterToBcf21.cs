@@ -1,7 +1,5 @@
 using System;
-using BcfToolkit.Builder;
 using BcfToolkit.Model;
-using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Converter.Bcf30;
 

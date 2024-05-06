@@ -45,7 +45,7 @@ public class BitmapBuilder :
     _bitmap.Height = height;
     return this;
   }
-
+  
   public BitmapBuilder WithDefaults() {
     this
       .SetFormat("PNG")

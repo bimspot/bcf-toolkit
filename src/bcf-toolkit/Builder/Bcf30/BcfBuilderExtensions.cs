@@ -8,6 +8,20 @@ using BcfToolkit.Utils;
 namespace BcfToolkit.Builder.Bcf30;
 
 public partial class BcfBuilder {
+  /// <summary>
+  ///   The method builds and returns an instance of BCF 3.0 object from the
+  ///   specified file stream.
+  /// </summary>
+  /// <param name="source">The file stream.</param>
+  /// <returns>Returns the built object.</returns>
+  public async Task<Bcf> BuildFromStream(Stream source) {
+    _bcf.Markups =
+      await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);
+    _bcf.Extensions = await BcfExtensions.ParseExtensions<Extensions>(source);
+    _bcf.Project = await BcfExtensions.ParseProject<ProjectInfo>(source);
+    _bcf.Document = await BcfExtensions.ParseDocuments<DocumentInfo>(source);
+    return BuilderUtils.ValidateItem(_bcf);
+  }
 
   /// <summary>
   ///   Returns the builder object extended with a set of `Markup` items.
@@ -31,7 +45,7 @@ public partial class BcfBuilder {
   ///   and statuses of the topics, Bim snippet types, etc.
   /// </summary>
   /// <param name="topic">
-  /// The topic which contains the values which must be included.
+  ///   The topic which contains the values which must be included.
   /// </param>
   private void UpdateExtensions(Topic topic) {
     // collecting authors and assigned users
@@ -44,7 +58,7 @@ public partial class BcfBuilder {
     // collecting commenters
     var commenters = topic.Comments
       .SelectMany(c => new HashSet<string> {
-        c.Author, 
+        c.Author,
         c.ModifiedAuthor
       });
 
@@ -67,19 +81,5 @@ public partial class BcfBuilder {
 
     ext.Labels.ForEach(l => _bcf.Extensions.TopicLabels.AddIfNotExists(l));
     ext.Users.ForEach(u => _bcf.Extensions.Users.AddIfNotExists(u));
-  }
-
-  /// <summary>
-  ///   The method builds and returns an instance of BCF 3.0 object from the
-  ///   specified file stream.
-  /// </summary>
-  /// <param name="source">The file stream.</param>
-  /// <returns>Returns the built object.</returns>
-  public async Task<Bcf> BuildFromStream(Stream source) {
-    _bcf.Markups = await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);
-    _bcf.Extensions = await BcfExtensions.ParseExtensions<Extensions>(source);
-    _bcf.Project = await BcfExtensions.ParseProject<ProjectInfo>(source);
-    _bcf.Document = await BcfExtensions.ParseDocuments<DocumentInfo>(source);
-    return BuilderUtils.ValidateItem(_bcf);
   }
 }

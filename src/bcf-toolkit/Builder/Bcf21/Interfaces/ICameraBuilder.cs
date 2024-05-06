@@ -11,6 +11,7 @@ public interface ICameraBuilder : IBuilder<object> {
   /// <param name="z">Z coordinate of the camera viewpoint.</param>
   /// <returns>Returns the builder object.</returns>
   ICameraBuilder SetViewPoint(double x, double y, double z);
+
   /// <summary>
   ///   Returns the builder object set with the `Direction` of the camera.
   /// </summary>
@@ -19,6 +20,7 @@ public interface ICameraBuilder : IBuilder<object> {
   /// <param name="z">Z coordinate of the camera direction.</param>
   /// <returns>Returns the builder object.</returns>
   ICameraBuilder SetDirection(double x, double y, double z);
+
   /// <summary>
   ///   Returns the builder object set with the `UpVector` of the camera.
   /// </summary>

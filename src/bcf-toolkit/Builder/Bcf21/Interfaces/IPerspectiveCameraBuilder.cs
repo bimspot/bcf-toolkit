@@ -8,7 +8,7 @@ public interface
   IPerspectiveCameraBuilder<
     out TBuilder,
     out TCameraBuilder> :
-    IBuilder<PerspectiveCamera> {
+  IBuilder<PerspectiveCamera> {
   /// <summary>
   ///   Returns the builder object set with the `CameraViewPoint`,
   ///   `CameraDirection` and `CameraUpVector`.
@@ -16,6 +16,7 @@ public interface
   /// <param name="builder">The builder for camera objects.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetCamera(Action<TCameraBuilder> builder);
+
   /// <summary>
   ///   Returns the builder object set with the `FieldOfView`.
   /// </summary>

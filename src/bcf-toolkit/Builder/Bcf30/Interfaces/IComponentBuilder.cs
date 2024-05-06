@@ -10,6 +10,7 @@ public interface IComponentBuilder<out TBuilder> : IBuilder<Component> {
   /// <param name="guid">The `IfcGuid` of the component.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetIfcGuid(string guid);
+
   /// <summary>
   ///   Returns the builder object set with the `OriginatingSystem`.
   /// </summary>
@@ -18,6 +19,7 @@ public interface IComponentBuilder<out TBuilder> : IBuilder<Component> {
   /// </param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetOriginatingSystem(string system);
+
   /// <summary>
   ///   Returns the builder object set with the `AuthoringToolId`.
   /// </summary>

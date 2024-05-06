@@ -23,7 +23,7 @@ public class ComponentBuilder :
     _component.AuthoringToolId = id;
     return this;
   }
-
+  
   public ComponentBuilder WithDefaults() {
     this.SetIfcGuid("123456789abcdef1234567");
     return this;

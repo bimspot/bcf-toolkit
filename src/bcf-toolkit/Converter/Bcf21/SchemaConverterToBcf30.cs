@@ -2,22 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BcfToolkit.Builder.Bcf30;
-using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Converter.Bcf21;
 
 public static class SchemaConverterToBcf30 {
 
   /// <summary>
-  /// TODO: add description
+  ///   This method translates the specified object with a BCF version to the
+  ///   desired one.
+  ///   From:   [BCF 2.1]
+  ///   To:     [BCF 3.0]
   /// </summary>
-  /// <param name="from"></param>
-  /// <returns></returns>
+  /// <param name="from">The object which must be converted.</param>
+  /// <returns>Returns the converted object.</returns>
   public static Model.Bcf30.Bcf Convert(Model.Bcf21.Bcf from) {
     var builder = new BcfBuilder();
     return builder
       .AddMarkups(from.Markups.Select(ConvertMarkup).ToList(), true)
-      .SetDocumentInfo(UpdateDocumentInfo(from.Markups.SelectMany(m => m.Topic.DocumentReference).Where(r => !r.IsExternal).ToList()))
+      .SetDocumentInfo(UpdateDocumentInfo(from.Markups
+        .SelectMany(m => m.Topic.DocumentReference)
+        .Where(r => !r.IsExternal)
+        .ToList()))
       .SetProject(p => p.WithDefaults()) // TODO: convert project
       .Build();
   }
@@ -102,7 +107,7 @@ public static class SchemaConverterToBcf30 {
 
   private static Model.Bcf30.ViewPoint ConvertViewPoint(
     Model.Bcf21.ViewPoint from) {
-    return new ViewPoint {
+    return new Model.Bcf30.ViewPoint {
       Viewpoint = from.Viewpoint,
       Snapshot = from.Snapshot,
       SnapshotData = from.SnapshotData,
@@ -138,13 +143,20 @@ public static class SchemaConverterToBcf30 {
 
     if (visibility != null)
       builder
-        .SetVisibility(vis => vis
-          .SetViewSetupHints(hints => hints
-            .SetSpaceVisible(viewSetupHints.SpacesVisible)
-            .SetSpaceBoundariesVisible(viewSetupHints.SpaceBoundariesVisible)
-            .SetOpeningVisible(viewSetupHints.OpeningsVisible))
-          .AddExceptions(visibility.Exceptions.Select(ConvertComponent).ToList())
-          .SetDefaultVisibility(visibility.DefaultVisibility));
+        .SetVisibility(vis => {
+          vis
+            .AddExceptions(visibility.Exceptions
+              .Select(ConvertComponent)
+              .ToList())
+            .SetDefaultVisibility(visibility.DefaultVisibility);
+          if (viewSetupHints != null)
+            vis
+              .SetViewSetupHints(hints => hints
+                .SetSpaceVisible(viewSetupHints.SpacesVisible)
+                .SetSpaceBoundariesVisible(
+                  viewSetupHints.SpaceBoundariesVisible)
+                .SetOpeningVisible(viewSetupHints.OpeningsVisible));
+        });
     if (orthoCamera != null)
       builder.SetOrthogonalCamera(oC => oC
         .SetCamera(c => c

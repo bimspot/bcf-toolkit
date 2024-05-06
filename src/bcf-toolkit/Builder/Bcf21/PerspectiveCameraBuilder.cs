@@ -9,7 +9,7 @@ public class PerspectiveCameraBuilder :
   IPerspectiveCameraBuilder<PerspectiveCameraBuilder, CameraBuilder>,
   IDefaultBuilder<PerspectiveCameraBuilder> {
   private readonly PerspectiveCamera _camera = new();
-
+  
   public PerspectiveCameraBuilder SetCamera(Action<CameraBuilder> builder) {
     var b = new CameraBuilder();
     builder(b);
@@ -28,7 +28,7 @@ public class PerspectiveCameraBuilder :
     _camera.FieldOfView = angle;
     return this;
   }
-
+  
   public PerspectiveCameraBuilder WithDefaults() {
     this
       .SetCamera(cam => cam.WithDefaults())

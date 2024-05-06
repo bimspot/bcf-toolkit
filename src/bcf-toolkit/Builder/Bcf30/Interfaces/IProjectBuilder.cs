@@ -10,6 +10,7 @@ public interface IProjectBuilder<out TBuilder> : IBuilder<ProjectInfo> {
   /// <param name="name">Name of the project.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetProjectName(string name);
+
   /// <summary>
   ///   Returns the builder object set with the `ProjectId`.
   /// </summary>

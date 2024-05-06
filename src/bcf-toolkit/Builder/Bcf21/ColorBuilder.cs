@@ -29,7 +29,7 @@ public class ColorBuilder :
       .AddComponent(comp => comp.WithDefaults());
     return this;
   }
-
+  
   public ComponentColoringColor Build() {
     return BuilderUtils.ValidateItem(_color);
   }

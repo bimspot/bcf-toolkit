@@ -28,12 +28,12 @@ public partial class BcfBuilder : IBcfBuilder<
     return this;
   }
 
+  public BcfBuilder WithDefaults() {
+    this.AddMarkup(m => m.WithDefaults());
+    return this;
+  }
+  
   public Bcf Build() {
     return BuilderUtils.ValidateItem(_bcf);
-  }
-
-  public BcfBuilder WithDefaults() {
-    AddMarkup(m => m.WithDefaults());
-    return this;
   }
 }

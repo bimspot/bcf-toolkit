@@ -14,6 +14,7 @@ public interface IFileBuilder<out TBuilder> : IBuilder<File> {
   /// </param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetIfcProject(string id);
+
   /// <summary>
   ///   Returns the builder object set with the `IfcSpatialStructureElement`.
   /// </summary>
@@ -23,6 +24,7 @@ public interface IFileBuilder<out TBuilder> : IBuilder<File> {
   /// </param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetIfcSpatialStructureElement(string id);
+
   /// <summary>
   ///   Returns the builder object set with the `IsExternal`.
   /// </summary>
@@ -31,18 +33,21 @@ public interface IFileBuilder<out TBuilder> : IBuilder<File> {
   /// </param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetIsExternal(bool isExternal);
+
   /// <summary>
   ///   Returns the builder object set with the `FileName`.
   /// </summary>
   /// <param name="fileName">The BIM file related to this topic.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetFileName(string fileName);
+
   /// <summary>
   ///   Returns the builder object set with the `Date`.
   /// </summary>
   /// <param name="date">Date of the BIM file.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetDate(DateTime date);
+
   /// <summary>
   ///   Returns the builder object set with the `Reference`.
   /// </summary>

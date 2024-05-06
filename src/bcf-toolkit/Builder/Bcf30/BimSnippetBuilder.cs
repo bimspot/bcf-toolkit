@@ -1,4 +1,3 @@
-using System;
 using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model.Bcf30;
@@ -9,6 +8,7 @@ public class BimSnippetBuilder :
   IBimSnippetBuilder<BimSnippetBuilder>,
   IDefaultBuilder<BimSnippetBuilder> {
   private readonly BimSnippet _snippet = new();
+
   public BimSnippetBuilder SetSnippetType(string type) {
     _snippet.SnippetType = type;
     return this;
@@ -28,7 +28,7 @@ public class BimSnippetBuilder :
     _snippet.ReferenceSchema = schema;
     return this;
   }
-
+  
   public BimSnippetBuilder WithDefaults() {
     this
       .SetSnippetType("JSON")

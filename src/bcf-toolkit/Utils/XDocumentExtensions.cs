@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.IO.Compression;
 using System.Linq;
-using System.Threading;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using RecursiveDataAnnotationsValidation;

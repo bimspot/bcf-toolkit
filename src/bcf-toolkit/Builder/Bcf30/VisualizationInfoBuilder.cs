@@ -1,13 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public class VisualizationInfoBuilder :
+public partial class VisualizationInfoBuilder :
   IVisualizationInfoBuilder<
     VisualizationInfoBuilder,
     ComponentBuilder,
@@ -26,20 +24,16 @@ public class VisualizationInfoBuilder :
     return this;
   }
 
-  public VisualizationInfoBuilder AddSelection(Action<ComponentBuilder> builder) {
+  public VisualizationInfoBuilder
+    AddSelection(Action<ComponentBuilder> builder) {
     var selection =
       BuilderUtils.BuildItem<ComponentBuilder, Component>(builder);
     _visualizationInfo.Components.Selection.Add(selection);
     return this;
   }
 
-  public VisualizationInfoBuilder AddSelections(List<Component>? selections) {
-    _visualizationInfo.Components ??= new Components();
-    selections?.ForEach(_visualizationInfo.Components.Selection.Add);
-    return this;
-  }
-
-  public VisualizationInfoBuilder SetVisibility(Action<VisibilityBuilder> builder) {
+  public VisualizationInfoBuilder SetVisibility(
+    Action<VisibilityBuilder> builder) {
     var visibility =
       BuilderUtils
         .BuildItem<VisibilityBuilder, ComponentVisibility>(builder);
@@ -55,20 +49,16 @@ public class VisualizationInfoBuilder :
     return this;
   }
 
-  public VisualizationInfoBuilder AddColorings(List<ComponentColoringColor>? colors) {
-    _visualizationInfo.Components ??= new Components();
-    colors?.ForEach(_visualizationInfo.Components.Coloring.Add);
-    return this;
-  }
-
-  public VisualizationInfoBuilder SetOrthogonalCamera(Action<OrthogonalCameraBuilder> builder) {
+  public VisualizationInfoBuilder SetOrthogonalCamera(
+    Action<OrthogonalCameraBuilder> builder) {
     var camera = BuilderUtils
       .BuildItem<OrthogonalCameraBuilder, OrthogonalCamera>(builder);
     _visualizationInfo.OrthogonalCamera = camera;
     return this;
   }
 
-  public VisualizationInfoBuilder SetPerspectiveCamera(Action<PerspectiveCameraBuilder> builder) {
+  public VisualizationInfoBuilder SetPerspectiveCamera(
+    Action<PerspectiveCameraBuilder> builder) {
     var camera = BuilderUtils
       .BuildItem<PerspectiveCameraBuilder, PerspectiveCamera>(builder);
     _visualizationInfo.PerspectiveCamera = camera;
@@ -81,21 +71,12 @@ public class VisualizationInfoBuilder :
     return this;
   }
 
-  public VisualizationInfoBuilder AddLines(List<Line>? lines) {
-    lines?.ForEach(_visualizationInfo.Lines.Add);
-    return this;
-  }
-
-  public VisualizationInfoBuilder AddClippingPlane(Action<ClippingPlaneBuilder> builder) {
+  public VisualizationInfoBuilder AddClippingPlane(
+    Action<ClippingPlaneBuilder> builder) {
     var clippingPlane =
       BuilderUtils
         .BuildItem<ClippingPlaneBuilder, ClippingPlane>(builder);
     _visualizationInfo.ClippingPlanes.Add(clippingPlane);
-    return this;
-  }
-
-  public VisualizationInfoBuilder AddClippingPlanes(List<ClippingPlane>? clippingPlanes) {
-    clippingPlanes?.ForEach(_visualizationInfo.ClippingPlanes.Add);
     return this;
   }
 
@@ -107,16 +88,11 @@ public class VisualizationInfoBuilder :
     return this;
   }
 
-  public VisualizationInfoBuilder AddBitmaps(List<Bitmap>? bitmaps) {
-    bitmaps?.ForEach(_visualizationInfo.Bitmaps.Add);
-    return this;
-  }
-
   public VisualizationInfoBuilder WithDefaults() {
-    this.SetGuid(Guid.NewGuid().ToString());
+    SetGuid(Guid.NewGuid().ToString());
     return this;
   }
-
+  
   public VisualizationInfo Build() {
     return BuilderUtils.ValidateItem(_visualizationInfo);
   }

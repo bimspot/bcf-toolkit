@@ -28,7 +28,7 @@ public class ComponentBuilder :
     this.SetIfcGuid("123456789abcdef1234567");
     return this;
   }
-
+  
   public Component Build() {
     return BuilderUtils.ValidateItem(_component);
   }

@@ -30,7 +30,6 @@ public static class BcfExtensions {
   ///   * Viewpoint files
   ///   * Snapshot files
   ///   * Bitmaps
-  ///
   ///   Notification: This function adjusts the stream position back to 0 in order to use it again.
   /// </summary>
   /// <param name="stream">The source stream of the BCFzip.</param>
@@ -39,7 +38,6 @@ public static class BcfExtensions {
     TVisualizationInfo>(Stream stream)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo {
-
     if (stream == null || !stream.CanRead)
       throw new ArgumentException("Source stream is not readable.");
 
@@ -68,7 +66,7 @@ public static class BcfExtensions {
 
     var topicEntries = archive.Entries
       .Where(entry =>
-        Regex.IsMatch((string)entry.FullName.Split("/")[0].Replace("-", ""),
+        Regex.IsMatch(entry.FullName.Split("/")[0].Replace("-", ""),
           "^[a-fA-F0-9]+$"))
       .ToList();
 
@@ -225,7 +223,6 @@ public static class BcfExtensions {
   ///   filters and searches for the desired file using the provided filter function,
   ///   and parses it into the specified object type. If the file is marked as required,
   ///   an exception is thrown if it is missing.
-  ///
   ///   Notification: This function adjusts the stream position back to 0 in order to use it again.
   /// </summary>
   /// <param name="stream">The stream containing the BCFzip data.</param>
@@ -238,7 +235,6 @@ public static class BcfExtensions {
     Stream stream,
     Func<ZipArchiveEntry, bool> filterFn,
     bool isRequired = false) {
-
     if (stream == null || !stream.CanRead)
       throw new ArgumentException("Source stream is not readable.");
 
@@ -307,6 +303,7 @@ public static class BcfExtensions {
       stream.Position = 0;
       return version;
     }
+
     return version;
   }
 }

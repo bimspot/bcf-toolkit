@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using BcfToolkit.Builder.Interfaces;
@@ -19,7 +18,8 @@ public static class BuilderUtils {
   /// </summary>
   /// <param name="itemBuilder">Item builder delegate.</param>
   /// <typeparam name="TBuilder">The builder type parameter.</typeparam>
-  /// <typeparam name="TItem">The item type parameter, which will be built.
+  /// <typeparam name="TItem">
+  ///   The item type parameter, which will be built.
   /// </typeparam>
   /// <returns>Returns the specified built type.</returns>
   public static TItem BuildItem<TBuilder, TItem>(Action<TBuilder> itemBuilder)

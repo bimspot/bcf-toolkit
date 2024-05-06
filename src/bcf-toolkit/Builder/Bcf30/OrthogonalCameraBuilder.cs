@@ -28,6 +28,11 @@ public partial class OrthogonalCameraBuilder :
     _camera.ViewToWorldScale = scale;
     return this;
   }
+  
+  public OrthogonalCameraBuilder SetAspectRatio(double ratio) {
+    _camera.AspectRatio = ratio;
+    return this;
+  }
 
   public OrthogonalCameraBuilder WithDefaults() {
     this
@@ -36,7 +41,7 @@ public partial class OrthogonalCameraBuilder :
       .SetAspectRatio(1.0);
     return this;
   }
-
+  
   public OrthogonalCamera Build() {
     return BuilderUtils.ValidateItem(_camera);
   }

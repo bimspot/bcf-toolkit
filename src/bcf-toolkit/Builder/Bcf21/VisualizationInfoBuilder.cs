@@ -25,14 +25,16 @@ public partial class VisualizationInfoBuilder :
     return this;
   }
 
-  public VisualizationInfoBuilder AddSelection(Action<ComponentBuilder> builder) {
+  public VisualizationInfoBuilder
+    AddSelection(Action<ComponentBuilder> builder) {
     var selection =
       (Component)BuilderUtils.BuildItem<ComponentBuilder, IComponent>(builder);
     _visualizationInfo.Components.Selection.Add(selection);
     return this;
   }
 
-  public VisualizationInfoBuilder SetVisibility(Action<VisibilityBuilder> builder) {
+  public VisualizationInfoBuilder SetVisibility(
+    Action<VisibilityBuilder> builder) {
     var visibility =
       (ComponentVisibility)BuilderUtils
         .BuildItem<VisibilityBuilder, IVisibility>(builder);
@@ -86,7 +88,7 @@ public partial class VisualizationInfoBuilder :
     _visualizationInfo.Bitmap.Add(bitmap);
     return this;
   }
-
+  
   public VisualizationInfoBuilder WithDefaults() {
     this.SetGuid(Guid.NewGuid().ToString());
     return this;

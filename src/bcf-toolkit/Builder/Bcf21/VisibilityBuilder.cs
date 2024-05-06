@@ -20,6 +20,7 @@ public class VisibilityBuilder :
     _visibility.Exceptions.Add(exception);
     return this;
   }
+
   public ComponentVisibility Build() {
     return BuilderUtils.ValidateItem(_visibility);
   }

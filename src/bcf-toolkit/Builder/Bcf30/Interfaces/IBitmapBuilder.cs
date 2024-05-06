@@ -10,6 +10,7 @@ public interface IBitmapBuilder<out TBuilder> : IBuilder<Bitmap> {
   /// <param name="format">Format of the bitmap (PNG/JPG)</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetFormat(string format);
+
   /// <summary>
   ///   Returns the builder object set with the `Reference`.
   /// </summary>
@@ -18,6 +19,7 @@ public interface IBitmapBuilder<out TBuilder> : IBuilder<Bitmap> {
   /// </param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetReference(string reference);
+
   /// <summary>
   ///   Returns the builder object set with the `Location` of the center of
   ///   the bitmap in world coordinates.
@@ -27,6 +29,7 @@ public interface IBitmapBuilder<out TBuilder> : IBuilder<Bitmap> {
   /// <param name="z">Z coordinate of the normal location.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetLocation(double x, double y, double z);
+
   /// <summary>
   ///   Returns the builder object set with the `Normal` vector of the bitmap.
   /// </summary>
@@ -35,6 +38,7 @@ public interface IBitmapBuilder<out TBuilder> : IBuilder<Bitmap> {
   /// <param name="z">Z coordinate of the normal vector.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetNormal(double x, double y, double z);
+
   /// <summary>
   ///   Returns the builder object set with the `Up` vector of the bitmap.
   /// </summary>
@@ -43,6 +47,7 @@ public interface IBitmapBuilder<out TBuilder> : IBuilder<Bitmap> {
   /// <param name="z">Z coordinate of the up vector.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetUp(double x, double y, double z);
+
   /// <summary>
   ///   Returns the builder object set with the `Height`.
   /// </summary>

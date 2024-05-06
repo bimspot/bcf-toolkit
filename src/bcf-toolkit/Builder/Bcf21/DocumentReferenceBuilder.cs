@@ -3,7 +3,7 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
 
-public partial class DocumentReferenceBuilder :
+public class DocumentReferenceBuilder :
   IDocumentReferenceBuilder<DocumentReferenceBuilder> {
   private readonly TopicDocumentReference _documentReference = new();
 
@@ -14,6 +14,16 @@ public partial class DocumentReferenceBuilder :
 
   public DocumentReferenceBuilder SetDescription(string description) {
     _documentReference.Description = description;
+    return this;
+  }
+  
+  public DocumentReferenceBuilder SetIsExternal(bool isExternal) {
+    _documentReference.IsExternal = isExternal;
+    return this;
+  }
+
+  public DocumentReferenceBuilder SetReferencedDocument(string reference) {
+    _documentReference.ReferencedDocument = reference;
     return this;
   }
 

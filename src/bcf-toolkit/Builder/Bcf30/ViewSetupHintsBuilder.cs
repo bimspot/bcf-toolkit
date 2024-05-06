@@ -12,7 +12,8 @@ public class ViewSetupHintsBuilder :
     return this;
   }
 
-  public ViewSetupHintsBuilder SetSpaceBoundariesVisible(bool spaceBoundariesVisible) {
+  public ViewSetupHintsBuilder SetSpaceBoundariesVisible(
+    bool spaceBoundariesVisible) {
     _viewSetupHints.SpaceBoundariesVisible = spaceBoundariesVisible;
     return this;
   }

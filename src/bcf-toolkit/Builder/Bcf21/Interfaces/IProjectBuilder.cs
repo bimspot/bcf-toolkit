@@ -10,10 +10,18 @@ public interface IProjectBuilder<out TBuilder> : IBuilder<ProjectExtension> {
   /// <param name="name">Name of the project.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetProjectName(string name);
+
   /// <summary>
   ///   Returns the builder object set with the `ProjectId`.
   /// </summary>
   /// <param name="id">Id of the project.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetProjectId(string id);
+  
+  /// <summary>
+  ///   Returns the builder object extended with a new `Schema`.
+  /// </summary>
+  /// <param name="schema">Extension schema of the project.</param>
+  /// <returns>Returns the builder object.</returns>
+  TBuilder SetExtensionSchema(string schema);
 }

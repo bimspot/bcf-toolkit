@@ -46,7 +46,7 @@ public class CommentBuilder :
     _comment.ModifiedAuthor = user;
     return this;
   }
-
+  
   public CommentBuilder SetCommentProperty(string property) {
     _comment.CommentProperty = property;
     return this;
@@ -60,7 +60,7 @@ public class CommentBuilder :
       .SetGuid(Guid.NewGuid().ToString());
     return this;
   }
-
+  
   public Comment Build() {
     return BuilderUtils.ValidateItem(_comment);
   }

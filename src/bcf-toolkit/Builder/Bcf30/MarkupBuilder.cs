@@ -22,7 +22,7 @@ public partial class MarkupBuilder :
     _markup.Topic = new Topic();
     _markup.Header = new Header();
   }
-
+  
   public MarkupBuilder SetGuid(string guid) {
     _markup.Topic.Guid = guid;
     return this;
@@ -46,18 +46,8 @@ public partial class MarkupBuilder :
     return this;
   }
 
-  public MarkupBuilder AddHeaderFiles(List<File> files) {
-    files.ForEach(_markup.Header.Files.Add);
-    return this;
-  }
-
   public MarkupBuilder AddReferenceLink(string link) {
     _markup.Topic.ReferenceLinks.Add(link);
-    return this;
-  }
-
-  public MarkupBuilder AddReferenceLinks(List<string> links) {
-    links.ForEach(_markup.Topic.ReferenceLinks.Add);
     return this;
   }
 
@@ -78,11 +68,6 @@ public partial class MarkupBuilder :
 
   public MarkupBuilder AddLabel(string label) {
     _markup.Topic.Labels.Add(label);
-    return this;
-  }
-
-  public MarkupBuilder AddLabels(List<string> labels) {
-    labels.ForEach(_markup.Topic.Labels.Add);
     return this;
   }
 
@@ -150,12 +135,13 @@ public partial class MarkupBuilder :
     return this;
   }
 
-  public MarkupBuilder AddComments(List<Comment> comments) {
-    comments.ForEach(_markup.Topic.Comments.Add);
-    return this;
-  }
-
-  public MarkupBuilder AddViewPoint(string viewpoint, string snapshot, string snapshotData, int index, string guid, Action<VisualizationInfoBuilder> builder) {
+  public MarkupBuilder AddViewPoint(
+    string viewpoint, 
+    string snapshot,
+    string snapshotData, 
+    int index, 
+    string guid,
+    Action<VisualizationInfoBuilder> builder) {
     var visInfo =
       (VisualizationInfo)BuilderUtils
         .BuildItem<VisualizationInfoBuilder, IVisualizationInfo>(builder);
@@ -165,14 +151,9 @@ public partial class MarkupBuilder :
       SnapshotData = snapshotData,
       Index = index,
       Guid = guid,
-      VisualizationInfo = visInfo,
+      VisualizationInfo = visInfo
     };
     _markup.Topic.Viewpoints.Add(viewPoint);
-    return this;
-  }
-
-  public MarkupBuilder AddViewPoints(List<ViewPoint> viewpoints) {
-    viewpoints.ForEach(_markup.Topic.Viewpoints.Add);
     return this;
   }
 
@@ -183,17 +164,12 @@ public partial class MarkupBuilder :
     _markup.Topic.RelatedTopics.Add(topic);
     return this;
   }
-
-  public MarkupBuilder AddRelatedTopics(List<string> relatedTopicGuids) {
-    relatedTopicGuids.ForEach(id => {
-      var topic = new TopicRelatedTopicsRelatedTopic {
-        Guid = id
-      };
-      _markup.Topic.RelatedTopics.Add(topic);
-    });
+  
+  public MarkupBuilder SetServerAssignedId(string id) {
+    _markup.Topic.ServerAssignedId = id;
     return this;
   }
-
+  
   public MarkupBuilder WithDefaults() {
     this
       .SetTitle("Default title")
@@ -208,4 +184,6 @@ public partial class MarkupBuilder :
   public Markup Build() {
     return BuilderUtils.ValidateItem(_markup);
   }
+
+  
 }
