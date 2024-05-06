@@ -40,8 +40,8 @@ public class WorkerTests {
   [Test]
   public async Task BuildBcfFromV30StreamTest() {
     await using var stream = new FileStream(
-      "Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip", 
-      FileMode.Open, 
+      "Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip",
+      FileMode.Open,
       FileAccess.Read);
     await _worker.BuildBcfFromStream(stream);
   }
