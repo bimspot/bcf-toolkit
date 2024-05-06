@@ -13,20 +13,15 @@ public partial class BcfBuilder :
   public BcfBuilder AddMarkups(List<Markup> markups, bool update = false) {
     markups.ForEach(m => {
       _bcf.Markups.Add(m);
-
-      if (update) {
-        // updating Extensions
+      // updating Extensions
+      if (update)
         UpdateExtensions(m.Topic);
-
-        // updating Document info
-        // UpdateDocumentInfo(m.Topic);
-      }
     });
     return this;
   }
 
   /// <summary>
-  /// TODO description
+  /// TODO: add description
   /// </summary>
   /// <param name="topic"></param>
   private void UpdateExtensions(Topic topic) {

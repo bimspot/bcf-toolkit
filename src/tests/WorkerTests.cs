@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using BcfToolkit;
@@ -19,12 +18,13 @@ public class WorkerTests {
   public async Task BuildBcfFromV21StreamTest() {
     await using var stream = new FileStream("Resources/Bcf/v2.1/MaximumInformation.bcfzip", FileMode.Open, FileAccess.Read);
     var bcf = await _worker.BuildBcfFromStream(stream);
+    // TODO: add test
   }
 
   [Test]
   public async Task BuildBcfFromV30StreamTest() {
     await using var stream = new FileStream("Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip", FileMode.Open, FileAccess.Read);
     var bcf = await _worker.BuildBcfFromStream(stream);
-
+    // TODO: add test
   }
 }

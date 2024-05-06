@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using BcfToolkit.Builder.Bcf30;
 using BcfToolkit.Model.Bcf30;
@@ -6,12 +8,17 @@ namespace BcfToolkit.Converter.Bcf21;
 
 public static class SchemaConverterToBcf30 {
 
+  /// <summary>
+  /// TODO: add description
+  /// </summary>
+  /// <param name="from"></param>
+  /// <returns></returns>
   public static Model.Bcf30.Bcf Convert(Model.Bcf21.Bcf from) {
     var builder = new BcfBuilder();
     return builder
       .AddMarkups(from.Markups.Select(ConvertMarkup).ToList(), true)
-      .SetProject(p => p.WithDefaults()) // TODO
-      .SetDocumentInfo(d => d.AddDocument(doc => doc.WithDefaults())) // TODO
+      .SetDocumentInfo(UpdateDocumentInfo(from.Markups.SelectMany(m => m.Topic.DocumentReference).Where(r => !r.IsExternal).ToList()))
+      .SetProject(p => p.WithDefaults()) // TODO: convert project
       .Build();
   }
 
@@ -38,8 +45,9 @@ public static class SchemaConverterToBcf30 {
       .AddViewPoints(from.Viewpoints.Select(ConvertViewPoint).ToList())
       .SetGuid(from.Topic.Guid)
       .SetTopicType(from.Topic.TopicType ??= "ERROR")
-      .SetTopicStatus(from.Topic.TopicStatus ??= "OPEN");
-    //.AddDocumentReferences(from.Topic.DocumentReference.Select(ConvertDocumentReference).ToList()) TODO
+      .SetTopicStatus(from.Topic.TopicStatus ??= "OPEN")
+      .AddDocumentReferences(from.Topic.DocumentReference
+        .Select(ConvertDocumentReference).ToList());
 
     var bimSnippet = topic.BimSnippet;
     if (bimSnippet != null)
@@ -67,12 +75,12 @@ public static class SchemaConverterToBcf30 {
 
   private static Model.Bcf30.DocumentReference ConvertDocumentReference(
     Model.Bcf21.TopicDocumentReference from) {
-    //TODO DocumentGuid, Url
     var builder = new DocumentReferenceBuilder();
     return builder
       .SetDescription(from.Description)
-      .SetGuid(from.Guid)
+      .SetGuid(from.Guid ??= Guid.NewGuid().ToString()) //TODO: generate guid based on description
       .SetUrl(from.IsExternal ? from.ReferencedDocument : null)
+      .SetDocumentGuid(from.IsExternal ? null : Guid.NewGuid().ToString()) //TODO: generate guid based on guid and description
       .Build();
   }
 
@@ -243,6 +251,22 @@ public static class SchemaConverterToBcf30 {
         from.Up.Y,
         from.Up.Z)
       .SetHeight(from.Height)
+      .Build();
+  }
+
+  private static Action<DocumentInfoBuilder> UpdateDocumentInfo(
+    List<Model.Bcf21.TopicDocumentReference> docReferences) {
+    return dI => dI
+      .AddDocuments(docReferences.Select(ConvertDocument).ToList());
+  }
+
+  private static Model.Bcf30.Document ConvertDocument(
+    Model.Bcf21.TopicDocumentReference docReference) {
+    var builder = new DocumentBuilder();
+    return builder
+      .SetFileName(docReference.ReferencedDocument)
+      .SetDescription(docReference.Description)
+      .SetGuid(docReference.Guid)
       .Build();
   }
 }
