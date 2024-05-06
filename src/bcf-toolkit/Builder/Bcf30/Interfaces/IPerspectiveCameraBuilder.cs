@@ -23,7 +23,7 @@ public interface
   /// <param name="angle">Camera’s field of view angle in degrees.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetFieldOfView(double angle);
-  
+
   /// <summary>
   ///   Returns the builder object set with the `AspectRatio`.
   /// </summary>

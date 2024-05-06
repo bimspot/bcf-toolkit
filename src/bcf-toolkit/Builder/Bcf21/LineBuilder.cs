@@ -8,7 +8,7 @@ public class LineBuilder :
   ILineBuilder<LineBuilder>,
   IDefaultBuilder<LineBuilder> {
   private readonly Line _line = new();
-  
+
   public LineBuilder SetStartPoint(double x, double y, double z) {
     _line.StartPoint.X = x;
     _line.StartPoint.Y = y;
@@ -22,7 +22,7 @@ public class LineBuilder :
     _line.EndPoint.Z = z;
     return this;
   }
-  
+
   public LineBuilder WithDefaults() {
     this
       .SetStartPoint(0.0, 0.0, 0.0)

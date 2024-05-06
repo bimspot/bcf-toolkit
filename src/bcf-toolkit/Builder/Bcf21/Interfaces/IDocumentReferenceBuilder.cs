@@ -22,7 +22,7 @@ public interface
   /// </param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetDescription(string description);
-  
+
   /// <summary>
   ///   Returns the builder object set with the `IsExternal`.
   /// </summary>

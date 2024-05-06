@@ -88,7 +88,7 @@ public partial class VisualizationInfoBuilder :
     _visualizationInfo.Bitmap.Add(bitmap);
     return this;
   }
-  
+
   public VisualizationInfoBuilder WithDefaults() {
     this.SetGuid(Guid.NewGuid().ToString());
     return this;

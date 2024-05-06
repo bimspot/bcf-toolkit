@@ -9,7 +9,7 @@ public class OrthogonalCameraBuilder :
   IOrthogonalCameraBuilder<OrthogonalCameraBuilder, CameraBuilder>,
   IDefaultBuilder<OrthogonalCameraBuilder> {
   private readonly OrthogonalCamera _camera = new();
-  
+
   public OrthogonalCameraBuilder SetCamera(Action<CameraBuilder> builder) {
     var b = new CameraBuilder();
     builder(b);
@@ -28,7 +28,7 @@ public class OrthogonalCameraBuilder :
     _camera.ViewToWorldScale = scale;
     return this;
   }
-  
+
   public OrthogonalCameraBuilder WithDefaults() {
     this
       .SetCamera(cam => cam.WithDefaults())

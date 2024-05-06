@@ -92,7 +92,7 @@ public partial class VisualizationInfoBuilder :
     SetGuid(Guid.NewGuid().ToString());
     return this;
   }
-  
+
   public VisualizationInfo Build() {
     return BuilderUtils.ValidateItem(_visualizationInfo);
   }

@@ -37,7 +37,7 @@ public class BimSnippetBuilder :
       .SetIsExternal(true);
     return this;
   }
-  
+
   public BimSnippet Build() {
     return BuilderUtils.ValidateItem(_snippet);
   }

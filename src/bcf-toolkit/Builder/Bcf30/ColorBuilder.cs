@@ -26,7 +26,7 @@ public partial class ColorBuilder :
   public ComponentColoringColor Build() {
     return BuilderUtils.ValidateItem(_color);
   }
-  
+
   public ColorBuilder WithDefaults() {
     this
       .SetColor("40E0D0")

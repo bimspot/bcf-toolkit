@@ -22,7 +22,7 @@ public interface IVisibilityBuilder<
   /// <param name="builder">The builder for the `Exception` object.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder AddException(Action<TComponentBuilder> builder);
-  
+
   /// <summary>
   ///   Returns the builder object set with the `ViewSetupHints`.
   /// </summary>

@@ -9,7 +9,7 @@ public partial class ExtensionsBuilder :
   IExtensionsBuilder<ExtensionsBuilder>,
   IDefaultBuilder<ExtensionsBuilder> {
   private readonly Extensions _extensions = new();
-  
+
   public ExtensionsBuilder AddTopicType(string type) {
     _extensions.TopicTypes.Add(type);
     return this;
@@ -44,7 +44,7 @@ public partial class ExtensionsBuilder :
     _extensions.Stages.Add(stage);
     return this;
   }
-  
+
   public ExtensionsBuilder WithDefaults() {
     var types = new List<string> {
       "ERROR",
@@ -76,5 +76,5 @@ public partial class ExtensionsBuilder :
     return BuilderUtils.ValidateItem(_extensions);
   }
 
-  
+
 }

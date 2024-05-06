@@ -43,7 +43,7 @@ public partial class BcfBuilder : IBcfBuilder<
     _bcf.Document = documentInfo;
     return this;
   }
-  
+
   public BcfBuilder WithDefaults() {
     this
       .AddMarkup(m => m.WithDefaults())

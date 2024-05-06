@@ -20,7 +20,7 @@ public partial class VisibilityBuilder :
     _visibility.Exceptions.Add(component);
     return this;
   }
-  
+
   public VisibilityBuilder SetViewSetupHints(
     Action<ViewSetupHintsBuilder> builder) {
     var viewSetupHints =
@@ -29,7 +29,7 @@ public partial class VisibilityBuilder :
     _visibility.ViewSetupHints = viewSetupHints;
     return this;
   }
-  
+
   public ComponentVisibility Build() {
     return BuilderUtils.ValidateItem(_visibility);
   }

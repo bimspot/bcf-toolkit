@@ -37,7 +37,7 @@ public class CameraBuilder : ICameraBuilder, IDefaultBuilder<CameraBuilder> {
       .SetUpVector(0.0, 0.0, 1.0);
     return this;
   }
-  
+
   public object Build() {
     return new {
       viewPoint = _viewPoint,

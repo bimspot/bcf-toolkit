@@ -3,7 +3,7 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21.Interfaces;
 
-public interface IBitmapBuilder<out TBuilder> : 
+public interface IBitmapBuilder<out TBuilder> :
   IBuilder<VisualizationInfoBitmap> {
   /// <summary>
   ///   Returns the builder object set with the `Format`.

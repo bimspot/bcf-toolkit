@@ -7,7 +7,7 @@ namespace BcfToolkit.Builder.Bcf21.Interfaces;
 public interface
   IOrthogonalCameraBuilder<
     out TBuilder,
-    out TCameraBuilder> : 
+    out TCameraBuilder> :
   IBuilder<OrthogonalCamera> {
   /// <summary>
   ///   Returns the builder object extended with `CameraViewPoint`,

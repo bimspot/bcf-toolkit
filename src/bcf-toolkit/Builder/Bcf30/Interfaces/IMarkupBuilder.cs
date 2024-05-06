@@ -178,7 +178,7 @@ public interface IMarkupBuilder<
   /// <param name="relatedTopicGuid">The Guid of the related topic.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder AddRelatedTopic(string relatedTopicGuid);
-  
+
   /// <summary>
   ///   Returns the builder object set with the `ServerAssignedId`.
   /// </summary>

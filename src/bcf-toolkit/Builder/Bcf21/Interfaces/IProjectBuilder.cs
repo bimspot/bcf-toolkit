@@ -17,7 +17,7 @@ public interface IProjectBuilder<out TBuilder> : IBuilder<ProjectExtension> {
   /// <param name="id">Id of the project.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetProjectId(string id);
-  
+
   /// <summary>
   ///   Returns the builder object extended with a new `Schema`.
   /// </summary>

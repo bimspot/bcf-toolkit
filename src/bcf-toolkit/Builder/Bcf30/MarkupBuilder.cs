@@ -22,7 +22,7 @@ public partial class MarkupBuilder :
     _markup.Topic = new Topic();
     _markup.Header = new Header();
   }
-  
+
   public MarkupBuilder SetGuid(string guid) {
     _markup.Topic.Guid = guid;
     return this;
@@ -136,10 +136,10 @@ public partial class MarkupBuilder :
   }
 
   public MarkupBuilder AddViewPoint(
-    string viewpoint, 
+    string viewpoint,
     string snapshot,
-    string snapshotData, 
-    int index, 
+    string snapshotData,
+    int index,
     string guid,
     Action<VisualizationInfoBuilder> builder) {
     var visInfo =
@@ -164,12 +164,12 @@ public partial class MarkupBuilder :
     _markup.Topic.RelatedTopics.Add(topic);
     return this;
   }
-  
+
   public MarkupBuilder SetServerAssignedId(string id) {
     _markup.Topic.ServerAssignedId = id;
     return this;
   }
-  
+
   public MarkupBuilder WithDefaults() {
     this
       .SetTitle("Default title")
@@ -185,5 +185,5 @@ public partial class MarkupBuilder :
     return BuilderUtils.ValidateItem(_markup);
   }
 
-  
+
 }

@@ -22,7 +22,7 @@ public interface IOrthogonalCameraBuilder<
   /// <param name="scale">Scaling from view to world.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetViewToWorldScale(double scale);
-  
+
   /// <summary>
   ///   Returns the builder object set with the `AspectRatio`.
   /// </summary>

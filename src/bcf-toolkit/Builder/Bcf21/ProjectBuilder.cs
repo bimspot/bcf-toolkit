@@ -13,7 +13,7 @@ public partial class ProjectBuilder :
   public ProjectBuilder() {
     _project.Project = new Project();
   }
-  
+
   public ProjectBuilder SetProjectName(string name) {
     _project.Project.Name = name;
     return this;
@@ -23,12 +23,12 @@ public partial class ProjectBuilder :
     _project.Project.ProjectId = id;
     return this;
   }
-  
+
   public ProjectBuilder SetExtensionSchema(string schema) {
     _project.ExtensionSchema = schema;
     return this;
   }
-  
+
   public ProjectBuilder WithDefaults() {
     this
       .SetProjectId(Guid.NewGuid().ToString())

@@ -3,7 +3,7 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21.Interfaces;
 
-public interface IViewSetupHintsBuilder<out TBuilder> : 
+public interface IViewSetupHintsBuilder<out TBuilder> :
   IBuilder<ViewSetupHints> {
   /// <summary>
   ///   Returns the builder object set with the `SpaceVisible`.

@@ -44,7 +44,7 @@ public class CommentBuilder :
     _comment.ModifiedAuthor = user;
     return this;
   }
-  
+
   public CommentBuilder WithDefaults() {
     this
       .SetDate(DateTime.Now)

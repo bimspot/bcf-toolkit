@@ -20,7 +20,7 @@ public class MarkupBuilder :
   public MarkupBuilder() {
     _markup.Topic = new Topic();
   }
-  
+
   public MarkupBuilder SetGuid(string guid) {
     _markup.Topic.Guid = guid;
     return this;
@@ -158,7 +158,7 @@ public class MarkupBuilder :
     _markup.Topic.RelatedTopic.Add(relatedTopic);
     return this;
   }
-  
+
   public MarkupBuilder WithDefaults() {
     this
       .SetTitle("Default title")

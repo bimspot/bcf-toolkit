@@ -3,7 +3,7 @@ using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30.Interfaces;
 
-public interface IDocumentReferenceBuilder<out TBuilder> : 
+public interface IDocumentReferenceBuilder<out TBuilder> :
   IBuilder<DocumentReference> {
   /// <summary>
   ///   Returns the builder object set with the `Guid`.
@@ -22,7 +22,7 @@ public interface IDocumentReferenceBuilder<out TBuilder> :
   /// </param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetDescription(string description);
-  
+
   /// <summary>
   ///   Returns the builder object set with the `DocumentGuid`.
   /// </summary>

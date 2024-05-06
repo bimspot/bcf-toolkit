@@ -16,7 +16,7 @@ public class DocumentReferenceBuilder :
     _documentReference.Description = description;
     return this;
   }
-  
+
   public DocumentReferenceBuilder SetIsExternal(bool isExternal) {
     _documentReference.IsExternal = isExternal;
     return this;

@@ -28,7 +28,7 @@ public class BimSnippetBuilder :
     _snippet.ReferenceSchema = schema;
     return this;
   }
-  
+
   public BimSnippetBuilder WithDefaults() {
     this
       .SetSnippetType("JSON")

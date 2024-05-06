@@ -9,7 +9,7 @@ public partial class DocumentReferenceBuilder :
   IDocumentReferenceBuilder<DocumentReferenceBuilder>,
   IDefaultBuilder<DocumentReferenceBuilder> {
   private readonly DocumentReference _documentReference = new();
-  
+
   public DocumentReferenceBuilder SetGuid(string guid) {
     _documentReference.Guid = guid;
     return this;
@@ -19,7 +19,7 @@ public partial class DocumentReferenceBuilder :
     _documentReference.Description = description;
     return this;
   }
-  
+
   public DocumentReferenceBuilder SetDocumentGuid(string? guid) {
     if (guid != null)
       _documentReference.DocumentGuid = guid;
@@ -31,7 +31,7 @@ public partial class DocumentReferenceBuilder :
       _documentReference.Url = url;
     return this;
   }
-  
+
   public DocumentReferenceBuilder WithDefaults() {
     this.SetGuid(Guid.NewGuid().ToString());
     return this;

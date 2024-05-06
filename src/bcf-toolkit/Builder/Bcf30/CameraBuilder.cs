@@ -29,7 +29,7 @@ public class CameraBuilder : ICameraBuilder, IDefaultBuilder<CameraBuilder> {
     _upVector.Z = z;
     return this;
   }
-  
+
   public CameraBuilder WithDefaults() {
     this
       .SetViewPoint(0.0, 0.0, 0.0)

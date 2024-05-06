@@ -32,7 +32,7 @@ public partial class BcfBuilder : IBcfBuilder<
     this.AddMarkup(m => m.WithDefaults());
     return this;
   }
-  
+
   public Bcf Build() {
     return BuilderUtils.ValidateItem(_bcf);
   }

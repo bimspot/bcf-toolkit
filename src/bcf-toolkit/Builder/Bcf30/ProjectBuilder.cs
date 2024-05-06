@@ -13,7 +13,7 @@ public class ProjectBuilder :
   public ProjectBuilder() {
     _project.Project = new Project();
   }
-  
+
   public ProjectBuilder SetProjectName(string name) {
     _project.Project.Name = name;
     return this;
@@ -23,7 +23,7 @@ public class ProjectBuilder :
     _project.Project.ProjectId = id;
     return this;
   }
-  
+
   public ProjectBuilder WithDefaults() {
     this.SetProjectId(Guid.NewGuid().ToString());
     return this;

@@ -38,7 +38,7 @@ public partial class MarkupBuilder {
     });
     return this;
   }
-  
+
   public MarkupBuilder AddDocumentReferences(
     List<DocumentReference> documentReferences) {
     documentReferences.ForEach(_markup.Topic.DocumentReferences.Add);
