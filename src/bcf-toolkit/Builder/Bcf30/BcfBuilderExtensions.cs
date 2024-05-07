@@ -62,7 +62,7 @@ public partial class BcfBuilder {
         c.ModifiedAuthor
       });
 
-    var ext = new {
+    var extensions = new {
       topic.TopicType,
       topic.TopicStatus,
       topic.Priority,
@@ -73,13 +73,15 @@ public partial class BcfBuilder {
     };
 
     _bcf.Extensions = new Extensions();
-    _bcf.Extensions.TopicTypes.AddIfNotExists(ext.TopicType);
-    _bcf.Extensions.TopicStatuses.AddIfNotExists(ext.TopicStatus);
-    _bcf.Extensions.Priorities.AddIfNotExists(ext.Priority);
-    _bcf.Extensions.SnippetTypes.AddIfNotExists(ext.SnippetType);
-    _bcf.Extensions.Stages.AddIfNotExists(ext.Stage);
+    _bcf.Extensions.TopicTypes.AddIfNotExists(extensions.TopicType);
+    _bcf.Extensions.TopicStatuses.AddIfNotExists(extensions.TopicStatus);
+    _bcf.Extensions.Priorities.AddIfNotExists(extensions.Priority);
+    _bcf.Extensions.SnippetTypes.AddIfNotExists(extensions.SnippetType);
+    _bcf.Extensions.Stages.AddIfNotExists(extensions.Stage);
 
-    ext.Labels.ForEach(l => _bcf.Extensions.TopicLabels.AddIfNotExists(l));
-    ext.Users.ForEach(u => _bcf.Extensions.Users.AddIfNotExists(u));
+    extensions.Labels.ForEach(l =>
+      _bcf.Extensions.TopicLabels.AddIfNotExists(l));
+    extensions.Users.ForEach(u =>
+      _bcf.Extensions.Users.AddIfNotExists(u));
   }
 }

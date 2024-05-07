@@ -31,7 +31,7 @@ public interface IDocumentReferenceBuilder<out TBuilder> :
   TBuilder SetDocumentGuid(string guid);
 
   /// <summary>
-  ///   Returns the builder object set with the `DocumentGuid`.
+  ///   Returns the builder object set with the `Url`.
   /// </summary>
   /// <param name="url">Url of an external document.</param>
   /// <returns>Returns the builder object.</returns>

@@ -34,11 +34,11 @@ public interface ICommentBuilder<out TBuilder> : IBuilder<Comment> {
   TBuilder SetComment(string comment);
 
   /// <summary>
-  ///   Returns the builder object set with the `ViewPoint`.
+  ///   Returns the builder object set with the `ViewPoint.Guid`.
   /// </summary>
   /// <param name="guid">Back reference to the viewpoint GUID.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetViewPoint(string? guid);
+  TBuilder SetViewPointGuid(string? guid);
 
   /// <summary>
   ///   Returns the builder object set with the `ModifiedDate`.

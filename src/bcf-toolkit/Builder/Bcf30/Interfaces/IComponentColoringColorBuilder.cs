@@ -4,8 +4,7 @@ using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30.Interfaces;
 
-public interface
-  IColorBuilder<
+public interface IComponentColoringColorBuilder<
     out TBuilder,
     out TComponentBuilder> :
   IBuilder<ComponentColoringColor> {

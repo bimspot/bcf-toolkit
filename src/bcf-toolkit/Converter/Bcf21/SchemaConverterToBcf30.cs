@@ -17,14 +17,20 @@ public static class SchemaConverterToBcf30 {
   /// <returns>Returns the converted object.</returns>
   public static Model.Bcf30.Bcf Convert(Model.Bcf21.Bcf from) {
     var builder = new BcfBuilder();
-    return builder
+    builder
       .AddMarkups(from.Markups.Select(ConvertMarkup).ToList(), true)
       .SetDocumentInfo(UpdateDocumentInfo(from.Markups
         .SelectMany(m => m.Topic.DocumentReference)
         .Where(r => !r.IsExternal)
-        .ToList()))
-      .SetProject(p => p.WithDefaults()) // TODO: convert project
-      .Build();
+        .ToList()));
+
+    var project = from.Project;
+    if (project != null)
+      builder.SetProjectInfo(p => p
+        .SetProjectId(project.Project.ProjectId)
+        .SetProjectName(project.Project.Name));
+
+    return builder.Build();
   }
 
   private static Model.Bcf30.Markup ConvertMarkup(Model.Bcf21.Markup from) {
@@ -83,7 +89,7 @@ public static class SchemaConverterToBcf30 {
     var builder = new DocumentReferenceBuilder();
     return builder
       .SetDescription(from.Description)
-      .SetGuid(from.Guid ??= Guid.NewGuid().ToString()) //TODO: generate guid based on description
+      .SetGuid(from.Guid ??= Guid.NewGuid().ToString())
       .SetUrl(from.IsExternal ? from.ReferencedDocument : null)
       .SetDocumentGuid(from.IsExternal ? null : Guid.NewGuid().ToString()) //TODO: generate guid based on guid and description
       .Build();
@@ -100,7 +106,7 @@ public static class SchemaConverterToBcf30 {
       .SetGuid(from.Guid);
 
     if (from.Viewpoint != null)
-      builder.SetViewPoint(from.Viewpoint?.Guid);
+      builder.SetViewPointGuid(from.Viewpoint?.Guid);
 
     return builder.Build();
   }
@@ -208,7 +214,7 @@ public static class SchemaConverterToBcf30 {
 
   private static Model.Bcf30.ComponentColoringColor ConvertColor(
     Model.Bcf21.ComponentColoringColor from) {
-    var builder = new ColorBuilder();
+    var builder = new ComponentColoringComponentColoringColorBuilder();
     return builder
       .AddComponents(from.Component.Select(ConvertComponent).ToList())
       .SetColor(from.Color)

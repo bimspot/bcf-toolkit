@@ -5,31 +5,31 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
 
-public partial class ProjectBuilder :
-  IProjectBuilder<ProjectBuilder>,
-  IDefaultBuilder<ProjectBuilder> {
+public class ProjectExtensionBuilder :
+  IProjectExtensionBuilder<ProjectExtensionBuilder>,
+  IDefaultBuilder<ProjectExtensionBuilder> {
   private readonly ProjectExtension _project = new();
 
-  public ProjectBuilder() {
+  public ProjectExtensionBuilder() {
     _project.Project = new Project();
   }
 
-  public ProjectBuilder SetProjectName(string name) {
+  public ProjectExtensionBuilder SetProjectName(string name) {
     _project.Project.Name = name;
     return this;
   }
 
-  public ProjectBuilder SetProjectId(string id) {
+  public ProjectExtensionBuilder SetProjectId(string id) {
     _project.Project.ProjectId = id;
     return this;
   }
 
-  public ProjectBuilder SetExtensionSchema(string schema) {
+  public ProjectExtensionBuilder SetExtensionSchema(string schema) {
     _project.ExtensionSchema = schema;
     return this;
   }
 
-  public ProjectBuilder WithDefaults() {
+  public ProjectExtensionBuilder WithDefaults() {
     this
       .SetProjectId(Guid.NewGuid().ToString())
       .SetExtensionSchema("extensions.xsd");

@@ -20,11 +20,11 @@ public interface IBcfBuilder<
   TBuilder AddMarkup(Action<TMarkupBuilder> builder);
 
   /// <summary>
-  ///   Returns the builder object set with the `Project`.
+  ///   Returns the builder object set with the `ProjectInfo`.
   /// </summary>
   /// <param name="builder">Builder of the project.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetProject(Action<TProjectBuilder> builder);
+  TBuilder SetProjectInfo(Action<TProjectBuilder> builder);
 
   /// <summary>
   ///   Returns the builder object set with the `Extensions`.

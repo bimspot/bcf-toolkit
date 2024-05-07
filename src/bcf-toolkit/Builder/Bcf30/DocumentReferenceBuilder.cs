@@ -21,8 +21,7 @@ public partial class DocumentReferenceBuilder :
   }
 
   public DocumentReferenceBuilder SetDocumentGuid(string? guid) {
-    if (guid != null)
-      _documentReference.DocumentGuid = guid;
+    _documentReference.DocumentGuid = guid;
     return this;
   }
 

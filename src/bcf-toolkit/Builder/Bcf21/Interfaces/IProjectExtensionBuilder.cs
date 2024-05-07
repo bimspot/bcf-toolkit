@@ -3,7 +3,7 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21.Interfaces;
 
-public interface IProjectBuilder<out TBuilder> : IBuilder<ProjectExtension> {
+public interface IProjectExtensionBuilder<out TBuilder> : IBuilder<ProjectExtension> {
   /// <summary>
   ///   Returns the builder object set with the `ProjectName`.
   /// </summary>

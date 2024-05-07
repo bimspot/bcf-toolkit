@@ -59,8 +59,8 @@ public class MarkupBuilder :
     return this;
   }
 
-  public MarkupBuilder SetIndex(int inx) {
-    _markup.Topic.Index = inx;
+  public MarkupBuilder SetIndex(int index) {
+    _markup.Topic.Index = index;
     return this;
   }
 

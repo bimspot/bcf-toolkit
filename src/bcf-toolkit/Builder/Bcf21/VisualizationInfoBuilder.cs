@@ -11,7 +11,7 @@ public partial class VisualizationInfoBuilder :
     VisualizationInfoBuilder,
     ComponentBuilder,
     VisibilityBuilder,
-    ColorBuilder,
+    ComponentColoringColorBuilder,
     OrthogonalCameraBuilder,
     PerspectiveCameraBuilder,
     LineBuilder,
@@ -42,9 +42,9 @@ public partial class VisualizationInfoBuilder :
     return this;
   }
 
-  public VisualizationInfoBuilder AddColoring(Action<ColorBuilder> builder) {
+  public VisualizationInfoBuilder AddColoring(Action<ComponentColoringColorBuilder> builder) {
     var color =
-      (ComponentColoringColor)BuilderUtils.BuildItem<ColorBuilder, IColor>(
+      (ComponentColoringColor)BuilderUtils.BuildItem<ComponentColoringColorBuilder, IColor>(
         builder);
     _visualizationInfo.Components.Coloring.Add(color);
     return this;

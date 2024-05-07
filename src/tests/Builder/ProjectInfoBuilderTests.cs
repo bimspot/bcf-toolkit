@@ -4,12 +4,12 @@ using NUnit.Framework;
 
 namespace Tests.Builder;
 
-public class ProjectBuilderTests {
-  private readonly ProjectBuilder _builder = new();
+public class ProjectInfoBuilderTests {
+  private readonly ProjectInfoBuilder _infoBuilder = new();
 
   [Test]
   public void BuildProject() {
-    var project = (ProjectInfo)_builder
+    var project = (ProjectInfo)_infoBuilder
       .SetProjectId("3ZSh2muKX7S8MCESk95seC")
       .SetProjectName("Project")
       .Build();
@@ -21,16 +21,16 @@ public class ProjectBuilderTests {
 
   [Test]
   public void BuildProjectWithoutRequiredFields() {
-    _builder
+    _infoBuilder
       .SetProjectName("Project");
-    Assert.That(() => _builder.Build(), Throws.ArgumentException);
+    Assert.That(() => _infoBuilder.Build(), Throws.ArgumentException);
   }
 
   [Test]
   public void BuildProjectWithEmptyId() {
-    _builder
+    _infoBuilder
       .SetProjectId("")
       .SetProjectName("Project");
-    Assert.That(() => _builder.Build(), Throws.ArgumentException);
+    Assert.That(() => _infoBuilder.Build(), Throws.ArgumentException);
   }
 }

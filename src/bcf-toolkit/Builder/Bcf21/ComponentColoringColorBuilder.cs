@@ -6,24 +6,24 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
 
-public class ColorBuilder :
-  IColorBuilder<ColorBuilder, ComponentBuilder>,
-  IDefaultBuilder<ColorBuilder> {
+public class ComponentColoringColorBuilder :
+  IComponentColoringColorBuilder<ComponentColoringColorBuilder, ComponentBuilder>,
+  IDefaultBuilder<ComponentColoringColorBuilder> {
   private readonly ComponentColoringColor _color = new();
 
-  public ColorBuilder SetColor(string color) {
+  public ComponentColoringColorBuilder SetColor(string color) {
     _color.Color = color;
     return this;
   }
 
-  public ColorBuilder AddComponent(Action<ComponentBuilder> builder) {
+  public ComponentColoringColorBuilder AddComponent(Action<ComponentBuilder> builder) {
     var component =
       (Component)BuilderUtils.BuildItem<ComponentBuilder, IComponent>(builder);
     _color.Component.Add(component);
     return this;
   }
 
-  public ColorBuilder WithDefaults() {
+  public ComponentColoringColorBuilder WithDefaults() {
     this
       .SetColor("40E0D0")
       .AddComponent(comp => comp.WithDefaults());

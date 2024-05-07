@@ -7,13 +7,13 @@ namespace BcfToolkit.Builder.Bcf21;
 public class HeaderFileBuilder : IHeaderFileBuilder<HeaderFileBuilder> {
   private readonly HeaderFile _file = new();
 
-  public HeaderFileBuilder SetIfcProject(string id) {
-    _file.IfcProject = id;
+  public HeaderFileBuilder SetIfcProject(string ifcProjectId) {
+    _file.IfcProject = ifcProjectId;
     return this;
   }
 
-  public HeaderFileBuilder SetIfcSpatialStructureElement(string id) {
-    _file.IfcSpatialStructureElement = id;
+  public HeaderFileBuilder SetIfcSpatialStructureElement(string ifcSpatialStructureElementId) {
+    _file.IfcSpatialStructureElement = ifcSpatialStructureElementId;
     return this;
   }
 

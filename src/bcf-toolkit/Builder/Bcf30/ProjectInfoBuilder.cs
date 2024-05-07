@@ -5,26 +5,26 @@ using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public class ProjectBuilder :
-  IProjectBuilder<ProjectBuilder>,
-  IDefaultBuilder<ProjectBuilder> {
+public class ProjectInfoBuilder :
+  IProjectBuilder<ProjectInfoBuilder>,
+  IDefaultBuilder<ProjectInfoBuilder> {
   private readonly ProjectInfo _project = new();
 
-  public ProjectBuilder() {
+  public ProjectInfoBuilder() {
     _project.Project = new Project();
   }
 
-  public ProjectBuilder SetProjectName(string name) {
+  public ProjectInfoBuilder SetProjectName(string name) {
     _project.Project.Name = name;
     return this;
   }
 
-  public ProjectBuilder SetProjectId(string id) {
+  public ProjectInfoBuilder SetProjectId(string id) {
     _project.Project.ProjectId = id;
     return this;
   }
 
-  public ProjectBuilder WithDefaults() {
+  public ProjectInfoBuilder WithDefaults() {
     this.SetProjectId(Guid.NewGuid().ToString());
     return this;
   }

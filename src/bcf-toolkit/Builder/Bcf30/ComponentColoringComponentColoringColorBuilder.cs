@@ -6,17 +6,17 @@ using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public partial class ColorBuilder :
-  IColorBuilder<ColorBuilder, ComponentBuilder>,
-  IDefaultBuilder<ColorBuilder> {
+public partial class ComponentColoringComponentColoringColorBuilder :
+  IComponentColoringColorBuilder<ComponentColoringComponentColoringColorBuilder, ComponentBuilder>,
+  IDefaultBuilder<ComponentColoringComponentColoringColorBuilder> {
   private readonly ComponentColoringColor _color = new();
 
-  public ColorBuilder SetColor(string color) {
+  public ComponentColoringComponentColoringColorBuilder SetColor(string color) {
     _color.Color = color;
     return this;
   }
 
-  public ColorBuilder AddComponent(Action<ComponentBuilder> builder) {
+  public ComponentColoringComponentColoringColorBuilder AddComponent(Action<ComponentBuilder> builder) {
     var component =
       (Component)BuilderUtils.BuildItem<ComponentBuilder, IComponent>(builder);
     _color.Components.Add(component);
@@ -27,7 +27,7 @@ public partial class ColorBuilder :
     return BuilderUtils.ValidateItem(_color);
   }
 
-  public ColorBuilder WithDefaults() {
+  public ComponentColoringComponentColoringColorBuilder WithDefaults() {
     this
       .SetColor("40E0D0")
       .AddComponent(comp => comp.WithDefaults());

@@ -10,7 +10,7 @@ namespace BcfToolkit.Builder.Bcf30;
 public partial class BcfBuilder : IBcfBuilder<
     BcfBuilder,
     MarkupBuilder,
-    ProjectBuilder,
+    ProjectInfoBuilder,
     ExtensionsBuilder,
     DocumentInfoBuilder>,
   IDefaultBuilder<BcfBuilder> {
@@ -23,9 +23,9 @@ public partial class BcfBuilder : IBcfBuilder<
     return this;
   }
 
-  public BcfBuilder SetProject(Action<ProjectBuilder> builder) {
+  public BcfBuilder SetProjectInfo(Action<ProjectInfoBuilder> builder) {
     var projectInfo =
-      BuilderUtils.BuildItem<ProjectBuilder, ProjectInfo>(builder);
+      BuilderUtils.BuildItem<ProjectInfoBuilder, ProjectInfo>(builder);
     _bcf.Project = projectInfo;
     return this;
   }

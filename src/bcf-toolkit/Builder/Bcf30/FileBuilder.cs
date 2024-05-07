@@ -7,13 +7,13 @@ namespace BcfToolkit.Builder.Bcf30;
 public class FileBuilder : IFileBuilder<FileBuilder> {
   private readonly File _file = new();
 
-  public FileBuilder SetIfcProject(string id) {
-    _file.IfcProject = id;
+  public FileBuilder SetIfcProject(string ifcProjectId) {
+    _file.IfcProject = ifcProjectId;
     return this;
   }
 
-  public FileBuilder SetIfcSpatialStructureElement(string id) {
-    _file.IfcSpatialStructureElement = id;
+  public FileBuilder SetIfcSpatialStructureElement(string ifcSpatialStructureElementId) {
+    _file.IfcSpatialStructureElement = ifcSpatialStructureElementId;
     return this;
   }
 

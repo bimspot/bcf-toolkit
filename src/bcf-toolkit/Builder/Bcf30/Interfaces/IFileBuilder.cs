@@ -8,22 +8,22 @@ public interface IFileBuilder<out TBuilder> : IBuilder<File> {
   /// <summary>
   ///   Returns the builder object set with the `IfcProject`.
   /// </summary>
-  /// <param name="id">
+  /// <param name="ifcProjectId">
   ///   `IfcGuid` Reference to the project to which this topic is related in
   ///   the IFC file.
   /// </param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetIfcProject(string id);
+  TBuilder SetIfcProject(string ifcProjectId);
 
   /// <summary>
   ///   Returns the builder object set with the `IfcSpatialStructureElement`.
   /// </summary>
-  /// <param name="id">
-  ///   `IfcGuid` IfcGuid Reference to the spatial structure element, e.g.
+  /// <param name="ifcSpatialStructureElementId">
+  ///   `IfcGuid` Reference to the spatial structure element, e.g.
   ///   IfcBuildingStorey, to which this topic is related.
   /// </param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetIfcSpatialStructureElement(string id);
+  TBuilder SetIfcSpatialStructureElement(string ifcSpatialStructureElementId);
 
   /// <summary>
   ///   Returns the builder object set with the `IsExternal`.

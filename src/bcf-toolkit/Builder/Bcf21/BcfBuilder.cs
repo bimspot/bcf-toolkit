@@ -9,7 +9,7 @@ namespace BcfToolkit.Builder.Bcf21;
 public partial class BcfBuilder : IBcfBuilder<
     BcfBuilder,
     MarkupBuilder,
-    ProjectBuilder>,
+    ProjectExtensionBuilder>,
   IDefaultBuilder<BcfBuilder> {
   private readonly Bcf _bcf = new();
 
@@ -20,9 +20,9 @@ public partial class BcfBuilder : IBcfBuilder<
     return this;
   }
 
-  public BcfBuilder SetProject(Action<ProjectBuilder> builder) {
+  public BcfBuilder SetProject(Action<ProjectExtensionBuilder> builder) {
     var project =
-      (ProjectExtension)BuilderUtils.BuildItem<ProjectBuilder, IProject>(
+      (ProjectExtension)BuilderUtils.BuildItem<ProjectExtensionBuilder, IProject>(
         builder);
     _bcf.Project = project;
     return this;

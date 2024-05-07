@@ -27,7 +27,7 @@ public class BcfBuilderTests {
         .AddTopicType("ERROR")
         .AddTopicStatus("OPEN")
         .AddPriority("HIGH"))
-      .SetProject(p => p
+      .SetProjectInfo(p => p
         .SetProjectId("3ZSh2muKX7S8MCESk95seC")
         .SetProjectName("Project"))
       .Build();

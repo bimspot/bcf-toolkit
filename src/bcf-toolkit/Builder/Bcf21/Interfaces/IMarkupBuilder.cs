@@ -64,9 +64,9 @@ public interface IMarkupBuilder<
   /// <summary>
   ///   Returns the builder object set with the `Index`.
   /// </summary>
-  /// <param name="inx">Number to maintain the order of the topics.</param>
+  /// <param name="index">Number to maintain the order of the topics.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetIndex(int inx);
+  TBuilder SetIndex(int index);
 
   /// <summary>
   ///   Returns the builder object extended with `Label`.
@@ -160,8 +160,8 @@ public interface IMarkupBuilder<
   /// <param name="viewpoint">Viewpoint file name.</param>
   /// <param name="snapshot">Snapshot file name.</param>
   /// <param name="snapshotData">Snapshot data.</param>
-  /// <param name="index">Index.</param>
-  /// <param name="guid">Guid.</param>
+  /// <param name="index">Index parameter for sorting.</param>
+  /// <param name="guid">Guid of the viewpoint.</param>
   /// <param name="builder">The builder for `ViewPoint`.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder AddViewPoint(
