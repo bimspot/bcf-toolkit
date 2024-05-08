@@ -114,8 +114,8 @@ converter.JsonToBcfZip(source, target);
 ```
 
 Furthermore `BCF` archive can be consumed as a stream. The version of the source
-is established by the code, the aimed BCF version must be set. Then the class
-lets the nested converter object to do the conversion accordingly.
+is established by the code, then the class lets the nested converter object to 
+do the conversion to BCF 3.0 accordingly.
 
 ```csharp
 using BcfToolkit;
@@ -123,7 +123,7 @@ using BcfToolkit;
 await using var stream = new FileStream(source, FileMode.Open, FileAccess.Read);
 
 var worker = new Worker();
-await worker.BuildBcfFromStream(stream);
+var bcf = await worker.BuildBcfFromStream(stream);
 ```
 ## File Structure
 
