@@ -32,7 +32,7 @@ public class Converter : IConverter {
     var bcf = await _builder.BuildFromStream(source);
 
     // Writing json files
-    await WriteJson(target, bcf);
+    await WriteJson(bcf, target);
   }
 
   public async Task BcfZipToJson(string sourcePath, string target) {
@@ -58,7 +58,8 @@ public class Converter : IConverter {
 
     var bcf = new Bcf {
       Markups = markups,
-      Project = project
+      Project = project,
+      Version = new Version()
     };
 
     // Writing bcf files
@@ -85,7 +86,7 @@ public class Converter : IConverter {
   }
 
   public Task ToJson(IBcf bcf, string target) {
-    return WriteJson(target, (Bcf)bcf);
+    return WriteJson((Bcf)bcf, target);
   }
 
   public async Task<T> BuildBcfFromStream<T>(Stream stream) {
@@ -98,25 +99,29 @@ public class Converter : IConverter {
   /// <summary>
   ///   The method writes the BCF object to json file.
   /// </summary>
-  /// <param name="targetPath">The target path where the json files will be saved.</param>
   /// <param name="bcf">The BCF object which will be written.</param>
+  /// <param name="target">The target path where the json files will be saved.</param>
   /// <returns></returns>
-  private static Task WriteJson(string targetPath, Bcf bcf) {
+  private static Task WriteJson(Bcf bcf, string target) {
     // Creating the target folder
-    if (Directory.Exists(targetPath)) Directory.Delete(targetPath, true);
-    Directory.CreateDirectory(targetPath);
+    if (Directory.Exists(target)) Directory.Delete(target, true);
+    Directory.CreateDirectory(target);
 
     // Writing markups to disk, one markup per file.
     var tasks = bcf.Markups
       .Select(markup => {
-        var pathMarkup = $"{targetPath}/{markup.GetTopic().Guid}.json";
+        var pathMarkup = $"{target}/{markup.GetTopic().Guid}.json";
         return JsonExtensions.WriteJson(pathMarkup, markup);
       })
       .ToList();
 
     // Writing BCF project file
-    var pathProject = $"{targetPath}/project.json";
+    var pathProject = $"{target}/project.json";
     tasks.Add(JsonExtensions.WriteJson(pathProject, bcf.Project));
+
+    // Writing BCF version file
+    var pathVersion = $"{target}/version.json";
+    tasks.Add(JsonExtensions.WriteJson(pathVersion, bcf.Version));
 
     return Task.WhenAll(tasks);
   }

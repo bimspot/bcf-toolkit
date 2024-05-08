@@ -37,7 +37,7 @@ internal static class Program {
     rootCommand.AddOption(versionOption);
 
     rootCommand.SetHandler(
-      async (arguments) => { await DoRootCommand(arguments); },
+      async arguments => { await DoRootCommand(arguments); },
       new InputArgumentsBinder(
         sourcePathOption,
         targetOption,
@@ -46,9 +46,6 @@ internal static class Program {
   }
 
   private static async Task DoRootCommand(InputArguments arguments) {
-    // TODO: read bcf.version and decide on the parser version
-    // by default 2.1 version is used
-
     try {
       var worker = new Worker();
       await worker.Convert(arguments.SourcePath, arguments.Target);

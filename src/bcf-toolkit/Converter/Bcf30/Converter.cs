@@ -45,7 +45,7 @@ public class Converter : IConverter {
   public async Task JsonToBcfZip(string source, string target) {
     // Parsing BCF root files
     var extensions =
-      await JsonExtensions.ParseObject<Model.Bcf30.Extensions>($"{source}/extensions.json");
+      await JsonExtensions.ParseObject<Extensions>($"{source}/extensions.json");
     var project =
       await JsonExtensions.ParseObject<ProjectInfo>($"{source}/project.json");
     var documents =
@@ -58,7 +58,8 @@ public class Converter : IConverter {
       Markups = markups,
       Extensions = extensions,
       Project = project,
-      Document = documents
+      Document = documents,
+      Version = new Version()
     };
 
     // Writing bcf files
@@ -125,6 +126,10 @@ public class Converter : IConverter {
     // Writing BCF document file
     var pathDoc = $"{target}/documents.json";
     tasks.Add(JsonExtensions.WriteJson(pathDoc, bcf.Document));
+
+    // Writing BCF version file
+    var pathVersion = $"{target}/version.json";
+    tasks.Add(JsonExtensions.WriteJson(pathVersion, bcf.Version));
 
     return Task.WhenAll(tasks);
   }

@@ -38,7 +38,25 @@ public class Worker {
   ///   Creates and returns an instance of `Worker` with the specified version.
   /// </summary>
   public Worker(BcfVersionEnum version) {
-    Init(version);
+    InitConverter(version);
+  }
+
+  private async Task InitConverterFromArchive(string source) {
+    await using var stream =
+      new FileStream(source, FileMode.Open, FileAccess.Read);
+    await InitConverterFromStreamArchive(stream);
+  }
+
+  private async Task InitConverterFromStreamArchive(Stream stream) {
+    var version =
+      await BcfExtensions.GetVersionFromStreamArchive(stream);
+    InitConverter(version);
+  }
+
+  private async Task InitConverterFromJson(string source) {
+    var version =
+      await JsonExtensions.GetVersionFromJson(source);
+    InitConverter(version);
   }
 
   /// <summary>
@@ -46,8 +64,8 @@ public class Worker {
   /// </summary>
   /// <param name="version">The version of the BCF.</param>
   /// <exception cref="ArgumentException"></exception>
-  private void Init(BcfVersionEnum? version) {
-    _converter = version switch {
+  private void InitConverter(BcfVersionEnum? version) {
+    _converter ??= version switch {
       BcfVersionEnum.Bcf21 => new Converter.Bcf21.Converter(),
       BcfVersionEnum.Bcf30 => new Converter.Bcf30.Converter(),
       _ => throw new ArgumentException($"Unsupported BCF version: {version}")
@@ -61,17 +79,20 @@ public class Worker {
   ///   Source path of the file which must be converted.
   /// </param>
   /// <param name="target">Target destination for the converted results.</param>
-  public Task Convert(string source, string target) {
-    return source.EndsWith("bcfzip")
-      ? _converter.BcfZipToJson(source, target)!
-      : _converter.JsonToBcfZip(source, target)!;
-
+  public async Task Convert(string source, string target) {
+    if (source.EndsWith("bcfzip")) {
+      await InitConverterFromArchive(source);
+      await _converter.BcfZipToJson(source, target);
+    }
+    else {
+      await InitConverterFromJson(source);
+      await _converter.JsonToBcfZip(source, target);
+    }
   }
 
   /// <summary>
   ///   The method writes the specified BCF models to BCF files.
   /// </summary>
-  /// 
   /// <param name="bcf">The `IBcf` interface of the BCF.</param>
   /// <param name="target">The target path where the BCF is written.</param>
   /// <returns></returns>
@@ -96,8 +117,7 @@ public class Worker {
   /// <param name="stream"></param>
   /// <returns></returns>
   public async Task<Bcf> BuildBcfFromStream(Stream stream) {
-    var currentVersion = await BcfExtensions.GetVersion(stream);
-    Init(currentVersion);
+    await InitConverterFromStreamArchive(stream);
     return await _converter.BuildBcfFromStream<Bcf>(stream);
   }
 }

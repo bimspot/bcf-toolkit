@@ -13,6 +13,12 @@ public partial class BcfBuilder : IBcfBuilder<
   IDefaultBuilder<BcfBuilder> {
   private readonly Bcf _bcf = new();
 
+  public BcfBuilder() {
+    _bcf.Version = new VersionBuilder()
+      .WithDefaults()
+      .Build();
+  }
+
   public BcfBuilder AddMarkup(Action<MarkupBuilder> builder) {
     var markup =
       (Markup)BuilderUtils.BuildItem<MarkupBuilder, IMarkup>(builder);

@@ -282,11 +282,11 @@ public static class BcfExtensions {
   }
 
   /// <summary>
-  ///   TODO
+  ///   The method opens the archive stream and returns the BCF version.
   /// </summary>
   /// <param name="stream"></param>
   /// <returns></returns>
-  public static async Task<BcfVersionEnum?> GetVersion(Stream stream) {
+  public static async Task<BcfVersionEnum?> GetVersionFromStreamArchive(Stream stream) {
     using var archive = new ZipArchive(stream, ZipArchiveMode.Read, true);
     BcfVersionEnum? version = null;
 

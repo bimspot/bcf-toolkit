@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BcfToolkit.Model;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using RecursiveDataAnnotationsValidation;
 
@@ -123,6 +125,25 @@ public static class JsonExtensions {
 
       await using var writerM = File.CreateText(path);
       await writerM.WriteAsync(json);
+    });
+  }
+
+  /// <summary>
+  ///   The method opens the json and returns the BCF version.
+  /// </summary>
+  /// <param name="source"></param>
+  /// <returns></returns>
+  public static Task<BcfVersionEnum> GetVersionFromJson(string source) {
+    return Task.Run(async () => {
+      var file = new List<string>(
+          Directory.EnumerateFiles(source))
+        .FirstOrDefault(f => f.EndsWith("version.json"));
+      // if (file == null) return null;
+      using var reader = new StreamReader(file, Encoding.Unicode);
+      var json = await reader.ReadToEndAsync();
+      var bcf = JObject.Parse(json);
+      var version = bcf["Version"]?.ToString();
+      return BcfVersion.Parse(version);
     });
   }
 }

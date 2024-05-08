@@ -28,6 +28,7 @@ public class WorkerTests {
       // "Resources/Bcf/v2.1/SingleVisibleWall.bcfzip", // comment property is empty
       // "Resources/Bcf/v2.1/UserAssignment.bcfzip" // description is empty
     };
+
     var tasks = samples.Select(async path => {
       await using var stream =
         new FileStream(path, FileMode.Open, FileAccess.Read);
