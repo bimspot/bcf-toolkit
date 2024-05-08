@@ -6,7 +6,7 @@ using BcfToolkit.Model.Bcf30;
 namespace BcfToolkit.Builder.Bcf30;
 
 public class ProjectInfoBuilder :
-  IProjectBuilder<ProjectInfoBuilder>,
+  IProjectInfoBuilder<ProjectInfoBuilder>,
   IDefaultBuilder<ProjectInfoBuilder> {
   private readonly ProjectInfo _project = new();
 

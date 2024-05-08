@@ -3,7 +3,7 @@ using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30.Interfaces;
 
-public interface IProjectBuilder<out TBuilder> : IBuilder<ProjectInfo> {
+public interface IProjectInfoBuilder<out TBuilder> : IBuilder<ProjectInfo> {
   /// <summary>
   ///   Returns the builder object set with the `ProjectName`.
   /// </summary>

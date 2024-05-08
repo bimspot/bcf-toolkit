@@ -22,14 +22,14 @@ public interface IBcfBuilder<
   /// <summary>
   ///   Returns the builder object set with the `ProjectInfo`.
   /// </summary>
-  /// <param name="builder">Builder of the project.</param>
+  /// <param name="builder">Builder of the project info.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetProjectInfo(Action<TProjectBuilder> builder);
 
   /// <summary>
   ///   Returns the builder object set with the `Extensions`.
   /// </summary>
-  /// <param name="builder">Builder of the markup.</param>
+  /// <param name="builder">Builder of the extensions.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder SetExtensions(Action<TExtensionsBuilder> builder);
 

@@ -14,7 +14,7 @@ using RecursiveDataAnnotationsValidation;
 namespace BcfToolkit.Utils;
 
 /// <summary>
-///   The `JsonConverter` static class opens and parses the BCF json files
+///   The `JsonExtensions` static class opens and parses the BCF json files
 ///   and puts their contents into the BCF models. It also writes the in
 ///   memory BCF models into json files.
 /// </summary>
@@ -40,12 +40,14 @@ public static class JsonExtensions {
     return Task.Run(async () => {
       // A thread-safe storage for the parsed topics.
       var markups = new ConcurrentBag<TMarkup>();
-
+      const string guidPattern = "^[a-fA-F0-9]+$";
       var files = new List<string>(Directory.EnumerateFiles(sourceFolder));
       var topicFiles = files
         .Where(file =>
-          Regex.IsMatch(Path.GetFileNameWithoutExtension((string?)file).Replace("-", ""),
-            "^[a-fA-F0-9]+$"))
+          Regex.IsMatch(
+            Path.GetFileNameWithoutExtension(file)
+              .Replace("-", ""),
+            guidPattern))
         .ToList();
 
       foreach (var file in topicFiles) {
