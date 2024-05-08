@@ -11,7 +11,7 @@ nuget install Smino.Bcf.Toolkit
 
 ## Usage
 ### Creating BCF objects
-To create a BCF Model, `BuilderBuilder` class can be used. Then, various
+To create a BCF Model, `BcfBuilder` class can be used. Then, various
 functions provided by the builder can be used to fulfill the BCF model objects.
 
 Here are some examples:
@@ -68,7 +68,7 @@ using BcfToolkit.Builder.Bcf30;
 await using var stream = new FileStream(source, FileMode.Open, FileAccess.Read);
 var builder = new BcfBuilder();
 var bcf = await builder
-    .BuildFromStream(stream);
+  .BuildFromStream(stream);
 ```
 
 The default builders can be used if the user prefers not to deal with filling
@@ -81,36 +81,108 @@ using BcfToolkit.Builder.Bcf30;
 
 var builder = new BcfBuilder();
 var bcf = builder
-    .WithDefaults()
-    .Build();
+  .WithDefaults()
+  .Build();
 ```
-##### Using BCF workers
-The workers are implemented to use predefined workflows to convert `BCF` files
-into `json`. The aimed BCF version must be set first then `ConverterContext`
-class lets the nested object to do the conversion accordingly.
+### Using BCF worker
+The worker is implemented to use predefined workflows to convert `BCF` files
+into `json` and back. The function decides which workflow must be used according
+to the source and target. If the source ends with `.bcfzip` the converter uses
+the `BcfZipToJson` for example.
 
 ```csharp
 using BcfToolkit;
-using BcfToolkit.Model;
 
-var version = BcfVersion.Parse(arguments.TargetVersion);
-var context = new ConverterContext(version);
-await context.Convert("sourcePath", "targetPath");
+var worker = new Worker();
+await worker.Convert(source, target);
 ```
-
-The exact worker can be called directly as well for both converting directions,
-`BCF` into `json` and back.
+The exact converter can be called directly as well for both converting
+directions, `BCF` into `json` and back.
 
 ```csharp
-using BcfToolkit.Worker.Bcf30;
+using BcfToolkit.Converter.Bcf30;
 
-var worker = new ConverterWorker()
-worker.BcfZipToJson(source, target);
+var converter = new Converter()
+converter.BcfZipToJson(source, target);
 ```
 
 ```csharp
-using BcfToolkit.Worker.Bcf30;
+using BcfToolkit.Converter.Bcf30;
 
-var worker = new ConverterWorker()
-worker.JsonToBcfZip(source, target);
+var converter = new Converter()
+converter.JsonToBcfZip(source, target);
 ```
+
+Furthermore `BCF` archive can be consumed as a stream. The version of the source
+is established by the code, the aimed BCF version must be set. Then the class
+lets the nested converter object to do the conversion accordingly.
+
+```csharp
+using BcfToolkit;
+
+await using var stream = new FileStream(source, FileMode.Open, FileAccess.Read);
+
+var worker = new Worker();
+await worker.BuildBcfFromStream(stream);
+```
+## File Structure
+
+The structure of the BCF is per [the standard][3]. There is, however, no
+standard for the JSON format other than the [BCF API specification][4].
+
+The naming convention for this converter is taken from the BCF API, but the
+output is opinionated:
+
+There is one JSON for every `Markup` and within the structure of the information
+follows that of the XML. There are no separate files for screenshots, they are
+base64 encoded in the field `snapshot_data` of the `Viewpoint`. The files are
+named using the `uuid` of the `Topic` within.
+
+```
+|- json
+  |- 2ea98d1e-77ae-467f-bbc9-1aed1c1785f6.json
+  |- 3395f1b1-893f-4ca0-8b7d-c2d17d7a9198.json
+  |- c799e527-a413-43f8-8871-80918a52b0f0.json
+  |- ...
+  |- project.json
+  |- extensions.json
+  |- documents.json
+  |- version.json
+```
+
+## Development
+
+The development of the tool is ongoing, the table below shows the currently
+completed features.
+
+|          | BCF 2.0 | BCF 2.1 | BCF 3.0 | JSON 2.0 | JSON 2.1 | JSON 3.0 |
+|----------|:-------:|:-------:|:-------:|:--------:|:--------:|:--------:|
+| BCF 2.0  |         |         |         |          |          |          |
+| BCF 2.1  |         |         |         |          |    X     |          |
+| BCF 3.0  |         |         |         |          |          |    X     |
+| JSON 2.0 |         |         |         |          |          |          |
+| JSON 2.1 |         |    X    |         |          |          |          |
+| JSON 3.0 |         |         |    X    |          |          |          |
+
+The models for the BCF in-memory representation were auto-created from the
+[latest XSDs][1] using the [`XmlSchemaClassGenerator`][2].
+
+```
+~ dotnet tool install --global dotnet-xscgen
+~ xscgen -n [namespace] version.xsd
+```
+
+To publish, run the script at `dist/publish.sh`.
+
+### TODO
+
+- profile memory and CPU usage
+
+### Contribution
+
+Code style guide can be found in the `bcf-toolkit.sln.DotSettings` file.
+
+[1]: https://github.com/buildingSMART/BCF-XML/tree/master/Schemas
+[2]: https://github.com/mganss/XmlSchemaClassGenerator
+[3]: https://github.com/BuildingSMART/BCF-XML/tree/master/Documentation
+[4]: https://github.com/BuildingSMART/BCF-API

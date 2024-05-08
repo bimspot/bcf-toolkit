@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using BcfToolkit.Builder.Bcf30.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
 
@@ -7,11 +10,11 @@ namespace BcfToolkit.Builder.Bcf30;
 public partial class MarkupBuilder :
   IMarkupBuilder<
     MarkupBuilder,
-    HeaderFileBuilder,
+    FileBuilder,
     BimSnippetBuilder,
     DocumentReferenceBuilder,
     CommentBuilder,
-    ViewPointBuilder>,
+    VisualizationInfoBuilder>,
   IDefaultBuilder<MarkupBuilder> {
   private readonly Markup _markup = new();
 
@@ -36,9 +39,9 @@ public partial class MarkupBuilder :
   }
 
   public MarkupBuilder AddHeaderFile(
-    Action<HeaderFileBuilder> builder) {
+    Action<FileBuilder> builder) {
     var file =
-      (File)BuilderUtils.BuildItem<HeaderFileBuilder, IHeaderFile>(builder);
+      (File)BuilderUtils.BuildItem<FileBuilder, IHeaderFile>(builder);
     _markup.Header.Files.Add(file);
     return this;
   }
@@ -58,8 +61,8 @@ public partial class MarkupBuilder :
     return this;
   }
 
-  public MarkupBuilder SetIndex(int inx) {
-    _markup.Topic.Index = inx;
+  public MarkupBuilder SetIndex(int index) {
+    _markup.Topic.Index = index;
     return this;
   }
 
@@ -132,13 +135,23 @@ public partial class MarkupBuilder :
     return this;
   }
 
-  public MarkupBuilder AddViewPoint(Action<ViewPointBuilder> builder, string snapshotData) {
+  public MarkupBuilder AddViewPoint(
+    string viewpoint,
+    string snapshot,
+    string snapshotData,
+    int index,
+    string guid,
+    Action<VisualizationInfoBuilder> builder) {
     var visInfo =
       (VisualizationInfo)BuilderUtils
-        .BuildItem<ViewPointBuilder, IVisualizationInfo>(builder);
+        .BuildItem<VisualizationInfoBuilder, IVisualizationInfo>(builder);
     var viewPoint = new ViewPoint {
-      VisualizationInfo = visInfo,
-      SnapshotData = snapshotData
+      Viewpoint = viewpoint,
+      Snapshot = snapshot,
+      SnapshotData = snapshotData,
+      Index = index,
+      Guid = guid,
+      VisualizationInfo = visInfo
     };
     _markup.Topic.Viewpoints.Add(viewPoint);
     return this;
@@ -149,6 +162,11 @@ public partial class MarkupBuilder :
       Guid = relatedTopicGuid
     };
     _markup.Topic.RelatedTopics.Add(topic);
+    return this;
+  }
+
+  public MarkupBuilder SetServerAssignedId(string id) {
+    _markup.Topic.ServerAssignedId = id;
     return this;
   }
 
@@ -163,7 +181,9 @@ public partial class MarkupBuilder :
     return this;
   }
 
-  public IMarkup Build() {
+  public Markup Build() {
     return BuilderUtils.ValidateItem(_markup);
   }
+
+
 }

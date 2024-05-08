@@ -1,3 +1,5 @@
+using BcfToolkit.Builder.Bcf21.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 
@@ -13,12 +15,17 @@ public partial class VersionBuilder :
     return this;
   }
 
+  public VersionBuilder SetDetailedVersion(string version) {
+    _version.DetailedVersion = version;
+    return this;
+  }
+
   public VersionBuilder WithDefaults() {
     this.SetVersionId(BcfVersion.ToVersion(BcfVersionEnum.Bcf21));
     return this;
   }
 
-  public IVersion Build() {
+  public Version Build() {
     return BuilderUtils.ValidateItem(_version);
   }
 }

@@ -1,5 +1,6 @@
 using System;
-using System.IO;
+using BcfToolkit.Builder.Bcf21.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 
@@ -12,7 +13,7 @@ public class MarkupBuilder :
     BimSnippetBuilder,
     DocumentReferenceBuilder,
     CommentBuilder,
-    ViewPointBuilder>,
+    VisualizationInfoBuilder>,
   IDefaultBuilder<MarkupBuilder> {
   private readonly Markup _markup = new();
 
@@ -58,8 +59,8 @@ public class MarkupBuilder :
     return this;
   }
 
-  public MarkupBuilder SetIndex(int inx) {
-    _markup.Topic.Index = inx;
+  public MarkupBuilder SetIndex(int index) {
+    _markup.Topic.Index = index;
     return this;
   }
 
@@ -132,13 +133,19 @@ public class MarkupBuilder :
     return this;
   }
 
-  public MarkupBuilder AddViewPoint(Action<ViewPointBuilder> builder, string snapshotData) {
+  public MarkupBuilder AddViewPoint(string viewpoint, string snapshot,
+    string snapshotData, int index, string guid,
+    Action<VisualizationInfoBuilder> builder) {
     var visInfo =
       (VisualizationInfo)BuilderUtils
-        .BuildItem<ViewPointBuilder, IVisualizationInfo>(builder);
+        .BuildItem<VisualizationInfoBuilder, IVisualizationInfo>(builder);
     var viewPoint = new ViewPoint {
-      VisualizationInfo = visInfo,
-      SnapshotData = snapshotData
+      Viewpoint = viewpoint,
+      Snapshot = snapshot,
+      SnapshotData = snapshotData,
+      Index = index,
+      Guid = guid,
+      VisualizationInfo = visInfo
     };
     _markup.Viewpoints.Add(viewPoint);
     return this;
@@ -161,7 +168,7 @@ public class MarkupBuilder :
     return this;
   }
 
-  public IMarkup Build() {
+  public Markup Build() {
     return BuilderUtils.ValidateItem(_markup);
   }
 }

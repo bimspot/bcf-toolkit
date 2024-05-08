@@ -5,25 +5,24 @@ Collaboration Format) files into `json` and vice versa.
 
 The tool converts `BCF` information across formats ~~and versions~~. 
 
-## Usage
-
 ## Requirements
 
 - dotnet 8
 
 ### CLI
 
-The command line interface accepts three arguments:
- * the source bcf file or json folder
- * the target bcf file or json folder
+The command line interface accepts 3 arguments:
+ * the source bcf file or json folder [REQUIRED]
+ * the target bcf file or json folder [REQUIRED]
+ * the target version of bcf [OPTIONAL]
  
 The json representation is one file for every `Markup`, while the BCF format
 is a zipped file as per the standard.
 
 ```
-~ bcf-converter /path/to/source.bcfzip /path/to/target/json/folder
+~ bcf-toolkit /path/to/source.bcfzip /path/to/target/json/folder
 
-~ bcf-converter /path/to/source/json/folder /path/to/target.bcfzip
+~ bcf-toolkit /path/to/source/json/folder /path/to/target.bcfzip
 ```
 
 ### As A Library
@@ -32,15 +31,15 @@ BCF files. It gives a straightforward API to build the BCF objects exactly in
 the order of the user's choice.
 
 #### Installation
-`BcfConverter` library can be installed via NuGet Package Manager or by adding 
+`Smino.Bcf.Toolkit` library can be installed via NuGet Package Manager or by adding 
 it to the project's .csproj file.
 ```
-nuget install BCFConverter
+nuget install Smino.Bcf.Toolkit
 ```
 
 #### Usage
 ##### Creating BCF objects
-To create a BCF Model, `BuilderBuilder` class can be used. Then, various 
+To create a BCF Model, `BcfBuilder` class can be used. Then, various 
 functions provided by the builder can be used to fulfill the BCF model objects. 
 
 Here are some examples:
@@ -97,7 +96,7 @@ using BcfToolkit.Builder.Bcf30;
 await using var stream = new FileStream(source, FileMode.Open, FileAccess.Read);
 var builder = new BcfBuilder();
 var bcf = await builder
-    .BuildFromStream(stream);
+  .BuildFromStream(stream);
 ```
 
 The default builders can be used if the user prefers not to deal with filling 
@@ -110,38 +109,49 @@ using BcfToolkit.Builder.Bcf30;
 
 var builder = new BcfBuilder();
 var bcf = builder
-    .WithDefaults()
-    .Build();
+  .WithDefaults()
+  .Build();
 ```
-##### Using BCF workers
-The workers are implemented to use predefined workflows to convert `BCF` files 
-into `json`. The aimed BCF version must be set first then `ConverterContext` 
-class lets the nested object to do the conversion accordingly.
+##### Using BCF worker
+The worker is implemented to use predefined workflows to convert `BCF` files 
+into `json` and back. The function decides which workflow must be used according 
+to the source and target. If the source ends with `.bcfzip` the converter uses
+the `BcfZipToJson` for example.
 
 ```csharp
 using BcfToolkit;
-using BcfToolkit.Model;
 
-var version = BcfVersion.Parse(arguments.TargetVersion);
-var context = new ConverterContext(version);
-await context.Convert("sourcePath", "targetPath");
+var worker = new Worker();
+await worker.Convert(source, target);
 ```
-
-The exact worker can be called directly as well for both converting directions,
-`BCF` into `json` and back.
+The exact converter can be called directly as well for both converting 
+directions, `BCF` into `json` and back.
 
 ```csharp
-using BcfToolkit.Worker.Bcf30;
+using BcfToolkit.Converter.Bcf30;
 
-var worker = new ConverterWorker()
-worker.BcfZipToJson(source, target);
+var converter = new Converter()
+converter.BcfZipToJson(source, target);
 ```
 
 ```csharp
-using BcfToolkit.Worker.Bcf30;
+using BcfToolkit.Converter.Bcf30;
 
-var worker = new ConverterWorker()
-worker.JsonToBcfZip(source, target);
+var converter = new Converter()
+converter.JsonToBcfZip(source, target);
+```
+
+Furthermore `BCF` archive can be consumed as a stream. The version of the source
+is established by the code, the aimed BCF version must be set. Then the class 
+lets the nested converter object to do the conversion accordingly.
+
+```csharp
+using BcfToolkit;
+
+await using var stream = new FileStream(source, FileMode.Open, FileAccess.Read);
+
+var worker = new Worker();
+await worker.BuildBcfFromStream(stream);
 ```
 
 ## File Structure
@@ -166,6 +176,7 @@ named using the `uuid` of the `Topic` within.
   |- project.json
   |- extensions.json
   |- documents.json
+  |- version.json
 ```
 
 ## Development

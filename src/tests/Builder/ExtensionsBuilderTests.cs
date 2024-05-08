@@ -1,20 +1,14 @@
 using BcfToolkit.Builder.Bcf30;
-using BcfToolkit.Model.Bcf30;
 using NUnit.Framework;
 
 namespace Tests.Builder;
 
 public class ExtensionsBuilderTests {
-  private ExtensionsBuilder _builder;
-
-  [SetUp]
-  public void Setup() {
-    _builder = new ExtensionsBuilder();
-  }
+  private readonly ExtensionsBuilder _builder = new();
 
   [Test]
   public void BuildExtensionsWithComplexFields() {
-    var extensions = (Extensions)_builder
+    var extensions = (BcfToolkit.Model.Bcf30.Extensions)_builder
       .AddTopicType("ERROR")
       .AddTopicStatus("OPEN")
       .AddPriority("HIGH")

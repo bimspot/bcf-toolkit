@@ -1,5 +1,6 @@
 using System;
-using BcfToolkit.Model;
+using BcfToolkit.Builder.Bcf21.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
@@ -29,7 +30,7 @@ public class CommentBuilder :
     return this;
   }
 
-  public CommentBuilder SetViewPoint(string guid) {
+  public CommentBuilder SetViewPointGuid(string guid) {
     _comment.Viewpoint.Guid = guid;
     return this;
   }
@@ -53,7 +54,7 @@ public class CommentBuilder :
     return this;
   }
 
-  public IComment Build() {
+  public Comment Build() {
     return BuilderUtils.ValidateItem(_comment);
   }
 }

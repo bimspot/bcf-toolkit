@@ -1,5 +1,6 @@
 using System;
-using BcfToolkit.Model;
+using BcfToolkit.Builder.Bcf30.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
@@ -56,9 +57,7 @@ public class BitmapBuilder :
     return this;
   }
 
-  public IBitmap Build() {
+  public Bitmap Build() {
     return BuilderUtils.ValidateItem(_bitmap);
   }
-
-
 }

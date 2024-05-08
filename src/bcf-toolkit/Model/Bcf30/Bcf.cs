@@ -16,4 +16,6 @@ public class Bcf : IBcf {
   public Extensions Extensions { get; set; }
 
   public ProjectInfo? Project { get; set; }
+
+  public Version? Version { get; set; }
 }

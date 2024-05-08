@@ -1,5 +1,6 @@
 using System;
-using BcfToolkit.Model;
+using BcfToolkit.Builder.Bcf30.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
@@ -8,6 +9,7 @@ public partial class DocumentReferenceBuilder :
   IDocumentReferenceBuilder<DocumentReferenceBuilder>,
   IDefaultBuilder<DocumentReferenceBuilder> {
   private readonly DocumentReference _documentReference = new();
+
   public DocumentReferenceBuilder SetGuid(string guid) {
     _documentReference.Guid = guid;
     return this;
@@ -18,13 +20,23 @@ public partial class DocumentReferenceBuilder :
     return this;
   }
 
-  public DocumentReferenceBuilder WithDefaults() {
-    this
-      .SetGuid(Guid.NewGuid().ToString());
+  public DocumentReferenceBuilder SetDocumentGuid(string? guid) {
+    _documentReference.DocumentGuid = guid;
     return this;
   }
 
-  public IDocReference Build() {
+  public DocumentReferenceBuilder SetUrl(string? url) {
+    if (url != null)
+      _documentReference.Url = url;
+    return this;
+  }
+
+  public DocumentReferenceBuilder WithDefaults() {
+    this.SetGuid(Guid.NewGuid().ToString());
+    return this;
+  }
+
+  public DocumentReference Build() {
     return BuilderUtils.ValidateItem(_documentReference);
   }
 }

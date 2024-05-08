@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Tests.Builder;
 
 public class MarkupBuilderTests {
-  private MarkupBuilder _builder;
+  private MarkupBuilder _builder = null!;
 
   [SetUp]
   public void Setup() {
