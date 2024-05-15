@@ -37,9 +37,10 @@ public interface IConverter {
   ///   specified stream.
   /// </summary>
   /// <param name="bcf">The BCF object.</param>
+  /// <param name="targetVersion">The BCF version.</param>
   /// <returns></returns>
   /// <exception cref="FileNotFoundException"></exception>
-  Task<Stream> ToBcfStream(IBcf bcf);
+  Task<Stream> ToBcfStream(IBcf bcf, BcfVersionEnum targetVersion);
 
   /// <summary>
   ///   The method writes the specified BCF model to BCFzip files.

@@ -59,6 +59,11 @@ public class Worker {
     InitConverter(version);
   }
 
+  private void InitConverterFromType(IBcf bcf) {
+    var version = BcfVersion.TryParse(bcf);
+    InitConverter(version);
+  }
+
   /// <summary>
   ///   Sets the converter strategy by the specified version.
   /// </summary>
@@ -119,5 +124,10 @@ public class Worker {
   public async Task<Bcf> BuildBcfFromStream(Stream stream) {
     await InitConverterFromStreamArchive(stream);
     return await _converter.BuildBcfFromStream<Bcf>(stream);
+  }
+
+  public async Task<Stream> ToBcfStream(IBcf bcf, BcfVersionEnum targetVersion) {
+    InitConverterFromType(bcf);
+    return await _converter.ToBcfStream(bcf, targetVersion);
   }
 }

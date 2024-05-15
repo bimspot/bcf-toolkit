@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using BcfToolkit.Converter;
+using BcfToolkit.Model;
 using BcfToolkit.Utils;
 using BcfToolkit.Model.Bcf30;
 using NUnit.Framework;
@@ -85,7 +86,7 @@ public class ConverterTests {
       Document = documentInfo
     };
 
-    var streamResult = await _converter.ToBcfStream(bcf);
+    var streamResult = await _converter.ToBcfStream(bcf, BcfVersionEnum.Bcf30);
 
     Assert.IsNotNull(streamResult);
     Assert.IsTrue(streamResult.CanRead);
