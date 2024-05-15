@@ -6,7 +6,7 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
 
-public class MarkupBuilder :
+public partial class MarkupBuilder :
   IMarkupBuilder<
     MarkupBuilder,
     HeaderFileBuilder,

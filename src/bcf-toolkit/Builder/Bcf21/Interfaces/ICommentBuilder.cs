@@ -27,11 +27,11 @@ public interface ICommentBuilder<out TBuilder> : IBuilder<Comment> {
   TBuilder SetAuthor(string user);
 
   /// <summary>
-  ///   Returns the builder object set with the `Comment`.
+  ///   Returns the builder object set with the `CommentProperty`.
   /// </summary>
   /// <param name="comment">The comment text.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetComment(string comment);
+  TBuilder SetCommentProperty(string comment);
 
   /// <summary>
   ///   Returns the builder object set with the `ViewPoint.Guid`.
