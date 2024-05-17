@@ -19,29 +19,30 @@ internal static class Program {
       description: "The absolute path of the target.") { IsRequired = true };
     targetOption.AddAlias("-t");
 
-    var versionOption = new Option<string>(
-        name: "--bcfVersion",
-        description:
-        "The target version of the bcf parser, by default 2.1 is used.") { IsRequired = false };
-    versionOption.AddAlias("-b");
-    versionOption.SetDefaultValue("2.1");
+    // var versionOption = new Option<string>(
+    //     name: "--bcfVersion",
+    //     description:
+    //     "The target version of the bcf parser, by default 2.1 is used.") { IsRequired = false };
+    // versionOption.AddAlias("-b");
+    // versionOption.SetDefaultValue("2.1");
 
     var rootCommand = new RootCommand {
       Description =
-      "Bcf toolkit is command line utility for converting BCF (Building Collaboration Format) files into json and vice versa. " +
+      "Bcf toolkit is command line utility for converting BCF " +
+      "(Building Collaboration Format) files into json and vice versa. " +
       "The tool converts BCF information across formats and versions."
     };
 
     rootCommand.AddOption(sourcePathOption);
     rootCommand.AddOption(targetOption);
-    rootCommand.AddOption(versionOption);
+    // rootCommand.AddOption(versionOption);
 
     rootCommand.SetHandler(
       async arguments => { await DoRootCommand(arguments); },
       new InputArgumentsBinder(
         sourcePathOption,
-        targetOption,
-        versionOption));
+        targetOption));
+    // versionOption));
     await rootCommand.InvokeAsync(args);
   }
 

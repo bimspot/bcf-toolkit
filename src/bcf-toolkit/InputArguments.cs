@@ -7,15 +7,15 @@ namespace BcfToolkit;
 public class InputArguments {
   public string SourcePath { get; set; }
   public string Target { get; set; }
-  public string TargetVersion { get; set; }
+  // public string TargetVersion { get; set; }
 
   public InputArguments(
     string sourcePath,
-    string target,
-    string targetVersion) {
+    string target) {
+    // string targetVersion) {
     this.SourcePath = sourcePath;
     this.Target = target;
-    this.TargetVersion = targetVersion;
+    // this.TargetVersion = targetVersion;
     this.Validate();
   }
 
@@ -35,22 +35,22 @@ public class InputArguments {
 public class InputArgumentsBinder : BinderBase<InputArguments> {
   private readonly Option<string> _sourcePathOption;
   private readonly Option<string> _targetOption;
-  private readonly Option<string> _versionOption;
+  // private readonly Option<string> _versionOption;
 
   public InputArgumentsBinder(
     Option<string> sourcePathOption,
-    Option<string> targetOption,
-    Option<string> versionOption) {
+    Option<string> targetOption) {
+    // Option<string> versionOption) {
     _sourcePathOption = sourcePathOption;
     _targetOption = targetOption;
-    _versionOption = versionOption;
+    // _versionOption = versionOption;
   }
 
   protected override InputArguments GetBoundValue(BindingContext bindingContext) =>
     new InputArguments
     (
       bindingContext.ParseResult.GetValueForOption(_sourcePathOption),
-      bindingContext.ParseResult.GetValueForOption(_targetOption),
-      bindingContext.ParseResult.GetValueForOption(_versionOption)
+      bindingContext.ParseResult.GetValueForOption(_targetOption)
+    // bindingContext.ParseResult.GetValueForOption(_versionOption)
     );
 }
