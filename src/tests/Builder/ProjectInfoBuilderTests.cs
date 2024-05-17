@@ -14,9 +14,9 @@ public class ProjectInfoBuilderTests {
       .SetProjectName("Project")
       .Build();
 
-    Assert.AreEqual(
+    Assert.That(
       "3ZSh2muKX7S8MCESk95seC",
-      project.Project.ProjectId);
+      Is.EqualTo(project.Project.ProjectId));
   }
 
   [Test]

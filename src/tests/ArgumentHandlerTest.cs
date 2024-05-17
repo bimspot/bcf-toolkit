@@ -3,6 +3,7 @@ using System.CommandLine;
 using System.CommandLine.Builder;
 using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Tests;
 
@@ -22,11 +23,11 @@ public abstract class ArgumentHandlerTest {
       var input1 = new List<string>
         {"--source", "sourcePath", "--target", "target"};
       var result1 = parser.Parse(input1);
-      Assert.AreEqual(0, result1.Errors.Count);
+      Assert.That(0, Is.EqualTo(result1.Errors.Count));
       var bcfVersionOption = rootCommand.Options.FirstOrDefault(opt => opt.Aliases.Contains("--bcfVersion"));
 
       if (bcfVersionOption != null)
-        Assert.AreEqual("2.1", result1.GetValueForOption(bcfVersionOption));
+        Assert.That("2.1", Is.EqualTo(result1.GetValueForOption(bcfVersionOption)));
       else {
         Assert.Fail();
       }
@@ -34,7 +35,7 @@ public abstract class ArgumentHandlerTest {
       // Test case 2: missing required argument (--source)
       var input2 = new List<string> { "--target", "target" };
       var result2 = parser.Parse(input2);
-      Assert.AreEqual(1, result2.Errors.Count);
+      Assert.That(1, Is.EqualTo(result2.Errors.Count));
       StringAssert.Contains("Option '--source' is required.", result2.Errors[0].Message);
 
       // Test case 3: valid arguments with optional argument (--bcfVersion)
@@ -43,12 +44,12 @@ public abstract class ArgumentHandlerTest {
         "3.0"
       };
       var result3 = parser.Parse(input3);
-      Assert.AreEqual(0, result3.Errors.Count);
+      Assert.That(0, Is.EqualTo(result3.Errors.Count));
 
       // Test case 4: missing required argument (--target)
       var input4 = new List<string> { "--source", "sourcePath" };
       var result4 = parser.Parse(input4);
-      Assert.AreEqual(1, result4.Errors.Count);
+      Assert.That(1, Is.EqualTo(result4.Errors.Count));
       StringAssert.Contains("Option '--target' is required.", result4.Errors[0].Message);
     }
 
@@ -64,11 +65,11 @@ public abstract class ArgumentHandlerTest {
       var input1 = new List<string>
         {"-s", "sourcePath", "-t", "target"};
       var result1 = parser.Parse(input1);
-      Assert.AreEqual(0, result1.Errors.Count);
+      Assert.That(0, Is.EqualTo(result1.Errors.Count));
       var bcfVersionOption = rootCommand.Options.FirstOrDefault(opt => opt.Aliases.Contains("-b"));
 
       if (bcfVersionOption != null)
-        Assert.AreEqual("2.1", result1.GetValueForOption(bcfVersionOption));
+        Assert.That("2.1", Is.EqualTo(result1.GetValueForOption(bcfVersionOption)));
       else {
         Assert.Fail();
       }
@@ -76,7 +77,7 @@ public abstract class ArgumentHandlerTest {
       // Test case 2: missing required argument (--source)
       var input2 = new List<string> { "-t", "target" };
       var result2 = parser.Parse(input2);
-      Assert.AreEqual(1, result2.Errors.Count);
+      Assert.That(1, Is.EqualTo(result2.Errors.Count));
       StringAssert.Contains("Option '--source' is required.", result2.Errors[0].Message);
 
       // Test case 3: valid arguments with optional argument (--bcfVersion)
@@ -85,12 +86,12 @@ public abstract class ArgumentHandlerTest {
         "3.0"
       };
       var result3 = parser.Parse(input3);
-      Assert.AreEqual(0, result3.Errors.Count);
+      Assert.That(0, Is.EqualTo(result3.Errors.Count));
 
       // Test case 4: missing required argument (--target)
       var input4 = new List<string> { "-s", "sourcePath" };
       var result4 = parser.Parse(input4);
-      Assert.AreEqual(1, result4.Errors.Count);
+      Assert.That(1, Is.EqualTo(result4.Errors.Count));
       StringAssert.Contains("Option '--target' is required.", result4.Errors[0].Message);
     }
   }

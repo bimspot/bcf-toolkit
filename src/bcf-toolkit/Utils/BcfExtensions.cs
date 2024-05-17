@@ -299,7 +299,7 @@ public static class BcfExtensions {
         entry.Open(),
         LoadOptions.None,
         CancellationToken.None);
-      version = BcfVersion.Parse(document.Root?.Attribute("VersionId")?.Value);
+      version = BcfVersion.TryParse(document.Root?.Attribute("VersionId")?.Value);
       stream.Position = 0;
       return version;
     }

@@ -125,6 +125,20 @@ await using var stream = new FileStream(source, FileMode.Open, FileAccess.Read);
 var worker = new Worker();
 var bcf = await worker.BuildBcfFromStream(stream);
 ```
+
+The worker can return a file stream from the specified instance of the bcf
+object. The function converts the bcf to the target version. Disposing the
+stream after the usage is the responsibility of the caller.
+
+```csharp
+using BcfToolkit;
+
+var worker = new Worker();
+var stream = await worker.ToBcfStream(bcf, BcfVersionEnum.Bcf30);
+// custom code to use the stream...
+await stream.FlushAsync();
+```
+
 ## File Structure
 
 The structure of the BCF is per [the standard][3]. There is, however, no

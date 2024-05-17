@@ -31,9 +31,9 @@ public class BcfBuilderTests {
         .SetProjectId("3ZSh2muKX7S8MCESk95seC")
         .SetProjectName("Project"))
       .Build();
-    Assert.AreEqual(1, bcf.Markups.Count);
-    Assert.AreEqual(true, bcf.Extensions.TopicTypesSpecified);
-    Assert.AreEqual("Project", bcf.Project?.Project.Name);
+    Assert.That(1, Is.EqualTo(bcf.Markups.Count));
+    Assert.That(true, Is.EqualTo(bcf.Extensions.TopicTypesSpecified));
+    Assert.That("Project", Is.EqualTo(bcf.Project?.Project.Name));
   }
 
   [Test]
@@ -48,10 +48,10 @@ public class BcfBuilderTests {
       FileMode.Open,
       FileAccess.Read);
     var bcf = await _builder.BuildFromStream(stream);
-    Assert.AreEqual(1, bcf.Markups.Count);
-    Assert.AreEqual(
+    Assert.That(1, Is.EqualTo(bcf.Markups.Count));
+    Assert.That(
       "Architect@example.com",
-      bcf.Markups.FirstOrDefault()?.Topic.AssignedTo);
+      Is.EqualTo(bcf.Markups.FirstOrDefault()?.Topic.AssignedTo));
   }
   [Test]
   public async Task BuildEmptyBcfFromStream() {

@@ -143,7 +143,7 @@ public static class JsonExtensions {
       var json = await reader.ReadToEndAsync();
       var bcf = JObject.Parse(json);
       var version = bcf["Version"]?.ToString();
-      return BcfVersion.Parse(version);
+      return BcfVersion.TryParse(version);
     });
   }
 }

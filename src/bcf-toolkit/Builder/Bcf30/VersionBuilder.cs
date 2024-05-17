@@ -16,7 +16,7 @@ public class VersionBuilder :
   }
 
   public VersionBuilder WithDefaults() {
-    this.SetVersionId(BcfVersion.ToVersion(BcfVersionEnum.Bcf30));
+    this.SetVersionId(BcfVersion.ToString(BcfVersionEnum.Bcf30));
     return this;
   }
 
