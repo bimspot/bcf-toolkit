@@ -13,8 +13,8 @@ public class ExtensionsBuilderTests {
       .AddTopicStatus("OPEN")
       .AddPriority("HIGH")
       .Build();
-    Assert.AreEqual(true, extensions.TopicTypesSpecified);
-    Assert.AreEqual(true, extensions.TopicStatusesSpecified);
-    Assert.AreEqual(true, extensions.PrioritiesSpecified);
+    Assert.That(true, Is.EqualTo(extensions.TopicTypesSpecified));
+    Assert.That(true, Is.EqualTo(extensions.TopicStatusesSpecified));
+    Assert.That(true, Is.EqualTo(extensions.PrioritiesSpecified));
   }
 }

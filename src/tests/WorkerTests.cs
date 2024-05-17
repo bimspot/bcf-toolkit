@@ -68,7 +68,7 @@ public class WorkerTests {
       .Build();
     var stream = await _worker.ToBcfStream(bcf, BcfVersionEnum.Bcf30);
     var version = await BcfExtensions.GetVersionFromStreamArchive(stream);
-    Assert.AreEqual(BcfVersionEnum.Bcf30, version);
+    Assert.That(BcfVersionEnum.Bcf30, Is.EqualTo(version));
     await stream.FlushAsync();
   }
 
@@ -88,7 +88,7 @@ public class WorkerTests {
       .Build();
     var stream = await _worker.ToBcfStream(bcf, BcfVersionEnum.Bcf30);
     var version = await BcfExtensions.GetVersionFromStreamArchive(stream);
-    Assert.AreEqual(BcfVersionEnum.Bcf30, version);
+    Assert.That(BcfVersionEnum.Bcf30, Is.EqualTo(version));
     await stream.FlushAsync();
   }
 }

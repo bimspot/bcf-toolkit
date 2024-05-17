@@ -8,6 +8,7 @@ using BcfToolkit.Converter;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Tests.Converter.Bcf21;
 
@@ -66,8 +67,8 @@ public class ConverterTests {
 
     var stream = await _converter.ToBcfStream(bcf, BcfVersionEnum.Bcf21);
 
-    Assert.IsNotNull(stream);
-    Assert.IsTrue(stream.CanRead);
+    ClassicAssert.IsNotNull(stream);
+    ClassicAssert.IsTrue(stream.CanRead);
 
     await stream.DisposeAsync();
   }
@@ -160,9 +161,9 @@ public class ConverterTests {
         FileMode.Open,
         FileAccess.Read);
     var bcf = await _converter.BuildBcfFromStream<Bcf>(stream);
-    Assert.AreEqual(typeof(Bcf), bcf.GetType());
-    Assert.AreEqual(1, bcf.Markups.Count);
-    Assert.AreEqual("2.1", bcf.Version?.VersionId);
+    Assert.That(typeof(Bcf), Is.EqualTo(bcf.GetType()));
+    Assert.That(1, Is.EqualTo(bcf.Markups.Count));
+    Assert.That("2.1", Is.EqualTo(bcf.Version?.VersionId));
   }
 
   /// <summary>
@@ -177,9 +178,9 @@ public class ConverterTests {
         FileMode.Open,
         FileAccess.Read);
     var bcf = await _converter.BuildBcfFromStream<BcfToolkit.Model.Bcf30.Bcf>(stream);
-    Assert.AreEqual(typeof(BcfToolkit.Model.Bcf30.Bcf), bcf.GetType());
-    Assert.AreEqual(1, bcf.Markups.Count);
-    Assert.AreEqual("OPEN", bcf.Extensions.TopicStatuses.FirstOrDefault());
-    Assert.AreEqual("3.0", bcf.Version?.VersionId);
+    Assert.That(typeof(BcfToolkit.Model.Bcf30.Bcf), Is.EqualTo(bcf.GetType()));
+    Assert.That(1, Is.EqualTo(bcf.Markups.Count));
+    Assert.That("OPEN", Is.EqualTo(bcf.Extensions.TopicStatuses.FirstOrDefault()));
+    Assert.That("3.0", Is.EqualTo(bcf.Version?.VersionId));
   }
 }

@@ -9,6 +9,7 @@ using BcfToolkit.Model;
 using BcfToolkit.Utils;
 using BcfToolkit.Model.Bcf30;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Tests.Converter.Bcf30;
 
@@ -93,8 +94,8 @@ public class ConverterTests {
 
     var streamResult = await _converter.ToBcfStream(bcf, BcfVersionEnum.Bcf30);
 
-    Assert.IsNotNull(streamResult);
-    Assert.IsTrue(streamResult.CanRead);
+    ClassicAssert.IsNotNull(streamResult);
+    ClassicAssert.IsTrue(streamResult.CanRead);
 
     await streamResult.DisposeAsync();
   }
@@ -198,9 +199,9 @@ public class ConverterTests {
         FileMode.Open,
         FileAccess.Read);
     var bcf = await _converter.BuildBcfFromStream<Bcf>(stream);
-    Assert.AreEqual(typeof(Bcf), bcf.GetType());
-    Assert.AreEqual(1, bcf.Markups.Count);
-    Assert.AreEqual("3.0", bcf.Version?.VersionId);
+    Assert.That(typeof(Bcf), Is.EqualTo(bcf.GetType()));
+    Assert.That(1, Is.EqualTo(bcf.Markups.Count));
+    Assert.That("3.0", Is.EqualTo(bcf.Version?.VersionId));
   }
 
   // /// <summary>
