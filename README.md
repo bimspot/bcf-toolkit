@@ -3,7 +3,7 @@
 A .NET library and a command line utility for converting `BCF` (Building 
 Collaboration Format) files into `json` and vice versa.
 
-The tool converts `BCF` information across formats ~~and versions~~. 
+The tool converts `BCF` information across formats and versions. 
 
 ## Requirements
 
@@ -11,10 +11,10 @@ The tool converts `BCF` information across formats ~~and versions~~.
 
 ### CLI
 
-The command line interface accepts 3 arguments:
+The command line interface accepts 2 arguments:
  * the source bcf file or json folder [REQUIRED]
  * the target bcf file or json folder [REQUIRED]
- * the target version of bcf [OPTIONAL]
+ ~~* the target version of bcf [OPTIONAL]~~
  
 The json representation is one file for every `Markup`, while the BCF format
 is a zipped file as per the standard.
