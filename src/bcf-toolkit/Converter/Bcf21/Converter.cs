@@ -22,34 +22,34 @@ public class Converter : IConverter {
   ///   Defines the converter function, which must be used for converting the
   ///   BCF object to the targeted version.
   /// </summary>
-  private readonly Dictionary<BcfVersionEnum, Func<Bcf, IBcf>> _converterFnMapper = new();
+  private readonly Dictionary<BcfVersionEnum, Func<Bcf, IBcf>> _converterFnMapper =
+    new() {
+      [BcfVersionEnum.Bcf21] = b => b,
+      [BcfVersionEnum.Bcf30] = SchemaConverterToBcf30.Convert
+    };
 
   /// <summary>
   ///   Defines the file writer function which must be used for write the BCF
   ///   object to the targeted version.
   /// </summary>
-  private readonly Dictionary<BcfVersionEnum, Func<IBcf, string, bool, Task<string>>> _writerFnMapper = new();
+  private readonly Dictionary<BcfVersionEnum, Func<IBcf, string, bool, Task<string>>> _writerFnMapper =
+    new() {
+      [BcfVersionEnum.Bcf21] = FileWriter.WriteBcf,
+      [BcfVersionEnum.Bcf30] = Bcf30.FileWriter.WriteBcf
+    };
 
-  public Converter() {
-    _converterFnMapper[BcfVersionEnum.Bcf21] = b => b;
-    _converterFnMapper[BcfVersionEnum.Bcf30] = SchemaConverterToBcf30.Convert;
-
-    _writerFnMapper[BcfVersionEnum.Bcf21] = FileWriter.WriteBcf;
-    _writerFnMapper[BcfVersionEnum.Bcf30] = Bcf30.FileWriter.WriteBcf;
-  }
-
-  public async Task BcfZipToJson(Stream source, string target) {
+  public async Task BcfZipToJson(Stream source, string targetPath) {
     var bcf = await _builder.BuildFromStream(source);
 
     // Writing json files
-    await FileWriter.WriteJson(bcf, target);
+    await FileWriter.WriteJson(bcf, targetPath);
   }
 
-  public async Task BcfZipToJson(string sourcePath, string target) {
+  public async Task BcfZipToJson(string sourcePath, string targetPath) {
     try {
       await using var fileStream =
         new FileStream(sourcePath, FileMode.Open, FileAccess.Read);
-      await BcfZipToJson(fileStream, target);
+      await BcfZipToJson(fileStream, targetPath);
     }
     catch (Exception ex) {
       throw new ArgumentException($"Source path is not readable. {ex.Message}", ex);

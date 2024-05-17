@@ -33,13 +33,14 @@ public interface IConverter {
   Task JsonToBcfZip(string source, string target);
 
   /// <summary>
-  ///   The method handles the BCF content from the given objects to the
-  ///   specified stream.
+  ///   The method converts the specified BCF object to the given version, then
+  ///   returns a stream from the BCF zip archive.
+  ///
+  ///   WARNING: Disposing the stream is the responsibility of the user!
   /// </summary>
   /// <param name="bcf">The BCF object.</param>
   /// <param name="targetVersion">The BCF version.</param>
-  /// <returns></returns>
-  /// <exception cref="FileNotFoundException"></exception>
+  /// <returns>Returns the file stream of the BCF zip archive.</returns>
   Task<Stream> ToBcfStream(IBcf bcf, BcfVersionEnum targetVersion);
 
   /// <summary>
@@ -63,6 +64,8 @@ public interface IConverter {
   ///   target version from the given stream.
   /// </summary>
   /// <param name="stream">The BCF file stream.</param>
-  /// <returns>Returns the `Bcf` object.</returns>
+  /// <returns>
+  ///   Returns the `Bcf` object which is specified as a type parameter.
+  /// </returns>
   Task<T> BuildBcfFromStream<T>(Stream stream);
 }
