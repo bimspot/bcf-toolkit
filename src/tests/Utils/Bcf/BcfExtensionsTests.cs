@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using bcf21 = BcfToolkit.Model.Bcf21;
 using bcf30 = BcfToolkit.Model.Bcf30;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Tests.Utils.Bcf;
 
@@ -22,16 +23,16 @@ public class BcfExtensionsTests {
       await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         stream);
     var markup = markups.FirstOrDefault()!;
-    Assert.AreEqual(1, markups.Count);
-    Assert.AreEqual("ee9a9498-698b-44ed-8ece-b3ae3b480a90", markup.Topic.Guid);
-    Assert.AreEqual("All components of curtain wall visible",
-      markup.Topic.Title);
-    Assert.AreEqual("pasi.paasiala@solibri.com", markup.Topic.ModifiedAuthor);
+    Assert.That(1, Is.EqualTo(markups.Count));
+    Assert.That("ee9a9498-698b-44ed-8ece-b3ae3b480a90", Is.EqualTo(markup.Topic.Guid));
+    Assert.That("All components of curtain wall visible",
+      Is.EqualTo(markup.Topic.Title));
+    Assert.That("pasi.paasiala@solibri.com", Is.EqualTo(markup.Topic.ModifiedAuthor));
     var visInfo =
       (bcf21.VisualizationInfo)markup.Viewpoints.FirstOrDefault()
         ?.VisualizationInfo!;
-    Assert.AreEqual("2_hQ1Rixj6lgHTra$L72O4",
-      visInfo.Components.Visibility.Exceptions.FirstOrDefault()?.IfcGuid);
+    Assert.That("2_hQ1Rixj6lgHTra$L72O4",
+      Is.EqualTo(visInfo.Components.Visibility.Exceptions.FirstOrDefault()?.IfcGuid));
   }
 
   /// <summary>
@@ -46,13 +47,13 @@ public class BcfExtensionsTests {
       await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         stream);
     var markup = markups.FirstOrDefault();
-    Assert.AreEqual(1, markups.Count);
+    Assert.That(1, Is.EqualTo(markups.Count));
     var visInfo =
       (bcf21.VisualizationInfo)markup?.Viewpoints.FirstOrDefault()
         ?.VisualizationInfo!;
-    Assert.AreEqual(3, visInfo.Components.Selection.Count);
-    Assert.AreEqual("1GU8BMEqHBQxVAbwRD$4Jj",
-      visInfo.Components.Selection.FirstOrDefault()?.IfcGuid);
+    Assert.That(3, Is.EqualTo(visInfo.Components.Selection.Count));
+    Assert.That("1GU8BMEqHBQxVAbwRD$4Jj",
+      Is.EqualTo(visInfo.Components.Selection.FirstOrDefault()?.IfcGuid));
   }
 
   /// <summary>
@@ -71,9 +72,9 @@ public class BcfExtensionsTests {
       await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         stream);
     var markup = markups.FirstOrDefault()!;
-    Assert.AreEqual(1, markups.Count);
-    Assert.AreEqual("http://bimfiles.example.com/JsonElement.json",
-      markup.Topic.BimSnippet.Reference);
+    Assert.That(1, Is.EqualTo(markups.Count));
+    Assert.That("http://bimfiles.example.com/JsonElement.json",
+      Is.EqualTo(markup.Topic.BimSnippet.Reference));
   }
 
   /// <summary>
@@ -87,7 +88,7 @@ public class BcfExtensionsTests {
     var markups =
       await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         stream);
-    Assert.AreEqual(2, markups.Count);
+    Assert.That(2, Is.EqualTo(markups.Count));
   }
 
   /// <summary>
@@ -147,7 +148,7 @@ public class BcfExtensionsTests {
       await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         stream);
     var markup = markups.FirstOrDefault()!;
-    Assert.AreEqual("jon.anders.sollien@catenda.no", markup.Topic.AssignedTo);
+    Assert.That("jon.anders.sollien@catenda.no", Is.EqualTo(markup.Topic.AssignedTo));
   }
 
   /// <summary>
@@ -162,17 +163,17 @@ public class BcfExtensionsTests {
       await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
         stream);
     var markup = markups.FirstOrDefault();
-    Assert.AreEqual(1, markups.Count);
+    Assert.That(1, Is.EqualTo(markups.Count));
     var visInfo =
       (bcf30.VisualizationInfo)markup?.Topic.Viewpoints.FirstOrDefault()
         ?.VisualizationInfo!;
     var header = markup?.Header!;
 
-    Assert.AreEqual(2, header.Files.Count);
-    Assert.AreEqual("Architectural.ifc",
-      header.Files.FirstOrDefault()?.Filename);
-    Assert.AreEqual("0KkZ20so9BsO1d1hFcfLOl",
-      visInfo.Components.Selection.FirstOrDefault()?.IfcGuid);
+    Assert.That(2, Is.EqualTo(header.Files.Count));
+    Assert.That("Architectural.ifc",
+      Is.EqualTo(header.Files.FirstOrDefault()?.Filename));
+    Assert.That("0KkZ20so9BsO1d1hFcfLOl",
+      Is.EqualTo(visInfo.Components.Selection.FirstOrDefault()?.IfcGuid));
   }
 
   /// <summary>
@@ -188,10 +189,10 @@ public class BcfExtensionsTests {
       await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           stream);
     var markup = markups.FirstOrDefault()!;
-    Assert.AreEqual(1, markups.Count);
-    Assert.AreEqual(
+    Assert.That(1, Is.EqualTo(markups.Count));
+    Assert.That(
       "http://www.buildingsmart-tech.org/specifications/bcf-releases/bcfxml-v1/markup.xsd/at_download/file",
-      markup.Topic.DocumentReferences.FirstOrDefault()?.Url);
+      Is.EqualTo(markup.Topic.DocumentReferences.FirstOrDefault()?.Url));
   }
 
   /// <summary>
@@ -213,12 +214,12 @@ public class BcfExtensionsTests {
       await BcfToolkit.Utils.BcfExtensions.ParseDocuments<bcf30.DocumentInfo>(
         documentInfoStream);
     var markup = markups.FirstOrDefault()!;
-    Assert.AreEqual(1, markups.Count);
+    Assert.That(1, Is.EqualTo(markups.Count));
     var documentGuid = markup.Topic.DocumentReferences.FirstOrDefault()?.DocumentGuid;
     var document = documentInfo?.Documents.FirstOrDefault()!;
-    Assert.AreEqual("b1d1b7f0-60b9-457d-ad12-16e0fb997bc5", documentGuid);
-    Assert.AreEqual(documentGuid, document.Guid);
-    Assert.AreEqual("ThisIsADocument.txt", document.Filename);
+    Assert.That("b1d1b7f0-60b9-457d-ad12-16e0fb997bc5", Is.EqualTo(documentGuid));
+    Assert.That(documentGuid, Is.EqualTo(document.Guid));
+    Assert.That("ThisIsADocument.txt", Is.EqualTo(document.Filename));
   }
 
   /// <summary>
@@ -234,9 +235,9 @@ public class BcfExtensionsTests {
         .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           stream);
     var markup = markups.FirstOrDefault()!;
-    Assert.AreEqual(1, markups.Count);
-    Assert.AreEqual("2021-03-15T11:00:00.000Z",
-      markup.Topic.DueDate.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
+    Assert.That(1, Is.EqualTo(markups.Count));
+    Assert.That("2021-03-15T11:00:00.000Z",
+      Is.EqualTo(markup.Topic.DueDate.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")));
   }
 
   /// <summary>
@@ -258,11 +259,11 @@ public class BcfExtensionsTests {
     var extensions =
       await BcfToolkit.Utils.BcfExtensions.ParseExtensions<bcf30.Extensions>(
         extensionsStream);
-    Assert.AreEqual(1, markups.Count);
+    Assert.That(1, Is.EqualTo(markups.Count));
     var label = markup.Topic.Labels.FirstOrDefault();
-    Assert.AreEqual("Architects", label);
+    Assert.That("Architects", Is.EqualTo(label));
     var topicLabels = extensions.TopicLabels;
-    Assert.Contains(label, topicLabels);
+    ClassicAssert.Contains(label, topicLabels);
   }
 
   /// <summary>
@@ -282,11 +283,11 @@ public class BcfExtensionsTests {
     var extensions =
       await BcfToolkit.Utils.BcfExtensions.ParseExtensions<bcf30.Extensions>(
         extensionsStream);
-    Assert.AreEqual(1, markups.Count);
+    Assert.That(1, Is.EqualTo(markups.Count));
     var stage = markup.Topic.Stage;
-    Assert.AreEqual("February", stage);
+    Assert.That("February", Is.EqualTo(stage));
     var stages = extensions.Stages;
-    Assert.Contains(stage, stages);
+    ClassicAssert.Contains(stage, stages);
   }
 
   /// <summary>
@@ -303,9 +304,9 @@ public class BcfExtensionsTests {
           stream);
     var markup1 = markups.FirstOrDefault()!;
     var markup2 = markups.ElementAt(1);
-    Assert.AreEqual(2, markups.Count);
-    Assert.AreEqual(markup1.Topic.Guid,
-      markup2.Topic.RelatedTopics.FirstOrDefault()?.Guid);
+    Assert.That(2, Is.EqualTo(markups.Count));
+    Assert.That(markup1.Topic.Guid,
+      Is.EqualTo(markup2.Topic.RelatedTopics.FirstOrDefault()?.Guid));
   }
 
   /// <summary>
@@ -325,9 +326,9 @@ public class BcfExtensionsTests {
     var visInfo =
       (bcf30.VisualizationInfo)markup.Topic.Viewpoints.FirstOrDefault()
         ?.VisualizationInfo!;
-    Assert.AreEqual(true, visInfo.Components.Visibility.DefaultVisibility);
-    Assert.AreEqual("1E8YkwPMfB$h99jtn_uAjI",
-      visInfo.Components.Visibility.Exceptions.FirstOrDefault()?.IfcGuid);
+    Assert.That(true, Is.EqualTo(visInfo.Components.Visibility.DefaultVisibility));
+    Assert.That("1E8YkwPMfB$h99jtn_uAjI",
+      Is.EqualTo(visInfo.Components.Visibility.Exceptions.FirstOrDefault()?.IfcGuid));
   }
 
   /// <summary>
@@ -351,12 +352,12 @@ public class BcfExtensionsTests {
     var markupMEP = markups.FirstOrDefault(m =>
       m.Topic.Title.Equals("Topics with different model visible - MEP"))!;
 
-    Assert.AreEqual(1, markupARC.Header.Files.Count);
-    Assert.AreEqual("Architectural.ifc",
-      markupARC.Header.Files.FirstOrDefault()?.Filename);
-    Assert.AreEqual(1, markupMEP.Header.Files.Count);
-    Assert.AreEqual("MEP.ifc",
-      markupMEP.Header.Files.FirstOrDefault()?.Filename);
+    Assert.That(1, Is.EqualTo(markupARC.Header.Files.Count));
+    Assert.That("Architectural.ifc",
+      Is.EqualTo(markupARC.Header.Files.FirstOrDefault()?.Filename));
+    Assert.That(1, Is.EqualTo(markupMEP.Header.Files.Count));
+    Assert.That("MEP.ifc",
+      Is.EqualTo(markupMEP.Header.Files.FirstOrDefault()?.Filename));
   }
 
   /// <summary>
@@ -371,7 +372,7 @@ public class BcfExtensionsTests {
       await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
         stream);
     var markup = markups.FirstOrDefault()!;
-    Assert.AreEqual("Architect@example.com", markup.Topic.AssignedTo);
+    Assert.That("Architect@example.com", Is.EqualTo(markup.Topic.AssignedTo));
   }
 
   /// <summary>
@@ -385,7 +386,7 @@ public class BcfExtensionsTests {
       await BcfToolkit.Utils.BcfExtensions.ParseExtensions<bcf30.Extensions>(
         stream);
     var type = extensions.TopicTypes.FirstOrDefault();
-    Assert.AreEqual("Error", type);
+    Assert.That("Error", Is.EqualTo(type));
   }
 
   /// <summary>

@@ -21,7 +21,7 @@ public partial class VersionBuilder :
   }
 
   public VersionBuilder WithDefaults() {
-    this.SetVersionId(BcfVersion.ToVersion(BcfVersionEnum.Bcf21));
+    this.SetVersionId(BcfVersion.ToString(BcfVersionEnum.Bcf21));
     return this;
   }
 
