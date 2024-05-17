@@ -41,24 +41,40 @@ public class Worker {
     InitConverter(version);
   }
 
+  /// <summary>
+  ///   Initializes the converter from the file path of the BCF zip archive.
+  /// </summary>
+  /// <param name="source">The path of the source file.</param>
   private async Task InitConverterFromArchive(string source) {
     await using var stream =
       new FileStream(source, FileMode.Open, FileAccess.Read);
     await InitConverterFromStreamArchive(stream);
   }
 
+  /// <summary>
+  ///   Initializes the converter from the file stream of the BCF zip archive.
+  /// </summary>
+  /// <param name="stream">The stream of the source BCF zip archive.</param>
   private async Task InitConverterFromStreamArchive(Stream stream) {
     var version =
       await BcfExtensions.GetVersionFromStreamArchive(stream);
     InitConverter(version);
   }
 
+  /// <summary>
+  ///   Initializes the converter from the json of the BCF content.
+  /// </summary>
+  /// <param name="source">The json of the BCF content.</param>
   private async Task InitConverterFromJson(string source) {
     var version =
       await JsonExtensions.GetVersionFromJson(source);
     InitConverter(version);
   }
 
+  /// <summary>
+  ///   Initializes the converter from an instance of `Bcf` object.
+  /// </summary>
+  /// <param name="bcf">Instance of `Bcf` object.</param>
   private void InitConverterFromType(IBcf bcf) {
     var version = BcfVersion.TryParse(bcf);
     InitConverter(version);
@@ -126,6 +142,17 @@ public class Worker {
     return await _converter.BuildBcfFromStream<Bcf>(stream);
   }
 
+  /// <summary>
+  ///   The method converts the specified BCF object to the given version, then
+  ///   returns a stream from the BCF zip archive.
+  ///
+  ///   WARNING: Disposing the stream is the responsibility of the user!
+  /// </summary>
+  /// <param name="bcf">The BCF object.</param>
+  /// <param name="targetVersion">The BCF version.</param>
+  /// <returns>
+  ///   Returns the file stream of the BCF zip archive.
+  /// </returns>
   public async Task<Stream> ToBcfStream(IBcf bcf, BcfVersionEnum targetVersion) {
     InitConverterFromType(bcf);
     return await _converter.ToBcfStream(bcf, targetVersion);
