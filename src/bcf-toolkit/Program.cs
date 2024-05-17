@@ -19,13 +19,6 @@ internal static class Program {
       description: "The absolute path of the target.") { IsRequired = true };
     targetOption.AddAlias("-t");
 
-    // var versionOption = new Option<string>(
-    //     name: "--bcfVersion",
-    //     description:
-    //     "The target version of the bcf parser, by default 2.1 is used.") { IsRequired = false };
-    // versionOption.AddAlias("-b");
-    // versionOption.SetDefaultValue("2.1");
-
     var rootCommand = new RootCommand {
       Description =
       "Bcf toolkit is command line utility for converting BCF " +
@@ -35,14 +28,12 @@ internal static class Program {
 
     rootCommand.AddOption(sourcePathOption);
     rootCommand.AddOption(targetOption);
-    // rootCommand.AddOption(versionOption);
 
     rootCommand.SetHandler(
       async arguments => { await DoRootCommand(arguments); },
       new InputArgumentsBinder(
         sourcePathOption,
         targetOption));
-    // versionOption));
     await rootCommand.InvokeAsync(args);
   }
 
