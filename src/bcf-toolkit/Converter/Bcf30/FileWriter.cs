@@ -9,7 +9,7 @@ using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
 using BcfToolkit.Utils;
 using File = System.IO.File;
-using Version = System.Version;
+using Version = BcfToolkit.Model.Bcf30.Version;
 
 namespace BcfToolkit.Converter.Bcf30;
 

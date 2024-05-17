@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 using BcfToolkit.Utils;
-using Version = System.Version;
+using Version = BcfToolkit.Model.Bcf21.Version;
 
 namespace BcfToolkit.Converter.Bcf21;
 
