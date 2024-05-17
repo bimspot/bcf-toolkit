@@ -40,8 +40,6 @@ public class Converter : IConverter {
 
   public async Task BcfZipToJson(Stream source, string targetPath) {
     var bcf = await _builder.BuildFromStream(source);
-
-    // Writing json files
     await FileWriter.WriteJson(bcf, targetPath);
   }
 
@@ -57,13 +55,12 @@ public class Converter : IConverter {
   }
 
   public async Task JsonToBcfZip(string source, string target) {
-    // Parsing BCF project - it is an optional file
+    // Project is optional
     var projectPath = $"{source}/project.json";
     var project = Path.Exists(projectPath)
       ? await JsonExtensions.ParseObject<ProjectExtension>(projectPath)
       : new ProjectExtension();
 
-    // Parsing markups
     var markups = await JsonExtensions.ParseMarkups<Markup>(source);
 
     var bcf = new Bcf {
@@ -72,25 +69,23 @@ public class Converter : IConverter {
       Version = new Version()
     };
 
-    // Writing bcf files
     await FileWriter.WriteBcf(bcf, target);
   }
 
   public async Task<Stream> ToBcfStream(IBcf bcf, BcfVersionEnum targetVersion) {
-    // Convert the bcf to the target version
     var converterFn = _converterFnMapper[targetVersion];
     var convertedBcf = converterFn((Bcf)bcf);
 
-    // Write the converted bcf to tmp and create file stream
     var workingDir = Directory.GetCurrentDirectory();
-    var bcfTargetPath = workingDir + "/bcf.bcfzip";
+    var tmpBcfTargetPath = workingDir + "/bcf.bcfzip";
     var writerFn = _writerFnMapper[targetVersion];
-    var tmpFolder = await writerFn(convertedBcf, bcfTargetPath, false);
-    var stream = new FileStream(bcfTargetPath, FileMode.Open, FileAccess.Read);
 
-    // After the stream is ready the folders should be deleted
+    // keep the tmp files till the stream is created
+    var tmpFolder = await writerFn(convertedBcf, tmpBcfTargetPath, false);
+    var stream = new FileStream(tmpBcfTargetPath, FileMode.Open, FileAccess.Read);
+
     Directory.Delete(tmpFolder, true);
-    File.Delete(bcfTargetPath);
+    File.Delete(tmpBcfTargetPath);
 
     return stream;
   }
@@ -104,10 +99,7 @@ public class Converter : IConverter {
   }
 
   public async Task<T> BuildBcfFromStream<T>(Stream stream) {
-    // Build the bcf from stream
     var bcf = await _builder.BuildFromStream(stream);
-
-    // Convert the bcf to the specified type
     var targetVersion = BcfVersion.TryParse(typeof(T));
     var converterFn = _converterFnMapper[targetVersion];
     return (T)converterFn(bcf);

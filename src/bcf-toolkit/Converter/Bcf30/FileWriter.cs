@@ -21,7 +21,6 @@ public static class FileWriter {
   /// <param name="target">The target path where the json files will be saved.</param>
   /// <returns></returns>
   public static Task WriteJson(Bcf bcf, string target) {
-    // Creating the target folder
     if (Directory.Exists(target)) Directory.Delete(target, true);
     Directory.CreateDirectory(target);
 
@@ -33,15 +32,12 @@ public static class FileWriter {
       })
       .ToList();
 
-    // Writing BCF extensions file
     var pathExt = $"{target}/extensions.json";
     tasks.Add(JsonExtensions.WriteJson(pathExt, bcf.Extensions));
 
-    // Writing BCF project file
     var pathProject = $"{target}/project.json";
     tasks.Add(JsonExtensions.WriteJson(pathProject, bcf.Project));
 
-    // Writing BCF document file
     var pathDoc = $"{target}/documents.json";
     tasks.Add(JsonExtensions.WriteJson(pathDoc, bcf.Document));
 
@@ -62,6 +58,8 @@ public static class FileWriter {
   ///   The root files depend on the version of the BCF.
   ///   * project.bcfp (optional)
   ///   * bcf.version
+  ///   * extensions.xml
+  ///   * documents.xml (optional)
   /// </summary>
   /// <param name="bcf">The BCF object.</param>
   /// <param name="target">The target file name of the BCFzip.</param>
@@ -81,14 +79,12 @@ public static class FileWriter {
 
     var bcfObject = (Bcf)bcf;
 
-    var tasks = new List<Task>();
+    var writeTasks = new List<Task>();
 
-    // Creating the version file
-    tasks.Add(BcfExtensions.WriteBcfFile(tmpFolder, "bcf.version", new Version()));
+    writeTasks.Add(BcfExtensions.WriteBcfFile(tmpFolder, "bcf.version", new Version()));
 
-    // Writing markup folders and files
+    // Writing markup files to disk, one markup per folder.
     foreach (var markup in bcfObject.Markups) {
-      // Creating the target folder
       var guid = markup.GetTopic()?.Guid;
       if (guid == null) {
         Console.WriteLine(
@@ -99,37 +95,31 @@ public static class FileWriter {
       var topicFolder = $"{tmpFolder}/{guid}";
       Directory.CreateDirectory(topicFolder);
 
-      // Markup
-      tasks.Add(BcfExtensions.WriteBcfFile(topicFolder, "markup.bcf", markup));
+      writeTasks.Add(BcfExtensions.WriteBcfFile(topicFolder, "markup.bcf", markup));
 
-      // Viewpoint
       var visInfo =
         (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
-      tasks.Add(BcfExtensions.WriteBcfFile(topicFolder, "viewpoint.bcfv",
+      writeTasks.Add(BcfExtensions.WriteBcfFile(
+        topicFolder,
+        "viewpoint.bcfv",
         visInfo));
 
-      // Snapshot
       var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
       var base64String = markup.GetFirstViewPoint()?.SnapshotData;
       if (snapshotFileName == null || base64String == null) continue;
       var result = Regex.Replace(base64String,
         @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
-      tasks.Add(File.WriteAllBytesAsync(
+      writeTasks.Add(File.WriteAllBytesAsync(
         $"{topicFolder}/{snapshotFileName}",
         Convert.FromBase64String(result)));
     }
 
-    // Writing extensions file
-    tasks.Add(BcfExtensions.WriteBcfFile(tmpFolder, "extensions.xml", bcfObject.Extensions));
-    // Writing project file
-    tasks.Add(BcfExtensions.WriteBcfFile(tmpFolder, "project.bcfp", bcfObject.Project));
-    // Writing documents file
-    tasks.Add(BcfExtensions.WriteBcfFile(tmpFolder, "documents.xml", bcfObject.Document));
+    writeTasks.Add(BcfExtensions.WriteBcfFile(tmpFolder, "extensions.xml", bcfObject.Extensions));
+    writeTasks.Add(BcfExtensions.WriteBcfFile(tmpFolder, "project.bcfp", bcfObject.Project));
+    writeTasks.Add(BcfExtensions.WriteBcfFile(tmpFolder, "documents.xml", bcfObject.Document));
 
-    // Waiting for all the file writing
-    await Task.WhenAll(tasks);
+    await Task.WhenAll(writeTasks);
 
-    // zip shit
     Console.WriteLine($"Zipping the output: {target}");
     if (File.Exists(target)) File.Delete(target);
     ZipFile.CreateFromDirectory(tmpFolder, target);
