@@ -6,7 +6,7 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
 
-public class ComponentColoringColorBuilder :
+public partial class ComponentColoringColorBuilder :
   IComponentColoringColorBuilder<ComponentColoringColorBuilder, ComponentBuilder>,
   IDefaultBuilder<ComponentColoringColorBuilder> {
   private readonly ComponentColoringColor _color = new();

@@ -5,7 +5,7 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
 
-public class VisibilityBuilder :
+public partial class VisibilityBuilder :
   IVisibilityBuilder<VisibilityBuilder, ComponentBuilder> {
   private readonly ComponentVisibility _visibility = new();
 

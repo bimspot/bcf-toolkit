@@ -88,6 +88,15 @@ public partial class VisualizationInfoBuilder :
     _visualizationInfo.Bitmap.Add(bitmap);
     return this;
   }
+  
+  public VisualizationInfoBuilder SetViewSetupHints(
+    Action<ViewSetupHintsBuilder> builder) {
+    var viewSetupHints =
+      (ViewSetupHints)BuilderUtils
+        .BuildItem<ViewSetupHintsBuilder, IViewSetupHints>(builder);
+    _visualizationInfo.Components.ViewSetupHints = viewSetupHints;
+    return this;
+  }
 
   public VisualizationInfoBuilder WithDefaults() {
     this.SetGuid(Guid.NewGuid().ToString());
