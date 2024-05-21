@@ -91,7 +91,7 @@ public class WorkerTests {
     Assert.That(BcfVersionEnum.Bcf30, Is.EqualTo(version));
     await stream.FlushAsync();
   }
-  
+
   [Test]
   [Category("BCF v3.0")]
   public async Task GetBcfV21StreamFromV30ObjectTest() {
@@ -104,7 +104,7 @@ public class WorkerTests {
         .SetTopicType("Issue")
         .SetCreationDate(new DateTime())
         .SetCreationAuthor("Creator"))
-      .SetExtensions(e=> e.WithDefaults())
+      .SetExtensions(e => e.WithDefaults())
       .Build();
     var stream = await _worker.ToBcfStream(bcf, BcfVersionEnum.Bcf21);
     var version = await BcfExtensions.GetVersionFromStreamArchive(stream);

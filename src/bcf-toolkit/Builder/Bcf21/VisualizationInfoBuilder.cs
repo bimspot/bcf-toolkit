@@ -88,7 +88,7 @@ public partial class VisualizationInfoBuilder :
     _visualizationInfo.Bitmap.Add(bitmap);
     return this;
   }
-  
+
   public VisualizationInfoBuilder SetViewSetupHints(
     Action<ViewSetupHintsBuilder> builder) {
     var viewSetupHints =
