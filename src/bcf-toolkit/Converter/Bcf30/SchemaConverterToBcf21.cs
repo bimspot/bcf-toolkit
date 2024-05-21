@@ -91,7 +91,11 @@ public static class SchemaConverterToBcf21 {
     return builder.Build();
   }
   
-  private static Model.Bcf21.BimSnippet ConvertBimSnippet(Model.Bcf30.BimSnippet from) {
+  private static Model.Bcf21.BimSnippet? ConvertBimSnippet(Model.Bcf30.BimSnippet? from) {
+    if (from is null) {
+      return null;
+    }
+    
     var builder = new BimSnippetBuilder();
     builder
       .SetSnippetType(from.SnippetType)

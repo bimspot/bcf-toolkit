@@ -91,4 +91,24 @@ public class WorkerTests {
     Assert.That(BcfVersionEnum.Bcf30, Is.EqualTo(version));
     await stream.FlushAsync();
   }
+  
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task GetBcfV21StreamFromV30ObjectTest() {
+    var builder = new BcfToolkit.Builder.Bcf30.BcfBuilder();
+    var bcf = builder
+      .AddMarkup(m => m
+        .SetGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
+        .SetTitle("This is a new topic")
+        .SetTopicStatus("Open")
+        .SetTopicType("Issue")
+        .SetCreationDate(new DateTime())
+        .SetCreationAuthor("Creator"))
+      .SetExtensions(e=> e.WithDefaults())
+      .Build();
+    var stream = await _worker.ToBcfStream(bcf, BcfVersionEnum.Bcf21);
+    var version = await BcfExtensions.GetVersionFromStreamArchive(stream);
+    Assert.That(BcfVersionEnum.Bcf21, Is.EqualTo(version));
+    await stream.FlushAsync();
+  }
 }

@@ -20,7 +20,7 @@ public partial class MarkupBuilder {
     return this;
   }
   
-  public MarkupBuilder SetBimSnippet(BimSnippet bimSnippet) {
+  public MarkupBuilder SetBimSnippet(BimSnippet? bimSnippet) {
     _markup.Topic.BimSnippet = bimSnippet;
     return this;
   }
