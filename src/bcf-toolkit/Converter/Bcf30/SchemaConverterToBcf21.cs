@@ -1,8 +1,5 @@
-using System;
 using System.Linq;
 using BcfToolkit.Builder.Bcf21;
-using BcfToolkit.Builder.Bcf30;
-using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 using BcfBuilder = BcfToolkit.Builder.Bcf21.BcfBuilder;
 using BimSnippetBuilder = BcfToolkit.Builder.Bcf21.BimSnippetBuilder;
@@ -13,37 +10,41 @@ using DocumentReferenceBuilder = BcfToolkit.Builder.Bcf21.DocumentReferenceBuild
 using LineBuilder = BcfToolkit.Builder.Bcf21.LineBuilder;
 using ClippingPlaneBuilder = BcfToolkit.Builder.Bcf21.ClippingPlaneBuilder;
 using MarkupBuilder = BcfToolkit.Builder.Bcf21.MarkupBuilder;
-using OrthogonalCameraBuilder = BcfToolkit.Builder.Bcf21.OrthogonalCameraBuilder;
-using PerspectiveCameraBuilder = BcfToolkit.Builder.Bcf21.PerspectiveCameraBuilder;
 using VisibilityBuilder = BcfToolkit.Builder.Bcf21.VisibilityBuilder;
 using VisualizationInfoBuilder = BcfToolkit.Builder.Bcf21.VisualizationInfoBuilder;
 
 namespace BcfToolkit.Converter.Bcf30;
 
 public static class SchemaConverterToBcf21 {
-
+  
+  /// <summary>
+  ///   This method translates the specified object with a BCF version to the
+  ///   desired one.
+  ///   From:   [BCF 3.0]
+  ///   To:     [BCF 2.1]
+  /// </summary>
+  /// <param name="from">The object which must be converted.</param>
+  /// <returns>Returns the converted object.</returns>
   public static Model.Bcf21.Bcf Convert(Model.Bcf30.Bcf from) {
     var builder = new BcfBuilder();
     builder
       .AddMarkups(from.Markups.Select(ConvertMarkup).ToList())
       .SetProject(ConvertProject(from.Project?.Project));
     
-    
     return builder.Build();
   }
   
-  private static Model.Bcf21.ProjectExtension
+  private static Model.Bcf21.ProjectExtension?
     ConvertProject(Model.Bcf30.Project? from) {
     var builder = new ProjectExtensionBuilder();
     
     if (from is null) {
-      return builder.Build();
+      return null;
     }
     
     builder
       .SetProjectId(from.ProjectId)
       .SetProjectName(from.Name);
-      //TODO Extension Schema is data loss
     
     return builder.Build();
   }
@@ -74,7 +75,6 @@ public static class SchemaConverterToBcf21 {
       .AddComments(from.Topic.Comments.Select(ConvertComment).ToList())
       .AddViewPoints(from.Topic.Viewpoints.Select(ConvertViewPoint).ToList())
       .AddRelatedTopics(from.Topic.RelatedTopics.Select(ConvertRelatedTopic).ToList());
-      
     
     return builder.Build();
   }
@@ -289,8 +289,4 @@ public static class SchemaConverterToBcf21 {
     };
     return relatedTopic;
   }
-  
-  
-  
-  
 }

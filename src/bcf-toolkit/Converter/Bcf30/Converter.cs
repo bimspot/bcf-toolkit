@@ -22,7 +22,7 @@ public class Converter : IConverter {
 
   private BcfBuilder _builder = new();
 
-  private readonly Dictionary<Type, Func<IBcf, IBcf>> _converterFnMapper = new();
+  private readonly Dictionary<Type, Func<Bcf,IBcf>> _converterFnMapper = new();
 
   public Converter() {
     _converterFnMapper[typeof(Model.Bcf21.Bcf)] = SchemaConverterToBcf21.Convert;

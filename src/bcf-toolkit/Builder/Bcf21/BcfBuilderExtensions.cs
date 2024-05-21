@@ -19,7 +19,7 @@ public partial class BcfBuilder {
     return this;
   }
   
-  public BcfBuilder SetProject(ProjectExtension project) {
+  public BcfBuilder SetProject(ProjectExtension? project) {
     _bcf.Project = project;
     return this;
   }
