@@ -77,7 +77,7 @@ public class Converter : IConverter {
     var convertedBcf = converterFn((Bcf)bcf);
 
     var workingDir = Directory.GetCurrentDirectory();
-    var tmpBcfTargetPath = workingDir + "/bcf.bcfzip";
+    var tmpBcfTargetPath = workingDir + $"/{Guid.NewGuid()}.bcfzip";
     var writerFn = _writerFnMapper[targetVersion];
 
     // keep the tmp files till the stream is created
