@@ -23,7 +23,9 @@ public class Converter : IConverter {
   ///   Defines the converter function, which must be used for converting the
   ///   BCF object to the targeted version.
   /// </summary>
+  
   private readonly Dictionary<BcfVersionEnum, Func<Bcf, IBcf>> _converterFnMapper = new();
+
 
   /// <summary>
   ///   Defines the file writer function which must be used for write the BCF
