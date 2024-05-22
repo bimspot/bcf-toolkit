@@ -35,13 +35,6 @@ public class Worker {
   public Worker() { }
 
   /// <summary>
-  ///   Creates and returns an instance of `Worker` with the specified version.
-  /// </summary>
-  public Worker(BcfVersionEnum version) {
-    InitConverter(version);
-  }
-
-  /// <summary>
   ///   Initializes the converter from the file path of the BCF zip archive.
   /// </summary>
   /// <param name="source">The path of the source file.</param>
@@ -118,7 +111,8 @@ public class Worker {
   /// <param name="target">The target path where the BCF is written.</param>
   /// <returns></returns>
   public Task ToBcfZip(IBcf bcf, string target) {
-    return _converter?.ToBcfZip(bcf, target);
+    InitConverterFromType(bcf);
+    return _converter.ToBcfZip(bcf, target);
   }
 
   /// <summary>
@@ -128,7 +122,8 @@ public class Worker {
   /// <param name="target">The target path where the JSON is written.</param>
   /// <returns></returns>
   public Task ToJson(IBcf bcf, string target) {
-    return _converter?.ToJson(bcf, target);
+    InitConverterFromType(bcf);
+    return _converter.ToJson(bcf, target);
   }
 
   /// <summary>

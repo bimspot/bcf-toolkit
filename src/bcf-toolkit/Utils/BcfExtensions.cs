@@ -274,8 +274,7 @@ public static class BcfExtensions {
   public static Task WriteBcfFile<T>(string folder, string file, T? obj) {
     return Task.Run(async () => {
       if (obj != null) {
-        await using var writer =
-          File.CreateText($"{folder}/{file}");
+        await using var writer = File.CreateText($"{folder}/{file}");
         new XmlSerializer(typeof(T)).Serialize(writer, obj);
       }
     });

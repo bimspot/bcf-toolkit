@@ -129,21 +129,27 @@ public static class JsonExtensions {
   }
 
   /// <summary>
-  ///   The method opens the json and returns the BCF version.
+  ///   The method opens the json and returns the BCF version if the version
+  ///   file exists, or returns default version 2.1 otherwise.
   /// </summary>
   /// <param name="source"></param>
   /// <returns></returns>
   public static Task<BcfVersionEnum> GetVersionFromJson(string source) {
     return Task.Run(async () => {
-      var file = new List<string>(
-          Directory.EnumerateFiles(source))
-        .FirstOrDefault(f => f.EndsWith("version.json"));
-      // if (file == null) return null;
-      using var reader = new StreamReader(file, Encoding.Unicode);
-      var json = await reader.ReadToEndAsync();
-      var bcf = JObject.Parse(json);
-      var version = bcf["Version"]?.ToString();
-      return BcfVersion.TryParse(version);
+      try {
+        var file = new List<string>(
+            Directory.EnumerateFiles(source))
+          .FirstOrDefault(f => f.EndsWith("version.json"));
+        using var reader = new StreamReader(file);
+        var json = await reader.ReadToEndAsync();
+        var bcf = JObject.Parse(json);
+        var version = bcf["version_id"]?.ToString();
+        return BcfVersion.TryParse(version);
+      }
+      catch (Exception e) {
+        Console.WriteLine("Unable to detect the bcf version of the json. Assumed version is 2.1.");
+        return BcfVersionEnum.Bcf21;
+      }
     });
   }
 }
