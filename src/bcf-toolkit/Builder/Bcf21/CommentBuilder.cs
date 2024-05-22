@@ -25,12 +25,13 @@ public class CommentBuilder :
     return this;
   }
 
-  public CommentBuilder SetComment(string comment) {
+  public CommentBuilder SetCommentProperty(string? comment) {
     _comment.CommentProperty = comment;
     return this;
   }
 
   public CommentBuilder SetViewPointGuid(string guid) {
+    _comment.Viewpoint ??= new CommentViewpoint();
     _comment.Viewpoint.Guid = guid;
     return this;
   }
@@ -49,7 +50,7 @@ public class CommentBuilder :
     this
       .SetDate(DateTime.Now)
       .SetAuthor("Default user")
-      .SetComment("Default comment.")
+      .SetCommentProperty("Default comment.")
       .SetGuid(Guid.NewGuid().ToString());
     return this;
   }

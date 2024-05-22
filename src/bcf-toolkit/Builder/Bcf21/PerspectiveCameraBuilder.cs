@@ -5,7 +5,7 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
 
-public class PerspectiveCameraBuilder :
+public partial class PerspectiveCameraBuilder :
   IPerspectiveCameraBuilder<PerspectiveCameraBuilder, CameraBuilder>,
   IDefaultBuilder<PerspectiveCameraBuilder> {
   private readonly PerspectiveCamera _camera = new();

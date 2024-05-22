@@ -5,7 +5,7 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
 
-public class OrthogonalCameraBuilder :
+public partial class OrthogonalCameraBuilder :
   IOrthogonalCameraBuilder<OrthogonalCameraBuilder, CameraBuilder>,
   IDefaultBuilder<OrthogonalCameraBuilder> {
   private readonly OrthogonalCamera _camera = new();

@@ -18,4 +18,9 @@ public partial class BcfBuilder {
     markups.ForEach(m => _bcf.Markups.Add(m));
     return this;
   }
+
+  public BcfBuilder SetProject(ProjectExtension? project) {
+    _bcf.Project = project;
+    return this;
+  }
 }

@@ -91,4 +91,103 @@ public class WorkerTests {
     Assert.That(BcfVersionEnum.Bcf30, Is.EqualTo(version));
     await stream.FlushAsync();
   }
+
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task GetBcfV21StreamFromV30ObjectTest() {
+    var builder = new BcfToolkit.Builder.Bcf30.BcfBuilder();
+    var bcf = builder
+      .AddMarkup(m => m
+        .SetGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
+        .SetTitle("This is a new topic")
+        .SetTopicStatus("Open")
+        .SetTopicType("Issue")
+        .SetCreationDate(new DateTime())
+        .SetCreationAuthor("Creator"))
+      .SetExtensions(e => e.WithDefaults())
+      .Build();
+    var stream = await _worker.ToBcfStream(bcf, BcfVersionEnum.Bcf21);
+    var version = await BcfExtensions.GetVersionFromStreamArchive(stream);
+    Assert.That(BcfVersionEnum.Bcf21, Is.EqualTo(version));
+    await stream.FlushAsync();
+  }
+
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task GetBcfFromComponentSelection() {
+    await CheckV30To21Conversion("Resources/Bcf/v3.0/ComponentSelection.bcfzip");
+  }
+
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task GetDocumentReferenceExternal() {
+    await CheckV30To21Conversion("Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip");
+  }
+
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task GetDocumentReferenceInternal() {
+    await CheckV30To21Conversion("Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip");
+  }
+
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task GetDueDate() {
+    await CheckV30To21Conversion("Resources/Bcf/v3.0/DueDate.bcfzip");
+  }
+
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task GetLabels() {
+    await CheckV30To21Conversion("Resources/Bcf/v3.0/Labels.bcfzip");
+  }
+
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task GetMilestone() {
+    await CheckV30To21Conversion("Resources/Bcf/v3.0/Milestone.bcfzip");
+  }
+
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task GetRelatedTopics() {
+    await CheckV30To21Conversion("Resources/Bcf/v3.0/RelatedTopics.bcfzip");
+  }
+
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task GetSingleInvisibleWall() {
+    await CheckV30To21Conversion("Resources/Bcf/v3.0/SingleInvisibleWall.bcfzip");
+  }
+
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task GetTestBcf30() {
+    await CheckV30To21Conversion("Resources/Bcf/v3.0/TestBcf30.bcfzip");
+  }
+
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task GetTopicsWithDifferentModelsVisible() {
+    await CheckV30To21Conversion("Resources/Bcf/v3.0/TopicsWithDifferentModelsVisible.bcfzip");
+  }
+
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task GetUserAssignment() {
+    await CheckV30To21Conversion("Resources/Bcf/v3.0/UserAssignment.bcfzip");
+  }
+
+  private async Task CheckV30To21Conversion(string path) {
+    var builder = new BcfToolkit.Builder.Bcf30.BcfBuilder();
+    await using var inputStream =
+      new FileStream(path, FileMode.Open, FileAccess.Read);
+
+    var bcf = await builder.BuildFromStream(inputStream);
+    var stream = await _worker.ToBcfStream(bcf, BcfVersionEnum.Bcf21);
+    var version = await BcfExtensions.GetVersionFromStreamArchive(stream);
+    Assert.That(BcfVersionEnum.Bcf21, Is.EqualTo(version));
+    await stream.FlushAsync();
+  }
+
 }
