@@ -73,7 +73,7 @@ public static class FileWriter {
         $"Target folder not found ${targetFolder}");
 
     // Will create a tmp folder for the intermediate files.
-    var tmpFolder = $"{targetFolder}/tmp";
+    var tmpFolder = $"{targetFolder}/tmp{Path.GetFileNameWithoutExtension(target)}";
     if (Directory.Exists(tmpFolder)) Directory.Delete(tmpFolder, true);
     Directory.CreateDirectory(tmpFolder);
 
