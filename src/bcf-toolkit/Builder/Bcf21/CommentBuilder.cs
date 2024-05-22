@@ -25,12 +25,13 @@ public class CommentBuilder :
     return this;
   }
 
-  public CommentBuilder SetCommentProperty(string comment) {
+  public CommentBuilder SetCommentProperty(string? comment) {
     _comment.CommentProperty = comment;
     return this;
   }
 
   public CommentBuilder SetViewPointGuid(string guid) {
+    _comment.Viewpoint ??= new CommentViewpoint();
     _comment.Viewpoint.Guid = guid;
     return this;
   }

@@ -2,9 +2,8 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
 
-public partial class OrthogonalCameraBuilder {
-
-  public OrthogonalCameraBuilder SetCameraViewPoint(double x, double y, double z) {
+public partial class PerspectiveCameraBuilder {
+  public PerspectiveCameraBuilder SetCameraViewPoint(double x, double y, double z) {
     _camera.CameraViewPoint ??= new Point();
     _camera.CameraViewPoint.X = x;
     _camera.CameraViewPoint.Y = y;
@@ -12,7 +11,7 @@ public partial class OrthogonalCameraBuilder {
     return this;
   }
 
-  public OrthogonalCameraBuilder SetCameraDirection(double x, double y, double z) {
+  public PerspectiveCameraBuilder SetCameraDirection(double x, double y, double z) {
     _camera.CameraDirection ??= new Direction();
     _camera.CameraDirection.X = x;
     _camera.CameraDirection.Y = y;
@@ -20,7 +19,7 @@ public partial class OrthogonalCameraBuilder {
     return this;
   }
 
-  public OrthogonalCameraBuilder SetCameraUpVector(double x, double y, double z) {
+  public PerspectiveCameraBuilder SetCameraUpVector(double x, double y, double z) {
     _camera.CameraUpVector ??= new Direction();
     _camera.CameraUpVector.X = x;
     _camera.CameraUpVector.Y = y;

@@ -27,11 +27,12 @@ public static class SchemaConverterToBcf21 {
   /// <returns>Returns the converted object.</returns>
   public static Model.Bcf21.Bcf Convert(Model.Bcf30.Bcf from) {
     var builder = new BcfBuilder();
+
+    return
     builder
       .AddMarkups(from.Markups.Select(ConvertMarkup).ToList())
-      .SetProject(ConvertProject(from.Project?.Project));
-
-    return builder.Build();
+      .SetProject(ConvertProject(from.Project?.Project))
+      .Build();
   }
 
   private static Model.Bcf21.ProjectExtension?
@@ -42,15 +43,19 @@ public static class SchemaConverterToBcf21 {
       return null;
     }
 
-    builder
+    return
+      builder
       .SetProjectId(from.ProjectId)
-      .SetProjectName(from.Name);
-
-    return builder.Build();
+      .SetProjectName(from.Name)
+      .SetExtensionSchema("extensions.xsd")
+      //TODO: ExtensionSchema is missing from 3.0
+      .Build();
   }
 
   private static Model.Bcf21.Markup ConvertMarkup(Model.Bcf30.Markup from) {
     var builder = new MarkupBuilder();
+
+    return
     builder
       .SetGuid(from.Topic.Guid)
       .SetTopicType(from.Topic.TopicType)
@@ -74,21 +79,24 @@ public static class SchemaConverterToBcf21 {
         .Select(ConvertDocumentReference).ToList())
       .AddComments(from.Topic.Comments.Select(ConvertComment).ToList())
       .AddViewPoints(from.Topic.Viewpoints.Select(ConvertViewPoint).ToList())
-      .AddRelatedTopics(from.Topic.RelatedTopics.Select(ConvertRelatedTopic).ToList());
+      .AddRelatedTopics(from.Topic.RelatedTopics.Select(ConvertRelatedTopic).ToList())
+      .Build();
 
     return builder.Build();
   }
 
   private static Model.Bcf21.HeaderFile ConvertHeaderFile(Model.Bcf30.File from) {
     var builder = new HeaderFileBuilder();
+
+    return
     builder
       .SetIfcProject(from.IfcProject)
       .SetIfcSpatialStructureElement(from.IfcSpatialStructureElement)
       .SetIsExternal(from.IsExternal)
       .SetFileName(from.Filename)
       .SetDate(from.Date)
-      .SetReference(from.Reference);
-    return builder.Build();
+      .SetReference(from.Reference)
+      .Build();
   }
 
   private static Model.Bcf21.BimSnippet? ConvertBimSnippet(Model.Bcf30.BimSnippet? from) {
@@ -97,26 +105,27 @@ public static class SchemaConverterToBcf21 {
     }
 
     var builder = new BimSnippetBuilder();
+    return
     builder
       .SetSnippetType(from.SnippetType)
       .SetIsExternal(from.IsExternal)
       .SetReference(from.Reference)
-      .SetReferenceSchema(from.ReferenceSchema);
-
-    return builder.Build();
+      .SetReferenceSchema(from.ReferenceSchema)
+      .Build();
   }
 
   private static Model.Bcf21.TopicDocumentReference ConvertDocumentReference(
     Model.Bcf30.DocumentReference from) {
     var builder = new DocumentReferenceBuilder();
     var isExternal = string.IsNullOrEmpty(from.Url);
+
+    return
     builder
       .SetGuid(from.Guid)
       .SetDescription(from.Description)
       .SetIsExternal(isExternal)
-      .SetReferencedDocument(isExternal ? from.Url : from.DocumentGuid);
-
-    return builder.Build();
+      .SetReferencedDocument(isExternal ? from.Url : from.DocumentGuid)
+      .Build();
   }
 
   private static Model.Bcf21.Comment ConvertComment(Model.Bcf30.Comment from) {
@@ -126,10 +135,15 @@ public static class SchemaConverterToBcf21 {
       .SetGuid(from.Guid)
       .SetDate(from.Date)
       .SetAuthor(from.Author)
-      .SetCommentProperty(from.CommentProperty)
-      .SetViewPointGuid(from.Viewpoint.Guid)
+      // CommentProperty is required in 2.1, however not in 3.0
+      .SetCommentProperty(from.CommentProperty ?? "Not defined")
       .SetModifiedDate(from.ModifiedDate)
       .SetModifiedAuthor(from.ModifiedAuthor);
+
+
+    if (from.Viewpoint is not null) {
+      builder.SetViewPointGuid(from.Viewpoint.Guid);
+    }
 
     return builder.Build();
   }
@@ -137,12 +151,16 @@ public static class SchemaConverterToBcf21 {
   private static Model.Bcf21.ViewPoint ConvertViewPoint(
     Model.Bcf30.ViewPoint from) {
 
-    var viewPoint = new ViewPoint();
+    var builder = new ViewPointBuilder();
 
-    viewPoint.VisualizationInfo =
-      ConvertVisualizationInfo(from.VisualizationInfo);
-
-    return viewPoint;
+    return
+      builder
+        .SetVisualizationInfo(ConvertVisualizationInfo(from.VisualizationInfo))
+        .SetSnapshot(from.Snapshot)
+        .SetIndex(from.Index)
+        .SetGuid(from.Guid)
+        .SetSnapshotData(from.SnapshotData)
+        .Build();
   }
 
   private static Model.Bcf21.VisualizationInfo? ConvertVisualizationInfo(
@@ -152,6 +170,7 @@ public static class SchemaConverterToBcf21 {
 
     var builder = new VisualizationInfoBuilder();
 
+    return
     builder
       .SetGuid(from.Guid)
       .AddSelections(
@@ -163,126 +182,115 @@ public static class SchemaConverterToBcf21 {
       .AddClippingPlanes(from.ClippingPlanes.Select(ConvertClippingPlane)
         .ToList())
       .SetOrthogonalCamera(ConvertOrthogonalCamera(from.OrthogonalCamera))
-      .SetPerspectiveCamera(ConvertPerspectiveCamera(from.PerspectiveCamera));
+      .SetPerspectiveCamera(ConvertPerspectiveCamera(from.PerspectiveCamera))
+      .Build();
     //TODO: SetViewSetupHints data loss
-
-    return builder.Build();
-
   }
 
-  private static Model.Bcf21.OrthogonalCamera ConvertOrthogonalCamera(
-    Model.Bcf30.OrthogonalCamera from) {
-    var camera = new OrthogonalCamera();
+  private static Model.Bcf21.OrthogonalCamera? ConvertOrthogonalCamera(
+    Model.Bcf30.OrthogonalCamera? from) {
+    if (from is null)
+      return null;
 
-    camera.CameraUpVector.X = from.CameraUpVector.X;
-    camera.CameraUpVector.Y = from.CameraUpVector.Y;
-    camera.CameraUpVector.Z = from.CameraUpVector.Z;
+    var builder = new OrthogonalCameraBuilder();
 
-    camera.CameraDirection.X = from.CameraDirection.X;
-    camera.CameraDirection.Y = from.CameraDirection.Y;
-    camera.CameraDirection.Z = from.CameraDirection.Z;
-
-    camera.CameraViewPoint.X = from.CameraViewPoint.X;
-    camera.CameraViewPoint.Y = from.CameraViewPoint.Y;
-    camera.CameraViewPoint.Z = from.CameraViewPoint.Z;
-
-    camera.ViewToWorldScale = from.ViewToWorldScale;
+    return
+      builder
+        .SetCameraDirection(from.CameraDirection.X, from.CameraDirection.Y, from.CameraDirection.Z)
+        .SetCameraViewPoint(from.CameraViewPoint.X, from.CameraViewPoint.Y, from.CameraViewPoint.Z)
+        .SetCameraUpVector(from.CameraUpVector.X, from.CameraUpVector.Y, from.CameraUpVector.Z)
+        .SetViewToWorldScale(from.ViewToWorldScale)
+        .Build();
     //TODO: AspectRatio data loss
-    return camera;
+
   }
+  private static Model.Bcf21.PerspectiveCamera? ConvertPerspectiveCamera(
+    Model.Bcf30.PerspectiveCamera? from) {
+    if (from is null) {
+      return null;
+    }
 
-  private static Model.Bcf21.PerspectiveCamera ConvertPerspectiveCamera(
-    Model.Bcf30.PerspectiveCamera from) {
-    var camera = new PerspectiveCamera();
+    var builder = new PerspectiveCameraBuilder();
 
-    camera.CameraUpVector.X = from.CameraUpVector.X;
-    camera.CameraUpVector.Y = from.CameraUpVector.Y;
-    camera.CameraUpVector.Z = from.CameraUpVector.Z;
-
-    camera.CameraDirection.X = from.CameraDirection.X;
-    camera.CameraDirection.Y = from.CameraDirection.Y;
-    camera.CameraDirection.Z = from.CameraDirection.Z;
-
-    camera.CameraViewPoint.X = from.CameraViewPoint.X;
-    camera.CameraViewPoint.Y = from.CameraViewPoint.Y;
-    camera.CameraViewPoint.Z = from.CameraViewPoint.Z;
-
-    camera.FieldOfView = from.FieldOfView;
+    return
+      builder
+        .SetCameraDirection(from.CameraDirection.X, from.CameraDirection.Y, from.CameraDirection.Z)
+        .SetCameraViewPoint(from.CameraViewPoint.X, from.CameraViewPoint.Y, from.CameraViewPoint.Z)
+        .SetCameraUpVector(from.CameraUpVector.X, from.CameraUpVector.Y, from.CameraUpVector.Z)
+        .SetFieldOfView(from.FieldOfView)
+        .Build();
     //TODO: AspectRatio data loss
-
-
-    return camera;
   }
 
   private static Model.Bcf21.ClippingPlane ConvertClippingPlane(
     Model.Bcf30.ClippingPlane from) {
     var builder = new ClippingPlaneBuilder();
 
+    return
     builder
       .SetLocation(from.Location.X, from.Location.Y, from.Location.Z)
-      .SetDirection(from.Direction.X, from.Direction.Y, from.Direction.Z);
-
-    return builder.Build();
+      .SetDirection(from.Direction.X, from.Direction.Y, from.Direction.Z)
+      .Build();
   }
 
   private static Model.Bcf21.Line ConvertLine(Model.Bcf30.Line from) {
 
     var builder = new LineBuilder();
 
+    return
     builder
       .SetStartPoint(from.StartPoint.X, from.StartPoint.Y, from.StartPoint.Z)
-      .SetEndPoint(from.EndPoint.X, from.EndPoint.Y, from.EndPoint.Z);
-
-    return builder.Build();
+      .SetEndPoint(from.EndPoint.X, from.EndPoint.Y, from.EndPoint.Z)
+      .Build();
   }
 
   private static Model.Bcf21.ComponentColoringColor ConvertColoring(
     Model.Bcf30.ComponentColoringColor from) {
     var builder = new ComponentColoringColorBuilder();
+
+    return
     builder
       .SetColor(from.Color)
-      .AddComponents(from.Components.Select(ConvertComponent).ToList());
-
-    return builder.Build();
-
+      .AddComponents(from.Components.Select(ConvertComponent).ToList())
+      .Build();
   }
 
   private static Model.Bcf21.VisualizationInfoBitmap ConvertBitmap(
     Model.Bcf30.Bitmap from) {
     var builder = new BitmapBuilder();
 
+    return
     builder
       .SetFormat(from.Format.ToString())
       .SetReference(from.Reference)
       .SetLocation(from.Location.X, from.Location.Y, from.Location.Z)
       .SetHeight(from.Height)
       .SetNormal(from.Normal.X, from.Normal.Y, from.Normal.Z)
-      .SetUp(from.Up.X, from.Up.Y, from.Up.Z);
-
-    return builder.Build();
+      .SetUp(from.Up.X, from.Up.Y, from.Up.Z)
+      .Build();
   }
 
   private static Model.Bcf21.Component ConvertComponent(
     Model.Bcf30.Component from) {
     var builder = new ComponentBuilder();
 
+    return
     builder
       .SetIfcGuid(from.IfcGuid)
       .SetOriginatingSystem(from.OriginatingSystem)
-      .SetAuthoringToolId(from.AuthoringToolId);
-
-    return builder.Build();
+      .SetAuthoringToolId(from.AuthoringToolId)
+      .Build();
   }
 
   private static Model.Bcf21.ComponentVisibility ConvertVisibility(
     Model.Bcf30.ComponentVisibility from) {
     var builder = new VisibilityBuilder();
 
+    return
     builder
       .SetDefaultVisibility(from.DefaultVisibility)
-      .AddExceptions(from.Exceptions.Select(ConvertComponent).ToList());
-
-    return builder.Build();
+      .AddExceptions(from.Exceptions.Select(ConvertComponent).ToList())
+      .Build();
   }
 
 
