@@ -7,20 +7,20 @@ public interface IBcfBuilderDelegate {
   public delegate void OnMarkupCreated<in TMarkup>(TMarkup markup)
     where TMarkup : IMarkup;
   
-  public delegate void
-    OnProjectCreated<in TProjectInfo>(ProjectInfo projectInfo)
+  public delegate void OnProjectCreated<in TProjectInfo>(
+    TProjectInfo projectInfo)
     where TProjectInfo : ProjectInfo;
   
   public delegate void OnExtensionsCreated<in TExtensions>(
-    Extensions extensions);
+    TExtensions extensions)
+    where TExtensions : Extensions;
   
-  public delegate void OnDocumentCreated<in TExtensions>(
-    Extensions documentInfo);
+  public delegate void OnDocumentCreated<in TDocumentInfo>(
+    TDocumentInfo documentInfo)
+    where TDocumentInfo : DocumentInfo;
   
   public OnMarkupCreated<Markup> MarkupCreated { get; }
-  
   public OnExtensionsCreated<Extensions> ExtensionsCreated { get; }
-  
   public OnProjectCreated<ProjectInfo> ProjectCreated { get; }
   public OnDocumentCreated<DocumentInfo> DocumentCreatedCreated { get; }
 }

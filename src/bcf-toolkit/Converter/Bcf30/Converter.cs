@@ -57,8 +57,7 @@ public class Converter : IConverter {
       };
 
   public async Task BcfToJson(Stream source, string target) {
-    var builder = new BcfBuilder();
-    var bcf = await builder.BuildInMemoryFromStream(source);
+    var bcf = await _builder.BuildInMemoryFromStream(source);
     await FileWriter.WriteJson(bcf, target);
   }
 

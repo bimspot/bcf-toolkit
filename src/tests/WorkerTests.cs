@@ -157,7 +157,6 @@ public class WorkerTests {
       var builder = new BcfToolkit.Builder.Bcf30.BcfBuilder();
       await using var inputStream =
         new FileStream(path, FileMode.Open, FileAccess.Read);
-
       var bcf = await builder.BuildInMemoryFromStream(inputStream);
       var stream = await _worker.ToBcf(bcf, BcfVersionEnum.Bcf21);
       var version = await BcfExtensions.GetVersionFromStreamArchive(stream);

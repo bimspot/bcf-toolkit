@@ -14,7 +14,7 @@ public partial class BcfBuilder {
       return;
     }
 
-    await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source, _delegate.MarkupCreated);
+    // await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source, _delegate.MarkupCreated);
 
     // var extensions = await BcfExtensions.ParseExtensions<Extensions>(source);
     // _delegate.ExtensionsCreated(extensions);
@@ -22,6 +22,7 @@ public partial class BcfBuilder {
     // _bcf.Project = await BcfExtensions.ParseProject<ProjectInfo>(source);
     // _bcf.Document = await BcfExtensions.ParseDocuments<DocumentInfo>(source);
   }
+
   public async Task<Bcf> BuildInMemoryFromStream(Stream source) {
     _bcf.Markups =
       await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);

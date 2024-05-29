@@ -8,9 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using BcfToolkit.Builder.Bcf21.Interfaces;
+using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Model;
-using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Utils;
 
@@ -53,32 +52,8 @@ public static class BcfExtensions {
     return await _ParseMarkups<TMarkup, TVisualizationInfo>(stream);
   }
 
-  /// <summary>
-  ///   The method unzips the BCFzip from a stream,
-  ///   and parses the markup xml files within to create an in memory
-  ///   representation of the data.
-  ///   Topic folder structure inside a BCFzip archive:
-  ///   The folder name is the GUID of the topic. This GUID is in the UUID form.
-  ///   The GUID must be all-lowercase. The folder contains the following file:
-  ///   * markup.bcf
-  ///   Additionally the folder can contain other files:
-  ///   * Viewpoint files
-  ///   * Snapshot files
-  ///   * Bitmaps
-  ///   Notification: This function adjusts the stream position back to 0 in
-  ///   order to use it again.
-  /// </summary>
-  /// <param name="stream">The source stream of the BCFzip.</param>
-  /// <param name="onMarkupCreated">
-  ///   If the delegate function is set, the caller will receive every markup
-  ///   as they are created, without building up an in-memory representation
-  ///   of the entire BCF document.
-  /// </param>
-  /// <returns>Returns a Task with a List of `Markup` models.</returns>
-  private static async Task<ConcurrentBag<TMarkup>> _ParseMarkups<
-    TMarkup,
-    TVisualizationInfo>(
-    Stream stream,
+  private static async Task<ConcurrentBag<TMarkup>> _ParseMarkups<TMarkup,
+    TVisualizationInfo>(Stream stream,
     IBcfBuilderDelegate.OnMarkupCreated<TMarkup>? onMarkupCreated = null)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo {
@@ -352,12 +327,11 @@ public static class BcfExtensions {
   /// <returns>Returns the BcfVersionEnum enum.</returns>
   public static async Task<BcfVersionEnum?> GetVersionFromStreamArchive(
     Stream stream) {
-
-
+    
     if (!stream.CanRead || !stream.CanSeek) {
       throw new ArgumentException("Stream is not Readable or Seekable");
     }
-
+    
     using var archive = new ZipArchive(stream, ZipArchiveMode.Read, true);
     BcfVersionEnum? version = null;
 
