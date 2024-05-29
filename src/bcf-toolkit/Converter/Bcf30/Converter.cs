@@ -43,7 +43,7 @@ public class Converter : IConverter {
 
   public async Task BcfZipToJson(Stream source, string target) {
     var builder = new BcfBuilder();
-    var bcf = await builder.BuildFromStream(source);
+    var bcf = await builder.BuildInMemoryFromStream(source);
     await FileWriter.WriteJson(bcf, target);
   }
 
@@ -100,7 +100,7 @@ public class Converter : IConverter {
   }
 
   public async Task<T> BuildBcfFromStream<T>(Stream stream) {
-    var bcf = await _builder.BuildFromStream(stream);
+    var bcf = await _builder.BuildInMemoryFromStream(stream);
     var targetVersion = BcfVersion.TryParse(typeof(T));
     var converterFn = _converterFnMapper[targetVersion];
     return (T)converterFn(bcf);

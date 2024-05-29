@@ -7,7 +7,7 @@ using BcfToolkit.Utils;
 namespace BcfToolkit.Builder.Bcf21;
 
 public partial class BcfBuilder {
-  public async Task<Bcf> BuildFromStream(Stream source) {
+  public async Task<Bcf> BuildInMemoryFromStream(Stream source) {
     _bcf.Markups =
       await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);
     _bcf.Project = await BcfExtensions.ParseProject<ProjectExtension>(source);

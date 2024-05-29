@@ -16,7 +16,11 @@ public partial class BcfBuilder : IBcfBuilder<
   IDefaultBuilder<BcfBuilder> {
   private readonly Bcf _bcf = new();
 
-  public BcfBuilder() {
+  private readonly IBcfBuilderDelegate? _delegate;
+
+  public BcfBuilder(IBcfBuilderDelegate? builderDelegate = null) {
+    this._delegate = builderDelegate;
+
     _bcf.Version = new VersionBuilder()
       .WithDefaults()
       .Build();

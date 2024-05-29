@@ -148,7 +148,7 @@ public class WorkerTests {
       await using var inputStream =
         new FileStream(path, FileMode.Open, FileAccess.Read);
 
-      var bcf = await builder.BuildFromStream(inputStream);
+      var bcf = await builder.BuildInMemoryFromStream(inputStream);
       var stream = await _worker.ToBcfStream(bcf, BcfVersionEnum.Bcf21);
       var version = await BcfExtensions.GetVersionFromStreamArchive(stream);
       Assert.That(BcfVersionEnum.Bcf21, Is.EqualTo(version));

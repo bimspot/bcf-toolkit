@@ -8,7 +8,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Model;
+using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Utils;
 
@@ -33,12 +35,49 @@ public static class BcfExtensions {
   ///   Notification: This function adjusts the stream position back to 0 in order to use it again.
   /// </summary>
   /// <param name="stream">The source stream of the BCFzip.</param>
+  /// <param name="onMarkupCreated">
+  ///   If the delegate function is set, the caller will receive every markup
+  ///   as they are created, without building up an in-memory representation
+  ///   of the entire BCF document.
+  /// </param>
+  /// <returns>Returns a Task with a List of `Markup` models.</returns>
+  public static async Task ParseMarkups<TMarkup,
+    TVisualizationInfo>(Stream stream,
+    IBcfBuilderDelegate.OnMarkupCreated<TMarkup> onMarkupCreated)
+    where TMarkup : IMarkup
+    where TVisualizationInfo : IVisualizationInfo {
+    await _ParseMarkups<TMarkup, TVisualizationInfo>(stream, onMarkupCreated);
+  }
+
+  /// <summary>
+  ///   The method unzips the BCFzip from a stream,
+  ///   and parses the markup xml files within to create an in memory
+  ///   representation of the data.
+  ///   Topic folder structure inside a BCFzip archive:
+  ///   The folder name is the GUID of the topic. This GUID is in the UUID form.
+  ///   The GUID must be all-lowercase. The folder contains the following file:
+  ///   * markup.bcf
+  ///   Additionally the folder can contain other files:
+  ///   * Viewpoint files
+  ///   * Snapshot files
+  ///   * Bitmaps
+  ///   Notification: This function adjusts the stream position back to 0 in order to use it again.
+  /// </summary>
+  /// <param name="stream">The source stream of the BCFzip.</param>
   /// <returns>Returns a Task with a List of `Markup` models.</returns>
   public static async Task<ConcurrentBag<TMarkup>> ParseMarkups<TMarkup,
     TVisualizationInfo>(Stream stream)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo {
-    if (stream == null || !stream.CanRead)
+    return await _ParseMarkups<TMarkup, TVisualizationInfo>(stream);
+  }
+
+  private static async Task<ConcurrentBag<TMarkup>> _ParseMarkups<TMarkup,
+    TVisualizationInfo>(Stream stream,
+    IBcfBuilderDelegate.OnMarkupCreated<TMarkup>? onMarkupCreated = null)
+    where TMarkup : IMarkup
+    where TVisualizationInfo : IVisualizationInfo {
+    if (stream is not { CanRead: true })
       throw new ArgumentException("Source stream is not readable.");
 
     var objType = typeof(TMarkup);
@@ -121,7 +160,7 @@ public static class BcfExtensions {
 
       if (isLastTopicEntry)
         WritingOutMarkup(ref markup, ref viewpoint, ref snapshot,
-          currentUuid, ref markups);
+          currentUuid, ref markups, onMarkupCreated);
     }
 
     // Stream must be positioned back to 0 in order to use it again
@@ -134,7 +173,8 @@ public static class BcfExtensions {
     ref TVisualizationInfo? viewpoint,
     ref string? snapshot,
     string currentUuid,
-    ref ConcurrentBag<TMarkup> markups)
+    ref ConcurrentBag<TMarkup> markups,
+    IBcfBuilderDelegate.OnMarkupCreated<TMarkup>? onMarkupCreated = null)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo {
     // This is a new subfolder, writing out Markup.
@@ -146,7 +186,12 @@ public static class BcfExtensions {
         firstViewPoint.SnapshotData = snapshot;
       }
 
-      markups.Add(markup);
+      if (onMarkupCreated is not null) {
+        onMarkupCreated(markup);
+      }
+      else {
+        markups.Add(markup);
+      }
 
       // Null-ing external references
       markup = default;
@@ -285,7 +330,8 @@ public static class BcfExtensions {
   /// </summary>
   /// <param name="stream"></param>
   /// <returns></returns>
-  public static async Task<BcfVersionEnum?> GetVersionFromStreamArchive(Stream stream) {
+  public static async Task<BcfVersionEnum?> GetVersionFromStreamArchive(
+    Stream stream) {
     using var archive = new ZipArchive(stream, ZipArchiveMode.Read, true);
     BcfVersionEnum? version = null;
 
@@ -298,7 +344,8 @@ public static class BcfExtensions {
         entry.Open(),
         LoadOptions.None,
         CancellationToken.None);
-      version = BcfVersion.TryParse(document.Root?.Attribute("VersionId")?.Value);
+      version =
+        BcfVersion.TryParse(document.Root?.Attribute("VersionId")?.Value);
       stream.Position = 0;
       return version;
     }

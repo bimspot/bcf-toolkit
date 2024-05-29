@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,13 +9,30 @@ using BcfToolkit.Utils;
 namespace BcfToolkit.Builder.Bcf30;
 
 public partial class BcfBuilder {
+  public async Task ProcessStream(Stream source) {
+    if (_delegate is null) {
+      Console.WriteLine("IBcfBuilderDelegate is not set.");
+      return;
+    }
+
+    await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source,
+      _delegate.MarkupCreated);
+
+    var extensions = await BcfExtensions.ParseExtensions<Extensions>(source);
+    _delegate.ExtensionsCreatedCreated(extensions);
+
+    _bcf.Project = await BcfExtensions.ParseProject<ProjectInfo>(source);
+    _bcf.Document = await BcfExtensions.ParseDocuments<DocumentInfo>(source);
+  }
+
+  //
   /// <summary>
   ///   The method builds and returns an instance of BCF 3.0 object from the
   ///   specified file stream.
   /// </summary>
   /// <param name="source">The file stream.</param>
   /// <returns>Returns the built object.</returns>
-  public async Task<Bcf> BuildFromStream(Stream source) {
+  public async Task<Bcf> BuildInMemoryFromStream(Stream source) {
     _bcf.Markups =
       await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);
     _bcf.Extensions = await BcfExtensions.ParseExtensions<Extensions>(source);
