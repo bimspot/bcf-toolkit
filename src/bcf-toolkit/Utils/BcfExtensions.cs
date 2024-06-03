@@ -64,7 +64,9 @@ public static class BcfExtensions {
     var viewpoint = default(TVisualizationInfo);
     string? snapshot = null;
 
-    var topicEntries = archive.Entries
+    var topicEntries = archive
+      .Entries
+      .OrderBy(entry => entry.FullName)
       .Where(entry =>
         Regex.IsMatch(entry.FullName.Split("/")[0].Replace("-", ""),
           "^[a-fA-F0-9]+$"))
