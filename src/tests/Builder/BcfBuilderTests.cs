@@ -12,13 +12,19 @@ namespace Tests.Builder;
 public class BcfBuilderDelegate : IBcfBuilderDelegate {
   public IBcfBuilderDelegate.OnMarkupCreated<Markup>
     MarkupCreated { get; } = Console.WriteLine;
-
+  
   public IBcfBuilderDelegate.OnExtensionsCreated<Extensions>
-    ExtensionsCreatedCreated { get; } = Console.WriteLine;
+    ExtensionsCreated { get; } = Console.WriteLine;
+  
+  public IBcfBuilderDelegate.OnProjectCreated<ProjectInfo> 
+    ProjectCreated { get; } = Console.WriteLine;
+  
+  public IBcfBuilderDelegate.OnDocumentCreated<DocumentInfo> 
+    DocumentCreatedCreated { get; } = Console.WriteLine;
 }
 
 public class BcfBuilderTests {
-  private BcfBuilder _steamBuilder = null!;
+  private BcfBuilder _streamBuilder = null!;
   private BcfBuilder _inMemoryBuilder = null!;
 
   [SetUp]
@@ -26,11 +32,11 @@ public class BcfBuilderTests {
     _inMemoryBuilder = new BcfBuilder();
 
     var bcfBuilderDelegate = new BcfBuilderDelegate();
-    _steamBuilder = new BcfBuilder(bcfBuilderDelegate);
+    _streamBuilder = new BcfBuilder(bcfBuilderDelegate);
   }
 
   [Test]
-  public void BuildBcfWithComplexFields() {
+  public void BuildBcfWithComplexFieldsTest() {
     var bcf = _inMemoryBuilder
       .AddMarkup(m => m
         .SetTitle("Title")
@@ -52,25 +58,21 @@ public class BcfBuilderTests {
   }
 
   [Test]
-  public void BuildBcfWithMissingRequiredFields() {
+  public void BuildBcfWithMissingRequiredFieldsTest() {
     Assert.That(() => _inMemoryBuilder.Build(), Throws.ArgumentException);
   }
 
   [Test]
-  public async Task BuildBcfFromStream() {
+  public async Task ProcessStreamTest() {
     await using var stream = new FileStream(
       "Resources/Bcf/v3.0/UserAssignment.bcfzip",
       FileMode.Open,
       FileAccess.Read);
-    await _steamBuilder.ProcessStream(stream);
-    // Assert.That(1, Is.EqualTo(bcf.Markups.Count));
-    // Assert.That(
-    //   "Architect@example.com",
-    //   Is.EqualTo(bcf.Markups.FirstOrDefault()?.Topic.AssignedTo));
+    await _streamBuilder.ProcessStream(stream);
   }
 
   [Test]
-  public async Task BuildInMemoryBcfFromStream() {
+  public async Task BuildInMemoryBcfFromStreamTest() {
     await using var stream = new FileStream(
       "Resources/Bcf/v3.0/UserAssignment.bcfzip",
       FileMode.Open,
@@ -83,7 +85,7 @@ public class BcfBuilderTests {
   }
 
   [Test]
-  public async Task BuildEmptyBcfFromStream() {
+  public async Task BuildEmptyBcfFromStreamTest() {
     await using var stream = new FileStream(
       "Resources/Bcf/v3.0/Empty.bcfzip",
       FileMode.Open,

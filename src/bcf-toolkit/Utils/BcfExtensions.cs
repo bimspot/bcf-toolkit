@@ -8,9 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using BcfToolkit.Builder.Bcf30.Interfaces;
+using BcfToolkit.Builder.Bcf21.Interfaces;
 using BcfToolkit.Model;
-using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Utils;
 
@@ -24,15 +23,6 @@ public static class BcfExtensions {
   ///   The method unzips the BCFzip from a stream,
   ///   and parses the markup xml files within to create an in memory
   ///   representation of the data.
-  ///   Topic folder structure inside a BCFzip archive:
-  ///   The folder name is the GUID of the topic. This GUID is in the UUID form.
-  ///   The GUID must be all-lowercase. The folder contains the following file:
-  ///   * markup.bcf
-  ///   Additionally the folder can contain other files:
-  ///   * Viewpoint files
-  ///   * Snapshot files
-  ///   * Bitmaps
-  ///   Notification: This function adjusts the stream position back to 0 in order to use it again.
   /// </summary>
   /// <param name="stream">The source stream of the BCFzip.</param>
   /// <param name="onMarkupCreated">
@@ -40,7 +30,6 @@ public static class BcfExtensions {
   ///   as they are created, without building up an in-memory representation
   ///   of the entire BCF document.
   /// </param>
-  /// <returns>Returns a Task with a List of `Markup` models.</returns>
   public static async Task ParseMarkups<TMarkup,
     TVisualizationInfo>(Stream stream,
     IBcfBuilderDelegate.OnMarkupCreated<TMarkup> onMarkupCreated)
@@ -53,15 +42,6 @@ public static class BcfExtensions {
   ///   The method unzips the BCFzip from a stream,
   ///   and parses the markup xml files within to create an in memory
   ///   representation of the data.
-  ///   Topic folder structure inside a BCFzip archive:
-  ///   The folder name is the GUID of the topic. This GUID is in the UUID form.
-  ///   The GUID must be all-lowercase. The folder contains the following file:
-  ///   * markup.bcf
-  ///   Additionally the folder can contain other files:
-  ///   * Viewpoint files
-  ///   * Snapshot files
-  ///   * Bitmaps
-  ///   Notification: This function adjusts the stream position back to 0 in order to use it again.
   /// </summary>
   /// <param name="stream">The source stream of the BCFzip.</param>
   /// <returns>Returns a Task with a List of `Markup` models.</returns>
@@ -71,9 +51,33 @@ public static class BcfExtensions {
     where TVisualizationInfo : IVisualizationInfo {
     return await _ParseMarkups<TMarkup, TVisualizationInfo>(stream);
   }
-
-  private static async Task<ConcurrentBag<TMarkup>> _ParseMarkups<TMarkup,
-    TVisualizationInfo>(Stream stream,
+  
+  /// <summary>
+  ///   The method unzips the BCFzip from a stream,
+  ///   and parses the markup xml files within to create an in memory
+  ///   representation of the data.
+  ///   Topic folder structure inside a BCFzip archive:
+  ///   The folder name is the GUID of the topic. This GUID is in the UUID form.
+  ///   The GUID must be all-lowercase. The folder contains the following file:
+  ///   * markup.bcf
+  ///   Additionally the folder can contain other files:
+  ///   * Viewpoint files
+  ///   * Snapshot files
+  ///   * Bitmaps
+  ///   Notification: This function adjusts the stream position back to 0 in
+  ///   order to use it again.
+  /// </summary>
+  /// <param name="stream">The source stream of the BCFzip.</param>
+  /// <param name="onMarkupCreated">
+  ///   If the delegate function is set, the caller will receive every markup
+  ///   as they are created, without building up an in-memory representation
+  ///   of the entire BCF document.
+  /// </param>
+  /// <returns>Returns a Task with a List of `Markup` models.</returns>
+  private static async Task<ConcurrentBag<TMarkup>> _ParseMarkups<
+    TMarkup,
+    TVisualizationInfo>(
+    Stream stream,
     IBcfBuilderDelegate.OnMarkupCreated<TMarkup>? onMarkupCreated = null)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo {
@@ -92,7 +96,7 @@ public static class BcfExtensions {
     // This iterates through the archive file-by-file and the sub-folders
     // being just in the names of the entries.
     // We know it is a new Markup, when the folder (uuid) changes. In that
-    // case the Markup object is created and pushed into the bac. A special
+    // case the Markup object is created and pushed into the bag. A special
     // case is the last entry in the archive, when that is reached, the
     // markup is created as well.
 
@@ -116,14 +120,18 @@ public static class BcfExtensions {
 
       // This sets the folder context
       var uuid = entry.FullName.Split("/")[0];
-      //var isTopic = Regex.IsMatch(uuid.Replace("-", ""), "^[a-fA-F0-9]+$");
 
       var isNewTopic =
         !string.IsNullOrEmpty(currentUuid) && uuid != currentUuid;
 
       if (isNewTopic)
-        WritingOutMarkup(ref markup, ref viewpoint, ref snapshot,
-          currentUuid, ref markups);
+        WritingOutMarkup(
+          markup, 
+          viewpoint, 
+          ref snapshot,
+          currentUuid,
+          markups, 
+          onMarkupCreated);
 
       currentUuid = uuid;
 
@@ -141,7 +149,6 @@ public static class BcfExtensions {
         if (viewpoint != null)
           // TODO: No support for multiple viewpoints!
           Console.WriteLine("No support for multiple viewpoints!");
-        //continue;
         var document = await XDocument.LoadAsync(
           entry.Open(),
           LoadOptions.None,
@@ -154,13 +161,17 @@ public static class BcfExtensions {
         if (snapshot != null)
           // TODO: No support for multiple snapshots!
           Console.WriteLine("No support for multiple snapshots!");
-        //continue;
         snapshot = entry.Snapshot();
       }
 
       if (isLastTopicEntry)
-        WritingOutMarkup(ref markup, ref viewpoint, ref snapshot,
-          currentUuid, ref markups, onMarkupCreated);
+        WritingOutMarkup(
+          markup, 
+          viewpoint, 
+          ref snapshot,
+          currentUuid, 
+          markups, 
+          onMarkupCreated);
     }
 
     // Stream must be positioned back to 0 in order to use it again
@@ -169,11 +180,11 @@ public static class BcfExtensions {
   }
 
   private static void WritingOutMarkup<TMarkup, TVisualizationInfo>(
-    ref TMarkup? markup,
-    ref TVisualizationInfo? viewpoint,
+    TMarkup? markup,
+    TVisualizationInfo? viewpoint,
     ref string? snapshot,
     string currentUuid,
-    ref ConcurrentBag<TMarkup> markups,
+    ConcurrentBag<TMarkup> markups,
     IBcfBuilderDelegate.OnMarkupCreated<TMarkup>? onMarkupCreated = null)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo {

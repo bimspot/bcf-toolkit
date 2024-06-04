@@ -38,7 +38,7 @@ public class MarkupBuilderTests {
       .Build();
     Assert.That(
       "3ffb4df2-0187-49a9-8a4a-23992696bafd",
-      Is.EqualTo(markup.GetTopic()!.Guid));
+      Is.EqualTo(markup.GetTopic().Guid));
   }
 
   [Test]

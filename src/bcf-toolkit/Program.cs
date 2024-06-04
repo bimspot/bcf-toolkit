@@ -1,12 +1,41 @@
 using System;
 using System.Threading.Tasks;
 using System.CommandLine;
+using System.IO;
+using BcfToolkit.Builder.Bcf21;
+using BcfToolkit.Builder.Bcf21.Interfaces;
+using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit;
 
+public class BcfBuilderDelegate : IBcfBuilderDelegate {
+  public IBcfBuilderDelegate.OnMarkupCreated<Markup>
+    MarkupCreated { get; } = Console.WriteLine;
+  
+  public IBcfBuilderDelegate.OnProjectCreated<ProjectExtension>
+    ProjectCreated { get; } = Console.WriteLine;
+  
+}
+
 internal static class Program {
   private static async Task Main(string[] args) {
-    await HandleArguments(args);
+    await using var stream = new FileStream(
+      "/Users/balintbende/Developer/test/bcf/bcftoolkittest.bcfzip",
+      FileMode.Open,
+      FileAccess.Read);
+    
+    // var bcfBuilderDelegate = new BcfBuilderDelegate();
+    // var streamBuilder = new BcfBuilder(bcfBuilderDelegate);
+    // await streamBuilder.ProcessStream(stream);
+    
+    var builder = new BcfBuilder();
+    var bcf = await builder.BuildInMemoryFromStream(stream);
+    Console.WriteLine(bcf.Markups.Count);
+    
+    stream.Close();
+    
+    // await HandleArguments(args);
+    Environment.Exit(0);
   }
   private static async Task HandleArguments(string[] args) {
     var sourcePathOption = new Option<string>(
@@ -39,8 +68,27 @@ internal static class Program {
 
   private static async Task DoRootCommand(InputArguments arguments) {
     try {
-      var worker = new Worker();
-      await worker.Convert(arguments.SourcePath, arguments.Target);
+      // var worker = new Worker();
+      // await worker.Convert(arguments.SourcePath, arguments.Target);
+      await using var stream = new FileStream(
+        "/Users/balintbende/Developer/test/bcf/NBHU_BT_BEHF.bcfzip",
+        FileMode.Open,
+        FileAccess.Read);
+      
+      // var bcfBuilderDelegate = new BcfBuilderDelegate();
+      // var streamBuilder = new BcfBuilder(bcfBuilderDelegate);
+      // await streamBuilder.ProcessStream(stream);
+      
+
+      
+      var builder = new BcfBuilder();
+      var bcf = await builder.BuildInMemoryFromStream(stream);
+      Console.WriteLine(bcf.Markups.Count);
+      
+      builder = null;
+      bcf = null;
+      
+      stream.Close();
     }
     catch (Exception e) {
       var errorWriter = Console.Error;

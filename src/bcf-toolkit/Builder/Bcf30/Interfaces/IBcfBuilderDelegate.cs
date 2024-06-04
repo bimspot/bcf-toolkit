@@ -19,8 +19,8 @@ public interface IBcfBuilderDelegate {
 
   public OnMarkupCreated<Markup> MarkupCreated { get; }
 
-  public OnExtensionsCreated<Extensions> ExtensionsCreatedCreated { get; }
+  public OnExtensionsCreated<Extensions> ExtensionsCreated { get; }
 
-  // public OnProjectCreated<ProjectInfo> ProjectCreated { get; }
-  // public OnDocumentCreated<DocumentInfo> DocumentCreatedCreated { get; }
+  public OnProjectCreated<ProjectInfo> ProjectCreated { get; }
+  public OnDocumentCreated<DocumentInfo> DocumentCreatedCreated { get; }
 }
