@@ -21,23 +21,29 @@ public class BitmapBuilder :
   }
 
   public BitmapBuilder SetLocation(double x, double y, double z) {
-    _bitmap.Location.X = x;
-    _bitmap.Location.Y = y;
-    _bitmap.Location.Z = z;
+    _bitmap.Location = new Point {
+      X = x,
+      Y = y,
+      Z = z
+    };
     return this;
   }
 
   public BitmapBuilder SetNormal(double x, double y, double z) {
-    _bitmap.Normal.X = x;
-    _bitmap.Normal.Y = y;
-    _bitmap.Normal.Z = z;
+    _bitmap.Normal = new Direction {
+      X = x,
+      Y = y,
+      Z = z
+    };
     return this;
   }
 
   public BitmapBuilder SetUp(double x, double y, double z) {
-    _bitmap.Up.X = x;
-    _bitmap.Up.Y = y;
-    _bitmap.Up.Z = z;
+    _bitmap.Up = new Direction {
+      X = x,
+      Y = y,
+      Z = z
+    };
     return this;
   }
 
