@@ -10,16 +10,20 @@ public class LineBuilder :
   private readonly Line _line = new();
 
   public LineBuilder SetStartPoint(double x, double y, double z) {
-    _line.StartPoint.X = x;
-    _line.StartPoint.Y = y;
-    _line.StartPoint.Z = z;
+    _line.StartPoint = new Point {
+      X = x,
+      Y = y,
+      Z = z
+    };
     return this;
   }
 
   public LineBuilder SetEndPoint(double x, double y, double z) {
-    _line.EndPoint.X = x;
-    _line.EndPoint.Y = y;
-    _line.EndPoint.Z = z;
+    _line.EndPoint = new Point {
+      X = x,
+      Y = y,
+      Z = z
+    };
     return this;
   }
 

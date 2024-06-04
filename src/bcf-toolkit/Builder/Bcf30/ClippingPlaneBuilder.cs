@@ -10,16 +10,20 @@ public class ClippingPlaneBuilder :
   private readonly ClippingPlane _clippingPlane = new();
 
   public ClippingPlaneBuilder SetLocation(double x, double y, double z) {
-    _clippingPlane.Location.X = x;
-    _clippingPlane.Location.Y = y;
-    _clippingPlane.Location.Z = z;
+    _clippingPlane.Location = new Point {
+      X = x,
+      Y = y,
+      Z = z
+    };
     return this;
   }
 
   public ClippingPlaneBuilder SetDirection(double x, double y, double z) {
-    _clippingPlane.Direction.X = x;
-    _clippingPlane.Direction.Y = y;
-    _clippingPlane.Direction.Z = z;
+    _clippingPlane.Direction = new Direction {
+      X = x,
+      Y = y,
+      Z = z
+    };
     return this;
   }
 
