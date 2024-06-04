@@ -159,10 +159,10 @@ public interface IMarkupBuilder<
   /// </summary>
   /// <param name="viewpoint">Viewpoint file name.</param>
   /// <param name="snapshot">Snapshot file name.</param>
-  /// <param name="snapshotData">Snapshot data.</param>
+  /// <param name="snapshotData">Base64 string of snapshot data.</param>
   /// <param name="index">Index parameter for sorting.</param>
   /// <param name="guid">Guid of the viewpoint.</param>
-  /// <param name="builder">The builder for `ViewPoint`.</param>
+  /// <param name="builder">The builder for `VisualizationInfo`.</param>
   /// <returns>Returns the builder object.</returns>
   TBuilder AddViewPoint(
     string viewpoint,

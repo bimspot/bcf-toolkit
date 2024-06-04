@@ -5,7 +5,7 @@ namespace BcfToolkit.Builder.Bcf21;
 public class ViewPointBuilder {
   private readonly ViewPoint _viewPoint = new();
 
-  public ViewPointBuilder SetVisualizationInfo(Model.Bcf21.VisualizationInfo? visualizationInfo) {
+  public ViewPointBuilder SetVisualizationInfo(VisualizationInfo? visualizationInfo) {
     _viewPoint.VisualizationInfo = visualizationInfo;
     return this;
   }
