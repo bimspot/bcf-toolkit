@@ -1,8 +1,8 @@
 using System;
 using BcfToolkit.Builder.Interfaces;
-using BcfToolkit.Model.Bcf30;
+using BcfToolkit.Model.Bcf21;
 
-namespace BcfToolkit.Builder.Bcf30.Interfaces;
+namespace BcfToolkit.Builder.Bcf21.Interfaces;
 
 public interface IViewPointBuilder<out TBuilder, out TVisualizationInfoBuilder>
   : IBuilder<ViewPoint> {

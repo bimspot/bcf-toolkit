@@ -1,18 +1,13 @@
 using System;
-using BcfToolkit.Builder.Bcf21.Interfaces;
+using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Model;
-using BcfToolkit.Model.Bcf21;
+using BcfToolkit.Model.Bcf30;
 
-namespace BcfToolkit.Builder.Bcf21;
+namespace BcfToolkit.Builder.Bcf30;
 
 public class ViewPointBuilder : IViewPointBuilder<
   ViewPointBuilder, VisualizationInfoBuilder> {
   private readonly ViewPoint _viewPoint = new();
-
-  public ViewPointBuilder SetVisualizationInfo(VisualizationInfo? visualizationInfo) {
-    _viewPoint.VisualizationInfo = visualizationInfo;
-    return this;
-  }
 
   public ViewPointBuilder SetViewPoint(string viewpoint) {
     _viewPoint.Viewpoint = viewpoint;

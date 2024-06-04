@@ -19,7 +19,7 @@ public class BitmapBuilder :
     _bitmap.Reference = reference;
     return this;
   }
-  
+
   public BitmapBuilder SetLocation(double x, double y, double z) {
     _bitmap.Location = new Point {
       X = x,
@@ -28,7 +28,7 @@ public class BitmapBuilder :
     };
     return this;
   }
-  
+
   public BitmapBuilder SetNormal(double x, double y, double z) {
     _bitmap.Normal = new Direction {
       X = x,
@@ -37,7 +37,7 @@ public class BitmapBuilder :
     };
     return this;
   }
-  
+
   public BitmapBuilder SetUp(double x, double y, double z) {
     _bitmap.Up = new Direction {
       X = x,

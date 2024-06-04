@@ -10,7 +10,8 @@ public interface IMarkupBuilder<
   out TBimSnippetBuilder,
   out TDocumentReferenceBuilder,
   out TCommentBuilder,
-  out TVisualizationInfoBuilder> :
+  out TVisualizationInfoBuilder,
+  out TViewPointBuilder> :
   IBuilder<Markup> {
   /// <summary>
   ///   Returns the builder object set with the `Guid`.
@@ -156,14 +157,19 @@ public interface IMarkupBuilder<
 
   /// <summary>
   ///   Returns the builder object extended with `ViewPoint`.
+  ///   WARNING: This function is deprecated, please use `AddViewPoint` with
+  ///   `ViewPointBuilder` argument instead.
   /// </summary>
   /// <param name="viewpoint">Viewpoint file name.</param>
   /// <param name="snapshot">Snapshot file name.</param>
-  /// <param name="snapshotData">Snapshot data.</param>
+  /// <param name="snapshotData">Base64 string of snapshot data.</param>
   /// <param name="index">Index parameter for sorting.</param>
   /// <param name="guid">Guid of the viewpoint.</param>
-  /// <param name="builder">The builder for `ViewPoint`.</param>
+  /// <param name="builder">The builder for `VisualizationInfo`.</param>
   /// <returns>Returns the builder object.</returns>
+  [Obsolete(
+    "This function is deprecated, please use `AddViewPoint` with " +
+    "`ViewPointBuilder` argument instead.")]
   TBuilder AddViewPoint(
     string viewpoint,
     string snapshot,
@@ -171,6 +177,16 @@ public interface IMarkupBuilder<
     int index,
     string guid,
     Action<TVisualizationInfoBuilder> builder);
+
+  /// <summary>
+  ///   Returns the builder object extended with a new `ViewPoint`.
+  ///   The markup file can contain multiple viewpoints related to one or
+  ///   more comments. A viewpoint has also the Guid attribute for identifying
+  ///   it uniquely.
+  /// </summary>
+  /// <param name="builder">The builder for `ViewPoint`.</param>
+  /// <returns>Returns the builder object.</returns>
+  TBuilder AddViewPoint(Action<TViewPointBuilder> builder);
 
   /// <summary>
   ///   Returns the builder object extended with `RelatedTopic`.

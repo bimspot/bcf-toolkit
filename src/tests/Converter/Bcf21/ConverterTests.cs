@@ -37,6 +37,9 @@ public class ConverterTests {
     _converter.BcfZipToJson(
       "Resources/Bcf/v2.1/UserAssignment.bcfzip",
       "Resources/output/json/v2.1/UserAssignment");
+    _converter.BcfZipToJson(
+        "Resources/Bcf/v2.1/BcfVersionAndTopics.bcfzip",
+        "Resources/output/json/v2.1/BcfVersionAndTopics");
   }
 
   [Test]
