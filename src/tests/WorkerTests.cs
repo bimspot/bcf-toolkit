@@ -24,6 +24,15 @@ public class WorkerTests {
 
   [Test]
   [Category("BCF v2.1")]
+  public async Task BuildBcfFromV21StreamTest() {
+    const string path = "Resources/Bcf/v2.1/MiniSolibri.bcfzip";
+    await using var stream =
+      new FileStream(path, FileMode.Open, FileAccess.Read);
+    await _worker.BuildBcfFromStream(stream);
+  }
+
+  [Test]
+  [Category("BCF v2.1")]
   public async Task BuildBcfFromV21StreamSamplesTests() {
     var samples = new List<string> {
       // "Resources/Bcf/v2.1/AllPartsVisible.bcfzip", // assigned to is empty
@@ -31,6 +40,7 @@ public class WorkerTests {
       "Resources/Bcf/v2.1/ExternalBIMSnippet.bcfzip",
       "Resources/Bcf/v2.1/MaximumInformation.bcfzip",
       "Resources/Bcf/v2.1/MinimumInformation.bcfzip",
+      "Resources/Bcf/v2.1/MiniSolibri.bcfzip",
       // "Resources/Bcf/v2.1/RelatedTopics.bcfzip", // comment property is empty
       // "Resources/Bcf/v2.1/SingleVisibleWall.bcfzip", // comment property is empty
       // "Resources/Bcf/v2.1/UserAssignment.bcfzip" // description is empty

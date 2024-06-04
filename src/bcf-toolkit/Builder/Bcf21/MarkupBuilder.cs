@@ -13,7 +13,8 @@ public partial class MarkupBuilder :
     BimSnippetBuilder,
     DocumentReferenceBuilder,
     CommentBuilder,
-    VisualizationInfoBuilder>,
+    VisualizationInfoBuilder,
+    ViewPointBuilder>,
   IDefaultBuilder<MarkupBuilder> {
   private readonly Markup _markup = new();
 
@@ -147,6 +148,14 @@ public partial class MarkupBuilder :
       Guid = guid,
       VisualizationInfo = visInfo
     };
+    _markup.Viewpoints.Add(viewPoint);
+    return this;
+  }
+
+  public MarkupBuilder AddViewPoint(Action<ViewPointBuilder> builder) {
+    var viewPoint =
+      (ViewPoint)BuilderUtils
+        .BuildItem<ViewPointBuilder, IViewPoint>(builder);
     _markup.Viewpoints.Add(viewPoint);
     return this;
   }

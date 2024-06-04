@@ -8,7 +8,7 @@ public class ClippingPlaneBuilder :
   IClippingPlaneBuilder<ClippingPlaneBuilder>,
   IDefaultBuilder<ClippingPlaneBuilder> {
   private readonly ClippingPlane _clippingPlane = new();
-  
+
   public ClippingPlaneBuilder SetLocation(double x, double y, double z) {
     _clippingPlane.Location = new Point {
       X = x,
@@ -17,7 +17,7 @@ public class ClippingPlaneBuilder :
     };
     return this;
   }
-  
+
   public ClippingPlaneBuilder SetDirection(double x, double y, double z) {
     _clippingPlane.Direction = new Direction {
       X = x,

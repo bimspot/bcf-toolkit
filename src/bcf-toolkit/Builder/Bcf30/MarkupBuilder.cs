@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
@@ -14,7 +13,8 @@ public partial class MarkupBuilder :
     BimSnippetBuilder,
     DocumentReferenceBuilder,
     CommentBuilder,
-    VisualizationInfoBuilder>,
+    VisualizationInfoBuilder,
+    ViewPointBuilder>,
   IDefaultBuilder<MarkupBuilder> {
   private readonly Markup _markup = new();
 
@@ -157,6 +157,14 @@ public partial class MarkupBuilder :
     return this;
   }
 
+  public MarkupBuilder AddViewPoint(Action<ViewPointBuilder> builder) {
+    var viewPoint =
+      (ViewPoint)BuilderUtils
+        .BuildItem<ViewPointBuilder, IViewPoint>(builder);
+    _markup.Topic.Viewpoints.Add(viewPoint);
+    return this;
+  }
+
   public MarkupBuilder AddRelatedTopic(string relatedTopicGuid) {
     var topic = new TopicRelatedTopicsRelatedTopic {
       Guid = relatedTopicGuid
@@ -184,6 +192,4 @@ public partial class MarkupBuilder :
   public Markup Build() {
     return BuilderUtils.ValidateItem(_markup);
   }
-
-
 }
