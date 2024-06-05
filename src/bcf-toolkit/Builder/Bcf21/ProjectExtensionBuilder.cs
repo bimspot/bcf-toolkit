@@ -10,17 +10,13 @@ public class ProjectExtensionBuilder :
   IDefaultBuilder<ProjectExtensionBuilder> {
   private readonly ProjectExtension _project = new();
 
-  public ProjectExtensionBuilder() {
-    _project.Project = new Project();
-  }
-
   public ProjectExtensionBuilder SetProjectName(string name) {
-    _project.Project.Name = name;
+    _project.GetProjectInstance().Name = name;
     return this;
   }
 
   public ProjectExtensionBuilder SetProjectId(string id) {
-    _project.Project.ProjectId = id;
+    _project.GetProjectInstance().ProjectId = id;
     return this;
   }
 

@@ -31,8 +31,7 @@ public class CommentBuilder :
   }
 
   public CommentBuilder SetViewPointGuid(string guid) {
-    _comment.Viewpoint ??= new CommentViewpoint();
-    _comment.Viewpoint.Guid = guid;
+    _comment.GetCommentViewPointInstance().Guid = guid;
     return this;
   }
 

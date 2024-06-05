@@ -8,15 +8,13 @@ namespace BcfToolkit.Builder.Bcf21;
 public partial class VisualizationInfoBuilder {
 
   public VisualizationInfoBuilder AddSelections(List<Component> components) {
-    _visualizationInfo.Components ??= new Components();
-    components.ForEach(_visualizationInfo.Components.Selection.Add);
+    components.ForEach(_visualizationInfo.GetComponentsInstance().Selection.Add);
     return this;
   }
 
   public VisualizationInfoBuilder SetVisibility(
     ComponentVisibility componentVisibility) {
-    _visualizationInfo.Components ??= new Components();
-    _visualizationInfo.Components.Visibility = componentVisibility;
+    _visualizationInfo.GetComponentsInstance().Visibility = componentVisibility;
     return this;
   }
 
@@ -26,8 +24,7 @@ public partial class VisualizationInfoBuilder {
   }
 
   public VisualizationInfoBuilder AddColorings(List<ComponentColoringColor> colorings) {
-    _visualizationInfo.Components ??= new Components();
-    colorings.ForEach(_visualizationInfo.Components.Coloring.Add);
+    colorings.ForEach(_visualizationInfo.GetComponentsInstance().Coloring.Add);
     return this;
   }
 

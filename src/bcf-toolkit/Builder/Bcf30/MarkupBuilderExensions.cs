@@ -5,7 +5,7 @@ namespace BcfToolkit.Builder.Bcf30;
 
 public partial class MarkupBuilder {
   public MarkupBuilder AddHeaderFiles(List<File> files) {
-    files.ForEach(_markup.Header.Files.Add);
+    files.ForEach(_markup.GetHeaderInstance().Files.Add);
     return this;
   }
 

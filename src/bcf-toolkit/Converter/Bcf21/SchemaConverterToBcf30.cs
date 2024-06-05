@@ -214,7 +214,7 @@ public static class SchemaConverterToBcf30 {
 
   private static Model.Bcf30.ComponentColoringColor ConvertColor(
     Model.Bcf21.ComponentColoringColor from) {
-    var builder = new ComponentColoringComponentColoringColorBuilder();
+    var builder = new ComponentColoringColorBuilder();
     return builder
       .AddComponents(from.Component.Select(ConvertComponent).ToList())
       .SetColor(from.Color)

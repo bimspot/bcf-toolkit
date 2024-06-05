@@ -5,8 +5,8 @@ namespace BcfToolkit.Builder.Bcf21;
 
 
 public partial class MarkupBuilder {
-  public MarkupBuilder AddHeaderFiles(List<HeaderFile> files) {
-    files.ForEach(_markup.Header.Add);
+  public MarkupBuilder AddHeaderFiles(List<HeaderFile>? files) {
+    files?.ForEach(_markup.Header.Add);
     return this;
   }
 

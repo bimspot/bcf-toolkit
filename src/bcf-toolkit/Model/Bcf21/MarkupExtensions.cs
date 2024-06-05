@@ -35,8 +35,15 @@ public partial class ViewPoint : IViewPoint {
   public string? SnapshotData { get; set; }
 }
 
-public partial class VisualizationInfo : IVisualizationInfo { }
 public partial class HeaderFile : IHeaderFile { }
 public partial class BimSnippet : IBimSnippet { }
 public partial class TopicDocumentReference : IDocReference { }
-public partial class Comment : IComment { }
+
+public partial class Comment : IComment {
+  // This method that controls the access to the `CommentViewpoint` instance.
+  // On the first run, it creates an instance of the object. On subsequent runs,
+  // it returns the existing object.
+  public CommentViewpoint GetCommentViewPointInstance() {
+    return Viewpoint ??= new CommentViewpoint();
+  }
+}
