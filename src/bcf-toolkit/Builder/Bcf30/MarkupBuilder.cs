@@ -19,8 +19,8 @@ public partial class MarkupBuilder :
   private readonly Markup _markup = new();
 
   public MarkupBuilder() {
+    // this is a required field so it must be initialized
     _markup.Topic = new Topic();
-    _markup.Header = new Header();
   }
 
   public MarkupBuilder SetGuid(string guid) {
@@ -42,7 +42,7 @@ public partial class MarkupBuilder :
     Action<FileBuilder> builder) {
     var file =
       (File)BuilderUtils.BuildItem<FileBuilder, IHeaderFile>(builder);
-    _markup.Header.Files.Add(file);
+    _markup.GetHeaderInstance().Files.Add(file);
     return this;
   }
 

@@ -10,7 +10,7 @@ public partial class VisualizationInfoBuilder :
     VisualizationInfoBuilder,
     ComponentBuilder,
     VisibilityBuilder,
-    ComponentColoringComponentColoringColorBuilder,
+    ComponentColoringColorBuilder,
     OrthogonalCameraBuilder,
     PerspectiveCameraBuilder,
     LineBuilder,
@@ -28,7 +28,7 @@ public partial class VisualizationInfoBuilder :
     AddSelection(Action<ComponentBuilder> builder) {
     var selection =
       BuilderUtils.BuildItem<ComponentBuilder, Component>(builder);
-    _visualizationInfo.Components.Selection.Add(selection);
+    _visualizationInfo.GetComponentsInstance().Selection.Add(selection);
     return this;
   }
 
@@ -37,15 +37,15 @@ public partial class VisualizationInfoBuilder :
     var visibility =
       BuilderUtils
         .BuildItem<VisibilityBuilder, ComponentVisibility>(builder);
-    _visualizationInfo.Components.Visibility = visibility;
+    _visualizationInfo.GetComponentsInstance().Visibility = visibility;
     return this;
   }
 
-  public VisualizationInfoBuilder AddColoring(Action<ComponentColoringComponentColoringColorBuilder> builder) {
+  public VisualizationInfoBuilder AddColoring(Action<ComponentColoringColorBuilder> builder) {
     var color =
-      BuilderUtils.BuildItem<ComponentColoringComponentColoringColorBuilder, ComponentColoringColor>(
+      BuilderUtils.BuildItem<ComponentColoringColorBuilder, ComponentColoringColor>(
         builder);
-    _visualizationInfo.Components.Coloring.Add(color);
+    _visualizationInfo.GetComponentsInstance().Coloring.Add(color);
     return this;
   }
 

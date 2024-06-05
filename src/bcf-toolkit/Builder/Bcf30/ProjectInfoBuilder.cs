@@ -11,6 +11,7 @@ public class ProjectInfoBuilder :
   private readonly ProjectInfo _project = new();
 
   public ProjectInfoBuilder() {
+    // this is a required field so it must be initialized
     _project.Project = new Project();
   }
 

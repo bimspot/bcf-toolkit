@@ -5,15 +5,13 @@ namespace BcfToolkit.Builder.Bcf30;
 
 public partial class VisualizationInfoBuilder {
   public VisualizationInfoBuilder AddSelections(List<Component>? selections) {
-    _visualizationInfo.Components ??= new Components();
-    selections?.ForEach(_visualizationInfo.Components.Selection.Add);
+    selections?.ForEach(_visualizationInfo.GetComponentsInstance().Selection.Add);
     return this;
   }
 
   public VisualizationInfoBuilder AddColorings(
     List<ComponentColoringColor>? colors) {
-    _visualizationInfo.Components ??= new Components();
-    colors?.ForEach(_visualizationInfo.Components.Coloring.Add);
+    colors?.ForEach(_visualizationInfo.GetComponentsInstance().Coloring.Add);
     return this;
   }
 

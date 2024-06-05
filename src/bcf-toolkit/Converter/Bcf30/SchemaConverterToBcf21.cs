@@ -55,12 +55,11 @@ public static class SchemaConverterToBcf21 {
   private static Model.Bcf21.Markup ConvertMarkup(Model.Bcf30.Markup from) {
     var builder = new MarkupBuilder();
 
-    return
-    builder
+    return builder
       .SetGuid(from.Topic.Guid)
       .SetTopicType(from.Topic.TopicType)
       .SetTopicStatus(from.Topic.TopicStatus)
-      .AddHeaderFiles(from.Header.Files.Select(ConvertHeaderFile).ToList())
+      .AddHeaderFiles(from.Header?.Files?.Select(ConvertHeaderFile).ToList())
       .AddReferenceLinks(from.Topic.ReferenceLinks.ToList())
       .SetTitle(from.Topic.Title)
       .SetPriority(from.Topic.Priority)
@@ -88,8 +87,7 @@ public static class SchemaConverterToBcf21 {
   private static Model.Bcf21.HeaderFile ConvertHeaderFile(Model.Bcf30.File from) {
     var builder = new HeaderFileBuilder();
 
-    return
-    builder
+    return builder
       .SetIfcProject(from.IfcProject)
       .SetIfcSpatialStructureElement(from.IfcSpatialStructureElement)
       .SetIsExternal(from.IsExternal)
@@ -105,8 +103,7 @@ public static class SchemaConverterToBcf21 {
     }
 
     var builder = new BimSnippetBuilder();
-    return
-    builder
+    return builder
       .SetSnippetType(from.SnippetType)
       .SetIsExternal(from.IsExternal)
       .SetReference(from.Reference)
@@ -119,8 +116,7 @@ public static class SchemaConverterToBcf21 {
     var builder = new DocumentReferenceBuilder();
     var isExternal = string.IsNullOrEmpty(from.Url);
 
-    return
-    builder
+    return builder
       .SetGuid(from.Guid)
       .SetDescription(from.Description)
       .SetIsExternal(isExternal)
@@ -153,8 +149,7 @@ public static class SchemaConverterToBcf21 {
 
     var builder = new ViewPointBuilder();
 
-    return
-      builder
+    return builder
         .SetVisualizationInfo(ConvertVisualizationInfo(from.VisualizationInfo))
         .SetSnapshot(from.Snapshot)
         .SetIndex(from.Index)
@@ -170,8 +165,7 @@ public static class SchemaConverterToBcf21 {
 
     var builder = new VisualizationInfoBuilder();
 
-    return
-    builder
+    return builder
       .SetGuid(from.Guid)
       .AddSelections(
         from.Components.Selection.Select(ConvertComponent).ToList())
@@ -194,8 +188,7 @@ public static class SchemaConverterToBcf21 {
 
     var builder = new OrthogonalCameraBuilder();
 
-    return
-      builder
+    return builder
         .SetCameraDirection(from.CameraDirection.X, from.CameraDirection.Y, from.CameraDirection.Z)
         .SetCameraViewPoint(from.CameraViewPoint.X, from.CameraViewPoint.Y, from.CameraViewPoint.Z)
         .SetCameraUpVector(from.CameraUpVector.X, from.CameraUpVector.Y, from.CameraUpVector.Z)
@@ -212,8 +205,7 @@ public static class SchemaConverterToBcf21 {
 
     var builder = new PerspectiveCameraBuilder();
 
-    return
-      builder
+    return builder
         .SetCameraDirection(from.CameraDirection.X, from.CameraDirection.Y, from.CameraDirection.Z)
         .SetCameraViewPoint(from.CameraViewPoint.X, from.CameraViewPoint.Y, from.CameraViewPoint.Z)
         .SetCameraUpVector(from.CameraUpVector.X, from.CameraUpVector.Y, from.CameraUpVector.Z)
@@ -226,8 +218,7 @@ public static class SchemaConverterToBcf21 {
     Model.Bcf30.ClippingPlane from) {
     var builder = new ClippingPlaneBuilder();
 
-    return
-    builder
+    return builder
       .SetLocation(from.Location.X, from.Location.Y, from.Location.Z)
       .SetDirection(from.Direction.X, from.Direction.Y, from.Direction.Z)
       .Build();
@@ -237,8 +228,7 @@ public static class SchemaConverterToBcf21 {
 
     var builder = new LineBuilder();
 
-    return
-    builder
+    return builder
       .SetStartPoint(from.StartPoint.X, from.StartPoint.Y, from.StartPoint.Z)
       .SetEndPoint(from.EndPoint.X, from.EndPoint.Y, from.EndPoint.Z)
       .Build();
@@ -248,8 +238,7 @@ public static class SchemaConverterToBcf21 {
     Model.Bcf30.ComponentColoringColor from) {
     var builder = new ComponentColoringColorBuilder();
 
-    return
-    builder
+    return builder
       .SetColor(from.Color)
       .AddComponents(from.Components.Select(ConvertComponent).ToList())
       .Build();
@@ -259,8 +248,7 @@ public static class SchemaConverterToBcf21 {
     Model.Bcf30.Bitmap from) {
     var builder = new BitmapBuilder();
 
-    return
-    builder
+    return builder
       .SetFormat(from.Format.ToString())
       .SetReference(from.Reference)
       .SetLocation(from.Location.X, from.Location.Y, from.Location.Z)
@@ -274,8 +262,7 @@ public static class SchemaConverterToBcf21 {
     Model.Bcf30.Component from) {
     var builder = new ComponentBuilder();
 
-    return
-    builder
+    return builder
       .SetIfcGuid(from.IfcGuid)
       .SetOriginatingSystem(from.OriginatingSystem)
       .SetAuthoringToolId(from.AuthoringToolId)
@@ -286,8 +273,7 @@ public static class SchemaConverterToBcf21 {
     Model.Bcf30.ComponentVisibility from) {
     var builder = new VisibilityBuilder();
 
-    return
-    builder
+    return builder
       .SetDefaultVisibility(from.DefaultVisibility)
       .AddExceptions(from.Exceptions.Select(ConvertComponent).ToList())
       .Build();

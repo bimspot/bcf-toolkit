@@ -29,7 +29,7 @@ public partial class VisualizationInfoBuilder :
     AddSelection(Action<ComponentBuilder> builder) {
     var selection =
       (Component)BuilderUtils.BuildItem<ComponentBuilder, IComponent>(builder);
-    _visualizationInfo.Components.Selection.Add(selection);
+    _visualizationInfo.GetComponentsInstance().Selection.Add(selection);
     return this;
   }
 
@@ -38,7 +38,7 @@ public partial class VisualizationInfoBuilder :
     var visibility =
       (ComponentVisibility)BuilderUtils
         .BuildItem<VisibilityBuilder, IVisibility>(builder);
-    _visualizationInfo.Components.Visibility = visibility;
+    _visualizationInfo.GetComponentsInstance().Visibility = visibility;
     return this;
   }
 
@@ -46,7 +46,7 @@ public partial class VisualizationInfoBuilder :
     var color =
       (ComponentColoringColor)BuilderUtils.BuildItem<ComponentColoringColorBuilder, IColor>(
         builder);
-    _visualizationInfo.Components.Coloring.Add(color);
+    _visualizationInfo.GetComponentsInstance().Coloring.Add(color);
     return this;
   }
 
@@ -94,7 +94,7 @@ public partial class VisualizationInfoBuilder :
     var viewSetupHints =
       (ViewSetupHints)BuilderUtils
         .BuildItem<ViewSetupHintsBuilder, IViewSetupHints>(builder);
-    _visualizationInfo.Components.ViewSetupHints = viewSetupHints;
+    _visualizationInfo.GetComponentsInstance().ViewSetupHints = viewSetupHints;
     return this;
   }
 
