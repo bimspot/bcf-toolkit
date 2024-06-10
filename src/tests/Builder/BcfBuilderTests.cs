@@ -12,14 +12,14 @@ namespace Tests.Builder;
 public class BcfBuilderDelegate : IBcfBuilderDelegate {
   public IBcfBuilderDelegate.OnMarkupCreated<Markup>
     MarkupCreated { get; } = Console.WriteLine;
-  
+
   public IBcfBuilderDelegate.OnExtensionsCreated<Extensions>
     ExtensionsCreated { get; } = Console.WriteLine;
-  
-  public IBcfBuilderDelegate.OnProjectCreated<ProjectInfo> 
+
+  public IBcfBuilderDelegate.OnProjectCreated<ProjectInfo>
     ProjectCreated { get; } = Console.WriteLine;
-  
-  public IBcfBuilderDelegate.OnDocumentCreated<DocumentInfo> 
+
+  public IBcfBuilderDelegate.OnDocumentCreated<DocumentInfo>
     DocumentCreatedCreated { get; } = Console.WriteLine;
 }
 

@@ -12,12 +12,12 @@ public partial class BcfBuilder : IBcfBuilder<
     ProjectExtensionBuilder>,
   IDefaultBuilder<BcfBuilder> {
   private readonly Bcf _bcf = new();
-  
+
   private readonly IBcfBuilderDelegate? _delegate;
 
   public BcfBuilder(IBcfBuilderDelegate? builderDelegate = null) {
     this._delegate = builderDelegate;
-    
+
     _bcf.Version = new VersionBuilder()
       .WithDefaults()
       .Build();

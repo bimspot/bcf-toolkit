@@ -51,7 +51,7 @@ public static class BcfExtensions {
     where TVisualizationInfo : IVisualizationInfo {
     return await _ParseMarkups<TMarkup, TVisualizationInfo>(stream);
   }
-  
+
   /// <summary>
   ///   The method unzips the BCFzip from a stream,
   ///   and parses the markup xml files within to create an in memory
@@ -128,11 +128,11 @@ public static class BcfExtensions {
 
       if (isNewTopic)
         WritingOutMarkup(
-          markup, 
-          viewpoint, 
+          markup,
+          viewpoint,
           ref snapshot,
           currentUuid,
-          markups, 
+          markups,
           onMarkupCreated);
 
       currentUuid = uuid;
@@ -168,11 +168,11 @@ public static class BcfExtensions {
 
       if (isLastTopicEntry)
         WritingOutMarkup(
-          markup, 
-          viewpoint, 
+          markup,
+          viewpoint,
           ref snapshot,
-          currentUuid, 
-          markups, 
+          currentUuid,
+          markups,
           onMarkupCreated);
     }
 

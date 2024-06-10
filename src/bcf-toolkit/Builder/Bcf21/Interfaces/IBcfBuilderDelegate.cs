@@ -12,6 +12,6 @@ public interface IBcfBuilderDelegate {
     where TProjectExtension : ProjectExtension;
 
   public OnMarkupCreated<Markup> MarkupCreated { get; }
-  
+
   public OnProjectCreated<ProjectExtension> ProjectCreated { get; }
 }

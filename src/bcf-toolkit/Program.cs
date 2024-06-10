@@ -11,10 +11,10 @@ namespace BcfToolkit;
 public class BcfBuilderDelegate : IBcfBuilderDelegate {
   public IBcfBuilderDelegate.OnMarkupCreated<Markup>
     MarkupCreated { get; } = Console.WriteLine;
-  
+
   public IBcfBuilderDelegate.OnProjectCreated<ProjectExtension>
     ProjectCreated { get; } = Console.WriteLine;
-  
+
 }
 
 internal static class Program {
@@ -23,17 +23,17 @@ internal static class Program {
       "/Users/balintbende/Developer/test/bcf/bcftoolkittest.bcfzip",
       FileMode.Open,
       FileAccess.Read);
-    
+
     // var bcfBuilderDelegate = new BcfBuilderDelegate();
     // var streamBuilder = new BcfBuilder(bcfBuilderDelegate);
     // await streamBuilder.ProcessStream(stream);
-    
+
     var builder = new BcfBuilder();
     var bcf = await builder.BuildInMemoryFromStream(stream);
     Console.WriteLine(bcf.Markups.Count);
-    
+
     stream.Close();
-    
+
     // await HandleArguments(args);
     Environment.Exit(0);
   }
@@ -74,20 +74,20 @@ internal static class Program {
         "/Users/balintbende/Developer/test/bcf/NBHU_BT_BEHF.bcfzip",
         FileMode.Open,
         FileAccess.Read);
-      
+
       // var bcfBuilderDelegate = new BcfBuilderDelegate();
       // var streamBuilder = new BcfBuilder(bcfBuilderDelegate);
       // await streamBuilder.ProcessStream(stream);
-      
 
-      
+
+
       var builder = new BcfBuilder();
       var bcf = await builder.BuildInMemoryFromStream(stream);
       Console.WriteLine(bcf.Markups.Count);
-      
+
       builder = null;
       bcf = null;
-      
+
       stream.Close();
     }
     catch (Exception e) {

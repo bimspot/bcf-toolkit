@@ -13,9 +13,9 @@ public partial class BcfBuilder {
       Console.WriteLine("IBcfBuilderDelegate is not set.");
       return;
     }
-    
+
     await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source, _delegate.MarkupCreated);
-    
+
     // var extensions = await BcfExtensions.ParseExtensions<Extensions>(source);
     // _delegate.ExtensionsCreated(extensions);
     //
