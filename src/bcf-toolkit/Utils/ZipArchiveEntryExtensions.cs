@@ -100,9 +100,9 @@ public static class ZipArchiveEntryExtensions {
     var extension = entry.FullName.Split(".").Last();
     var mime = $"data:image/{extension};base64";
     var buffer = new byte[entry.Length];
-    var image = entry
+    entry
       .Open()
-      .Read(buffer, 0, buffer.Length);
+      .ReadExactly(buffer, 0, buffer.Length);
     var base64String = Convert.ToBase64String(buffer);
     return $"{mime},{base64String}";
   }
