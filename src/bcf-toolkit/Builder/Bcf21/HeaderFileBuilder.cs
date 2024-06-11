@@ -27,7 +27,7 @@ public class HeaderFileBuilder : IHeaderFileBuilder<HeaderFileBuilder> {
     return this;
   }
 
-  public HeaderFileBuilder SetDate(DateTime date) {
+  public HeaderFileBuilder SetDate(DateTime? date) {
     _file.Date = date;
     return this;
   }

@@ -24,7 +24,7 @@ public class ViewPointBuilder : IViewPointBuilder<
     return this;
   }
 
-  public ViewPointBuilder SetIndex(int index) {
+  public ViewPointBuilder SetIndex(int? index) {
     _viewPoint.Index = index;
     return this;
   }

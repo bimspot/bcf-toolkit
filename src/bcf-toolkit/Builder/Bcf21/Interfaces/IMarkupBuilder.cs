@@ -67,7 +67,7 @@ public interface IMarkupBuilder<
   /// </summary>
   /// <param name="index">Number to maintain the order of the topics.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetIndex(int index);
+  TBuilder SetIndex(int? index);
 
   /// <summary>
   ///   Returns the builder object extended with `Label`.
@@ -95,7 +95,7 @@ public interface IMarkupBuilder<
   /// </summary>
   /// <param name="date">Date when the topic was last modified.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetModifiedDate(DateTime date);
+  TBuilder SetModifiedDate(DateTime? date);
 
   /// <summary>
   ///   Returns the builder object set with the `ModifiedAuthor`.
@@ -111,7 +111,7 @@ public interface IMarkupBuilder<
   ///   Date until when the topics issue needs to be resolved.
   /// </param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetDueDate(DateTime date);
+  TBuilder SetDueDate(DateTime? date);
 
   /// <summary>
   ///   Returns the builder object set with the `AssignedTo`.

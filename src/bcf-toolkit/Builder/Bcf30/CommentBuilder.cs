@@ -36,7 +36,7 @@ public class CommentBuilder :
     return this;
   }
 
-  public CommentBuilder SetModifiedDate(DateTime date) {
+  public CommentBuilder SetModifiedDate(DateTime? date) {
     _comment.ModifiedDate = date;
     return this;
   }

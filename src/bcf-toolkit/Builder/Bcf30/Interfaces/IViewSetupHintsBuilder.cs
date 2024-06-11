@@ -10,7 +10,7 @@ public interface
   /// </summary>
   /// <param name="spaceVisible">The visibility of spaces by default.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetSpaceVisible(bool spaceVisible);
+  TBuilder SetSpaceVisible(bool? spaceVisible);
 
   /// <summary>
   ///   Returns the builder object set with the `SpaceBoundariesVisible`.
@@ -19,7 +19,7 @@ public interface
   ///   The visibility of space boundaries by default.
   /// </param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetSpaceBoundariesVisible(bool spaceBoundariesVisible);
+  TBuilder SetSpaceBoundariesVisible(bool? spaceBoundariesVisible);
 
   /// <summary>
   ///   Returns the builder object set with the `OpeningVisible`.
@@ -28,5 +28,5 @@ public interface
   ///   The visibility of openings by default.
   /// </param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetOpeningVisible(bool openingVisible);
+  TBuilder SetOpeningVisible(bool? openingVisible);
 }
