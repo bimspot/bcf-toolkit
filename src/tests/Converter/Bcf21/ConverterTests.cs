@@ -68,7 +68,7 @@ public class ConverterTests {
       Markups = markups
     };
 
-    var stream = await _converter.ToBcfStream(bcf, BcfVersionEnum.Bcf21);
+    var stream = await _converter.ToBcfStream(bcf, BcfVersionEnum.Bcf21, false);
 
     ClassicAssert.IsNotNull(stream);
     ClassicAssert.IsTrue(stream.CanRead);

@@ -40,8 +40,9 @@ public interface IConverter {
   /// </summary>
   /// <param name="bcf">The BCF object.</param>
   /// <param name="targetVersion">The BCF version.</param>
+  /// <param name="useTmpFolder">Use tmp folder or stream.</param>
   /// <returns>Returns the file stream of the BCF zip archive.</returns>
-  Task<Stream> ToBcfStream(IBcf bcf, BcfVersionEnum targetVersion);
+  Task<Stream> ToBcfStream(IBcf bcf, BcfVersionEnum targetVersion, bool useTmpFolder);
 
   /// <summary>
   ///   The method writes the specified BCF model to BCFzip files.

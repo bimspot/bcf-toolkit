@@ -150,6 +150,6 @@ public class Worker {
   /// </returns>
   public async Task<Stream> ToBcfStream(IBcf bcf, BcfVersionEnum targetVersion) {
     InitConverterFromType(bcf);
-    return await _converter.ToBcfStream(bcf, targetVersion);
+    return await _converter.ToBcfStream(bcf, targetVersion, false);
   }
 }

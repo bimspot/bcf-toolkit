@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using BcfToolkit.Model;
+using Version = BcfToolkit.Model.Bcf30.Version;
 
 namespace BcfToolkit.Utils;
 
@@ -306,5 +307,13 @@ public static class BcfExtensions {
     }
 
     return version;
+  }
+
+  public static void CreateBcfZipEntry<T>(ZipArchive zip, string entry, T? obj) {
+    if (obj == null) return;
+    var versionEntry = zip.CreateEntry(entry);
+    using var entryStream = versionEntry.Open();
+    using var writer = new StreamWriter(entryStream);
+    new XmlSerializer(typeof(T)).Serialize(writer, obj);
   }
 }

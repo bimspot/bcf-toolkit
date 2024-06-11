@@ -92,7 +92,7 @@ public class ConverterTests {
       Document = documentInfo
     };
 
-    var streamResult = await _converter.ToBcfStream(bcf, BcfVersionEnum.Bcf30);
+    var streamResult = await _converter.ToBcfStream(bcf, BcfVersionEnum.Bcf30, false);
 
     ClassicAssert.IsNotNull(streamResult);
     ClassicAssert.IsTrue(streamResult.CanRead);

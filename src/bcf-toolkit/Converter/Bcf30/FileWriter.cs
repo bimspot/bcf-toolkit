@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
 using BcfToolkit.Utils;
@@ -62,11 +63,57 @@ public static class FileWriter {
   ///   * documents.xml (optional)
   /// </summary>
   /// <param name="bcf">The BCF object.</param>
-  /// <param name="target">The target file name of the BCFzip.</param>
-  /// <param name="delete">Should delete the generated tmp folder now or later.</param>
-  /// <returns>Temp folder path</returns>
+  /// <returns>Memory stream of the bcfzip </returns>
   /// <exception cref="ApplicationException"></exception>
-  public static async Task<string> WriteBcf(IBcf bcf, string target, bool delete = true) {
+  ///
+  public static async Task<Stream> WriteBcfToStream(IBcf bcf) {
+    var bcfObject = (Bcf)bcf;
+
+    var ms = new MemoryStream();
+
+    // We have to close zip manually at the end of the function
+    // because the stream remains open
+    var zip = new ZipArchive(ms, ZipArchiveMode.Create, true);
+    // Write bcf.version
+    BcfExtensions.CreateBcfZipEntry(zip, "bcf.version", new Version());
+
+    // Writing markup files to disk, one markup per folder.
+    foreach (var markup in bcfObject.Markups) {
+      var guid = markup.GetTopic()?.Guid;
+      if (guid == null) {
+        Console.WriteLine(" - Topic Guid is missing, skipping markup");
+        continue;
+      }
+
+      var topicFolder = $"{guid}";
+
+      BcfExtensions.CreateBcfZipEntry(zip, $"{topicFolder}/markup.bcf", markup);
+
+      var visInfo = (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
+      BcfExtensions.CreateBcfZipEntry(zip, $"{topicFolder}/viewpoint.bcfv", visInfo);
+
+      // Write snapshot
+      var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
+      var base64String = markup.GetFirstViewPoint()?.SnapshotData;
+      if (snapshotFileName != null && base64String != null) {
+        var result = Regex.Replace(base64String, @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
+        var bytes = Convert.FromBase64String(result);
+        BcfExtensions.CreateBcfZipEntry(zip, $"{topicFolder}/{snapshotFileName}", bytes);
+      }
+    }
+
+    BcfExtensions.CreateBcfZipEntry(zip, "extensions.xml", bcfObject.Extensions);
+    BcfExtensions.CreateBcfZipEntry(zip, "project.bcfp", bcfObject.Project);
+    BcfExtensions.CreateBcfZipEntry(zip, "documents.xml", bcfObject.Document);
+
+    zip.Dispose();
+
+    return await Task.FromResult<Stream>(ms);
+  }
+
+
+
+  public static async Task<string> WriteBcfToFolder(IBcf bcf, string target, bool delete = true) {
     var targetFolder = Path.GetDirectoryName(target);
     if (targetFolder == null)
       throw new ApplicationException(

@@ -31,14 +31,22 @@ public class Converter : IConverter {
   ///   Defines the file writer function which must be used for write the BCF
   ///   object to the targeted version.
   /// </summary>
-  private readonly Dictionary<BcfVersionEnum, Func<IBcf, string, bool, Task<string>>> _writerFnMapper = new();
+  private readonly Dictionary<BcfVersionEnum, Func<IBcf, string, bool, Task<string>>> _writerToFolderFnMapper = new();
+  /// <summary>
+  ///   Defines the file writer function which must be used for write the BCF
+  ///   object to the targeted version.
+  /// </summary>
+  private readonly Dictionary<BcfVersionEnum, Func<IBcf, Task<Stream>>> _writerToStreamFnMapper = new();
 
   public Converter() {
     _converterFnMapper[BcfVersionEnum.Bcf21] = SchemaConverterToBcf21.Convert;
     _converterFnMapper[BcfVersionEnum.Bcf30] = b => b;
 
-    _writerFnMapper[BcfVersionEnum.Bcf21] = Bcf21.FileWriter.WriteBcf;
-    _writerFnMapper[BcfVersionEnum.Bcf30] = FileWriter.WriteBcf;
+    _writerToFolderFnMapper[BcfVersionEnum.Bcf21] = Bcf21.FileWriter.WriteBcfToFolder;
+    _writerToFolderFnMapper[BcfVersionEnum.Bcf30] = FileWriter.WriteBcfToFolder;
+
+    _writerToStreamFnMapper[BcfVersionEnum.Bcf21] = Bcf21.FileWriter.WriteBcfToStream;
+    _writerToStreamFnMapper[BcfVersionEnum.Bcf30] = FileWriter.WriteBcfToStream;
   }
 
   public async Task BcfZipToJson(Stream source, string target) {
@@ -70,29 +78,35 @@ public class Converter : IConverter {
       Version = new Version()
     };
 
-    await FileWriter.WriteBcf(bcf, target);
+    await FileWriter.WriteBcfToFolder(bcf, target);
   }
 
-  public async Task<Stream> ToBcfStream(IBcf bcf, BcfVersionEnum targetVersion) {
+  public async Task<Stream> ToBcfStream(IBcf bcf, BcfVersionEnum targetVersion, bool useTmpFolder) {
     var converterFn = _converterFnMapper[targetVersion];
     var convertedBcf = converterFn((Bcf)bcf);
 
     var workingDir = Directory.GetCurrentDirectory();
     var tmpBcfTargetPath = workingDir + $"/{Guid.NewGuid()}.bcfzip";
-    var writerFn = _writerFnMapper[targetVersion];
 
-    // keep the tmp files till the stream is created
-    var tmpFolder = await writerFn(convertedBcf, tmpBcfTargetPath, false);
-    var stream = new FileStream(tmpBcfTargetPath, FileMode.Open, FileAccess.Read);
+    if (useTmpFolder) {
+      var writerFn = _writerToFolderFnMapper[targetVersion];
 
-    Directory.Delete(tmpFolder, true);
-    File.Delete(tmpBcfTargetPath);
+      // keep the tmp files till the stream is created
+      var tmpFolder = await writerFn(convertedBcf, tmpBcfTargetPath, false);
+      var stream = new FileStream(tmpBcfTargetPath, FileMode.Open, FileAccess.Read);
 
-    return stream;
+      Directory.Delete(tmpFolder, true);
+      File.Delete(tmpBcfTargetPath);
+      return stream;
+    }
+    else {
+      var writerFn = _writerToStreamFnMapper[targetVersion];
+      return await writerFn(convertedBcf);
+    }
   }
 
   public Task ToBcfZip(IBcf bcf, string target) {
-    return FileWriter.WriteBcf((Bcf)bcf, target);
+    return FileWriter.WriteBcfToFolder((Bcf)bcf, target);
   }
 
   public Task ToJson(IBcf bcf, string target) {
