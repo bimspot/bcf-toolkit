@@ -46,7 +46,7 @@ public interface IFileBuilder<out TBuilder> : IBuilder<File> {
   /// </summary>
   /// <param name="date">Date of the BIM file.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetDate(DateTime date);
+  TBuilder SetDate(DateTime? date);
 
   /// <summary>
   ///   Returns the builder object set with the `Reference`.

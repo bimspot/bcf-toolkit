@@ -14,7 +14,7 @@ public interface IVisibilityBuilder<
   /// </summary>
   /// <param name="visibility">The default visibility of the components.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetDefaultVisibility(bool visibility);
+  TBuilder SetDefaultVisibility(bool? visibility);
 
   /// <summary>
   ///   Returns the builder object extended with a new `Exception`.

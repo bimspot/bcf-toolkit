@@ -61,7 +61,7 @@ public partial class MarkupBuilder :
     return this;
   }
 
-  public MarkupBuilder SetIndex(int index) {
+  public MarkupBuilder SetIndex(int? index) {
     _markup.Topic.Index = index;
     return this;
   }
@@ -81,7 +81,7 @@ public partial class MarkupBuilder :
     return this;
   }
 
-  public MarkupBuilder SetModifiedDate(DateTime date) {
+  public MarkupBuilder SetModifiedDate(DateTime? date) {
     _markup.Topic.ModifiedDate = date;
     return this;
   }
@@ -91,7 +91,7 @@ public partial class MarkupBuilder :
     return this;
   }
 
-  public MarkupBuilder SetDueDate(DateTime date) {
+  public MarkupBuilder SetDueDate(DateTime? date) {
     _markup.Topic.DueDate = date;
     return this;
   }

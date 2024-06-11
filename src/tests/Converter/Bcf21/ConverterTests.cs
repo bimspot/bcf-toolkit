@@ -79,8 +79,8 @@ public class ConverterTests {
   [Test]
   public void BcfToJsonMissingRequiredPropertyTest() {
     Assert.That(async () => await _converter.BcfZipToJson(
-      "Resources/Bcf/v2.1/RelatedTopics.bcfzip",
-      "Resources/output/json/v2.1/RelatedTopics"), Throws.ArgumentException);
+      "Resources/Bcf/v2.1/MissingTitle.bcfzip",
+      "Resources/output/json/v2.1/MissingTitle"), Throws.ArgumentException);
   }
 
   [Test]

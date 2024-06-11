@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -97,7 +98,7 @@ public class BcfExtensionsTests {
   [Test]
   [Category("BCF v2.1")]
   public void ParseBcfNoMarkupsTest() {
-    string filePath = "Resources/Bcf/v2.1/NoMakrups.bcfzip";
+    const string filePath = "Resources/Bcf/v2.1/NoMakrups.bcfzip";
 
     Assert.That(async () => {
       await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
@@ -107,32 +108,40 @@ public class BcfExtensionsTests {
 
   /// <summary>
   ///   The topic should have a related topic, and that is available.
-  ///   UPDATE: required property is missing Comment
   /// </summary>
   [Test]
   [Category("BCF v2.1")]
-  public void ParseBcfRelatedTopics21Test() {
-    string filePath = "Resources/Bcf/v2.1/RelatedTopics.bcfzip";
-
-    Assert.That(async () => {
-      await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-      await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(fileStream);
-    }, Throws.Exception);
+  public async Task ParseBcfRelatedTopics21Test() {
+    const string filePath = "Resources/Bcf/v2.1/RelatedTopics.bcfzip";
+    await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+    var markups = await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(fileStream);
+    var relatedTopicId = markups.FirstOrDefault()?.Topic.RelatedTopic
+      .FirstOrDefault()?.Guid;
+    var secondTopicId = markups.ElementAt(1).Topic.Guid;
+    Assert.That(relatedTopicId, Is.EqualTo(secondTopicId));
   }
 
   /// <summary>
   ///   Nothing should be selected and only a wall is visible.
-  ///   UPDATE: required property is missing Comment
   /// </summary>
   [Test]
   [Category("BCF v2.1")]
-  public void ParseBcfSingleVisibleWallTest() {
-    string filePath = "Resources/Bcf/v2.1/SingleVisibleWall.bcfzip";
+  public async Task ParseBcfSingleVisibleWallTest() {
+    const string filePath = "Resources/Bcf/v2.1/SingleVisibleWall.bcfzip";
+    await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+    var markups =
+      await BcfToolkit.Utils.BcfExtensions
+        .ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(fileStream);
+    var visibility =
+      markups.FirstOrDefault()?
+      .Viewpoints.FirstOrDefault()?
+      .VisualizationInfo?
+      .Components
+      .Visibility;
 
-    Assert.That(async () => {
-      await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-      await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(fileStream);
-    }, Throws.Exception);
+    Assert.That(visibility?.DefaultVisibility, Is.EqualTo(false));
+    Assert.That(visibility?.Exceptions.FirstOrDefault()?.IfcGuid,
+      Is.EqualTo("1E8YkwPMfB$h99jtn_uAjI"));
   }
 
 
@@ -234,10 +243,10 @@ public class BcfExtensionsTests {
       await BcfToolkit.Utils.BcfExtensions
         .ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
           stream);
-    var markup = markups.FirstOrDefault()!;
+    var markup = markups.FirstOrDefault();
     Assert.That(1, Is.EqualTo(markups.Count));
-    Assert.That("2021-03-15T11:00:00.000Z",
-      Is.EqualTo(markup.Topic.DueDate.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")));
+    Assert.That(DateTime.Parse("2021-03-15T11:00:00.000Z").ToUniversalTime(),
+      Is.EqualTo(markup?.Topic.DueDate));
   }
 
   /// <summary>
