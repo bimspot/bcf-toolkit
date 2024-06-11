@@ -27,7 +27,7 @@ public class FileBuilder : IFileBuilder<FileBuilder> {
     return this;
   }
 
-  public FileBuilder SetDate(DateTime date) {
+  public FileBuilder SetDate(DateTime? date) {
     _file.Date = date;
     return this;
   }

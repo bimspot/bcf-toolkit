@@ -36,7 +36,7 @@ public interface IViewPointBuilder<out TBuilder, out TVisualizationInfoBuilder>
   /// </summary>
   /// <param name="index">Guid of the viewpoint.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetIndex(int index);
+  TBuilder SetIndex(int? index);
 
   /// <summary>
   ///   Returns the builder object set with the `VisualizationInfo`, which
