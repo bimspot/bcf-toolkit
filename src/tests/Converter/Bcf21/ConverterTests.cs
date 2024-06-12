@@ -23,21 +23,21 @@ public class ConverterTests {
 
   [Test]
   public void BcfToJsonSampleFilesTest() {
-    _converter.BcfZipToJson("Resources/Bcf/v2.1/AllPartsVisible.bcfzip",
+    _converter.BcfToJson("Resources/Bcf/v2.1/AllPartsVisible.bcfzip",
       "Resources/output/json/v2.1/AllPartsVisible");
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
       "Resources/Bcf/v2.1/ComponentSelection.bcfzip",
       "Resources/output/json/v2.1/ComponentSelection");
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
       "Resources/Bcf/v2.1/ExternalBIMSnippet.bcfzip",
       "Resources/output/json/v2.1/ExternalBIMSnippet");
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
       "Resources/Bcf/v2.1/MaximumInformation.bcfzip",
       "Resources/output/json/v2.1/MaximumInformation");
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
       "Resources/Bcf/v2.1/UserAssignment.bcfzip",
       "Resources/output/json/v2.1/UserAssignment");
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
         "Resources/Bcf/v2.1/BcfVersionAndTopics.bcfzip",
         "Resources/output/json/v2.1/BcfVersionAndTopics");
   }
@@ -45,7 +45,7 @@ public class ConverterTests {
   [Test]
   public Task JsonToBcfSampleFilesTest() {
     var tasks = new List<Task> {
-      _converter.JsonToBcfZip(
+      _converter.JsonToBcf(
         "Resources/Json/v2.1/AllPartsVisible",
         "Resources/output/bcf/v2.1/AllPartsVisible.bcfzip")
     };
@@ -68,24 +68,25 @@ public class ConverterTests {
       Markups = markups
     };
 
-    var stream = await _converter.ToBcfStream(bcf, BcfVersionEnum.Bcf21, false);
+    var outputStream = new MemoryStream();
+    _converter.ToBcf(bcf, BcfVersionEnum.Bcf21, outputStream);
 
-    ClassicAssert.IsNotNull(stream);
-    ClassicAssert.IsTrue(stream.CanRead);
+    ClassicAssert.IsNotNull(outputStream);
+    ClassicAssert.IsTrue(outputStream.CanRead);
 
-    await stream.DisposeAsync();
+    await outputStream.DisposeAsync();
   }
 
   [Test]
   public void BcfToJsonMissingRequiredPropertyTest() {
-    Assert.That(async () => await _converter.BcfZipToJson(
+    Assert.That(async () => await _converter.BcfToJson(
       "Resources/Bcf/v2.1/RelatedTopics.bcfzip",
       "Resources/output/json/v2.1/RelatedTopics"), Throws.ArgumentException);
   }
 
   [Test]
   public void BcfToJsonWrongPathTest() {
-    Assert.That(async () => await _converter.BcfZipToJson(
+    Assert.That(async () => await _converter.BcfToJson(
       "Resources/Bcf/v3.0/Wrong.bcfzip",
       "Resources/output/json/v2.1/Wrong"), Throws.ArgumentException);
   }
@@ -108,7 +109,7 @@ public class ConverterTests {
     var bcf = new Bcf {
       Markups = markups
     };
-    return _converter.ToBcfZip(bcf, "Resources/output/Bcf/v2.1/MinimumInformation.bcfzip");
+    return _converter.ToBcf(bcf, "Resources/output/Bcf/v2.1/MinimumInformation.bcfzip");
   }
 
   /// <summary>
@@ -149,7 +150,7 @@ public class ConverterTests {
     var bcf = new Bcf {
       Markups = markups
     };
-    return _converter.ToBcfZip(bcf, "Resources/output/Bcf/v2.1/WithoutTopicGuid.bcfzip");
+    return _converter.ToBcf(bcf, "Resources/output/Bcf/v2.1/WithoutTopicGuid.bcfzip");
   }
 
   /// <summary>
@@ -163,7 +164,7 @@ public class ConverterTests {
         "Resources/Bcf/v2.1/MinimumInformation.bcfzip",
         FileMode.Open,
         FileAccess.Read);
-    var bcf = await _converter.BuildBcfFromStream<Bcf>(stream);
+    var bcf = await _converter.BcfFromStream<Bcf>(stream);
     Assert.That(typeof(Bcf), Is.EqualTo(bcf.GetType()));
     Assert.That(1, Is.EqualTo(bcf.Markups.Count));
     Assert.That("2.1", Is.EqualTo(bcf.Version?.VersionId));
@@ -180,7 +181,7 @@ public class ConverterTests {
         "Resources/Bcf/v2.1/MinimumInformation.bcfzip",
         FileMode.Open,
         FileAccess.Read);
-    var bcf = await _converter.BuildBcfFromStream<BcfToolkit.Model.Bcf30.Bcf>(stream);
+    var bcf = await _converter.BcfFromStream<BcfToolkit.Model.Bcf30.Bcf>(stream);
     Assert.That(typeof(BcfToolkit.Model.Bcf30.Bcf), Is.EqualTo(bcf.GetType()));
     Assert.That(1, Is.EqualTo(bcf.Markups.Count));
     Assert.That("OPEN", Is.EqualTo(bcf.Extensions.TopicStatuses.FirstOrDefault()));

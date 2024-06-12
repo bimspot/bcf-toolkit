@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf21;
 using BcfToolkit.Utils;
@@ -15,7 +16,6 @@ namespace BcfToolkit.Converter.Bcf21;
 ///   JSON, and BCFzip.
 /// </summary>
 public class Converter : IConverter {
-
   private BcfBuilder _builder = new();
 
   /// <summary>
@@ -32,29 +32,42 @@ public class Converter : IConverter {
   ///   Defines the file writer function which must be used for write the BCF
   ///   object to the targeted version.
   /// </summary>
-  private readonly Dictionary<BcfVersionEnum, Func<IBcf, bool, Task<Stream>>> _writerFn =
-    new() {
-      [BcfVersionEnum.Bcf21] = FileWriter.SerializeAndWriteBcf,
-      [BcfVersionEnum.Bcf30] = Bcf30.FileWriter.SerializeAndWriteBcf
-    };
+  private readonly Dictionary<BcfVersionEnum, Func<IBcf, Task<Stream>>>
+    _writerFn =
+      new() {
+        [BcfVersionEnum.Bcf21] = FileWriter.SerializeAndWriteBcf,
+        [BcfVersionEnum.Bcf30] = Bcf30.FileWriter.SerializeAndWriteBcf
+      };
 
-  public async Task BcfZipToJson(Stream source, string targetPath) {
+  /// <summary>
+  ///   Defines the stream writer function which must be used for write the BCF
+  ///   object to the targeted version.
+  /// </summary>
+  private readonly Dictionary<BcfVersionEnum, Action<IBcf, ZipArchive>>
+    _streamWriterFn =
+      new() {
+        [BcfVersionEnum.Bcf21] = FileWriter.SerializeAndWriteBcfToStream,
+        [BcfVersionEnum.Bcf30] = Bcf30.FileWriter.SerializeAndWriteBcfToStream
+      };
+
+  public async Task BcfToJson(Stream source, string targetPath) {
     var bcf = await _builder.BuildFromStream(source);
     await FileWriter.WriteBcfToJson(bcf, targetPath);
   }
 
-  public async Task BcfZipToJson(string sourcePath, string targetPath) {
+  public async Task BcfToJson(string sourcePath, string targetPath) {
     try {
       await using var fileStream =
         new FileStream(sourcePath, FileMode.Open, FileAccess.Read);
-      await BcfZipToJson(fileStream, targetPath);
+      await BcfToJson(fileStream, targetPath);
     }
     catch (Exception ex) {
-      throw new ArgumentException($"Source path is not readable. {ex.Message}", ex);
+      throw new ArgumentException($"Source path is not readable. {ex.Message}",
+        ex);
     }
   }
 
-  public async Task JsonToBcfZip(string source, string target) {
+  public async Task JsonToBcf(string source, string target) {
     // Project is optional
     var projectPath = $"{source}/project.json";
     var project = Path.Exists(projectPath)
@@ -72,18 +85,24 @@ public class Converter : IConverter {
     await FileWriter.SerializeAndWriteBcfToFolder(bcf, target);
   }
 
-  public async Task<Stream> ToBcfStream(
-    IBcf bcf,
-    BcfVersionEnum targetVersion,
-    bool writeTmpFolder) {
+  public async Task<Stream> ToBcf(IBcf bcf, BcfVersionEnum targetVersion) {
     var converterFn = _converterFn[targetVersion];
     var convertedBcf = converterFn((Bcf)bcf);
 
     var writerFn = _writerFn[targetVersion];
-    return await writerFn(convertedBcf, writeTmpFolder);
+    return await writerFn(convertedBcf);
   }
 
-  public Task ToBcfZip(IBcf bcf, string target) {
+  public void ToBcf(IBcf bcf, BcfVersionEnum targetVersion, Stream stream) {
+    var converterFn = _converterFn[targetVersion];
+    var convertedBcf = converterFn((Bcf)bcf);
+
+    var writerFn = _streamWriterFn[targetVersion];
+    var zip = new ZipArchive(stream, ZipArchiveMode.Create, true);
+    writerFn(convertedBcf, zip);
+  }
+
+  public Task ToBcf(IBcf bcf, string target) {
     return FileWriter.SerializeAndWriteBcfToFolder((Bcf)bcf, target);
   }
 
@@ -91,7 +110,7 @@ public class Converter : IConverter {
     return FileWriter.WriteBcfToJson((Bcf)bcf, target);
   }
 
-  public async Task<T> BuildBcfFromStream<T>(Stream stream) {
+  public async Task<T> BcfFromStream<T>(Stream stream) {
     var bcf = await _builder.BuildFromStream(stream);
     var targetVersion = BcfVersion.TryParse(typeof(T));
     var converterFn = _converterFn[targetVersion];

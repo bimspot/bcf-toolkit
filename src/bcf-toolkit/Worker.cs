@@ -96,11 +96,11 @@ public class Worker {
   public async Task Convert(string source, string target) {
     if (source.EndsWith("bcfzip")) {
       await InitConverterFromArchive(source);
-      await _converter.BcfZipToJson(source, target);
+      await _converter.BcfToJson(source, target);
     }
     else {
       await InitConverterFromJson(source);
-      await _converter.JsonToBcfZip(source, target);
+      await _converter.JsonToBcf(source, target);
     }
   }
 
@@ -112,7 +112,7 @@ public class Worker {
   /// <returns></returns>
   public Task ToBcfZip(IBcf bcf, string target) {
     InitConverterFromType(bcf);
-    return _converter.ToBcfZip(bcf, target);
+    return _converter.ToBcf(bcf, target);
   }
 
   /// <summary>
@@ -134,7 +134,7 @@ public class Worker {
   /// <returns></returns>
   public async Task<Bcf> BuildBcfFromStream(Stream stream) {
     await InitConverterFromStreamArchive(stream);
-    return await _converter.BuildBcfFromStream<Bcf>(stream);
+    return await _converter.BcfFromStream<Bcf>(stream);
   }
 
   /// <summary>
@@ -156,6 +156,6 @@ public class Worker {
     BcfVersionEnum targetVersion,
     bool writeToTmp = true) {
     InitConverterFromType(bcf);
-    return await _converter.ToBcfStream(bcf, targetVersion, writeToTmp);
+    return await _converter.ToBcf(bcf, targetVersion);
   }
 }

@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf30;
 using BcfToolkit.Utils;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
-using File = System.IO.File;
 using Version = BcfToolkit.Model.Bcf30.Version;
 
 namespace BcfToolkit.Converter.Bcf30;
@@ -16,8 +16,7 @@ namespace BcfToolkit.Converter.Bcf30;
 ///   and back.
 /// </summary>
 public class Converter : IConverter {
-
-  private BcfBuilder _builder = new();
+  private readonly BcfBuilder _builder = new();
 
   /// <summary>
   ///   Defines the converter function, which must be used for converting the
@@ -33,31 +32,45 @@ public class Converter : IConverter {
   ///   Defines the file writer function which must be used for write the BCF
   ///   object to the targeted version.
   /// </summary>
-  private readonly Dictionary<BcfVersionEnum, Func<IBcf, bool, Task<Stream>>> _writerFn =
-    new() {
-      [BcfVersionEnum.Bcf21] = Bcf21.FileWriter.SerializeAndWriteBcf,
-      [BcfVersionEnum.Bcf30] = FileWriter.SerializeAndWriteBcf
-    };
+  private readonly Dictionary<BcfVersionEnum, Func<IBcf, Task<Stream>>>
+    _fileWriterFn =
+      new() {
+        [BcfVersionEnum.Bcf21] = Bcf21.FileWriter.SerializeAndWriteBcf,
+        [BcfVersionEnum.Bcf30] = FileWriter.SerializeAndWriteBcf
+      };
 
-  public async Task BcfZipToJson(Stream source, string target) {
+  /// <summary>
+  ///   Defines the stream writer function which must be used for write the BCF
+  ///   object to the targeted version.
+  /// </summary>
+  private readonly Dictionary<BcfVersionEnum, Action<IBcf, ZipArchive>>
+    _streamWriterFn =
+      new() {
+        [BcfVersionEnum.Bcf21] = Bcf21.FileWriter.SerializeAndWriteBcfToStream,
+        [BcfVersionEnum.Bcf30] = FileWriter.SerializeAndWriteBcfToStream
+      };
+
+  public async Task BcfToJson(Stream source, string target) {
     var builder = new BcfBuilder();
     var bcf = await builder.BuildFromStream(source);
     await FileWriter.WriteJson(bcf, target);
   }
 
-  public async Task BcfZipToJson(string source, string target) {
-    await using var fileStream = new FileStream(source, FileMode.Open, FileAccess.Read);
-    await BcfZipToJson(fileStream, target);
+  public async Task BcfToJson(string source, string target) {
+    await using var fileStream =
+      new FileStream(source, FileMode.Open, FileAccess.Read);
+    await BcfToJson(fileStream, target);
   }
 
-  public async Task JsonToBcfZip(string source, string target) {
+  public async Task JsonToBcf(string source, string target) {
     // Project and DocumentInfo are optional
     var extensions =
       await JsonExtensions.ParseObject<Extensions>($"{source}/extensions.json");
     var project =
       await JsonExtensions.ParseObject<ProjectInfo>($"{source}/project.json");
     var documents =
-      await JsonExtensions.ParseObject<DocumentInfo>($"{source}/documents.json");
+      await JsonExtensions.ParseObject<DocumentInfo>(
+        $"{source}/documents.json");
     var markups = await JsonExtensions.ParseMarkups<Markup>(source);
 
     var bcf = new Bcf {
@@ -71,18 +84,24 @@ public class Converter : IConverter {
     await FileWriter.SerializeAndWriteBcfToFolder(bcf, target);
   }
 
-  public async Task<Stream> ToBcfStream(
-    IBcf bcf,
-    BcfVersionEnum targetVersion,
-    bool writeToTmp) {
+  public async Task<Stream> ToBcf(IBcf bcf, BcfVersionEnum targetVersion) {
     var converterFn = _converterFn[targetVersion];
     var convertedBcf = converterFn((Bcf)bcf);
 
-    var writerFn = _writerFn[targetVersion];
-    return await writerFn(convertedBcf, writeToTmp);
+    var writerFn = _fileWriterFn[targetVersion];
+    return await writerFn(convertedBcf);
   }
 
-  public Task ToBcfZip(IBcf bcf, string target) {
+  public void ToBcf(IBcf bcf, BcfVersionEnum targetVersion, Stream stream) {
+    var converterFn = _converterFn[targetVersion];
+    var convertedBcf = converterFn((Bcf)bcf);
+
+    var writerFn = _streamWriterFn[targetVersion];
+    var zip = new ZipArchive(stream, ZipArchiveMode.Create, true);
+    writerFn(convertedBcf, zip);
+  }
+
+  public Task ToBcf(IBcf bcf, string target) {
     return FileWriter.SerializeAndWriteBcfToFolder((Bcf)bcf, target);
   }
 
@@ -90,7 +109,7 @@ public class Converter : IConverter {
     return FileWriter.WriteJson((Bcf)bcf, target);
   }
 
-  public async Task<T> BuildBcfFromStream<T>(Stream stream) {
+  public async Task<T> BcfFromStream<T>(Stream stream) {
     var bcf = await _builder.BuildFromStream(stream);
     var targetVersion = BcfVersion.TryParse(typeof(T));
     var converterFn = _converterFn[targetVersion];

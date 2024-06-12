@@ -15,7 +15,7 @@ public class FileWriterTests {
       builder.WithDefaults()
       .Build();
 
-    var stream = await FileWriter.SerializeAndWriteBcf(bcf, false);
+    var stream = await FileWriter.SerializeAndWriteBcf(bcf);
 
     var bcfResultBuilder = new BcfBuilder();
     var bcfResult = await bcfResultBuilder
@@ -33,7 +33,7 @@ public class FileWriterTests {
       builder.WithDefaults()
         .Build();
 
-    var stream = await FileWriter.SerializeAndWriteBcf(bcf, true);
+    var stream = await FileWriter.SerializeAndWriteBcf(bcf);
 
     var bcfResultBuilder = new BcfBuilder();
     var bcfResult = await bcfResultBuilder

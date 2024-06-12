@@ -57,48 +57,30 @@ public static class FileWriter {
   ///   WARNING: Disposing the stream is the responsibility of the user!
   /// </summary>
   /// <param name="bcf">The `BCF` object that should be written.</param>
-  /// <param name="writeToTmp">Should the archive be saved in the tmp folder.</param>
   /// <returns>It returns a stream of the archive.</returns>
-  public static async Task<Stream> SerializeAndWriteBcf(
-    IBcf bcf,
-    bool writeToTmp) {
+  public static async Task<Stream> SerializeAndWriteBcf(IBcf bcf) {
+    var workingDir = Directory.GetCurrentDirectory();
+    var tmpBcfTargetPath = workingDir + $"/{Guid.NewGuid()}.bcfzip";
+    var tmpFolder =
+      await SerializeAndWriteBcfToFolder(bcf, tmpBcfTargetPath, false);
+    var fileStream =
+      new FileStream(tmpBcfTargetPath, FileMode.Open, FileAccess.Read);
 
-    if (writeToTmp) {
-      var workingDir = Directory.GetCurrentDirectory();
-      var tmpBcfTargetPath = workingDir + $"/{Guid.NewGuid()}.bcfzip";
-      var tmpFolder = await SerializeAndWriteBcfToFolder(bcf, tmpBcfTargetPath, false);
-      var fileStream = new FileStream(tmpBcfTargetPath, FileMode.Open, FileAccess.Read);
+    Directory.Delete(tmpFolder, true);
+    File.Delete(tmpBcfTargetPath);
 
-      Directory.Delete(tmpFolder, true);
-      File.Delete(tmpBcfTargetPath);
-
-      return fileStream;
-    }
-
-    // Memory stream for the zip archive
-    var ms = new MemoryStream();
-    var zip = new ZipArchive(ms, ZipArchiveMode.Create, true);
-
-    var zipStream = await SerializeAndWriteBcfToStream(bcf, ms, zip);
-    zip.Dispose();
-    return zipStream;
+    return fileStream;
   }
 
   /// <summary>
   ///   The method serializes the BCF content to xml from the given object,
-  ///   creates a zip entry from a memory stream and return a stream of the
-  ///   archive.
-  ///
-  ///   WARNING: Disposing the stream is the responsibility of the user!
+  ///   creates a zip entry from to the specified stream.
   /// </summary>
   /// <param name="bcf">The `Bcf` object that should be written.</param>
-  /// <param name="stream">The memory stream for the zip archive.</param>
   /// <param name="zip">The zip archive which the object is written in.</param>
   /// <returns>Generated stream from bcf zip.</returns>
   /// <exception cref="ApplicationException"></exception>
-  public static Task<Stream> SerializeAndWriteBcfToStream(
-    IBcf bcf,
-    MemoryStream stream,
+  public static void SerializeAndWriteBcfToStream(IBcf bcf,
     ZipArchive zip) {
     var bcfObject = (Bcf)bcf;
 
@@ -116,7 +98,8 @@ public static class FileWriter {
 
       zip.SerializeAndCreateEntry($"{topicFolder}/markup.bcf", markup);
 
-      var visInfo = (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
+      var visInfo =
+        (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
       zip.SerializeAndCreateEntry($"{topicFolder}/viewpoint.bcf", visInfo);
 
       var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
@@ -129,8 +112,6 @@ public static class FileWriter {
     }
 
     zip.SerializeAndCreateEntry("project.bcfp", bcfObject.Project);
-
-    return Task.FromResult<Stream>(stream);
   }
 
   /// <summary>
@@ -152,7 +133,8 @@ public static class FileWriter {
         $"Target folder not found ${targetFolder}");
 
     // Creating a tmp folder for the intermediate files.
-    var tmpFolder = $"{targetFolder}/tmp{Path.GetFileNameWithoutExtension(target)}";
+    var tmpFolder =
+      $"{targetFolder}/tmp{Path.GetFileNameWithoutExtension(target)}";
     if (Directory.Exists(tmpFolder)) Directory.Delete(tmpFolder, true);
     Directory.CreateDirectory(tmpFolder);
 
