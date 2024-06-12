@@ -1,11 +1,10 @@
-
 using System.Linq;
 using System.Threading.Tasks;
-using BcfToolkit.Builder.Bcf30;
-using BcfToolkit.Converter.Bcf30;
+using BcfToolkit.Builder.Bcf21;
+using BcfToolkit.Converter.Bcf21;
 using NUnit.Framework;
 
-namespace Tests.Converter.Bcf30;
+namespace Tests.Converter.Bcf21;
 [TestFixture]
 public class FileWriterTests {
   [Test]
@@ -13,7 +12,7 @@ public class FileWriterTests {
     var builder = new BcfBuilder();
     var bcf =
       builder.WithDefaults()
-      .Build();
+        .Build();
 
     var stream = await FileWriter.SerializeAndWriteBcf(bcf, false);
 
