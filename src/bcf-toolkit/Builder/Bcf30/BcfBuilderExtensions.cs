@@ -15,8 +15,8 @@ public partial class BcfBuilder {
       return;
     }
 
-    // await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source,
-    //   _delegate.MarkupCreated);
+    await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source,
+      _delegate.MarkupCreated);
 
     // var extensions = await BcfExtensions.ParseExtensions<Extensions>(source);
     // _delegate.ExtensionsCreated(extensions);
