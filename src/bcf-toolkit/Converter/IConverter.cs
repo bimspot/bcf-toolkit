@@ -34,15 +34,17 @@ public interface IConverter {
 
   /// <summary>
   ///   The method converts the specified BCF object to the given version, then
-  ///   returns a stream from the BCF zip archive.
+  ///   returns a stream from the BCF zip archive. It either saves the bcf files
+  ///   locally into a tmp folder or creates a zip entry from a memory stream
+  ///   based on the input.
   ///
   ///   WARNING: Disposing the stream is the responsibility of the user!
   /// </summary>
   /// <param name="bcf">The BCF object.</param>
   /// <param name="targetVersion">The BCF version.</param>
-  /// <param name="useTmpFolder">Use tmp folder or stream.</param>
+  /// <param name="writeToTmp">Should the archive be saved in the tmp folder.</param>
   /// <returns>Returns the file stream of the BCF zip archive.</returns>
-  Task<Stream> ToBcfStream(IBcf bcf, BcfVersionEnum targetVersion, bool useTmpFolder);
+  Task<Stream> ToBcfStream(IBcf bcf, BcfVersionEnum targetVersion, bool writeToTmp);
 
   /// <summary>
   ///   The method writes the specified BCF model to BCFzip files.

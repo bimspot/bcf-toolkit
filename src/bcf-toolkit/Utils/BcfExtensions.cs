@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using BcfToolkit.Model;
-using Version = BcfToolkit.Model.Bcf30.Version;
 
 namespace BcfToolkit.Utils;
 
@@ -267,14 +266,14 @@ public static class BcfExtensions {
   }
 
   /// <summary>
-  ///   The method serializes and writes the specified type object into a BCF file.
+  ///   The method serializes and writes the specified type object into a file.
   /// </summary>
-  /// <param name="folder">The target folder.</param>
+  /// <param name="folder">The target folder where the file is written in.</param>
   /// <param name="file">The target file name.</param>
   /// <param name="obj">The object which will be written.</param>
   /// <typeparam name="T">Generic type parameter.</typeparam>
   /// <returns></returns>
-  public static Task WriteBcfFile<T>(string folder, string file, T? obj) {
+  public static Task SerializeAndWriteXmlFile<T>(string folder, string file, T? obj) {
     return Task.Run(async () => {
       if (obj != null) {
         await using var writer = File.CreateText($"{folder}/{file}");
@@ -307,13 +306,5 @@ public static class BcfExtensions {
     }
 
     return version;
-  }
-
-  public static void CreateBcfZipEntry<T>(ZipArchive zip, string entry, T? obj) {
-    if (obj == null) return;
-    var versionEntry = zip.CreateEntry(entry);
-    using var entryStream = versionEntry.Open();
-    using var writer = new StreamWriter(entryStream);
-    new XmlSerializer(typeof(T)).Serialize(writer, obj);
   }
 }

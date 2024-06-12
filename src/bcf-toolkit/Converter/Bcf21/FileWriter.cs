@@ -16,10 +16,10 @@ public static class FileWriter {
   /// <summary>
   ///   The method writes the BCF object to json file.
   /// </summary>
-  /// <param name="bcf">The BCF object which will be written.</param>
+  /// <param name="bcf">The `Bcf` object that should be written.</param>
   /// <param name="target">The target path where the json files will be saved.</param>
   /// <returns></returns>
-  public static Task WriteJson(Bcf bcf, string target) {
+  public static Task WriteBcfToJson(Bcf bcf, string target) {
     if (Directory.Exists(target)) Directory.Delete(target, true);
     Directory.CreateDirectory(target);
 
@@ -39,9 +39,13 @@ public static class FileWriter {
 
     return Task.WhenAll(writeTasks);
   }
+
   /// <summary>
-  ///   The method writes the BCF content from the given objects to the
-  ///   specified target and compresses it.
+  ///   The method serializes the BCF content to xml from the given object,
+  ///   then either saves the xml to the target file or creates a zip entry
+  ///   from a memory stream based on the input. It returns a stream of the
+  ///   archive.
+  ///
   ///   The markups will be written into the topic folder structure:
   ///   * markup.bcf
   ///   * viewpoint files (.bcfv)
@@ -49,19 +53,58 @@ public static class FileWriter {
   ///   The root files depend on the version of the BCF.
   ///   * project.bcfp (optional)
   ///   * bcf.version
+  ///
+  ///   WARNING: Disposing the stream is the responsibility of the user!
   /// </summary>
-  /// <param name="bcf">The BCF object.</param>
-  /// <returns>Generated stream from bcf zip</returns>
+  /// <param name="bcf">The `BCF` object that should be written.</param>
+  /// <param name="writeToTmp">Should the archive be saved in the tmp folder.</param>
+  /// <returns>It returns a stream of the archive.</returns>
+  public static async Task<Stream> SerializeAndWriteBcf(
+    IBcf bcf,
+    bool writeToTmp) {
+
+    if (writeToTmp) {
+      var workingDir = Directory.GetCurrentDirectory();
+      var tmpBcfTargetPath = workingDir + $"/{Guid.NewGuid()}.bcfzip";
+      var tmpFolder = await SerializeAndWriteBcfToFolder(bcf, tmpBcfTargetPath, false);
+      var fileStream = new FileStream(tmpBcfTargetPath, FileMode.Open, FileAccess.Read);
+
+      Directory.Delete(tmpFolder, true);
+      File.Delete(tmpBcfTargetPath);
+
+      return fileStream;
+    }
+
+    // Memory stream for the zip archive
+    var ms = new MemoryStream();
+    var zip = new ZipArchive(ms, ZipArchiveMode.Create, true);
+
+    var zipStream = await SerializeAndWriteBcfToStream(bcf, ms, zip);
+    zip.Dispose();
+    return zipStream;
+  }
+
+  /// <summary>
+  ///   The method serializes the BCF content to xml from the given object,
+  ///   creates a zip entry from a memory stream and return a stream of the
+  ///   archive.
+  ///
+  ///   WARNING: Disposing the stream is the responsibility of the user!
+  /// </summary>
+  /// <param name="bcf">The `Bcf` object that should be written.</param>
+  /// <param name="stream">The memory stream for the zip archive.</param>
+  /// <param name="zip">The zip archive which the object is written in.</param>
+  /// <returns>Generated stream from bcf zip.</returns>
   /// <exception cref="ApplicationException"></exception>
-  public static Task<Stream> WriteBcfToStream(IBcf bcf) {
+  public static Task<Stream> SerializeAndWriteBcfToStream(
+    IBcf bcf,
+    MemoryStream stream,
+    ZipArchive zip) {
     var bcfObject = (Bcf)bcf;
 
-    var ms = new MemoryStream();
-    using var zip = new ZipArchive(ms, ZipArchiveMode.Create, true);
-    // Write bcf.version
-    BcfExtensions.CreateBcfZipEntry(zip, "bcf.version", new Version());
+    zip.SerializeAndCreateEntry("bcf.version", new Version());
 
-    // Writing markup files to disk, one markup per folder.
+    // Writing markup files to zip archive, one markup per entry.
     foreach (var markup in bcfObject.Markups) {
       var guid = markup.GetTopic()?.Guid;
       if (guid == null) {
@@ -71,43 +114,38 @@ public static class FileWriter {
 
       var topicFolder = $"{guid}";
 
-      BcfExtensions.CreateBcfZipEntry(zip, $"{topicFolder}/markup.bcf", markup);
+      zip.SerializeAndCreateEntry($"{topicFolder}/markup.bcf", markup);
 
       var visInfo = (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
-      BcfExtensions.CreateBcfZipEntry(zip, $"{topicFolder}/viewpoint.bcf", visInfo);
+      zip.SerializeAndCreateEntry($"{topicFolder}/viewpoint.bcf", visInfo);
 
-      // Write snapshot
       var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
       var base64String = markup.GetFirstViewPoint()?.SnapshotData;
       if (snapshotFileName == null || base64String == null) continue;
       const string pattern = @"^data:image\/[a-zA-Z]+;base64,";
       var result = Regex.Replace(base64String, pattern, string.Empty);
       var bytes = Convert.FromBase64String(result);
-      BcfExtensions.CreateBcfZipEntry(zip, $"{topicFolder}/{snapshotFileName}", bytes);
+      zip.SerializeAndCreateEntry($"{topicFolder}/{snapshotFileName}", bytes);
     }
 
-    BcfExtensions.CreateBcfZipEntry(zip, "project.bcf", bcfObject.Project);
+    zip.SerializeAndCreateEntry("project.bcfp", bcfObject.Project);
 
-    return Task.FromResult<Stream>(ms);
+    return Task.FromResult<Stream>(stream);
   }
 
   /// <summary>
   ///   The method writes the BCF content from the given objects to the
-  ///   specified target and compresses it.
-  ///   The markups will be written into the topic folder structure:
-  ///   * markup.bcf
-  ///   * viewpoint files (.bcfv)
-  ///   * snapshot files (PNG, JPEG)
-  ///   The root files depend on the version of the BCF.
-  ///   * project.bcfp (optional)
-  ///   * bcf.version
+  ///   specified target and compresses it. The folder is deleted 
   /// </summary>
   /// <param name="bcf">The BCF object.</param>
   /// <param name="target">The target file name of the BCFzip.</param>
-  /// <param name="delete">Should delete the generated tmp folder now or later</param>
-  /// <returns>Generated temp folder path</returns>
+  /// <param name="delete">Should delete the generated tmp folder now or later.</param>
+  /// <returns>Generated temp folder path.</returns>
   /// <exception cref="ApplicationException"></exception>
-  public static async Task<string> WriteBcfToFolder(IBcf bcf, string target, bool delete = true) {
+  public static async Task<string> SerializeAndWriteBcfToFolder(
+    IBcf bcf,
+    string target,
+    bool delete = true) {
     var targetFolder = Path.GetDirectoryName(target);
     if (targetFolder == null)
       throw new ApplicationException(
@@ -121,7 +159,7 @@ public static class FileWriter {
     var bcfObject = (Bcf)bcf;
 
     var writeTasks = new List<Task>();
-    writeTasks.Add(BcfExtensions.WriteBcfFile(
+    writeTasks.Add(BcfExtensions.SerializeAndWriteXmlFile(
       tmpFolder,
       "bcf.version",
       new Version()));
@@ -138,7 +176,7 @@ public static class FileWriter {
       var topicFolder = $"{tmpFolder}/{guid}";
       Directory.CreateDirectory(topicFolder);
 
-      writeTasks.Add(BcfExtensions.WriteBcfFile(
+      writeTasks.Add(BcfExtensions.SerializeAndWriteXmlFile(
         topicFolder,
         "markup.bcf",
         markup));
@@ -146,7 +184,7 @@ public static class FileWriter {
       var visInfo =
         (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
       writeTasks.Add(
-        BcfExtensions.WriteBcfFile(
+        BcfExtensions.SerializeAndWriteXmlFile(
           topicFolder,
           "viewpoint.bcfv",
           visInfo));
@@ -163,7 +201,7 @@ public static class FileWriter {
     }
 
     writeTasks.Add(
-      BcfExtensions.WriteBcfFile(
+      BcfExtensions.SerializeAndWriteXmlFile(
         tmpFolder,
         "project.bcfp",
         bcfObject.Project));
