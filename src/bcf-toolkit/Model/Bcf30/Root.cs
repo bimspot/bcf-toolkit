@@ -13,11 +13,11 @@ public class Root : IRoot {
   public Task WriteBcf(string folder) {
     return Task.WhenAll(
       Task.Run(() =>
-        Utils.BcfExtensions.WriteBcfFile(folder, "extensions.xml", Extensions)),
+        Utils.BcfExtensions.SerializeAndWriteXmlFile(folder, "extensions.xml", Extensions)),
       Task.Run(() =>
-        Utils.BcfExtensions.WriteBcfFile(folder, "project.bcfp", Project)),
+        Utils.BcfExtensions.SerializeAndWriteXmlFile(folder, "project.bcfp", Project)),
       Task.Run(() =>
-        Utils.BcfExtensions.WriteBcfFile(folder, "documents.xml", Document))
+        Utils.BcfExtensions.SerializeAndWriteXmlFile(folder, "documents.xml", Document))
     );
   }
 }

@@ -96,11 +96,11 @@ public class Worker {
   public async Task Convert(string source, string target) {
     if (source.EndsWith("bcfzip")) {
       await InitConverterFromArchive(source);
-      await _converter.BcfZipToJson(source, target);
+      await _converter.BcfToJson(source, target);
     }
     else {
       await InitConverterFromJson(source);
-      await _converter.JsonToBcfZip(source, target);
+      await _converter.JsonToBcf(source, target);
     }
   }
 
@@ -112,7 +112,7 @@ public class Worker {
   /// <returns></returns>
   public Task ToBcfZip(IBcf bcf, string target) {
     InitConverterFromType(bcf);
-    return _converter.ToBcfZip(bcf, target);
+    return _converter.ToBcf(bcf, target);
   }
 
   /// <summary>
@@ -130,26 +130,32 @@ public class Worker {
   ///   The method builds and returns an instance of BCF 3.0 object from the
   ///   specified file stream, independently the input version.
   /// </summary>
-  /// <param name="stream"></param>
+  /// <param name="stream">The stream of the source BCF zip archive.</param>
   /// <returns></returns>
   public async Task<Bcf> BuildBcfFromStream(Stream stream) {
     await InitConverterFromStreamArchive(stream);
-    return await _converter.BuildBcfFromStream<Bcf>(stream);
+    return await _converter.BcfFromStream<Bcf>(stream);
   }
 
   /// <summary>
   ///   The method converts the specified BCF object to the given version, then
-  ///   returns a stream from the BCF zip archive.
+  ///   returns a stream from the BCF zip archive. It either saves the bcf files
+  ///   locally into a tmp folder or creates a zip entry from a memory stream
+  ///   based on the input.
   ///
   ///   WARNING: Disposing the stream is the responsibility of the user!
   /// </summary>
   /// <param name="bcf">The BCF object.</param>
-  /// <param name="targetVersion">The BCF version.</param>
+  /// <param name="targetVersion">The target BCF version.</param>
+  /// <param name="writeToTmp">Should the archive be saved in the tmp folder.</param>
   /// <returns>
   ///   Returns the file stream of the BCF zip archive.
   /// </returns>
-  public async Task<Stream> ToBcfStream(IBcf bcf, BcfVersionEnum targetVersion) {
+  public async Task<Stream> ToBcfStream(
+    IBcf bcf,
+    BcfVersionEnum targetVersion,
+    bool writeToTmp = true) {
     InitConverterFromType(bcf);
-    return await _converter.ToBcfStream(bcf, targetVersion);
+    return await _converter.ToBcf(bcf, targetVersion);
   }
 }

@@ -10,6 +10,7 @@ nuget install Smino.Bcf.Toolkit
 ```
 
 ## Usage
+
 ### Creating BCF objects
 To create a BCF Model, `BcfBuilder` class can be used. Then, various
 functions provided by the builder can be used to fulfill the BCF model objects.
@@ -84,6 +85,7 @@ var bcf = builder
   .WithDefaults()
   .Build();
 ```
+
 ### Using BCF worker
 The worker is implemented to use predefined workflows to convert `BCF` files
 into `json` and back. The function decides which workflow must be used according
@@ -123,7 +125,7 @@ using BcfToolkit;
 await using var stream = new FileStream(source, FileMode.Open, FileAccess.Read);
 
 var worker = new Worker();
-var bcf = await worker.BuildBcfFromStream(stream);
+var bcf = await worker.BcfFromStream(stream);
 ```
 
 The worker can return a file stream from the specified instance of the bcf
@@ -134,10 +136,24 @@ stream after the usage is the responsibility of the caller.
 using BcfToolkit;
 
 var worker = new Worker();
-var stream = await worker.ToBcfStream(bcf, BcfVersionEnum.Bcf30);
+var stream = await worker.ToBcf(bcf, BcfVersionEnum.Bcf30);
 // custom code to use the stream...
 await stream.FlushAsync();
 ```
+
+It is also possible to define the output stream to which the results will
+be written.
+
+```csharp
+using BcfToolkit;
+
+var worker = new Worker();
+var outputStream = new MemoryStream();
+worker.ToBcf(bcf, BcfVersionEnum.Bcf30, outputStream);
+// custom code to use the stream...
+await outputStream.FlushAsync();
+```
+
 
 ## File Structure
 
@@ -188,9 +204,6 @@ The models for the BCF in-memory representation were auto-created from the
 
 To publish, run the script at `dist/publish.sh`.
 
-### TODO
-
-- profile memory and CPU usage
 
 ### Contribution
 
