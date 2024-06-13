@@ -94,6 +94,11 @@ public class Converter : IConverter {
   }
 
   public void ToBcf(IBcf bcf, BcfVersionEnum targetVersion, Stream stream) {
+
+    if (!stream.CanWrite) {
+      throw new ArgumentException("Stream is not writable.");
+    }
+
     var converterFn = _converterFn[targetVersion];
     var convertedBcf = converterFn((Bcf)bcf);
 

@@ -1,46 +1,19 @@
-# bcf-toolkit
+This C# NuGet library allows you to easily build up and convert data into BCF 
+files. It gives you a straightforward API to build your BCF objects exactly how 
+you want in your order.
 
-A .NET library and a command line utility for converting `BCF` (Building 
-Collaboration Format) files into `json` and vice versa.
-
-The tool converts `BCF` information across formats and versions. 
-
-## Requirements
-
-- dotnet 8
-
-### CLI
-
-The command line interface accepts 2 arguments:
- * the source bcf file or json folder [REQUIRED]
- * the target bcf file or json folder [REQUIRED]
- ~~* the target version of bcf [OPTIONAL]~~
- 
-The json representation is one file for every `Markup`, while the BCF format
-is a zipped file as per the standard.
-
-```
-~ bcf-toolkit /path/to/source.bcfzip /path/to/target/json/folder
-
-~ bcf-toolkit /path/to/source/json/folder /path/to/target.bcfzip
-```
-
-### As A Library
-This C# NuGet library allows the user to easily build up and convert data into 
-BCF files. It gives a straightforward API to build the BCF objects exactly in 
-the order of the user's choice.
-
-#### Installation
-`Smino.Bcf.Toolkit` library can be installed via NuGet Package Manager or by adding 
-it to the project's .csproj file.
+## Installation
+You can install the `BcfToolkit` library via NuGet Package Manager or by adding
+it to your project's .csproj file.
 ```
 nuget install Smino.Bcf.Toolkit
 ```
 
-#### Usage
-##### Creating BCF objects
-To create a BCF Model, `BcfBuilder` class can be used. Then, various 
-functions provided by the builder can be used to fulfill the BCF model objects. 
+## Usage
+
+### Creating BCF objects
+To create a BCF Model, `BcfBuilder` class can be used. Then, various
+functions provided by the builder can be used to fulfill the BCF model objects.
 
 Here are some examples:
 
@@ -99,9 +72,9 @@ var bcf = await builder
   .BuildFromStream(stream);
 ```
 
-The default builders can be used if the user prefers not to deal with filling 
-the required fields. The `builder.WithDefaults()` function serves this. 
-However in certain cases the user may need to replace the component IDs of IFC 
+The default builders can be used if the user prefers not to deal with filling
+the required fields. The `builder.WithDefaults()` function serves this.
+However in certain cases the user may need to replace the component IDs of IFC
 objects with the actual GUIDs during the build process.
 
 ```csharp
@@ -112,9 +85,10 @@ var bcf = builder
   .WithDefaults()
   .Build();
 ```
-##### Using BCF worker
-The worker is implemented to use predefined workflows to convert `BCF` files 
-into `json` and back. The function decides which workflow must be used according 
+
+### Using BCF worker
+The worker is implemented to use predefined workflows to convert `BCF` files
+into `json` and back. The function decides which workflow must be used according
 to the source and target. If the source ends with `.bcfzip` the converter uses
 the `BcfZipToJson` for example.
 
@@ -124,7 +98,7 @@ using BcfToolkit;
 var worker = new Worker();
 await worker.Convert(source, target);
 ```
-The exact converter can be called directly as well for both converting 
+The exact converter can be called directly as well for both converting
 directions, `BCF` into `json` and back.
 
 ```csharp
@@ -142,7 +116,7 @@ converter.JsonToBcfZip(source, target);
 ```
 
 Furthermore `BCF` archive can be consumed as a stream. The version of the source
-is established by the code, then the class lets the nested converter object to
+is established by the code, then the class lets the nested converter object to 
 do the conversion to BCF 3.0 accordingly.
 
 ```csharp
@@ -151,7 +125,7 @@ using BcfToolkit;
 await using var stream = new FileStream(source, FileMode.Open, FileAccess.Read);
 
 var worker = new Worker();
-var bcf = await worker.BuildBcfFromStream(stream);
+var bcf = await worker.BcfFromStream(stream);
 ```
 
 The worker can return a file stream from the specified instance of the bcf
@@ -162,14 +136,28 @@ stream after the usage is the responsibility of the caller.
 using BcfToolkit;
 
 var worker = new Worker();
-var stream = await worker.ToBcfStream(bcf, BcfVersionEnum.Bcf30);
+var stream = await worker.ToBcf(bcf, BcfVersionEnum.Bcf30);
 // custom code to use the stream...
 await stream.FlushAsync();
 ```
 
+It is also possible to define the output stream to which the results will
+be written.
+
+```csharp
+using BcfToolkit;
+
+var worker = new Worker();
+var outputStream = new MemoryStream();
+worker.ToBcf(bcf, BcfVersionEnum.Bcf30, outputStream);
+// custom code to use the stream...
+await outputStream.FlushAsync();
+```
+
+
 ## File Structure
 
-The structure of the BCF is per [the standard][3]. There is, however, no 
+The structure of the BCF is per [the standard][3]. There is, however, no
 standard for the JSON format other than the [BCF API specification][4].
 
 The naming convention for this converter is taken from the BCF API, but the
@@ -194,7 +182,7 @@ named using the `uuid` of the `Topic` within.
 
 ## Development
 
-The development of the tool is ongoing, the table below shows the currently 
+The development of the tool is ongoing, the table below shows the currently
 completed features.
 
 |          | BCF 2.0 | BCF 2.1 | BCF 3.0 | JSON 2.0 | JSON 2.1 | JSON 3.0 |
@@ -216,9 +204,6 @@ The models for the BCF in-memory representation were auto-created from the
 
 To publish, run the script at `dist/publish.sh`.
 
-### TODO
-
-- profile memory and CPU usage
 
 ### Contribution
 

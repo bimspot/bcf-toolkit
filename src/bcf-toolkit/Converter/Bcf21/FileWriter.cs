@@ -172,7 +172,9 @@ public static class FileWriter {
           visInfo));
 
       var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
+
       var base64String = markup.GetFirstViewPoint()?.SnapshotData;
+
       if (snapshotFileName == null || base64String == null) continue;
       const string pattern = @"^data:image\/[a-zA-Z]+;base64,";
       var result = Regex.Replace(base64String,
