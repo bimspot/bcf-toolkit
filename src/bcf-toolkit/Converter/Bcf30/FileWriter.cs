@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using BcfToolkit.Model;
@@ -64,13 +65,14 @@ public static class FileWriter {
   ///   * bcf.version
   ///   * extensions.xml
   ///   * documents.xml (optional)
-  ///
+  /// 
   ///   WARNING: Disposing the stream is the responsibility of the user!
   /// </summary>
   /// <param name="bcf">The `BCF` object that should be written.</param>
-  /// <param name="writeToTmp">Should the archive be saved in the tmp folder.</param>
+  /// <param name="cancellationToken"></param>
   /// <returns>It returns a stream of the archive.</returns>
-  public static async Task<Stream> SerializeAndWriteBcf(IBcf bcf) {
+  public static async Task<Stream> SerializeAndWriteBcf(IBcf bcf,
+    CancellationToken? cancellationToken = null) {
     var workingDir = Directory.GetCurrentDirectory();
     var tmpBcfTargetPath = workingDir + $"/{Guid.NewGuid()}.bcfzip";
     var tmpFolder =
@@ -96,20 +98,26 @@ public static class FileWriter {
   ///   * bcf.version
   ///   * extensions.xml
   ///   * documents.xml (optional)
-  ///
+  /// 
   /// </summary>
   /// <param name="bcf">The `BCF` object that should be written..</param>
   /// <param name="zip">The zip archive which the object is written in.</param>
+  /// <param name="cancellationToken"></param>
   /// <returns>Memory stream of the bcfzip </returns>
   /// <exception cref="ApplicationException"></exception>
-  ///
-  public static void SerializeAndWriteBcfToStream(IBcf bcf, ZipArchive zip) {
+  /// 
+  public static void SerializeAndWriteBcfToStream(IBcf bcf, ZipArchive zip,
+    CancellationToken? cancellationToken = null) {
     var bcfObject = (Bcf)bcf;
 
     zip.SerializeAndCreateEntry("bcf.version", new Version());
 
     // Writing markup files to zip arhive, one markup per entry.
     foreach (var markup in bcfObject.Markups) {
+      if (cancellationToken is { IsCancellationRequested: true }) {
+        return;
+      }
+
       var guid = markup.GetTopic()?.Guid;
       if (guid == null) {
         Console.WriteLine(" - Topic Guid is missing, skipping markup");
@@ -146,10 +154,14 @@ public static class FileWriter {
   /// <param name="bcf">The BCF object.</param>
   /// <param name="target">The target file name of the BCFzip.</param>
   /// <param name="delete">Should delete the generated tmp folder now or later</param>
+  /// <param name="cancellationToken"></param>
   /// <returns>Generated temp folder path</returns>
   /// <exception cref="ApplicationException"></exception>
-  public static async Task<string> SerializeAndWriteBcfToFolder(IBcf bcf,
-    string target, bool delete = true) {
+  public static async Task<string> SerializeAndWriteBcfToFolder(
+    IBcf bcf,
+    string target,
+    bool delete = true,
+    CancellationToken? cancellationToken = null) {
     var targetFolder = Path.GetDirectoryName(target);
     if (targetFolder == null)
       throw new ApplicationException(
@@ -170,6 +182,10 @@ public static class FileWriter {
 
     // Writing markup files to disk, one markup per folder.
     foreach (var markup in bcfObject.Markups) {
+      if (cancellationToken is { IsCancellationRequested: true }) {
+        return string.Empty;
+      }
+
       var guid = markup.GetTopic()?.Guid;
       if (guid == null) {
         Console.WriteLine(
