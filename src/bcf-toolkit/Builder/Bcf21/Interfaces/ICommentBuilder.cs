@@ -45,7 +45,7 @@ public interface ICommentBuilder<out TBuilder> : IBuilder<Comment> {
   /// </summary>
   /// <param name="date">The date when comment was modified.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetModifiedDate(DateTime date);
+  TBuilder SetModifiedDate(DateTime? date);
 
   /// <summary>
   ///   Returns the builder object set with the `ModifiedAuthor`.

@@ -9,8 +9,8 @@ public partial class VisibilityBuilder :
   IVisibilityBuilder<VisibilityBuilder, ComponentBuilder, ViewSetupHintsBuilder> {
   private readonly ComponentVisibility _visibility = new();
 
-  public VisibilityBuilder SetDefaultVisibility(bool visibility) {
-    _visibility.DefaultVisibility = visibility;
+  public VisibilityBuilder SetDefaultVisibility(bool? visibility) {
+    _visibility.DefaultVisibility = visibility.GetValueOrDefault();
     return this;
   }
 
