@@ -7,7 +7,7 @@ public class Root : IRoot {
 
   public Task WriteBcf(string folder) {
     return Task.Run(async () => {
-      await Utils.BcfExtensions.WriteBcfFile(folder, "project.bcfp", Project);
+      await Utils.BcfExtensions.SerializeAndWriteXmlFile(folder, "project.bcfp", Project);
     });
   }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf21;
 using BcfToolkit.Utils;
@@ -15,14 +16,13 @@ namespace BcfToolkit.Converter.Bcf21;
 ///   JSON, and BCFzip.
 /// </summary>
 public class Converter : IConverter {
-
   private BcfBuilder _builder = new();
 
   /// <summary>
   ///   Defines the converter function, which must be used for converting the
   ///   BCF object to the targeted version.
   /// </summary>
-  private readonly Dictionary<BcfVersionEnum, Func<Bcf, IBcf>> _converterFnMapper =
+  private readonly Dictionary<BcfVersionEnum, Func<Bcf, IBcf>> _converterFn =
     new() {
       [BcfVersionEnum.Bcf21] = b => b,
       [BcfVersionEnum.Bcf30] = SchemaConverterToBcf30.Convert
@@ -32,29 +32,42 @@ public class Converter : IConverter {
   ///   Defines the file writer function which must be used for write the BCF
   ///   object to the targeted version.
   /// </summary>
-  private readonly Dictionary<BcfVersionEnum, Func<IBcf, string, bool, Task<string>>> _writerFnMapper =
-    new() {
-      [BcfVersionEnum.Bcf21] = FileWriter.WriteBcf,
-      [BcfVersionEnum.Bcf30] = Bcf30.FileWriter.WriteBcf
-    };
+  private readonly Dictionary<BcfVersionEnum, Func<IBcf, Task<Stream>>>
+    _writerFn =
+      new() {
+        [BcfVersionEnum.Bcf21] = FileWriter.SerializeAndWriteBcf,
+        [BcfVersionEnum.Bcf30] = Bcf30.FileWriter.SerializeAndWriteBcf
+      };
 
-  public async Task BcfZipToJson(Stream source, string targetPath) {
+  /// <summary>
+  ///   Defines the stream writer function which must be used for write the BCF
+  ///   object to the targeted version.
+  /// </summary>
+  private readonly Dictionary<BcfVersionEnum, Action<IBcf, ZipArchive>>
+    _streamWriterFn =
+      new() {
+        [BcfVersionEnum.Bcf21] = FileWriter.SerializeAndWriteBcfToStream,
+        [BcfVersionEnum.Bcf30] = Bcf30.FileWriter.SerializeAndWriteBcfToStream
+      };
+
+  public async Task BcfToJson(Stream source, string targetPath) {
     var bcf = await _builder.BuildFromStream(source);
-    await FileWriter.WriteJson(bcf, targetPath);
+    await FileWriter.WriteBcfToJson(bcf, targetPath);
   }
 
-  public async Task BcfZipToJson(string sourcePath, string targetPath) {
+  public async Task BcfToJson(string sourcePath, string targetPath) {
     try {
       await using var fileStream =
         new FileStream(sourcePath, FileMode.Open, FileAccess.Read);
-      await BcfZipToJson(fileStream, targetPath);
+      await BcfToJson(fileStream, targetPath);
     }
     catch (Exception ex) {
-      throw new ArgumentException($"Source path is not readable. {ex.Message}", ex);
+      throw new ArgumentException($"Source path is not readable. {ex.Message}",
+        ex);
     }
   }
 
-  public async Task JsonToBcfZip(string source, string target) {
+  public async Task JsonToBcf(string source, string target) {
     // Project is optional
     var projectPath = $"{source}/project.json";
     var project = Path.Exists(projectPath)
@@ -69,39 +82,43 @@ public class Converter : IConverter {
       Version = new Version()
     };
 
-    await FileWriter.WriteBcf(bcf, target);
+    await FileWriter.SerializeAndWriteBcfToFolder(bcf, target);
   }
 
-  public async Task<Stream> ToBcfStream(IBcf bcf, BcfVersionEnum targetVersion) {
-    var converterFn = _converterFnMapper[targetVersion];
+  public async Task<Stream> ToBcf(IBcf bcf, BcfVersionEnum targetVersion) {
+    var converterFn = _converterFn[targetVersion];
     var convertedBcf = converterFn((Bcf)bcf);
 
-    var workingDir = Directory.GetCurrentDirectory();
-    var tmpBcfTargetPath = workingDir + $"/{Guid.NewGuid()}.bcfzip";
-    var writerFn = _writerFnMapper[targetVersion];
-
-    // keep the tmp files till the stream is created
-    var tmpFolder = await writerFn(convertedBcf, tmpBcfTargetPath, false);
-    var stream = new FileStream(tmpBcfTargetPath, FileMode.Open, FileAccess.Read);
-
-    Directory.Delete(tmpFolder, true);
-    File.Delete(tmpBcfTargetPath);
-
-    return stream;
+    var writerFn = _writerFn[targetVersion];
+    return await writerFn(convertedBcf);
   }
 
-  public Task ToBcfZip(IBcf bcf, string target) {
-    return FileWriter.WriteBcf((Bcf)bcf, target);
+  public void ToBcf(IBcf bcf, BcfVersionEnum targetVersion, Stream stream) {
+
+    if (!stream.CanWrite) {
+      throw new ArgumentException("Stream is not writable.");
+    }
+
+    var converterFn = _converterFn[targetVersion];
+    var convertedBcf = converterFn((Bcf)bcf);
+
+    var writerFn = _streamWriterFn[targetVersion];
+    var zip = new ZipArchive(stream, ZipArchiveMode.Create, true);
+    writerFn(convertedBcf, zip);
+  }
+
+  public Task ToBcf(IBcf bcf, string target) {
+    return FileWriter.SerializeAndWriteBcfToFolder((Bcf)bcf, target);
   }
 
   public Task ToJson(IBcf bcf, string target) {
-    return FileWriter.WriteJson((Bcf)bcf, target);
+    return FileWriter.WriteBcfToJson((Bcf)bcf, target);
   }
 
-  public async Task<T> BuildBcfFromStream<T>(Stream stream) {
+  public async Task<T> BcfFromStream<T>(Stream stream) {
     var bcf = await _builder.BuildFromStream(stream);
     var targetVersion = BcfVersion.TryParse(typeof(T));
-    var converterFn = _converterFnMapper[targetVersion];
+    var converterFn = _converterFn[targetVersion];
     return (T)converterFn(bcf);
   }
 }

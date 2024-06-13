@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using BcfToolkit.Model;
+using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Utils;
 
@@ -266,14 +267,15 @@ public static class BcfExtensions {
   }
 
   /// <summary>
-  ///   The method serializes and writes the specified type object into a BCF file.
+  ///   The method serializes and writes the specified type object into a file.
   /// </summary>
-  /// <param name="folder">The target folder.</param>
+  /// <param name="folder">The target folder where the file is written in.</param>
   /// <param name="file">The target file name.</param>
   /// <param name="obj">The object which will be written.</param>
   /// <typeparam name="T">Generic type parameter.</typeparam>
   /// <returns></returns>
-  public static Task WriteBcfFile<T>(string folder, string file, T? obj) {
+  public static Task SerializeAndWriteXmlFile<T>(string folder, string file,
+    T? obj) {
     return Task.Run(async () => {
       if (obj != null) {
         await using var writer = File.CreateText($"{folder}/{file}");
@@ -285,9 +287,21 @@ public static class BcfExtensions {
   /// <summary>
   ///   The method opens the archive stream and returns the BCF version.
   /// </summary>
-  /// <param name="stream"></param>
-  /// <returns></returns>
-  public static async Task<BcfVersionEnum?> GetVersionFromStreamArchive(Stream stream) {
+  /// <param name="stream">
+  ///   TODO: needs seekable stream
+  /// </param>
+  /// <exception cref="ArgumentException">
+  ///   Throws an exception if the provided stream is not seekable.
+  /// </exception>
+  /// <returns>Returns the BcfVersionEnum enum.</returns>
+  public static async Task<BcfVersionEnum?> GetVersionFromStreamArchive(
+    Stream stream) {
+
+
+    if (!stream.CanRead || !stream.CanSeek) {
+      throw new ArgumentException("Stream is not Readable or Seekable");
+    }
+
     using var archive = new ZipArchive(stream, ZipArchiveMode.Read, true);
     BcfVersionEnum? version = null;
 
@@ -300,7 +314,8 @@ public static class BcfExtensions {
         entry.Open(),
         LoadOptions.None,
         CancellationToken.None);
-      version = BcfVersion.TryParse(document.Root?.Attribute("VersionId")?.Value);
+      version =
+        BcfVersion.TryParse(document.Root?.Attribute("VersionId")?.Value);
       stream.Position = 0;
       return version;
     }

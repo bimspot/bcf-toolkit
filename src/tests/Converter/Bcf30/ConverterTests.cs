@@ -25,37 +25,37 @@ public class ConverterTests {
   [Test]
   [Category("BCF v3.0")]
   public void BcfToJsonSampleFilesTest() {
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
       "Resources/Bcf/v3.0/ComponentSelection.bcfzip",
       "Resources/output/json/v3.0/ComponentSelection");
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
       "Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip",
       "Resources/output/json/v3.0/DocumentReferenceExternal");
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
       "Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip",
       "Resources/output/json/v3.0/DocumentReferenceInternal");
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
       "Resources/Bcf/v3.0/DueDate.bcfzip",
       "Resources/output/json/v3.0/DueDate");
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
       "Resources/Bcf/v3.0/Labels.bcfzip",
       "Resources/output/json/v3.0/Labels");
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
       "Resources/Bcf/v3.0/Milestone.bcfzip",
       "Resources/output/json/v3.0/Milestone");
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
       "Resources/Bcf/v3.0/RelatedTopics.bcfzip",
       "Resources/output/json/v3.0/RelatedTopics");
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
       "Resources/Bcf/v3.0/SingleInvisibleWall.bcfzip",
       "Resources/output/json/v3.0/SingleInvisibleWall");
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
       "Resources/Bcf/v3.0/TestBcf30.bcfzip",
       "Resources/output/json/v3.0/TestBcf30");
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
       "Resources/Bcf/v3.0/TopicsWithDifferentModelsVisible.bcfzip",
       "Resources/output/json/v3.0/TopicsWithDifferentModelsVisible");
-    _converter.BcfZipToJson(
+    _converter.BcfToJson(
       "Resources/Bcf/v3.0/UserAssignment.bcfzip",
       "Resources/output/json/v3.0/UserAssignment");
   }
@@ -64,7 +64,7 @@ public class ConverterTests {
   [Category("BCF v3.0")]
   public Task JsonToBcfSampleFilesTest() {
     var tasks = new List<Task> {
-      _converter.JsonToBcfZip(
+      _converter.JsonToBcf(
         "Resources/Json/v3.0/DocumentReferenceInternal",
         "Resources/output/Bcf/v3.0/DocumentReferenceInternal.bcfzip"),
     };
@@ -92,19 +92,20 @@ public class ConverterTests {
       Document = documentInfo
     };
 
-    var streamResult = await _converter.ToBcfStream(bcf, BcfVersionEnum.Bcf30);
+    var outputStream = new MemoryStream();
+    _converter.ToBcf(bcf, BcfVersionEnum.Bcf30, outputStream);
 
-    ClassicAssert.IsNotNull(streamResult);
-    ClassicAssert.IsTrue(streamResult.CanRead);
+    ClassicAssert.IsNotNull(outputStream);
+    ClassicAssert.IsTrue(outputStream.CanRead);
 
-    await streamResult.DisposeAsync();
+    await outputStream.DisposeAsync();
   }
 
   [Test]
   [Category("BCF v3.0")]
   public void BcfToJsonBackwardCompatibilityTest() {
     // 2.1 -> 3.0 is not backward compatible
-    Assert.That(async () => await _converter.BcfZipToJson(
+    Assert.That(async () => await _converter.BcfToJson(
       "Resources/Bcf/v2.1/AllPartsVisible.bcfzip",
       "Resources/output/Json/v3.0/AllPartsVisible"), Throws.Exception);
   }
@@ -112,7 +113,7 @@ public class ConverterTests {
   [Test]
   [Category("BCF v3.0")]
   public void BcfToJsonWrongPathTest() {
-    Assert.That(async () => await _converter.BcfZipToJson(
+    Assert.That(async () => await _converter.BcfToJson(
       "Resources/Bcf/v3.0/Wrong.bcfzip",
       "Resources/output/json/v3.0/Wrong"), Throws.Exception);
   }
@@ -120,7 +121,7 @@ public class ConverterTests {
   [Test]
   [Category("BCF v3.0")]
   public void JsonToBcfMissingBcfRootTest() {
-    Assert.That(async () => await _converter.BcfZipToJson(
+    Assert.That(async () => await _converter.BcfToJson(
       "Resources/json/v3.0/MissingBcfRoot.bcfzip",
       "Resources/output/Bcf/v3.0/MissingBcfRoot"), Throws.Exception);
   }
@@ -143,7 +144,7 @@ public class ConverterTests {
     var bcf = new Bcf {
       Markups = markups
     };
-    return _converter.ToBcfZip(bcf, "Resources/output/Bcf/v3.0/MinimumInformation.bcfzip");
+    return _converter.ToBcf(bcf, "Resources/output/Bcf/v3.0/MinimumInformation.bcfzip");
   }
 
   /// <summary>
@@ -184,7 +185,7 @@ public class ConverterTests {
     var bcf = new Bcf {
       Markups = markups
     };
-    return _converter.ToBcfZip(bcf, "Resources/output/Bcf/v3.0/WithoutTopicGuid.bcfzip");
+    return _converter.ToBcf(bcf, "Resources/output/Bcf/v3.0/WithoutTopicGuid.bcfzip");
   }
 
   /// <summary>
@@ -198,7 +199,7 @@ public class ConverterTests {
         "Resources/Bcf/v3.0/ComponentSelection.bcfzip",
         FileMode.Open,
         FileAccess.Read);
-    var bcf = await _converter.BuildBcfFromStream<Bcf>(stream);
+    var bcf = await _converter.BcfFromStream<Bcf>(stream);
     Assert.That(typeof(Bcf), Is.EqualTo(bcf.GetType()));
     Assert.That(1, Is.EqualTo(bcf.Markups.Count));
     Assert.That("3.0", Is.EqualTo(bcf.Version?.VersionId));
