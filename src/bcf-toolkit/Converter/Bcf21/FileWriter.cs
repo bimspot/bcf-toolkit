@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
@@ -45,7 +46,7 @@ public static class FileWriter {
   ///   then either saves the xml to the target file or creates a zip entry
   ///   from a memory stream based on the input. It returns a stream of the
   ///   archive.
-  ///
+  /// 
   ///   The markups will be written into the topic folder structure:
   ///   * markup.bcf
   ///   * viewpoint files (.bcfv)
@@ -53,16 +54,19 @@ public static class FileWriter {
   ///   The root files depend on the version of the BCF.
   ///   * project.bcfp (optional)
   ///   * bcf.version
-  ///
+  /// 
   ///   WARNING: Disposing the stream is the responsibility of the user!
   /// </summary>
   /// <param name="bcf">The `BCF` object that should be written.</param>
+  /// <param name="cancellationToken"></param>
   /// <returns>It returns a stream of the archive.</returns>
-  public static async Task<Stream> SerializeAndWriteBcf(IBcf bcf) {
+  public static async Task<Stream> SerializeAndWriteBcf(IBcf bcf,
+    CancellationToken? cancellationToken) {
     var workingDir = Directory.GetCurrentDirectory();
     var tmpBcfTargetPath = workingDir + $"/{Guid.NewGuid()}.bcfzip";
     var tmpFolder =
-      await SerializeAndWriteBcfToFolder(bcf, tmpBcfTargetPath, false);
+      await SerializeAndWriteBcfToFolder(bcf, tmpBcfTargetPath, false,
+        cancellationToken);
     var fileStream =
       new FileStream(tmpBcfTargetPath, FileMode.Open, FileAccess.Read);
 
@@ -78,16 +82,21 @@ public static class FileWriter {
   /// </summary>
   /// <param name="bcf">The `Bcf` object that should be written.</param>
   /// <param name="zip">The zip archive which the object is written in.</param>
+  /// <param name="cancellationToken"></param>
   /// <returns>Generated stream from bcf zip.</returns>
   /// <exception cref="ApplicationException"></exception>
   public static void SerializeAndWriteBcfToStream(IBcf bcf,
-    ZipArchive zip) {
+    ZipArchive zip, CancellationToken? cancellationToken = null) {
     var bcfObject = (Bcf)bcf;
 
     zip.SerializeAndCreateEntry("bcf.version", new Version());
 
     // Writing markup files to zip archive, one markup per entry.
     foreach (var markup in bcfObject.Markups) {
+      if (cancellationToken is { IsCancellationRequested: true }) {
+        return;
+      }
+
       var guid = markup.GetTopic()?.Guid;
       if (guid == null) {
         Console.WriteLine(" - Topic Guid is missing, skipping markup");
@@ -121,12 +130,14 @@ public static class FileWriter {
   /// <param name="bcf">The BCF object.</param>
   /// <param name="target">The target file name of the BCFzip.</param>
   /// <param name="delete">Should delete the generated tmp folder now or later.</param>
+  /// <param name="cancellationToken"></param>
   /// <returns>Generated temp folder path.</returns>
   /// <exception cref="ApplicationException"></exception>
   public static async Task<string> SerializeAndWriteBcfToFolder(
     IBcf bcf,
     string target,
-    bool delete = true) {
+    bool delete = true,
+    CancellationToken? cancellationToken = null) {
     var targetFolder = Path.GetDirectoryName(target);
     if (targetFolder == null)
       throw new ApplicationException(
@@ -140,14 +151,19 @@ public static class FileWriter {
 
     var bcfObject = (Bcf)bcf;
 
-    var writeTasks = new List<Task>();
-    writeTasks.Add(BcfExtensions.SerializeAndWriteXmlFile(
-      tmpFolder,
-      "bcf.version",
-      new Version()));
+    var writeTasks = new List<Task> {
+      BcfExtensions.SerializeAndWriteXmlFile(
+        tmpFolder,
+        "bcf.version",
+        new Version())
+    };
 
     // Writing markup files to disk, one markup per folder.
     foreach (var markup in bcfObject.Markups) {
+      if (cancellationToken is { IsCancellationRequested: true }) {
+        return string.Empty;
+      }
+
       var guid = markup.GetTopic()?.Guid;
       if (guid == null) {
         Console.WriteLine(

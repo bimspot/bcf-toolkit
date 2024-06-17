@@ -5,6 +5,7 @@ using BcfToolkit.Converter.Bcf21;
 using NUnit.Framework;
 
 namespace Tests.Converter.Bcf21;
+
 [TestFixture]
 public class FileWriterTests {
   [Test]
@@ -14,7 +15,7 @@ public class FileWriterTests {
       builder.WithDefaults()
         .Build();
 
-    var stream = await FileWriter.SerializeAndWriteBcf(bcf);
+    var stream = await FileWriter.SerializeAndWriteBcf(bcf, null);
 
     var bcfResultBuilder = new BcfBuilder();
     var bcfResult = await bcfResultBuilder
@@ -32,7 +33,7 @@ public class FileWriterTests {
       builder.WithDefaults()
         .Build();
 
-    var stream = await FileWriter.SerializeAndWriteBcf(bcf);
+    var stream = await FileWriter.SerializeAndWriteBcf(bcf, null);
 
     var bcfResultBuilder = new BcfBuilder();
     var bcfResult = await bcfResultBuilder
