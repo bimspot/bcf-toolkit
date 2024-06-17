@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Threading;
 using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf30;
 using BcfToolkit.Utils;
@@ -32,7 +33,8 @@ public class Converter : IConverter {
   ///   Defines the file writer function which must be used for write the BCF
   ///   object to the targeted version.
   /// </summary>
-  private readonly Dictionary<BcfVersionEnum, Func<IBcf, Task<Stream>>>
+  private readonly Dictionary<BcfVersionEnum,
+      Func<IBcf, CancellationToken?, Task<Stream>>>
     _fileWriterFn =
       new() {
         [BcfVersionEnum.Bcf21] = Bcf21.FileWriter.SerializeAndWriteBcf,
@@ -43,7 +45,8 @@ public class Converter : IConverter {
   ///   Defines the stream writer function which must be used for write the BCF
   ///   object to the targeted version.
   /// </summary>
-  private readonly Dictionary<BcfVersionEnum, Action<IBcf, ZipArchive>>
+  private readonly Dictionary<BcfVersionEnum,
+      Action<IBcf, ZipArchive, CancellationToken?>>
     _streamWriterFn =
       new() {
         [BcfVersionEnum.Bcf21] = Bcf21.FileWriter.SerializeAndWriteBcfToStream,
@@ -85,15 +88,26 @@ public class Converter : IConverter {
   }
 
   public async Task<Stream> ToBcf(IBcf bcf, BcfVersionEnum targetVersion) {
+    return await this.ToBcf(bcf: bcf, targetVersion: targetVersion,
+      cancellationToken: null);
+  }
+
+  public async Task<Stream> ToBcf(IBcf bcf, BcfVersionEnum targetVersion,
+    CancellationToken? cancellationToken) {
     var converterFn = _converterFn[targetVersion];
     var convertedBcf = converterFn((Bcf)bcf);
 
     var writerFn = _fileWriterFn[targetVersion];
-    return await writerFn(convertedBcf);
+    return await writerFn(convertedBcf, cancellationToken);
   }
 
   public void ToBcf(IBcf bcf, BcfVersionEnum targetVersion, Stream stream) {
+    this.ToBcf(bcf: bcf, targetVersion: targetVersion, stream: stream,
+      cancellationToken: null);
+  }
 
+  public void ToBcf(IBcf bcf, BcfVersionEnum targetVersion, Stream stream,
+    CancellationToken? cancellationToken) {
     if (!stream.CanWrite) {
       throw new ArgumentException("Stream is not writable.");
     }
@@ -101,9 +115,13 @@ public class Converter : IConverter {
     var converterFn = _converterFn[targetVersion];
     var convertedBcf = converterFn((Bcf)bcf);
 
+    if (cancellationToken is { IsCancellationRequested: true }) {
+      return;
+    }
+
     var writerFn = _streamWriterFn[targetVersion];
     var zip = new ZipArchive(stream, ZipArchiveMode.Create, true);
-    writerFn(convertedBcf, zip);
+    writerFn(convertedBcf, zip, cancellationToken);
   }
 
   public Task ToBcf(IBcf bcf, string target) {
