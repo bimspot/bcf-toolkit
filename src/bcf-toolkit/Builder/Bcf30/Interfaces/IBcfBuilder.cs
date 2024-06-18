@@ -24,7 +24,7 @@ public interface IBcfBuilder<
   /// </summary>
   /// <param name="builder">Builder of the project info.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetProjectInfo(Action<TProjectBuilder> builder);
+  TBuilder SetProject(Action<TProjectBuilder> builder);
 
   /// <summary>
   ///   Returns the builder object set with the `Extensions`.
@@ -38,5 +38,5 @@ public interface IBcfBuilder<
   /// </summary>
   /// <param name="builder">Builder of the document info.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetDocumentInfo(Action<TDocumentInfoBuilder> builder);
+  TBuilder SetDocument(Action<TDocumentInfoBuilder> builder);
 }

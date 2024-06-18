@@ -28,7 +28,7 @@ public class WorkerTests {
     const string path = "Resources/Bcf/v2.1/MiniSolibri.bcfzip";
     await using var stream =
       new FileStream(path, FileMode.Open, FileAccess.Read);
-    await _worker.BuildBcfFromStream(stream);
+    await _worker.BcfFromStream(stream);
   }
 
   [Test]
@@ -49,7 +49,7 @@ public class WorkerTests {
     var tasks = samples.Select(async path => {
       await using var stream =
         new FileStream(path, FileMode.Open, FileAccess.Read);
-      await _worker.BuildBcfFromStream(stream);
+      await _worker.BcfFromStream(stream);
     }).ToArray();
 
     await Task.WhenAll(tasks);
@@ -62,7 +62,7 @@ public class WorkerTests {
       "Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip",
       FileMode.Open,
       FileAccess.Read);
-    await _worker.BuildBcfFromStream(stream);
+    await _worker.BcfFromStream(stream);
   }
 
   [Test]
@@ -130,7 +130,7 @@ public class WorkerTests {
   private async Task CheckBcfStreamVersion(
     IBcf bcf,
     BcfVersionEnum expectedVersion) {
-    var stream = await _worker.ToBcfStream(bcf, expectedVersion);
+    var stream = await _worker.ToBcf(bcf, expectedVersion);
     var version = await BcfExtensions.GetVersionFromStreamArchive(stream);
     Assert.That(expectedVersion, Is.EqualTo(version));
     await stream.FlushAsync();
@@ -159,7 +159,7 @@ public class WorkerTests {
         new FileStream(path, FileMode.Open, FileAccess.Read);
 
       var bcf = await builder.BuildFromStream(inputStream);
-      var stream = await _worker.ToBcfStream(bcf, BcfVersionEnum.Bcf21);
+      var stream = await _worker.ToBcf(bcf, BcfVersionEnum.Bcf21);
       var version = await BcfExtensions.GetVersionFromStreamArchive(stream);
       Assert.That(BcfVersionEnum.Bcf21, Is.EqualTo(version));
       await stream.FlushAsync();
@@ -266,7 +266,7 @@ public class WorkerTests {
         .SetCreationAuthor("Creator"))
       .Build();
 
-    await _worker.ToBcfZip(bcf, "Resources/output/bcf/v2.1/BcfZipTest21.bcfzip");
+    await _worker.ToBcf(bcf, "Resources/output/bcf/v2.1/BcfZipTest21.bcfzip");
   }
 
   [Test]
@@ -284,7 +284,7 @@ public class WorkerTests {
       .SetExtensions(e => e.WithDefaults())
       .Build();
 
-    await _worker.ToBcfZip(bcf, "Resources/output/bcf/v3.0/BcfZipTest30.bcfzip");
+    await _worker.ToBcf(bcf, "Resources/output/bcf/v3.0/BcfZipTest30.bcfzip");
   }
 
   [Test]

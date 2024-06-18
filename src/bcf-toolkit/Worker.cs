@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using BcfToolkit.Converter;
 using BcfToolkit.Model;
@@ -14,12 +15,13 @@ namespace BcfToolkit;
 ///   The `Worker` class defines the converter strategy for a specific
 ///   version of BCF and performs the conversion according to the chosen type of
 ///   conversion.
-///   Types of the conversion:
+///   Types of the conversions:
 ///   - BCF to json
 ///   - json to BCF
-///   - in memory model to BCF
-///   - in memory model to JSON
-///   - file stream to in memory model
+///   - in-memory model to BCF
+///   - in-memory model to JSON
+///   - in-memory model to file stream
+///   - file stream to in-memory model
 /// </summary>
 public class Worker {
   /// <summary>
@@ -105,18 +107,18 @@ public class Worker {
   }
 
   /// <summary>
-  ///   The method writes the specified BCF models to BCF files.
+  ///   The method writes the specified BCF model to BCF file.
   /// </summary>
   /// <param name="bcf">The `IBcf` interface of the BCF.</param>
   /// <param name="target">The target path where the BCF is written.</param>
   /// <returns></returns>
-  public Task ToBcfZip(IBcf bcf, string target) {
+  public Task ToBcf(IBcf bcf, string target) {
     InitConverterFromType(bcf);
     return _converter.ToBcf(bcf, target);
   }
 
   /// <summary>
-  ///   The method writes the specified BCF models to JSON files.
+  ///   The method writes the specified BCF model to JSON files.
   /// </summary>
   /// <param name="bcf">The `IBcf` interface of the BCF.</param>
   /// <param name="target">The target path where the JSON is written.</param>
@@ -127,35 +129,104 @@ public class Worker {
   }
 
   /// <summary>
-  ///   The method builds and returns an instance of BCF 3.0 object from the
-  ///   specified file stream, independently the input version.
+  ///   The method builds and returns an instance of the latest (BCF 3.0) object
+  ///   from the specified file stream, independently the input version. It
+  ///   converts the BCF from the given version to the latest.
   /// </summary>
   /// <param name="stream">The stream of the source BCF zip archive.</param>
-  /// <returns></returns>
-  public async Task<Bcf> BuildBcfFromStream(Stream stream) {
+  /// <returns>Returns the in-memory BCF model.</returns>
+  public async Task BcfFromStream(Stream stream) {
     await InitConverterFromStreamArchive(stream);
-    return await _converter.BcfFromStream<Bcf>(stream);
+    await _converter.BcfFromStream<Bcf>(stream);
   }
 
   /// <summary>
   ///   The method converts the specified BCF object to the given version, then
-  ///   returns a stream from the BCF zip archive. It either saves the bcf files
-  ///   locally into a tmp folder or creates a zip entry from a memory stream
-  ///   based on the input.
+  ///   returns a stream from the BCF zip archive. It saves the bcf files
+  ///   locally into a tmp folder.
   ///
-  ///   WARNING: Disposing the stream is the responsibility of the user!
+  ///   IMPORTANT: It is the user's responsibility to dispose of the stream
+  ///   after use. Failure to do so may result in resource leaks and potential
+  ///   application instability.
   /// </summary>
   /// <param name="bcf">The BCF object.</param>
   /// <param name="targetVersion">The target BCF version.</param>
-  /// <param name="writeToTmp">Should the archive be saved in the tmp folder.</param>
   /// <returns>
   ///   Returns the file stream of the BCF zip archive.
   /// </returns>
-  public async Task<Stream> ToBcfStream(
-    IBcf bcf,
-    BcfVersionEnum targetVersion,
-    bool writeToTmp = true) {
+  public async Task<Stream> ToBcf(IBcf bcf, BcfVersionEnum targetVersion) {
     InitConverterFromType(bcf);
     return await _converter.ToBcf(bcf, targetVersion);
+  }
+
+  /// <summary>
+  ///   The method converts the specified BCF object to the given version with
+  ///   cancellation token, then returns a stream from the BCF zip archive. It
+  ///   saves the bcf files locally into a tmp folder.
+  ///
+  ///   IMPORTANT: It is the user's responsibility to dispose of the stream
+  ///   after use. Failure to do so may result in resource leaks and potential
+  ///   application instability.
+  /// </summary>
+  /// <param name="bcf">The BCF object.</param>
+  /// <param name="targetVersion">The target BCF version.</param>
+  /// <param name="cancellationToken">
+  ///   A token to monitor for cancellation requests.
+  /// </param>
+  /// <returns>
+  ///   Returns the file stream of the BCF zip archive.
+  /// </returns>
+  public async Task<Stream> ToBcf(
+    IBcf bcf,
+    BcfVersionEnum targetVersion,
+    CancellationToken cancellationToken) {
+    InitConverterFromType(bcf);
+    return await _converter.ToBcf(bcf, targetVersion, cancellationToken);
+  }
+
+  /// <summary>
+  ///   The method converts the given BCF object to the given version, then
+  ///   writes the BCF zip archive to the specified stream.
+  ///
+  ///   When the stream based approach is used, there is no parallel execution
+  ///   and there is less compression, as zip entities are compressed
+  ///   individually. 
+  /// </summary>
+  /// <param name="bcf">The BCF object.</param>
+  /// <param name="targetVersion">The target BCF version.</param>
+  /// <param name="stream">The output stream, which should be writable.</param>
+  public void ToBcf(
+    IBcf bcf,
+    BcfVersionEnum targetVersion,
+    Stream stream) {
+    InitConverterFromType(bcf);
+    _converter.ToBcf(bcf, targetVersion, stream);
+  }
+
+  /// <summary>
+  ///   The method converts the given BCF object to the given version, with
+  ///   cancellation token, then writes the BCF zip archive to the specified
+  ///   stream.
+  ///
+  ///   When the stream based approach is used, there is no parallel execution
+  ///   and there is less compression, as zip entities are compressed
+  ///   individually. 
+  /// </summary>
+  /// <param name="bcf">The BCF object.</param>
+  /// <param name="targetVersion">The target BCF version.</param>
+  /// <param name="stream">The output stream, which should be writable.</param>
+  /// <param name="cancellationToken">
+  ///   A token to monitor for cancellation requests.
+  /// </param>
+  /// <returns>
+  ///   Returns the file stream of the BCF zip archive.
+  /// </returns>
+  public void ToBcf(
+    IBcf bcf,
+    BcfVersionEnum targetVersion,
+    Stream stream,
+    CancellationToken cancellationToken) {
+    InitConverterFromType(bcf);
+    _converter.ToBcf(bcf, targetVersion, stream, cancellationToken);
   }
 }

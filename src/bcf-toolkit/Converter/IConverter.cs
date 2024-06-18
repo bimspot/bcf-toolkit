@@ -125,8 +125,9 @@ public interface IConverter {
   Task ToJson(IBcf bcf, string target);
 
   /// <summary>
-  ///   The function builds a BCF in memory representation of the specified
-  ///   target version from the given stream.
+  ///   The function builds a BCF in-memory representation of the specified
+  ///   target version from the provided stream. The type of the target BCF
+  ///   must be specified as a type parameter.
   /// </summary>
   /// <param name="stream">The BCF file stream.</param>
   /// <returns>

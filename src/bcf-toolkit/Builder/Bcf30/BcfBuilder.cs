@@ -29,7 +29,7 @@ public partial class BcfBuilder : IBcfBuilder<
     return this;
   }
 
-  public BcfBuilder SetProjectInfo(Action<ProjectInfoBuilder> builder) {
+  public BcfBuilder SetProject(Action<ProjectInfoBuilder> builder) {
     var projectInfo =
       BuilderUtils.BuildItem<ProjectInfoBuilder, ProjectInfo>(builder);
     _bcf.Project = projectInfo;
@@ -43,7 +43,7 @@ public partial class BcfBuilder : IBcfBuilder<
     return this;
   }
 
-  public BcfBuilder SetDocumentInfo(Action<DocumentInfoBuilder> builder) {
+  public BcfBuilder SetDocument(Action<DocumentInfoBuilder> builder) {
     var documentInfo =
       BuilderUtils.BuildItem<DocumentInfoBuilder, DocumentInfo>(builder);
     _bcf.Document = documentInfo;
