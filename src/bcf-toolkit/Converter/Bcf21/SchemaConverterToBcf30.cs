@@ -19,14 +19,14 @@ public static class SchemaConverterToBcf30 {
     var builder = new BcfBuilder();
     builder
       .AddMarkups(from.Markups.Select(ConvertMarkup).ToList(), true)
-      .SetDocumentInfo(UpdateDocumentInfo(from.Markups
+      .SetDocument(UpdateDocumentInfo(from.Markups
         .SelectMany(m => m.Topic.DocumentReference)
         .Where(r => !r.IsExternal)
         .ToList()));
 
     var project = from.Project;
     if (project != null)
-      builder.SetProjectInfo(p => p
+      builder.SetProject(p => p
         .SetProjectId(project.Project.ProjectId)
         .SetProjectName(project.Project.Name));
 

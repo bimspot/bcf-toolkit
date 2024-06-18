@@ -102,4 +102,19 @@ public partial class BcfBuilder {
     extensions.Users.ForEach(u =>
       _bcf.Extensions.Users.AddIfNotExists(u));
   }
+
+  public BcfBuilder SetExtensions(Extensions extensions) {
+    _bcf.Extensions = extensions;
+    return this;
+  }
+
+  public BcfBuilder SetProject(ProjectInfo? project) {
+    _bcf.Project = project;
+    return this;
+  }
+
+  public BcfBuilder SetDocument(DocumentInfo? document) {
+    _bcf.Document = document;
+    return this;
+  }
 }

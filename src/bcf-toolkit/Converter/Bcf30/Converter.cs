@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf30;
@@ -33,7 +34,8 @@ public class Converter : IConverter {
   ///   Defines the file writer function which must be used for write the BCF
   ///   object to the targeted version.
   /// </summary>
-  private readonly Dictionary<BcfVersionEnum,
+  private readonly Dictionary<
+      BcfVersionEnum,
       Func<IBcf, CancellationToken?, Task<Stream>>>
     _fileWriterFn =
       new() {
@@ -45,7 +47,8 @@ public class Converter : IConverter {
   ///   Defines the stream writer function which must be used for write the BCF
   ///   object to the targeted version.
   /// </summary>
-  private readonly Dictionary<BcfVersionEnum,
+  private readonly Dictionary<
+      BcfVersionEnum,
       Action<IBcf, ZipArchive, CancellationToken?>>
     _streamWriterFn =
       new() {
@@ -66,7 +69,7 @@ public class Converter : IConverter {
   }
 
   public async Task JsonToBcf(string source, string target) {
-    // Project and DocumentInfo are optional
+    // Project and Document are optional
     var extensions =
       await JsonExtensions.ParseObject<Extensions>($"{source}/extensions.json");
     var project =
@@ -76,13 +79,12 @@ public class Converter : IConverter {
         $"{source}/documents.json");
     var markups = await JsonExtensions.ParseMarkups<Markup>(source);
 
-    var bcf = new Bcf {
-      Markups = markups,
-      Extensions = extensions,
-      Project = project,
-      Document = documents,
-      Version = new Version()
-    };
+    var bcf = _builder
+      .AddMarkups(markups.ToList())
+      .SetExtensions(extensions)
+      .SetProject(project)
+      .SetDocument(documents)
+      .Build();
 
     await FileWriter.SerializeAndWriteBcfToFolder(bcf, target);
   }
@@ -92,7 +94,9 @@ public class Converter : IConverter {
       cancellationToken: null);
   }
 
-  public async Task<Stream> ToBcf(IBcf bcf, BcfVersionEnum targetVersion,
+  public async Task<Stream> ToBcf(
+    IBcf bcf,
+    BcfVersionEnum targetVersion,
     CancellationToken? cancellationToken) {
     var converterFn = _converterFn[targetVersion];
     var convertedBcf = converterFn((Bcf)bcf);
@@ -106,7 +110,10 @@ public class Converter : IConverter {
       cancellationToken: null);
   }
 
-  public void ToBcf(IBcf bcf, BcfVersionEnum targetVersion, Stream stream,
+  public void ToBcf(
+    IBcf bcf,
+    BcfVersionEnum targetVersion,
+    Stream stream,
     CancellationToken? cancellationToken) {
     if (!stream.CanWrite) {
       throw new ArgumentException("Stream is not writable.");
