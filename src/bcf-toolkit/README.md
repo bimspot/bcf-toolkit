@@ -87,10 +87,12 @@ var bcf = builder
 ```
 
 ### Using BCF worker
-The worker is implemented to use predefined workflows to convert `BCF` files
-into `json` and back. The function decides which workflow must be used according
-to the source and target. If the source ends with `.bcfzip` the converter uses
-the `BcfZipToJson` for example.
+The `BCF` worker is designed to facilitate the conversion of `BCF` files to 
+`JSON` and vice versa using predefined workflows. The appropriate workflow is 
+selected based on the file extensions of the source and target. For example, if 
+the source file ends with `.bcfzip`, the `BcfZipToJson` converter is used.
+
+#### Basic conversion
 
 ```csharp
 using BcfToolkit;
@@ -98,8 +100,12 @@ using BcfToolkit;
 var worker = new Worker();
 await worker.Convert(source, target);
 ```
-The exact converter can be called directly as well for both converting
-directions, `BCF` into `json` and back.
+
+#### Direct converter usage
+You can also call specific converters directly for converting between `BCF` and 
+`JSON`.
+
+##### BCF to JSON
 
 ```csharp
 using BcfToolkit.Converter.Bcf30;
@@ -108,6 +114,8 @@ var converter = new Converter()
 converter.BcfZipToJson(source, target);
 ```
 
+##### JSON to BCF
+
 ```csharp
 using BcfToolkit.Converter.Bcf30;
 
@@ -115,9 +123,12 @@ var converter = new Converter()
 converter.JsonToBcfZip(source, target);
 ```
 
-Furthermore `BCF` archive can be consumed as a stream. The version of the source
-is established by the code, then the class lets the nested converter object to 
-do the conversion to BCF 3.0 accordingly.
+#### Stream-based conversion
+The library supports consuming `BCF` archives as streams. The code determines 
+the version of the source and delegates the conversion to the appropriate nested 
+converter object, converting it to `BCF` 3.0 as needed.
+
+##### BCF from Stream
 
 ```csharp
 using BcfToolkit;
@@ -128,9 +139,10 @@ var worker = new Worker();
 var bcf = await worker.BcfFromStream(stream);
 ```
 
-The worker can return a file stream from the specified instance of the bcf
-object. The function converts the bcf to the target version. Disposing the
-stream after the usage is the responsibility of the caller.
+##### BCF to Stream
+The worker can generate a file stream from a specified `BCF` object, converting 
+it to the desired version.
+> IMPORTANT: The user is responsible for disposing of the stream after use.
 
 ```csharp
 using BcfToolkit;
@@ -141,8 +153,8 @@ var stream = await worker.ToBcf(bcf, BcfVersionEnum.Bcf30);
 await stream.FlushAsync();
 ```
 
-It is also possible to define the output stream to which the results will
-be written.
+##### Specifying Output Stream
+You can define an output stream to which the conversion results will be written.
 
 ```csharp
 using BcfToolkit;
@@ -154,6 +166,21 @@ worker.ToBcf(bcf, BcfVersionEnum.Bcf30, outputStream);
 await outputStream.FlushAsync();
 ```
 
+#### Cancellation Support
+The worker supports `CancellationToken` to allow for the cancellation of 
+asynchronous operations.
+
+```csharp
+using BcfToolkit;
+
+var worker = new Worker();
+var outputStream = new MemoryStream();
+var source = new CancellationTokenSource();
+var token = source.Token;
+worker.ToBcf(bcf, BcfVersionEnum.Bcf30, outputStream, token);
+// custom code to use the stream...
+await outputStream.FlushAsync();
+```
 
 ## File Structure
 
