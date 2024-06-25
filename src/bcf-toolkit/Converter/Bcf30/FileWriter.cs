@@ -130,7 +130,7 @@ public static class FileWriter {
 
       var visInfo =
         (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
-      zip.SerializeAndCreateEntry($"{topicFolder}/viewpoint.bcf", visInfo);
+      zip.SerializeAndCreateEntry($"{topicFolder}/viewpoint.bcfv", visInfo);
 
       // Write snapshot
       var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
