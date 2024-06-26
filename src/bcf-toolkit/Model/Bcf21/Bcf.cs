@@ -12,5 +12,5 @@ public partial class Bcf : IBcf {
 
   public ProjectExtension? Project { get; set; }
 
-  public Version? Version { get; set; }
+  public Version Version { get; set; }
 }

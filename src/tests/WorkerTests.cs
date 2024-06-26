@@ -28,7 +28,8 @@ public class WorkerTests {
     const string path = "Resources/Bcf/v2.1/MiniSolibri.bcfzip";
     await using var stream =
       new FileStream(path, FileMode.Open, FileAccess.Read);
-    await _worker.BcfFromStream(stream);
+    var bcf = await _worker.BcfFromStream(stream);
+    Assert.That(bcf.Version.VersionId, Is.EqualTo("3.0"));
   }
 
   [Test]
@@ -49,7 +50,8 @@ public class WorkerTests {
     var tasks = samples.Select(async path => {
       await using var stream =
         new FileStream(path, FileMode.Open, FileAccess.Read);
-      await _worker.BcfFromStream(stream);
+      var bcf = await _worker.BcfFromStream(stream);
+      Assert.That(bcf.Version.VersionId, Is.EqualTo("3.0"));
     }).ToArray();
 
     await Task.WhenAll(tasks);
@@ -62,7 +64,8 @@ public class WorkerTests {
       "Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip",
       FileMode.Open,
       FileAccess.Read);
-    await _worker.BcfFromStream(stream);
+    var bcf = await _worker.BcfFromStream(stream);
+    Assert.That(bcf.Version.VersionId, Is.EqualTo("3.0"));
   }
 
   [Test]

@@ -17,5 +17,5 @@ public class Bcf : IBcf {
 
   public ProjectInfo? Project { get; set; }
 
-  public Version? Version { get; set; }
+  public Version Version { get; set; }
 }
