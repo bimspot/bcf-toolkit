@@ -85,8 +85,10 @@ public static class FileWriter {
   /// <param name="cancellationToken"></param>
   /// <returns>Generated stream from bcf zip.</returns>
   /// <exception cref="ApplicationException"></exception>
-  public static void SerializeAndWriteBcfToStream(IBcf bcf,
-    ZipArchive zip, CancellationToken? cancellationToken = null) {
+  public static void SerializeAndWriteBcfToStream(
+    IBcf bcf,
+    ZipArchive zip,
+    CancellationToken? cancellationToken = null) {
     var bcfObject = (Bcf)bcf;
 
     zip.SerializeAndCreateEntry("bcf.version", new Version());
@@ -109,7 +111,7 @@ public static class FileWriter {
 
       var visInfo =
         (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
-      zip.SerializeAndCreateEntry($"{topicFolder}/viewpoint.bcf", visInfo);
+      zip.SerializeAndCreateEntry($"{topicFolder}/viewpoint.bcfv", visInfo);
 
       var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
       var base64String = markup.GetFirstViewPoint()?.SnapshotData;

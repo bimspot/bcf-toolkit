@@ -297,7 +297,6 @@ public static class BcfExtensions {
   public static async Task<BcfVersionEnum?> GetVersionFromStreamArchive(
     Stream stream) {
 
-
     if (!stream.CanRead || !stream.CanSeek) {
       throw new ArgumentException("Stream is not Readable or Seekable");
     }

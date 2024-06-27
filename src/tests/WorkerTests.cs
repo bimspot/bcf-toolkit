@@ -4,12 +4,15 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using BcfToolkit;
 using BcfToolkit.Builder.Bcf21;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
 using BcfToolkit.Utils;
 using NUnit.Framework;
+using Bcf = BcfToolkit.Model.Bcf21.Bcf;
+using File = System.IO.File;
 
 namespace Tests;
 
@@ -321,5 +324,26 @@ public class WorkerTests {
       .Build();
 
     await _worker.ToJson(bcf, "Resources/output/json/v3.0/JsonTest30");
+  }
+
+  [Test]
+  [Category("BCF v2.1")]
+  public async Task ToBcfWithFileStream() {
+    var builder = new BcfBuilder();
+    const string path = "Resources/output/bcf/v2.1/BcfFileStream.bcfzip";
+    await using var outputStream = new FileStream(
+      path,
+      FileMode.Create,
+      FileAccess.Write);
+
+    var bcf = builder.WithDefaults().Build();
+    _worker.ToBcf(bcf, BcfVersionEnum.Bcf21, outputStream);
+
+    // await using var inputStream = new FileStream(
+    //   path,
+    //   FileMode.Open,
+    //   FileAccess.Read);
+    // var bcfResult = await _worker.BcfFromStream(inputStream);
+    // Assert.That(bcfResult.Markups.Count, Is.EqualTo(1));
   }
 }

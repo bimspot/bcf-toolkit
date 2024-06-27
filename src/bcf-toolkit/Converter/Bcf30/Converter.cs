@@ -127,7 +127,7 @@ public class Converter : IConverter {
     }
 
     var writerFn = _streamWriterFn[targetVersion];
-    var zip = new ZipArchive(stream, ZipArchiveMode.Create, true);
+    using var zip = new ZipArchive(stream, ZipArchiveMode.Create, true);
     writerFn(convertedBcf, zip, cancellationToken);
   }
 
