@@ -338,10 +338,10 @@ public class WorkerTests {
 
     var bcf = builder.WithDefaults().Build();
     _worker.ToBcf(bcf, BcfVersionEnum.Bcf21, outputStream);
-    
+
     await outputStream.FlushAsync();
     outputStream.Close();
-    
+
     await using var inputStream = new FileStream(
       path,
       FileMode.Open,
