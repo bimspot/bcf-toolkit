@@ -331,19 +331,22 @@ public class WorkerTests {
   public async Task ToBcfWithFileStream() {
     var builder = new BcfBuilder();
     const string path = "Resources/output/bcf/v2.1/BcfFileStream.bcfzip";
-    await using var outputStream = new FileStream(
+    var outputStream = new FileStream(
       path,
       FileMode.Create,
       FileAccess.Write);
 
     var bcf = builder.WithDefaults().Build();
     _worker.ToBcf(bcf, BcfVersionEnum.Bcf21, outputStream);
-
-    // await using var inputStream = new FileStream(
-    //   path,
-    //   FileMode.Open,
-    //   FileAccess.Read);
-    // var bcfResult = await _worker.BcfFromStream(inputStream);
-    // Assert.That(bcfResult.Markups.Count, Is.EqualTo(1));
+    
+    await outputStream.FlushAsync();
+    outputStream.Close();
+    
+    await using var inputStream = new FileStream(
+      path,
+      FileMode.Open,
+      FileAccess.Read);
+    var bcfResult = await _worker.BcfFromStream(inputStream);
+    Assert.That(bcfResult.Markups.Count, Is.EqualTo(1));
   }
 }
