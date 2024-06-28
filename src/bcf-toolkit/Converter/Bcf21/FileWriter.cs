@@ -91,7 +91,7 @@ public static class FileWriter {
     CancellationToken? cancellationToken = null) {
     var bcfObject = (Bcf)bcf;
 
-    zip.SerializeAndCreateEntry("bcf.version", new Version());
+    zip.CreateEntryFromObject("bcf.version", new Version());
 
     // Writing markup files to zip archive, one markup per entry.
     foreach (var markup in bcfObject.Markups) {
@@ -107,11 +107,11 @@ public static class FileWriter {
 
       var topicFolder = $"{guid}";
 
-      zip.SerializeAndCreateEntry($"{topicFolder}/markup.bcf", markup);
+      zip.CreateEntryFromObject($"{topicFolder}/markup.bcf", markup);
 
       var visInfo =
         (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
-      zip.SerializeAndCreateEntry($"{topicFolder}/viewpoint.bcfv", visInfo);
+      zip.CreateEntryFromObject($"{topicFolder}/viewpoint.bcfv", visInfo);
 
       var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
       var base64String = markup.GetFirstViewPoint()?.SnapshotData;
@@ -119,10 +119,10 @@ public static class FileWriter {
       const string pattern = @"^data:image\/[a-zA-Z]+;base64,";
       var result = Regex.Replace(base64String, pattern, string.Empty);
       var bytes = Convert.FromBase64String(result);
-      zip.SerializeAndCreateEntry($"{topicFolder}/{snapshotFileName}", bytes);
+      zip.CreateEntryFromBytes($"{topicFolder}/{snapshotFileName}", bytes);
     }
 
-    zip.SerializeAndCreateEntry("project.bcfp", bcfObject.Project);
+    zip.CreateEntryFromObject("project.bcfp", bcfObject.Project);
   }
 
   /// <summary>
