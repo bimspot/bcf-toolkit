@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -43,7 +44,7 @@ public static class BcfExtensions {
       throw new ArgumentException("Source stream is not readable.");
 
     var objType = typeof(TMarkup);
-    Console.WriteLine($"\nProcessing {objType.Name}\n");
+    Log.Debug($"\nProcessing {objType.Name}\n");
 
     // A thread-safe storage for the parsed topics.
     var markups = new ConcurrentBag<TMarkup>();
@@ -76,7 +77,7 @@ public static class BcfExtensions {
     foreach (var entry in topicEntries) {
       var isLastTopicEntry = entry == topicEntries.Last();
 
-      Console.WriteLine(entry.FullName);
+      Log.Debug(entry.FullName);
 
       // This sets the folder context
       var uuid = entry.FullName.Split("/")[0];
@@ -104,7 +105,7 @@ public static class BcfExtensions {
       else if (entry.IsBcfViewpoint()) {
         if (viewpoint != null)
           // TODO: No support for multiple viewpoints!
-          Console.WriteLine("No support for multiple viewpoints!");
+          Log.Debug("No support for multiple viewpoints!");
         //continue;
         var document = await XDocument.LoadAsync(
           entry.Open(),
@@ -117,7 +118,7 @@ public static class BcfExtensions {
       else if (entry.IsSnapshot()) {
         if (snapshot != null)
           // TODO: No support for multiple snapshots!
-          Console.WriteLine("No support for multiple snapshots!");
+          Log.Debug("No support for multiple snapshots!");
         //continue;
         snapshot = entry.Snapshot();
       }
@@ -242,7 +243,7 @@ public static class BcfExtensions {
       throw new ArgumentException("Source stream is not readable.");
 
     var objType = typeof(T);
-    Console.WriteLine($"\nProcessing {objType.Name}\n");
+    Log.Debug($"\nProcessing {objType.Name}\n");
 
     var obj = default(T);
 
@@ -252,7 +253,7 @@ public static class BcfExtensions {
     foreach (var entry in archive.Entries) {
       if (!filterFn(entry)) continue;
 
-      Console.WriteLine(entry.FullName);
+      Log.Debug(entry.FullName);
 
       var document = await XDocument.LoadAsync(
         entry.Open(),
@@ -307,7 +308,7 @@ public static class BcfExtensions {
     foreach (var entry in archive.Entries) {
       if (!entry.IsVersion()) continue;
 
-      Console.WriteLine(entry.FullName);
+      Log.Debug(entry.FullName);
 
       var document = await XDocument.LoadAsync(
         entry.Open(),

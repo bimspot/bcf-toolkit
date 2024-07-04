@@ -1,6 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using System.CommandLine;
+using Serilog;
+using Serilog.Events;
 
 namespace BcfToolkit;
 
@@ -9,6 +11,18 @@ internal static class Program {
     await HandleArguments(args);
   }
   private static async Task HandleArguments(string[] args) {
+    // Logger setup
+    Log.ConfigureDefault();
+
+    Serilog.Log.Logger = new LoggerConfiguration()
+      .MinimumLevel.Debug()
+      .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+      .Enrich.FromLogContext()
+      .CreateLogger();
+
+    Log.Configure(Serilog.Log.Debug, null, null, Serilog.Log.Error);
+
+
     var sourcePathOption = new Option<string>(
       name: "--source",
       description: "The absolute path of the source file.") { IsRequired = true };
@@ -43,9 +57,7 @@ internal static class Program {
       await worker.Convert(arguments.SourcePath, arguments.Target);
     }
     catch (Exception e) {
-      var errorWriter = Console.Error;
-      await errorWriter.WriteLineAsync(e.Message);
-      await errorWriter.WriteLineAsync(e.StackTrace);
+      Log.Error(e.Message);
       Environment.Exit(9);
     }
 

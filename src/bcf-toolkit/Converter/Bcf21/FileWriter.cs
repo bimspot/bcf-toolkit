@@ -101,7 +101,7 @@ public static class FileWriter {
 
       var guid = markup.GetTopic()?.Guid;
       if (guid == null) {
-        Console.WriteLine(" - Topic Guid is missing, skipping markup");
+        Log.Debug(" - Topic Guid is missing, skipping markup");
         continue;
       }
 
@@ -168,7 +168,7 @@ public static class FileWriter {
 
       var guid = markup.GetTopic()?.Guid;
       if (guid == null) {
-        Console.WriteLine(
+        Log.Debug(
           " - Topic Guid is missing, skipping markup");
         continue;
       }
@@ -210,7 +210,7 @@ public static class FileWriter {
 
     await Task.WhenAll(writeTasks);
 
-    Console.WriteLine($"Zipping the output: {target}");
+    Log.Debug($"Zipping the output: {target}");
     if (File.Exists(target)) File.Delete(target);
     ZipFile.CreateFromDirectory(tmpFolder, target);
 
