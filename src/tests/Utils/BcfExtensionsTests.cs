@@ -2,12 +2,12 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using bcf21 = BcfToolkit.Model.Bcf21;
-using bcf30 = BcfToolkit.Model.Bcf30;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
+using bcf21 = BcfToolkit.Model.Bcf21;
+using bcf30 = BcfToolkit.Model.Bcf30;
 
-namespace Tests.Utils.Bcf;
+namespace tests.Utils;
 
 [TestFixture]
 public class BcfExtensionsTests {
@@ -90,6 +90,10 @@ public class BcfExtensionsTests {
       await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf21.Markup, bcf21.VisualizationInfo>(
         stream);
     Assert.That(2, Is.EqualTo(markups.Count));
+    var markup = markups
+      .FirstOrDefault(m =>
+        m.Topic.Guid == "7ddc3ef0-0ab7-43f1-918a-45e38b42369c");
+    Assert.That(3, Is.EqualTo(markup?.Viewpoints.Count));
   }
 
   /// <summary>

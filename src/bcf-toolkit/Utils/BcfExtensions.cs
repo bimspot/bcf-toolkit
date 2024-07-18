@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Concurrent;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using BcfToolkit.Model;
-using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Utils;
 
@@ -36,7 +35,8 @@ public static class BcfExtensions {
   /// </summary>
   /// <param name="stream">The source stream of the BCFzip.</param>
   /// <returns>Returns a Task with a List of `Markup` models.</returns>
-  public static async Task<ConcurrentBag<TMarkup>> ParseMarkups<TMarkup,
+  public static async Task<ConcurrentBag<TMarkup>> ParseMarkups<
+    TMarkup,
     TVisualizationInfo>(Stream stream)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo {
@@ -63,8 +63,8 @@ public static class BcfExtensions {
     // are kept here for the currently processes ones.
     var currentUuid = "";
     var markup = default(TMarkup);
-    var viewpoint = default(TVisualizationInfo);
-    string? snapshot = null;
+    Dictionary<string, TVisualizationInfo>? visInfos = null;
+    Dictionary<string, string>? snapshots = null;
 
     var topicEntries = archive
       .Entries
@@ -87,12 +87,16 @@ public static class BcfExtensions {
         !string.IsNullOrEmpty(currentUuid) && uuid != currentUuid;
 
       if (isNewTopic)
-        WritingOutMarkup(ref markup, ref viewpoint, ref snapshot,
-          currentUuid, ref markups);
+        WritingOutMarkup(
+          ref markup,
+          ref visInfos,
+          ref snapshots,
+          currentUuid,
+          markups);
 
       currentUuid = uuid;
 
-      // Parsing BCF files
+      // Parsing markup files
       if (entry.IsBcf()) {
         var document = await XDocument.LoadAsync(
           entry.Open(),
@@ -103,29 +107,28 @@ public static class BcfExtensions {
 
       // Parsing the viewpoint file
       else if (entry.IsBcfViewpoint()) {
-        if (viewpoint != null)
-          // TODO: No support for multiple viewpoints!
-          Log.Debug("No support for multiple viewpoints!");
-        //continue;
+        visInfos ??= new Dictionary<string, TVisualizationInfo>();
         var document = await XDocument.LoadAsync(
           entry.Open(),
           LoadOptions.None,
           CancellationToken.None);
-        viewpoint = document.BcfObject<TVisualizationInfo>();
+        visInfos.Add(entry.Name, document.BcfObject<TVisualizationInfo>());
       }
 
       // Parsing the snapshot
       else if (entry.IsSnapshot()) {
-        if (snapshot != null)
-          // TODO: No support for multiple snapshots!
-          Log.Debug("No support for multiple snapshots!");
-        //continue;
-        snapshot = entry.Snapshot();
+        snapshots ??= new Dictionary<string, string>();
+        var snapshot = entry.Snapshot();
+        snapshots.Add(snapshot.Key, snapshot.Value);
       }
 
       if (isLastTopicEntry)
-        WritingOutMarkup(ref markup, ref viewpoint, ref snapshot,
-          currentUuid, ref markups);
+        WritingOutMarkup(
+          ref markup,
+          ref visInfos,
+          ref snapshots,
+          currentUuid,
+          markups);
     }
 
     // Stream must be positioned back to 0 in order to use it again
@@ -135,27 +138,21 @@ public static class BcfExtensions {
 
   private static void WritingOutMarkup<TMarkup, TVisualizationInfo>(
     ref TMarkup? markup,
-    ref TVisualizationInfo? viewpoint,
-    ref string? snapshot,
+    ref Dictionary<string, TVisualizationInfo>? visInfos,
+    ref Dictionary<string, string>? snapshots,
     string currentUuid,
-    ref ConcurrentBag<TMarkup> markups)
+    ConcurrentBag<TMarkup> markups)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo {
     // This is a new subfolder, writing out Markup.
     if (markup != null) {
-      var firstViewPoint = markup.GetFirstViewPoint();
-
-      if (firstViewPoint != null) {
-        firstViewPoint.SetVisualizationInfo(viewpoint);
-        firstViewPoint.SnapshotData = snapshot;
-      }
-
+      markup.SetViewPoints(visInfos, snapshots);
       markups.Add(markup);
 
       // Null-ing external references
       markup = default;
-      viewpoint = default;
-      snapshot = null;
+      visInfos = null;
+      snapshots = null;
     }
     else {
       throw new InvalidDataException(
@@ -189,7 +186,7 @@ public static class BcfExtensions {
   /// <param name="stream">The stream of the BCFzip.</param>
   /// <returns>Returns a Task with an `ProjectInfo` model.</returns>
   public static Task<TProjectInfo?> ParseProject<TProjectInfo>(Stream stream) {
-    return ParseOptional<TProjectInfo>(stream, entry => entry.IsProject());
+    return ParseOptional<TProjectInfo>(stream, entry => entry.IsBcfProject());
   }
 
   /// <summary>

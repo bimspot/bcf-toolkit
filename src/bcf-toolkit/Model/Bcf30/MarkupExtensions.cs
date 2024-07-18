@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
@@ -11,6 +12,23 @@ public partial class Markup : IMarkup {
 
   public IViewPoint? GetFirstViewPoint() {
     return Topic.Viewpoints?.FirstOrDefault();
+  }
+
+  public void SetViewPoints<TVisualizationInfo>(
+    Dictionary<string, TVisualizationInfo>? visInfos,
+    Dictionary<string, string>? snapshots) where TVisualizationInfo : IVisualizationInfo {
+    this.Topic.Viewpoints.ToList().ForEach(viewPoint => {
+      if (visInfos is not null) {
+        visInfos.TryGetValue(viewPoint.Viewpoint, out var visInfo);
+        if (visInfo is not null && visInfo is VisualizationInfo visualizationInfo)
+          viewPoint.VisualizationInfo = visualizationInfo;
+      }
+      if (snapshots is not null) {
+        snapshots.TryGetValue(viewPoint.Snapshot, out var snapshot);
+        if (snapshot is not null)
+          viewPoint.SnapshotData = snapshot;
+      }
+    });
   }
 
   // This method that controls the access to the `Header` instance.

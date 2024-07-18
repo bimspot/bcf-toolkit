@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
 
@@ -71,7 +72,7 @@ public static class ZipArchiveEntryExtensions {
   ///   Returns true if the file in the entry has the
   ///   extension of `.bcfp`.
   /// </returns>
-  public static bool IsProject(this ZipArchiveEntry entry) {
+  public static bool IsBcfProject(this ZipArchiveEntry entry) {
     return entry.FullName.EndsWith(".bcfp",
       StringComparison.OrdinalIgnoreCase);
   }
@@ -96,7 +97,8 @@ public static class ZipArchiveEntryExtensions {
   /// </summary>
   /// <param name="entry">The ZipArchiveEntry containing the image.</param>
   /// <returns>Returns the base64 encoded image as a string.</returns>
-  public static string Snapshot(this ZipArchiveEntry entry) {
+  public static KeyValuePair<string, string> Snapshot(this ZipArchiveEntry entry) {
+    var fileName = entry.Name;
     var extension = entry.FullName.Split(".").Last();
     var mime = $"data:image/{extension};base64";
     var buffer = new byte[entry.Length];
@@ -104,7 +106,7 @@ public static class ZipArchiveEntryExtensions {
       .Open()
       .ReadExactly(buffer, 0, buffer.Length);
     var base64String = Convert.ToBase64String(buffer);
-    return $"{mime},{base64String}";
+    return new KeyValuePair<string, string>(fileName, $"{mime},{base64String}");
   }
 
   /// <summary>

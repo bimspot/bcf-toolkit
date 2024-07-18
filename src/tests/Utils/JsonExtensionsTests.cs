@@ -1,11 +1,11 @@
 using System.Linq;
 using System.Threading.Tasks;
+using BcfToolkit.Utils;
 using NUnit.Framework;
 using bcf21 = BcfToolkit.Model.Bcf21;
 using bcf30 = BcfToolkit.Model.Bcf30;
-using BcfToolkit.Utils;
 
-namespace Tests.Utils.Json;
+namespace tests.Utils;
 
 public class JsonExtensionsTests {
   /// <summary>
