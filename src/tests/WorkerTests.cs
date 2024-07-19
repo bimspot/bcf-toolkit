@@ -9,6 +9,7 @@ using BcfToolkit;
 using BcfToolkit.Builder.Bcf21;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
+using BcfToolkit.Model.Interfaces;
 using BcfToolkit.Utils;
 using NUnit.Framework;
 using Bcf = BcfToolkit.Model.Bcf21.Bcf;

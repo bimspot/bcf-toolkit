@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
+using BcfToolkit.Model.Interfaces;
 using BcfToolkit.Utils;
 using Version = BcfToolkit.Model.Bcf21.Version;
 
@@ -114,11 +115,9 @@ public static class FileWriter {
       zip.CreateEntryFromObject($"{topicFolder}/viewpoint.bcfv", visInfo);
 
       var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
-      var base64String = markup.GetFirstViewPoint()?.SnapshotData;
+      var base64String = markup.GetFirstViewPoint()?.SnapshotData?.Data;
       if (snapshotFileName == null || base64String == null) continue;
-      const string pattern = @"^data:image\/[a-zA-Z]+;base64,";
-      var result = Regex.Replace(base64String, pattern, string.Empty);
-      var bytes = Convert.FromBase64String(result);
+      var bytes = Convert.FromBase64String(base64String);
       zip.CreateEntryFromBytes($"{topicFolder}/{snapshotFileName}", bytes);
     }
 
@@ -190,16 +189,11 @@ public static class FileWriter {
           visInfo));
 
       var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
-
-      var base64String = markup.GetFirstViewPoint()?.SnapshotData;
-
+      var base64String = markup.GetFirstViewPoint()?.SnapshotData?.Data;
       if (snapshotFileName == null || base64String == null) continue;
-      const string pattern = @"^data:image\/[a-zA-Z]+;base64,";
-      var result = Regex.Replace(base64String,
-        pattern, string.Empty);
       writeTasks.Add(File.WriteAllBytesAsync(
         $"{topicFolder}/{snapshotFileName}",
-        Convert.FromBase64String(result)));
+        Convert.FromBase64String(base64String)));
     }
 
     writeTasks.Add(

@@ -1,5 +1,6 @@
 using System;
 using BcfToolkit.Builder.Interfaces;
+using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30.Interfaces;
@@ -28,7 +29,7 @@ public interface IViewPointBuilder<out TBuilder, out TVisualizationInfoBuilder>
   /// </summary>
   /// <param name="snapshotData">Base64 string of snapshot data.</param>
   /// <returns>Returns the builder object.</returns>
-  TBuilder SetSnapshotData(string snapshotData);
+  TBuilder SetSnapshotData(FileData snapshotData);
 
   /// <summary>
   ///   Returns the builder object set with the `Index`, which is the

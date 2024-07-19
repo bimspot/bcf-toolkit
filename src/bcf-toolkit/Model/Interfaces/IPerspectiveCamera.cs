@@ -1,4 +1,4 @@
-namespace BcfToolkit.Model;
+namespace BcfToolkit.Model.Interfaces;
 
 public interface IPerspectiveCamera {
 

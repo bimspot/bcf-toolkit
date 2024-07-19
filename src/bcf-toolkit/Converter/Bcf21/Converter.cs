@@ -9,7 +9,7 @@ using BcfToolkit.Builder.Bcf21;
 using BcfToolkit.Utils;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
-using Version = BcfToolkit.Model.Bcf21.Version;
+using BcfToolkit.Model.Interfaces;
 
 namespace BcfToolkit.Converter.Bcf21;
 

@@ -1,5 +1,6 @@
 using System;
 using BcfToolkit.Builder.Interfaces;
+using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30.Interfaces;
@@ -173,7 +174,7 @@ public interface IMarkupBuilder<
   TBuilder AddViewPoint(
     string viewpoint,
     string snapshot,
-    string snapshotData,
+    FileData snapshotData,
     int index,
     string guid,
     Action<TVisualizationInfoBuilder> builder);

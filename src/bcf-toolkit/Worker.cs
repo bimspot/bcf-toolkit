@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BcfToolkit.Converter;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
+using BcfToolkit.Model.Interfaces;
 using BcfToolkit.Utils;
 
 namespace BcfToolkit;
