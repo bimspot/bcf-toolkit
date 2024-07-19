@@ -2,6 +2,7 @@ using System;
 using BcfToolkit.Builder.Bcf21.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
+using BcfToolkit.Model.Interfaces;
 
 namespace BcfToolkit.Builder.Bcf21;
 
@@ -43,7 +44,7 @@ public class ViewPointBuilder : IViewPointBuilder<
     return this;
   }
 
-  public ViewPointBuilder SetSnapshotData(string? snapshotData) {
+  public ViewPointBuilder SetSnapshotData(FileData? snapshotData) {
     _viewPoint.SnapshotData = snapshotData;
     return this;
   }

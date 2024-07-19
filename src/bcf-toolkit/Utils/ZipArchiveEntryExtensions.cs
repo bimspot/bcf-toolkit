@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
+using BcfToolkit.Model;
 
 namespace BcfToolkit.Utils;
 
@@ -90,23 +91,37 @@ public static class ZipArchiveEntryExtensions {
       StringComparison.OrdinalIgnoreCase);
   }
 
+  public static bool IsDocumentsFolder(this ZipArchiveEntry entry) {
+    return entry.FullName.Split("/")[0].Equals("documents",
+      StringComparison.OrdinalIgnoreCase);
+  }
+
   /// <summary>
   ///   The convenience extension method extracts the contents of the zipped
-  ///   image and converts it into a base64 string.
-  ///   Returns the created Snapshot struct.
+  ///   file and converts it into a base64 string.
+  ///   Returns the created key value pair with file name and data.
   /// </summary>
-  /// <param name="entry">The ZipArchiveEntry containing the image.</param>
-  /// <returns>Returns the base64 encoded image as a string.</returns>
-  public static KeyValuePair<string, string> Snapshot(this ZipArchiveEntry entry) {
+  /// <param name="entry">The ZipArchiveEntry containing the file.</param>
+  /// <returns>
+  ///   Returns the key value pair where the key is the file name and
+  ///   the value is the base64 encoded file data as a string.
+  /// </returns>
+  public static KeyValuePair<string, FileData> FileData(this ZipArchiveEntry entry) {
     var fileName = entry.Name;
-    var extension = entry.FullName.Split(".").Last();
-    var mime = $"data:image/{extension};base64";
+    var mime = $"data:{MimeTypes.GetMimeType(fileName)};base64";
+    var fileData = new FileData {
+      Mime = mime,
+      Data = entry.Data()
+    };
+    return new KeyValuePair<string, FileData>(fileName, fileData);
+  }
+
+  public static string Data(this ZipArchiveEntry entry) {
     var buffer = new byte[entry.Length];
     entry
       .Open()
       .ReadExactly(buffer, 0, buffer.Length);
-    var base64String = Convert.ToBase64String(buffer);
-    return new KeyValuePair<string, string>(fileName, $"{mime},{base64String}");
+    return Convert.ToBase64String(buffer);
   }
 
   /// <summary>

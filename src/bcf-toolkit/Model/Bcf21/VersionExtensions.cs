@@ -1,3 +1,5 @@
+using BcfToolkit.Model.Interfaces;
+
 namespace BcfToolkit.Model.Bcf21;
 
 public partial class Version : IVersion {

@@ -17,7 +17,7 @@ public class ZipArchiveEntryExtensionsTests {
       FileAccess.Read);
     using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
     var entry = archive.Entries.Where(ZipArchiveEntryExtensions.IsSnapshot).FirstOrDefault();
-    var res = entry?.Snapshot();
+    var res = entry?.FileData();
     Assert.That(res?.Key, Is.EqualTo("snapshot.png"));
   }
 }

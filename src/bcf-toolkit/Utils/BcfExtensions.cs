@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using BcfToolkit.Model;
+using BcfToolkit.Model.Interfaces;
 
 namespace BcfToolkit.Utils;
 
@@ -64,7 +65,7 @@ public static class BcfExtensions {
     var currentUuid = "";
     var markup = default(TMarkup);
     Dictionary<string, TVisualizationInfo>? visInfos = null;
-    Dictionary<string, string>? snapshots = null;
+    Dictionary<string, FileData>? snapshots = null;
 
     var topicEntries = archive
       .Entries
@@ -117,8 +118,8 @@ public static class BcfExtensions {
 
       // Parsing the snapshot
       else if (entry.IsSnapshot()) {
-        snapshots ??= new Dictionary<string, string>();
-        var snapshot = entry.Snapshot();
+        snapshots ??= new Dictionary<string, FileData>();
+        var snapshot = entry.FileData();
         snapshots.Add(snapshot.Key, snapshot.Value);
       }
 
@@ -139,7 +140,7 @@ public static class BcfExtensions {
   private static void WritingOutMarkup<TMarkup, TVisualizationInfo>(
     ref TMarkup? markup,
     ref Dictionary<string, TVisualizationInfo>? visInfos,
-    ref Dictionary<string, string>? snapshots,
+    ref Dictionary<string, FileData>? snapshots,
     string currentUuid,
     ConcurrentBag<TMarkup> markups)
     where TMarkup : IMarkup
@@ -193,24 +194,68 @@ public static class BcfExtensions {
   ///   The method unzips the BCFzip from a file stream,
   ///   and parses the `documents.xml` file within to create an in memory
   ///   representation of the data.
-  ///   An XML file defining the documents in a project.
-  ///   This is an optional file in the BCF archive.
-  ///   HISTORY: New file in BCF 3.0.
+  ///   It is possible to store additional files in the BCF container as
+  ///   documents. The documents must be located in a folder called Documents in
+  ///   the root directory, and must be referenced by the documents.xml file.
+  ///   For uniqueness, the filename of a document in the BCF must be the
+  ///   document guid. The actual filename is stored in the documents.xml.
+  ///   
+  ///   The `documents.xml` and documents folder are optional in the BCF archive.
+  ///
+  ///   HISTORY: New in BCF 3.0.
   /// </summary>
   /// <param name="stream">The stream of to the BCFzip.</param>
   /// <returns>Returns a Task with an `DocumentInfo` model.</returns>
-  public static Task<TDocumentInfo?>
-    ParseDocuments<TDocumentInfo>(Stream stream) {
-    return ParseOptional<TDocumentInfo>(stream, entry => entry.IsDocuments());
+  public static async Task<TDocumentInfo?>
+    ParseDocuments<TDocumentInfo>(Stream stream)
+    where TDocumentInfo : IDocumentInfo {
+    if (stream is null || !stream.CanRead)
+      throw new ArgumentException("Source stream is not readable.");
+
+    var objType = typeof(TDocumentInfo);
+    Log.Debug($"\nProcessing {objType.Name}\n");
+
+    var documentInfo = default(TDocumentInfo);
+    Dictionary<string, string>? documents = null;
+
+    using var archive = new ZipArchive(stream, ZipArchiveMode.Read, true);
+
+    // Without the document info file (documents.xml) further operations are
+    // meaningless
+    var documentInfoEntry = archive
+      .Entries
+      .FirstOrDefault(entry => entry.IsDocuments());
+    if (documentInfoEntry is null) return documentInfo;
+
+    var document = await XDocument.LoadAsync(
+      documentInfoEntry.Open(),
+      LoadOptions.None,
+      CancellationToken.None);
+    documentInfo = document.BcfObject<TDocumentInfo>();
+
+    var documentEntries = archive
+      .Entries
+      .OrderBy(entry => entry.FullName)
+      .Where(entry => entry.IsDocumentsFolder())
+      .ToList();
+
+    foreach (var entry in documentEntries) {
+      Log.Debug(entry.FullName);
+      documentInfo.SetDocumentData(entry);
+    }
+
+    // Stream must be positioned back to 0 in order to use it again
+    stream.Position = 0;
+    return documentInfo;
   }
 
   private static Task<T> ParseRequired<T>(
     Stream stream,
     Func<ZipArchiveEntry, bool> filterFn) {
-    var obj = ParseObject<T>(stream, filterFn, true);
-    if (obj == null)
+    var obj = ParseObject<T>(stream, filterFn);
+    if (obj is null)
       throw new InvalidDataException($"{typeof(T)} is not found in BCF.");
-    return obj!;
+    return obj;
   }
 
   private static Task<T?> ParseOptional<T>(
@@ -228,15 +273,12 @@ public static class BcfExtensions {
   /// </summary>
   /// <param name="stream">The stream containing the BCFzip data.</param>
   /// <param name="filterFn">The filter function used to identify the desired file.</param>
-  /// <param name="isRequired">Specifies whether the file is required or optional.</param>
   /// <typeparam name="T">The generic type parameter representing the desired object type.</typeparam>
   /// <returns>Returns a Task with a model of type `T`.</returns>
-  /// <exception cref="InvalidDataException">Thrown if the file is marked as required but is missing.</exception>
   private static async Task<T?> ParseObject<T>(
     Stream stream,
-    Func<ZipArchiveEntry, bool> filterFn,
-    bool isRequired = false) {
-    if (stream == null || !stream.CanRead)
+    Func<ZipArchiveEntry, bool> filterFn) {
+    if (stream is null || !stream.CanRead)
       throw new ArgumentException("Source stream is not readable.");
 
     var objType = typeof(T);

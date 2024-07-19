@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using BcfToolkit.Model.Interfaces;
 
 namespace BcfToolkit.Model.Bcf21;
 

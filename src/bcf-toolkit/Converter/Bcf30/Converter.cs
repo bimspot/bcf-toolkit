@@ -9,6 +9,7 @@ using BcfToolkit.Builder.Bcf30;
 using BcfToolkit.Utils;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
+using BcfToolkit.Model.Interfaces;
 using Version = BcfToolkit.Model.Bcf30.Version;
 
 namespace BcfToolkit.Converter.Bcf30;

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using BcfToolkit.Model.Interfaces;
 using Newtonsoft.Json;
 
 namespace BcfToolkit.Model.Bcf21;
@@ -16,7 +17,7 @@ public partial class Markup : IMarkup {
 
   public void SetViewPoints<TVisualizationInfo>(
     Dictionary<string, TVisualizationInfo>? visInfos,
-    Dictionary<string, string>? snapshots) where TVisualizationInfo : IVisualizationInfo {
+    Dictionary<string, FileData>? snapshots) where TVisualizationInfo : IVisualizationInfo {
     this.Viewpoints.ToList().ForEach(viewPoint => {
       if (visInfos is not null) {
         visInfos.TryGetValue(viewPoint.Viewpoint, out var visInfo);
@@ -33,7 +34,7 @@ public partial class Markup : IMarkup {
 
   public void SetViewPoint(
     Dictionary<string, IVisualizationInfo> visInfos,
-    Dictionary<string, string> snapshots) {
+    Dictionary<string, FileData> snapshots) {
     this.Viewpoints.ToList().ForEach(viewPoint => {
       visInfos.TryGetValue(viewPoint.Viewpoint, out var visInfo);
       if (visInfo is not null)
@@ -63,7 +64,7 @@ public partial class ViewPoint : IViewPoint {
   /// </summary>
   [XmlIgnore]
   [JsonProperty("snapshot_data")]
-  public string? SnapshotData { get; set; }
+  public FileData? SnapshotData { get; set; }
 }
 
 public partial class HeaderFile : IHeaderFile { }

@@ -83,7 +83,7 @@ public class BcfExtensionsTests {
   /// </summary>
   [Test]
   [Category("BCF v2.1")]
-  public async Task ParseBcfMultipleMarkupsTest() {
+  public async Task ParseBcfMultipleMarkupsAndViewpointsTest() {
     await using var stream = new FileStream("Resources/Bcf/v2.1/MaximumInformation.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
@@ -217,15 +217,14 @@ public class BcfExtensionsTests {
   [Test]
   [Category("BCF v3.0")]
   public async Task ParseBcfDocumentRefInternalTest() {
-    await using var markupStream = new FileStream("Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip", FileMode.Open, FileAccess.Read);
-    await using var documentInfoStream = new FileStream("Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip", FileMode.Open, FileAccess.Read);
+    await using var stream = new FileStream("Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip", FileMode.Open, FileAccess.Read);
 
     var markups =
       await BcfToolkit.Utils.BcfExtensions.ParseMarkups<bcf30.Markup, bcf30.VisualizationInfo>(
-        markupStream);
+        stream);
     var documentInfo =
       await BcfToolkit.Utils.BcfExtensions.ParseDocuments<bcf30.DocumentInfo>(
-        documentInfoStream);
+        stream);
     var markup = markups.FirstOrDefault()!;
     Assert.That(1, Is.EqualTo(markups.Count));
     var documentGuid = markup.Topic.DocumentReferences.FirstOrDefault()?.DocumentGuid;
@@ -233,6 +232,7 @@ public class BcfExtensionsTests {
     Assert.That("b1d1b7f0-60b9-457d-ad12-16e0fb997bc5", Is.EqualTo(documentGuid));
     Assert.That(documentGuid, Is.EqualTo(document.Guid));
     Assert.That("ThisIsADocument.txt", Is.EqualTo(document.Filename));
+    Assert.That(documentInfo?.Documents.FirstOrDefault()?.DocumentData?.Mime, Is.EqualTo("data:text/plain;base64"));
   }
 
   /// <summary>

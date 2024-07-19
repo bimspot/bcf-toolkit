@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace BcfToolkit.Model;
+namespace BcfToolkit.Model.Interfaces;
 
 public interface IMarkup {
   public ITopic? GetTopic();
@@ -8,5 +8,5 @@ public interface IMarkup {
 
   public void SetViewPoints<TVisualizationInfo>(
     Dictionary<string, TVisualizationInfo>? visInfos,
-    Dictionary<string, string>? snapshots) where TVisualizationInfo : IVisualizationInfo;
+    Dictionary<string, FileData>? snapshots) where TVisualizationInfo : IVisualizationInfo;
 }

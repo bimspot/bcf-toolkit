@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using BcfToolkit.Model.Interfaces;
 
 namespace BcfToolkit.Model.Bcf21;
 

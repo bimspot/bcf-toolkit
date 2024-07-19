@@ -3,6 +3,7 @@ using BcfToolkit.Builder.Bcf21.Interfaces;
 using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
+using BcfToolkit.Model.Interfaces;
 
 namespace BcfToolkit.Builder.Bcf21;
 
@@ -136,7 +137,7 @@ public partial class MarkupBuilder :
   }
 
   public MarkupBuilder AddViewPoint(string viewpoint, string snapshot,
-    string snapshotData, int index, string guid,
+    FileData snapshotData, int index, string guid,
     Action<VisualizationInfoBuilder> builder) {
     var visInfo =
       (VisualizationInfo)BuilderUtils

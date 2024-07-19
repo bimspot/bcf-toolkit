@@ -103,7 +103,9 @@ public class BcfBuilder21Tests {
         .SetGuid("444b4df2-0187-49a9-8a4a-23992696bafd")
         .SetIndex(5)
         .SetSnapshot(string.Empty)
-        .SetSnapshotData("snapshotdata1")
+        .SetSnapshotData(new FileData {
+          Data = "snapshotdata1"
+        })
         .SetViewPoint(string.Empty)
         .SetVisualizationInfo(visualizationInfo)
         .Build();

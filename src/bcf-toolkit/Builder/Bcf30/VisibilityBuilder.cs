@@ -2,6 +2,7 @@ using System;
 using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
+using BcfToolkit.Model.Interfaces;
 
 namespace BcfToolkit.Builder.Bcf30;
 
