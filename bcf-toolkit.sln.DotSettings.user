@@ -3,6 +3,11 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=00488d9b_002Ddfb9_002D47fc_002Da7da_002D60da862eab61/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from Solution #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;Solution /&gt;
 &lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=7d7fd643_002Dccec_002D4fc7_002D8938_002D22e83b255cb0/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="BuildEmptyBcfFromStream" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net8.0::tests.Builder.Bcf21.BcfBuilderTests.BuildEmptyBcfFromStream&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
 	
 	
 	
@@ -19,6 +24,13 @@
 	
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=87607a24_002D24bc_002D46e1_002Da035_002D28c18ba9b643/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;Solution /&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=97cb7ce8_002Db772_002D4aa4_002D85f6_002D7d0e8e5858ad/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="BuildBcfFromStreamTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net8.0::tests.Builder.Bcf21.BcfBuilderTests.BuildBcfFromStreamTest&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net8.0::Tests.Converter.Bcf30.ConverterTests.WriteBcfWithInternalDocumentsTest&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::8113526D-8A68-4E3E-B4DB-CE235875DDD1::net8.0::Tests.Converter.Bcf30.FileWriterTests.WriteBcfWithCreatingZipEntryFromStreamTest&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=b2d5c176_002Dc751_002D42d4_002Da842_002D3ad7ad02438d/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="WorkerTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;

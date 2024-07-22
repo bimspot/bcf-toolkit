@@ -5,7 +5,7 @@ using BcfToolkit.Model.Bcf30;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public class DocumentBuilder :
+public partial class DocumentBuilder :
   IDocumentBuilder<DocumentBuilder>,
   IDefaultBuilder<DocumentBuilder> {
   private readonly Document _document = new();

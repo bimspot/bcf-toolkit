@@ -144,6 +144,15 @@ public static class FileWriter {
     zip.CreateEntryFromObject("extensions.xml", bcfObject.Extensions);
     zip.CreateEntryFromObject("project.bcfp", bcfObject.Project);
     zip.CreateEntryFromObject("documents.xml", bcfObject.Document);
+    
+    if (bcfObject.Document?.Documents is null) return;
+    foreach (var document in bcfObject.Document.Documents) {
+      var documentFileName = document.Guid;
+      var base64String = document.DocumentData?.Data;
+      if (documentFileName is null || base64String is null) continue;
+      var bytes = Convert.FromBase64String(base64String);
+      zip.CreateEntryFromBytes($"documents/{documentFileName}", bytes);
+    }
   }
 
   /// <summary>
@@ -220,7 +229,22 @@ public static class FileWriter {
       "project.bcfp", bcfObject.Project));
     writeTasks.Add(BcfExtensions.SerializeAndWriteXmlFile(tmpFolder,
       "documents.xml", bcfObject.Document));
-
+    
+    var documentFolder = $"{tmpFolder}/documents";
+    if (bcfObject.Document?.Documents is not null)
+      foreach (var document in bcfObject.Document.Documents) {
+        var documentFileName = document.Guid;
+        var base64String = document.DocumentData?.Data;
+        if (documentFileName is null || base64String is null) continue;
+        
+        if (Directory.Exists(documentFolder) is not true)
+          Directory.CreateDirectory(documentFolder);
+        
+        writeTasks.Add(File.WriteAllBytesAsync(
+          $"{documentFolder}/{documentFileName}",
+          Convert.FromBase64String(base64String)));
+      }
+    
     await Task.WhenAll(writeTasks);
 
     Log.Debug($"Zipping the output: {target}");

@@ -9,16 +9,6 @@ using Newtonsoft.Json;
 namespace BcfToolkit.Model.Bcf30;
 
 public partial class DocumentInfo : IDocumentInfo {
-  public void SetDocumentsData(Dictionary<string, string>? documentsData) {
-    this.Documents.ToList().ForEach(document => {
-      if (documentsData is null) return;
-      // For uniqueness, the filename of a document in the BCF must be the
-      // document guid
-      documentsData.TryGetValue(document.Guid, out var documentData);
-      // document.DocumentData = documentData;
-    });
-  }
-
   public void SetDocumentData(ZipArchiveEntry entry) {
     var fileName = entry.Name;
     var document = this.Documents

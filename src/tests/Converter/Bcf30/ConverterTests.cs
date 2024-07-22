@@ -65,8 +65,8 @@ public class ConverterTests {
   public Task JsonToBcfSampleFilesTest() {
     var tasks = new List<Task> {
       _converter.JsonToBcf(
-        "Resources/Json/v3.0/DocumentReferenceInternal",
-        "Resources/output/Bcf/v3.0/DocumentReferenceInternal.bcfzip"),
+        "Resources/Json/v3.0/DocumentReferenceExternal",
+        "Resources/output/Bcf/v3.0/DocumentReferenceExternal.bcfzip"),
     };
 
     return Task.WhenAll(tasks);
@@ -203,6 +203,21 @@ public class ConverterTests {
     Assert.That(typeof(Bcf), Is.EqualTo(bcf.GetType()));
     Assert.That(1, Is.EqualTo(bcf.Markups.Count));
     Assert.That("3.0", Is.EqualTo(bcf.Version?.VersionId));
+  }
+  
+  /// <summary>
+  ///   It should generate a bcf with internal documents.
+  /// </summary>
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task WriteBcfWithInternalDocumentsTest() {
+    await using var stream =
+      new FileStream(
+        "Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip",
+        FileMode.Open,
+        FileAccess.Read);
+    var bcf = await _converter.BcfFromStream<Bcf>(stream);
+    await _converter.ToBcf(bcf, "Resources/output/Bcf/v3.0/DocumentReferenceInternal.bcfzip");
   }
 
   // /// <summary>
