@@ -204,7 +204,7 @@ public class ConverterTests {
     Assert.That(1, Is.EqualTo(bcf.Markups.Count));
     Assert.That("3.0", Is.EqualTo(bcf.Version?.VersionId));
   }
-  
+
   /// <summary>
   ///   It should generate a bcf with internal documents.
   /// </summary>
