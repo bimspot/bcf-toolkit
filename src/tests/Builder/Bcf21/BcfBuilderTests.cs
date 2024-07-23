@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf21;
 using BcfToolkit.Converter;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 using NUnit.Framework;
 
-namespace Tests.Builder;
+namespace tests.Builder.Bcf21;
 
-public class BcfBuilder21Tests {
+public class BcfBuilderTests {
   private BcfBuilder _builder = null!;
 
 
@@ -142,5 +144,16 @@ public class BcfBuilder21Tests {
     if (res.Exception != null && res.Exception.Message.Length > 0)
       Assert.Fail("Error message found: " + res.Exception.Message);
 
+  }
+  
+  [Test]
+  public async Task BuildMaximumInformationBcfFromStreamTest() {
+    await using var stream = new FileStream(
+      "Resources/Bcf/v2.1/MaximumInformation.bcfzip",
+      FileMode.Open,
+      FileAccess.Read);
+    var bcf = await _builder.BuildFromStream(stream);
+    Assert.That(bcf.Markups.Count, Is.EqualTo(2));
+    Assert.That(bcf.DocumentInfo?.Documents.Count, Is.EqualTo(1));
   }
 }
