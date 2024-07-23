@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf21;
 using BcfToolkit.Converter;
@@ -145,7 +146,7 @@ public class BcfBuilderTests {
       Assert.Fail("Error message found: " + res.Exception.Message);
 
   }
-  
+
   [Test]
   public async Task BuildMaximumInformationBcfFromStreamTest() {
     await using var stream = new FileStream(
@@ -154,6 +155,17 @@ public class BcfBuilderTests {
       FileAccess.Read);
     var bcf = await _builder.BuildFromStream(stream);
     Assert.That(bcf.Markups.Count, Is.EqualTo(2));
-    Assert.That(bcf.DocumentInfo?.Documents.Count, Is.EqualTo(1));
+    var markup = bcf
+      .Markups
+      .FirstOrDefault(m =>
+        string.Equals(
+          m.Topic.Guid,
+          "7ddc3ef0-0ab7-43f1-918a-45e38b42369c"));
+    Assert.That(markup?
+      .Topic
+      .DocumentReference
+      .FirstOrDefault(d => !d.IsExternal)?
+      .DocumentData
+      .Mime, Is.EqualTo("data:application/xml;base64"));
   }
 }

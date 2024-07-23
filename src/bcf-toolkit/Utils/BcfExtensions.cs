@@ -231,7 +231,7 @@ public static class BcfExtensions {
       LoadOptions.None,
       CancellationToken.None);
     documentInfo = document.BcfObject<TDocumentInfo>();
-    
+
     foreach (var entry in archive.DocumentEntries()) {
       Log.Debug(entry.FullName);
       documentInfo.SetDocumentData(entry);

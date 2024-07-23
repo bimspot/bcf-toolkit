@@ -21,7 +21,7 @@ public static class SchemaConverterToBcf30 {
       .AddMarkups(from.Markups.Select(ConvertMarkup).ToList(), true)
       .SetDocument(UpdateDocumentInfo(from.Markups
         .SelectMany(m => m.Topic.DocumentReference)
-        .Where(r => !r.IsExternal)
+        // .Where(r => !r.IsExternal)
         .ToList()));
 
     var project = from.Project;
@@ -337,14 +337,13 @@ public static class SchemaConverterToBcf30 {
     var builder = new DocumentBuilder();
     builder
       .SetFileName(docReference.ReferencedDocument)
-      .SetGuid(docReference.Guid);
+      .SetGuid(docReference.Guid)
+      .SetDocumentData(docReference.DocumentData);
 
     if (docReference.Description != string.Empty) {
       builder.SetDescription(docReference.Description);
     }
 
     return builder.Build();
-
-
   }
 }

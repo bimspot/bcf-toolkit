@@ -15,8 +15,8 @@ public partial class BcfBuilder {
     _bcf.Markups =
       await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);
     _bcf.Project = await BcfExtensions.ParseProject<ProjectExtension>(source);
-    _bcf.DocumentInfo = ParseDocuments(
-      source, 
+    SetDocumentData(
+      source,
       _bcf.Markups
         .SelectMany(m => m.Topic.DocumentReference)
         .ToList());
@@ -32,7 +32,7 @@ public partial class BcfBuilder {
     _bcf.Project = project;
     return this;
   }
-  
+
   /// <summary>
   ///   It turns the additional file data that are referenced as internal
   ///   document in markups into the DocumentInfo.
@@ -43,40 +43,31 @@ public partial class BcfBuilder {
   /// </param>
   /// <returns></returns>
   /// <exception cref="ArgumentException"></exception>
-  private static DocumentInfo ParseDocuments(
-    Stream stream, 
+  private static void SetDocumentData(
+    Stream stream,
     List<TopicDocumentReference> documentReferences) {
     if (stream is null || !stream.CanRead)
       throw new ArgumentException("Source stream is not readable.");
-    
-    var objType = typeof(DocumentInfo);
-    Log.Debug($"\nProcessing {objType.Name}\n");
-    
+
+    Log.Debug($"\nProcessing documents\n");
+
     using var archive = new ZipArchive(stream, ZipArchiveMode.Read, true);
-    
-    var documentInfo = new DocumentInfo {
-      Documents = new Collection<Document>(documentReferences
-        .Where(d => !d.IsExternal)
-        .Select(d => new Document { 
-          FileName = d.ReferencedDocument 
-        })
-        .ToList()
-      )
-    };
-    
+
     // These additional files can be referenced by other files via their
     // relative paths. It is recommended to put them in a folder called
     // Documents in the root folder of the zip archive.
-    foreach (var document in documentInfo.Documents) {
-      var fileName = Path.GetFileName(document.FileName);
-      var entry = archive.DocumentEntry(fileName);
-      if(entry is null) continue;
-      Log.Debug(entry.FullName);
-      documentInfo.SetDocumentData(entry);
-    }
-    
+    documentReferences
+      .Where(d => !d.IsExternal)
+      .ToList()
+      .ForEach(d => {
+        var fileName = Path.GetFileName(d.ReferencedDocument);
+        var entry = archive.DocumentEntry(fileName);
+        if (entry is null) return;
+        Log.Debug(entry.FullName);
+        d.SetDocumentData(entry);
+      });
+
     // Stream must be positioned back to 0 in order to use it again
     stream.Position = 0;
-    return documentInfo;
   }
 }
