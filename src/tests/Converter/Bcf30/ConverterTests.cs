@@ -220,21 +220,39 @@ public class ConverterTests {
     await _converter.ToBcf(bcf, "Resources/output/Bcf/v3.0/DocumentReferenceInternal.bcfzip");
   }
 
-  // /// <summary>
-  // ///   It should generate a bcf v2.1 object downgraded from bcf v3.0.
-  // /// </summary>
-  // [Test]
-  // [Category("BCF v3.0")]
-  // public async Task BuildSimpleV21BcfFromStreamTest() {
-  //   await using var stream =
-  //     new FileStream(
-  //       "Resources/Bcf/v3.0/ComponentSelection.bcfzip",
-  //       FileMode.Open,
-  //       FileAccess.Read);
-  //   var bcf = await _converter.BuildBcfFromStream<BcfToolkit.Model.Bcf21.Bcf>(stream);
-  //   Assert.AreEqual(typeof(BcfToolkit.Model.Bcf21.Bcf),bcf.GetType());
-  //   Assert.AreEqual(1, bcf.Markups.Count);
-  //   Assert.AreEqual("OPEN", bcf.Extensions.TopicStatuses.FirstOrDefault());
-  //   Assert.AreEqual("2.1", bcf.Version?.VersionId);
-  // }
+  /// <summary>
+  ///   It should generate a bcf v2.1 object downgraded from bcf v3.0.
+  /// </summary>
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task BuildSimpleV21BcfFromStreamTest() {
+    await using var stream =
+      new FileStream(
+        "Resources/Bcf/v3.0/ComponentSelection.bcfzip",
+        FileMode.Open,
+        FileAccess.Read);
+    var bcf = await _converter.BcfFromStream<BcfToolkit.Model.Bcf21.Bcf>(stream);
+    Assert.That(bcf.GetType(), Is.EqualTo(typeof(BcfToolkit.Model.Bcf21.Bcf)));
+    Assert.That(bcf.Markups.Count, Is.EqualTo(1));
+    Assert.That(bcf.Version.VersionId, Is.EqualTo("2.1"));
+  }
+
+  /// <summary>
+  ///   It should generate a bcf v2.1 object downgraded from bcf v3.0.
+  /// </summary>
+  [Test]
+  [Category("BCF v3.0")]
+  public async Task BuildV21BcfFromStreamWithInternalDocumentTest() {
+    await using var stream =
+      new FileStream(
+        "Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip",
+        FileMode.Open,
+        FileAccess.Read);
+    var bcf = await _converter.BcfFromStream<BcfToolkit.Model.Bcf21.Bcf>(stream);
+    Assert.That(bcf.GetType(), Is.EqualTo(typeof(BcfToolkit.Model.Bcf21.Bcf)));
+    var markup = bcf.Markups.FirstOrDefault(m => m.Topic.Guid.Equals("8ac9822a-761a-4deb-9f39-f61286acbf6a"));
+    var documentReference =
+      markup?.Topic.DocumentReference.FirstOrDefault(d => !d.IsExternal);
+    Assert.That(documentReference?.DocumentData.Mime, Is.EqualTo("data:text/plain;base64"));
+  }
 }
