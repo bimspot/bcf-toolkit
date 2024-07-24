@@ -28,5 +28,5 @@ public partial class Document : IDocument {
   /// </summary>
   [XmlIgnore]
   [JsonProperty("document_data")]
-  public FileData? DocumentData { get; set; }
+  public required FileData DocumentData { get; set; }
 }

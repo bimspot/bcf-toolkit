@@ -15,11 +15,7 @@ public partial class BcfBuilder {
     _bcf.Markups =
       await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);
     _bcf.Project = await BcfExtensions.ParseProject<ProjectExtension>(source);
-    SetDocumentData(
-      source,
-      _bcf.Markups
-        .SelectMany(m => m.Topic.DocumentReference)
-        .ToList());
+    SetDocumentData(source);
     return BuilderUtils.ValidateItem(_bcf);
   }
 
@@ -38,14 +34,10 @@ public partial class BcfBuilder {
   ///   document in markups into the DocumentInfo.
   /// </summary>
   /// <param name="stream">The file stream of the BCFzip.</param>
-  /// <param name="documentReferences">
-  ///   The list of document references in markup.
-  /// </param>
   /// <returns></returns>
   /// <exception cref="ArgumentException"></exception>
-  private static void SetDocumentData(
-    Stream stream,
-    List<TopicDocumentReference> documentReferences) {
+  private void SetDocumentData(
+    Stream stream) {
     if (stream is null || !stream.CanRead)
       throw new ArgumentException("Source stream is not readable.");
 
@@ -56,6 +48,11 @@ public partial class BcfBuilder {
     // These additional files can be referenced by other files via their
     // relative paths. It is recommended to put them in a folder called
     // Documents in the root folder of the zip archive.
+    var documentReferences = _bcf
+      .Markups
+      .SelectMany(m => m.Topic.DocumentReference)
+      .ToList();
+
     documentReferences
       .Where(d => !d.IsExternal)
       .ToList()

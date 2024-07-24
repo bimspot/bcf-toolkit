@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BcfToolkit.Builder.Bcf30;
 
@@ -21,7 +22,7 @@ public static class SchemaConverterToBcf30 {
       .AddMarkups(from.Markups.Select(ConvertMarkup).ToList(), true)
       .SetDocument(UpdateDocumentInfo(from.Markups
         .SelectMany(m => m.Topic.DocumentReference)
-        // .Where(r => !r.IsExternal)
+        .Where(r => !r.IsExternal)
         .ToList()));
 
     var project = from.Project;
@@ -43,21 +44,30 @@ public static class SchemaConverterToBcf30 {
     var topic = from.Topic;
     builder
       .AddHeaderFiles(from.Header.Select(ConvertHeaderFile).ToList())
-      .AddReferenceLinks(topic.ReferenceLink.Where(referenceLink => !string.IsNullOrEmpty(referenceLink)).ToList())
+      .AddReferenceLinks(topic.ReferenceLink.Where(referenceLink =>
+        !string.IsNullOrEmpty(referenceLink))
+        .ToList())
       .SetIndex(topic.Index)
       .SetTitle(from.Topic.Title)
-      .AddLabels(topic.Labels.Where(label => !string.IsNullOrEmpty(label)).ToList())
+      .AddLabels(topic.Labels.Where(label => !string.IsNullOrEmpty(label))
+        .ToList())
       .SetCreationDate(topic.CreationDate)
       .SetCreationAuthor(from.Topic.CreationAuthor)
       .SetModifiedDate(topic.ModifiedDate)
       .SetDueDate(topic.DueDate)
-      .AddRelatedTopics(topic.RelatedTopic.Select(t => t.Guid).ToList())
+      .AddRelatedTopics(topic.RelatedTopic.Select(t => t.Guid)
+        .ToList())
       .AddComments(from.Comment.Select(ConvertComment).ToList())
       .AddViewPoints(from.Viewpoints.Select(ConvertViewPoint).ToList())
       .SetGuid(from.Topic.Guid)
-      .SetTopicType(string.IsNullOrEmpty(from.Topic.TopicType) ? "ERROR" : from.Topic.TopicType)
-      .SetTopicStatus(string.IsNullOrEmpty(from.Topic.TopicStatus) ? "OPEN" : from.Topic.TopicStatus)
+      .SetTopicType(string.IsNullOrEmpty(from.Topic.TopicType)
+        ? "ERROR"
+        : from.Topic.TopicType)
+      .SetTopicStatus(string.IsNullOrEmpty(from.Topic.TopicStatus)
+        ? "OPEN"
+        : from.Topic.TopicStatus)
       .AddDocumentReferences(from.Topic.DocumentReference
+        .Where(d => !d.IsExternal)
         .Select(ConvertDocumentReference).ToList());
 
     var bimSnippet = topic.BimSnippet;
@@ -113,8 +123,9 @@ public static class SchemaConverterToBcf30 {
 
     builder
       .SetGuid(from.Guid ??= Guid.NewGuid().ToString())
-      .SetUrl(from.IsExternal ? from.ReferencedDocument : null)
-      .SetDocumentGuid(from.IsExternal ? null : Guid.NewGuid().ToString()); //TODO: generate guid based on guid and description
+      .SetUrl(from.ReferencedDocument)
+      //TODO: generate guid based on guid and description
+      .SetDocumentGuid(Guid.NewGuid().ToString());
 
     if (from.Description != string.Empty) {
       builder.SetDescription(from.Description);
@@ -336,7 +347,7 @@ public static class SchemaConverterToBcf30 {
     Model.Bcf21.TopicDocumentReference docReference) {
     var builder = new DocumentBuilder();
     builder
-      .SetFileName(docReference.ReferencedDocument)
+      .SetFileName(Path.GetFileName(docReference.ReferencedDocument))
       .SetGuid(docReference.Guid)
       .SetDocumentData(docReference.DocumentData);
 
