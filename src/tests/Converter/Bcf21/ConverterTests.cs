@@ -206,7 +206,7 @@ public class ConverterTests {
     Assert.That(document?.DocumentData.Mime, Is.EqualTo("data:application/xml;base64"));
     Assert.That(document?.DocumentData.Data.Length, Is.EqualTo(10644));
   }
-  
+
   /// <summary>
   ///   It should generate a bcf skipping the markup file.
   /// </summary>
