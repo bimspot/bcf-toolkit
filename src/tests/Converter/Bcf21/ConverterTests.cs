@@ -206,4 +206,19 @@ public class ConverterTests {
     Assert.That(document?.DocumentData.Mime, Is.EqualTo("data:application/xml;base64"));
     Assert.That(document?.DocumentData.Data.Length, Is.EqualTo(10644));
   }
+  
+  /// <summary>
+  ///   It should generate a bcf skipping the markup file.
+  /// </summary>
+  [Test]
+  [Category("BCF v2.1")]
+  public async Task WriteBcfToFolderTest() {
+    await using var stream =
+      new FileStream(
+        "Resources/Bcf/v2.1/MaximumInformation.bcfzip",
+        FileMode.Open,
+        FileAccess.Read);
+    var bcf = await _converter.BcfFromStream<BcfToolkit.Model.Bcf21.Bcf>(stream);
+    await _converter.ToBcf(bcf, "Resources/output/Bcf/v2.1/MaximumInformation.bcfzip");
+  }
 }

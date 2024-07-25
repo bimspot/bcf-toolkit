@@ -109,16 +109,31 @@ public static class FileWriter {
       var topicFolder = $"{guid}";
 
       zip.CreateEntryFromObject($"{topicFolder}/markup.bcf", markup);
-
-      var visInfo =
-        (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
-      zip.CreateEntryFromObject($"{topicFolder}/viewpoint.bcfv", visInfo);
-
-      var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
-      var base64String = markup.GetFirstViewPoint()?.SnapshotData?.Data;
-      if (snapshotFileName == null || base64String == null) continue;
-      var bytes = Convert.FromBase64String(base64String);
-      zip.CreateEntryFromBytes($"{topicFolder}/{snapshotFileName}", bytes);
+      
+      foreach (var viewpoint in markup.Viewpoints) {
+        zip.CreateEntryFromObject($"{topicFolder}/{viewpoint.Viewpoint}", viewpoint.VisualizationInfo);
+        
+        var snapshotFileName = viewpoint.Snapshot;
+        var snapshotBase64String = viewpoint.SnapshotData?.Data;
+        if (string.IsNullOrEmpty(snapshotFileName) || snapshotBase64String == null) 
+          continue;
+        var snapshotBytes = Convert.FromBase64String(snapshotBase64String);
+        zip.CreateEntryFromBytes($"{topicFolder}/{snapshotFileName}", snapshotBytes);
+      }
+   
+      //Additional files can be referenced by other files via their relative
+      //paths. It is recommended to put them in a folder called Documents in the
+      //root folder of the zip archive.
+      var internalDocuments = markup
+        .Topic.DocumentReference
+        .Where(d => !d.IsExternal);
+      foreach (var document in internalDocuments) {
+        var documentFileName = Path.GetFileName(document.ReferencedDocument);
+        var documentBase64String = document.DocumentData.Data;
+        if (string.IsNullOrEmpty(documentFileName)) continue;
+        var documentBytes = Convert.FromBase64String(documentBase64String);
+        zip.CreateEntryFromBytes($"documents/{documentFileName}", documentBytes);
+      }
     }
 
     zip.CreateEntryFromObject("project.bcfp", bcfObject.Project);
@@ -179,21 +194,41 @@ public static class FileWriter {
         topicFolder,
         "markup.bcf",
         markup));
-
-      var visInfo =
-        (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
-      writeTasks.Add(
-        BcfExtensions.SerializeAndWriteXmlFile(
+      
+      foreach (var viewpoint in markup.Viewpoints) {
+        writeTasks.Add( BcfExtensions.SerializeAndWriteXmlFile(
           topicFolder,
-          "viewpoint.bcfv",
-          visInfo));
-
-      var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
-      var base64String = markup.GetFirstViewPoint()?.SnapshotData?.Data;
-      if (snapshotFileName == null || base64String == null) continue;
-      writeTasks.Add(File.WriteAllBytesAsync(
-        $"{topicFolder}/{snapshotFileName}",
-        Convert.FromBase64String(base64String)));
+          viewpoint.Viewpoint,
+          viewpoint.VisualizationInfo));
+        
+        var snapshotFileName = viewpoint.Snapshot;
+        var snapshotBase64String = viewpoint.SnapshotData?.Data;
+        if (string.IsNullOrEmpty(snapshotFileName) || snapshotBase64String == null) 
+          continue;
+        writeTasks.Add(File.WriteAllBytesAsync(
+          $"{topicFolder}/{snapshotFileName}",
+          Convert.FromBase64String(snapshotBase64String)));
+      }
+      
+      //Additional files can be referenced by other files via their relative
+      //paths. It is recommended to put them in a folder called Documents in the
+      //root folder of the zip archive.
+      var documentFolder = $"{tmpFolder}/documents";
+      var internalDocuments = markup
+        .Topic.DocumentReference
+        .Where(d => !d.IsExternal);
+      foreach (var document in internalDocuments) {
+        var documentFileName = Path.GetFileName(document.ReferencedDocument);
+        var documentBase64String = document.DocumentData.Data;
+        if (string.IsNullOrEmpty(documentFileName)) continue;
+        
+        if (Directory.Exists(documentFolder) is not true)
+          Directory.CreateDirectory(documentFolder);
+        
+        writeTasks.Add(File.WriteAllBytesAsync(
+          $"{documentFolder}/{documentFileName}",
+          Convert.FromBase64String(documentBase64String)));
+      }
     }
 
     writeTasks.Add(
