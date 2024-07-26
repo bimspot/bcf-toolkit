@@ -67,7 +67,6 @@ public static class SchemaConverterToBcf30 {
         ? "OPEN"
         : from.Topic.TopicStatus)
       .AddDocumentReferences(from.Topic.DocumentReference
-        .Where(d => !d.IsExternal)
         .Select(ConvertDocumentReference).ToList());
 
     var bimSnippet = topic.BimSnippet;
@@ -123,7 +122,7 @@ public static class SchemaConverterToBcf30 {
 
     builder
       .SetGuid(from.Guid ??= Guid.NewGuid().ToString())
-      .SetUrl(from.ReferencedDocument)
+      .SetUrl(from.IsExternal ? from.ReferencedDocument : null)
       //TODO: generate guid based on guid and description
       .SetDocumentGuid(Guid.NewGuid().ToString());
 
