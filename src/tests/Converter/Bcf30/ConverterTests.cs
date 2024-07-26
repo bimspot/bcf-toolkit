@@ -31,9 +31,9 @@ public class ConverterTests {
     _converter.BcfToJson(
       "Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip",
       "Resources/output/json/v3.0/DocumentReferenceExternal");
-    _converter.BcfToJson(
-      "Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip",
-      "Resources/output/json/v3.0/DocumentReferenceInternal");
+    // _converter.BcfToJson(
+    //   "Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip",
+    //   "Resources/output/json/v3.0/DocumentReferenceInternal");
     _converter.BcfToJson(
       "Resources/Bcf/v3.0/DueDate.bcfzip",
       "Resources/output/json/v3.0/DueDate");

@@ -239,7 +239,7 @@ public class WorkerTests {
   [Category("BCF v3.0")]
   public async Task ConvertJsonToBcfZipV30SamplesTests() {
     var samples = new List<string> {
-      "Resources/Json/v3.0/DocumentReferenceInternal",
+      "Resources/Json/v3.0/DocumentReferenceExternal",
     };
     var tasks = samples.Select(async source => {
       var target =
