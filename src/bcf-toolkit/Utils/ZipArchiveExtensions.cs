@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace BcfToolkit.Utils;
@@ -35,5 +37,19 @@ public static class ZipArchiveExtensions {
     var zipEntry = @this.CreateEntry(entry);
     using var entryStream = zipEntry.Open();
     entryStream.Write(bytes, 0, bytes.Length);
+  }
+
+  public static List<ZipArchiveEntry> DocumentEntries(this ZipArchive @this) {
+    return @this
+      .Entries
+      .OrderBy(entry => entry.FullName)
+      .Where(entry => entry.IsDocumentsFolder())
+      .ToList();
+  }
+
+  public static ZipArchiveEntry? DocumentEntry(this ZipArchive @this, string fileName) {
+    return @this
+      .Entries
+      .FirstOrDefault(entry => entry.Name.Equals(fileName));
   }
 }

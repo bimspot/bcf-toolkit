@@ -216,7 +216,6 @@ public static class BcfExtensions {
     Log.Debug($"\nProcessing {objType.Name}\n");
 
     var documentInfo = default(TDocumentInfo);
-    Dictionary<string, string>? documents = null;
 
     using var archive = new ZipArchive(stream, ZipArchiveMode.Read, true);
 
@@ -233,13 +232,7 @@ public static class BcfExtensions {
       CancellationToken.None);
     documentInfo = document.BcfObject<TDocumentInfo>();
 
-    var documentEntries = archive
-      .Entries
-      .OrderBy(entry => entry.FullName)
-      .Where(entry => entry.IsDocumentsFolder())
-      .ToList();
-
-    foreach (var entry in documentEntries) {
+    foreach (var entry in archive.DocumentEntries()) {
       Log.Debug(entry.FullName);
       documentInfo.SetDocumentData(entry);
     }

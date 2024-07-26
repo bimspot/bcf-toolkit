@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
 using System.Xml.Serialization;
@@ -28,5 +27,5 @@ public partial class Document : IDocument {
   /// </summary>
   [XmlIgnore]
   [JsonProperty("document_data")]
-  public FileData? DocumentData { get; set; }
+  public required FileData DocumentData { get; set; }
 }

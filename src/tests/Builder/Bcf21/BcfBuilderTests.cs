@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf21;
 using BcfToolkit.Converter;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 using NUnit.Framework;
 
-namespace Tests.Builder;
+namespace tests.Builder.Bcf21;
 
-public class BcfBuilder21Tests {
+public class BcfBuilderTests {
   private BcfBuilder _builder = null!;
 
 
@@ -142,5 +145,27 @@ public class BcfBuilder21Tests {
     if (res.Exception != null && res.Exception.Message.Length > 0)
       Assert.Fail("Error message found: " + res.Exception.Message);
 
+  }
+
+  [Test]
+  public async Task BuildMaximumInformationBcfFromStreamTest() {
+    await using var stream = new FileStream(
+      "Resources/Bcf/v2.1/MaximumInformation.bcfzip",
+      FileMode.Open,
+      FileAccess.Read);
+    var bcf = await _builder.BuildFromStream(stream);
+    Assert.That(bcf.Markups.Count, Is.EqualTo(2));
+    var markup = bcf
+      .Markups
+      .FirstOrDefault(m =>
+        string.Equals(
+          m.Topic.Guid,
+          "7ddc3ef0-0ab7-43f1-918a-45e38b42369c"));
+    Assert.That(markup?
+      .Topic
+      .DocumentReference
+      .FirstOrDefault(d => !d.IsExternal)?
+      .DocumentData
+      .Mime, Is.EqualTo("data:application/xml;base64"));
   }
 }

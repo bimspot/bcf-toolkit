@@ -129,16 +129,16 @@ public static class FileWriter {
 
       zip.CreateEntryFromObject($"{topicFolder}/markup.bcf", markup);
 
-      var visInfo =
-        (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
-      zip.CreateEntryFromObject($"{topicFolder}/viewpoint.bcfv", visInfo);
+      foreach (var viewpoint in markup.Topic.Viewpoints) {
+        zip.CreateEntryFromObject($"{topicFolder}/{viewpoint.Viewpoint}", viewpoint.VisualizationInfo);
 
-      // Write snapshot
-      var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
-      var base64String = markup.GetFirstViewPoint()?.SnapshotData?.Data;
-      if (snapshotFileName == null || base64String == null) continue;
-      var bytes = Convert.FromBase64String(base64String);
-      zip.CreateEntryFromBytes($"{topicFolder}/{snapshotFileName}", bytes);
+        var snapshotFileName = viewpoint.Snapshot;
+        var snapshotBase64String = viewpoint.SnapshotData?.Data;
+        if (string.IsNullOrEmpty(snapshotFileName) || snapshotBase64String == null)
+          continue;
+        var snapshotBytes = Convert.FromBase64String(snapshotBase64String);
+        zip.CreateEntryFromBytes($"{topicFolder}/{snapshotFileName}", snapshotBytes);
+      }
     }
 
     zip.CreateEntryFromObject("extensions.xml", bcfObject.Extensions);
@@ -208,19 +208,21 @@ public static class FileWriter {
         BcfExtensions.SerializeAndWriteXmlFile(topicFolder, "markup.bcf",
           markup));
 
-      var visInfo =
-        (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
-      writeTasks.Add(BcfExtensions.SerializeAndWriteXmlFile(
-        topicFolder,
-        "viewpoint.bcfv",
-        visInfo));
+      foreach (var viewpoint in markup.Topic.Viewpoints) {
+        writeTasks.Add(BcfExtensions.SerializeAndWriteXmlFile(
+          topicFolder,
+          viewpoint.Viewpoint,
+          viewpoint.VisualizationInfo));
 
-      var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
-      var base64String = markup.GetFirstViewPoint()?.SnapshotData?.Data;
-      if (snapshotFileName == null || base64String == null) continue;
-      writeTasks.Add(File.WriteAllBytesAsync(
-        $"{topicFolder}/{snapshotFileName}",
-        Convert.FromBase64String(base64String)));
+        var snapshotFileName = viewpoint.Snapshot;
+        var snapshotBase64String = viewpoint.SnapshotData?.Data;
+        if (string.IsNullOrEmpty(snapshotFileName) ||
+            snapshotBase64String == null)
+          continue;
+        writeTasks.Add(File.WriteAllBytesAsync(
+          $"{topicFolder}/{snapshotFileName}",
+          Convert.FromBase64String(snapshotBase64String)));
+      }
     }
 
     writeTasks.Add(BcfExtensions.SerializeAndWriteXmlFile(tmpFolder,

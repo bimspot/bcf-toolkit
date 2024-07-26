@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Xml.Serialization;
 using BcfToolkit.Model.Interfaces;
+using BcfToolkit.Utils;
 using Newtonsoft.Json;
 
 namespace BcfToolkit.Model.Bcf21;
@@ -46,7 +49,9 @@ public partial class Markup : IMarkup {
   }
 }
 
-public partial class Topic : ITopic { }
+public partial class Topic : ITopic {
+
+}
 
 public partial class ViewPoint : IViewPoint {
   [XmlIgnore] public VisualizationInfo? VisualizationInfo { get; set; }
@@ -69,7 +74,24 @@ public partial class ViewPoint : IViewPoint {
 
 public partial class HeaderFile : IHeaderFile { }
 public partial class BimSnippet : IBimSnippet { }
-public partial class TopicDocumentReference : IDocReference { }
+
+public partial class TopicDocumentReference : IDocReference {
+  /// <summary>
+  ///   The document file data as base64 encoded string.
+  /// </summary> 
+  [XmlIgnore]
+  [JsonProperty("document_data")]
+  public FileData DocumentData { get; set; }
+
+  public void SetDocumentData(ZipArchiveEntry entry) {
+    var fileName = Path.GetFileName(this.ReferencedDocument);
+    var mime = $"data:{MimeTypes.GetMimeType(fileName)};base64";
+    this.DocumentData = new FileData {
+      Mime = mime,
+      Data = entry.Data()
+    };
+  }
+}
 
 public partial class Comment : IComment {
   // This method that controls the access to the `CommentViewpoint` instance.
