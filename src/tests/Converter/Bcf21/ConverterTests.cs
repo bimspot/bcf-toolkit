@@ -203,8 +203,17 @@ public class ConverterTests {
     Assert.That(typeof(BcfToolkit.Model.Bcf30.Bcf), Is.EqualTo(bcf.GetType()));
     var document =
       bcf.Document?.Documents.FirstOrDefault(d => d.Filename.Equals("markup.xsd"));
+    var documentRef = bcf
+      .Markups
+      .FirstOrDefault(m =>
+        m.Topic.Guid.Equals("7ddc3ef0-0ab7-43f1-918a-45e38b42369c"))?
+      .Topic
+      .DocumentReferences
+      .FirstOrDefault(d =>
+        d.Description.Equals("Markup.xsd Schema"));
     Assert.That(document?.DocumentData.Mime, Is.EqualTo("data:application/xml;base64"));
     Assert.That(document?.DocumentData.Data.Length, Is.EqualTo(10644));
+    Assert.That(documentRef?.DocumentGuid, Is.EqualTo(document?.Guid));
   }
 
   /// <summary>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BcfToolkit.Builder.Bcf30;
+using BcfToolkit.Utils;
 
 namespace BcfToolkit.Converter.Bcf21;
 
@@ -20,10 +21,13 @@ public static class SchemaConverterToBcf30 {
     var builder = new BcfBuilder();
     builder
       .AddMarkups(from.Markups.Select(ConvertMarkup).ToList(), true)
-      .SetDocument(UpdateDocumentInfo(from.Markups
-        .SelectMany(m => m.Topic.DocumentReference)
-        .Where(r => !r.IsExternal)
-        .ToList()));
+      .SetDocument(dI => dI
+        .AddDocuments(from.Markups
+          .SelectMany(m => m.Topic.DocumentReference)
+          .Where(r => !r.IsExternal)
+          .ToList()
+          .Select(ConvertDocument)
+          .ToList()));
 
     var project = from.Project;
 
@@ -120,11 +124,15 @@ public static class SchemaConverterToBcf30 {
     Model.Bcf21.TopicDocumentReference from) {
     var builder = new DocumentReferenceBuilder();
 
+    var guid = from.Guid ??= Guid.NewGuid().ToString();
     builder
-      .SetGuid(from.Guid ??= Guid.NewGuid().ToString())
+      .SetGuid(guid)
       .SetUrl(from.IsExternal ? from.ReferencedDocument : null)
-      //TODO: generate guid based on guid and description
-      .SetDocumentGuid(Guid.NewGuid().ToString());
+      // pattern for document guid
+      // {guid of the referenced document}{name of the referenced document}
+      .SetDocumentGuid(!from.IsExternal
+        ? GuidUtils.NewGuidByContent($"{guid}{from.ReferencedDocument}")
+        : null);
 
     if (from.Description != string.Empty) {
       builder.SetDescription(from.Description);
@@ -336,7 +344,7 @@ public static class SchemaConverterToBcf30 {
       .Build();
   }
 
-  private static Action<DocumentInfoBuilder> UpdateDocumentInfo(
+  private static Action<DocumentInfoBuilder> ConvertDocumentInfo(
     List<Model.Bcf21.TopicDocumentReference> docReferences) {
     return dI => dI
       .AddDocuments(docReferences.Select(ConvertDocument).ToList());
@@ -347,7 +355,10 @@ public static class SchemaConverterToBcf30 {
     var builder = new DocumentBuilder();
     builder
       .SetFileName(Path.GetFileName(docReference.ReferencedDocument))
-      .SetGuid(docReference.Guid)
+      // pattern for document guid
+      // {guid of the referenced document}{name of the referenced document}
+      .SetGuid(GuidUtils.NewGuidByContent(
+        $"{docReference.Guid}{docReference.ReferencedDocument}"))
       .SetDocumentData(docReference.DocumentData);
 
     if (docReference.Description != string.Empty) {
