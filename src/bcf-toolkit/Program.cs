@@ -3,12 +3,24 @@ using System.Threading.Tasks;
 using System.CommandLine;
 using System.IO;
 using BcfToolkit.Builder.Bcf21;
-using BcfToolkit.Builder.Bcf21.Interfaces;
+using BcfToolkit.Builder.Interfaces;
+using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit;
 
+public class BcfBuilderDelegate : IBcfBuilderDelegate {
+  public IBcfBuilderDelegate.OnMarkupCreated<IMarkup>
+    MarkupCreated { get; } = m => {
+      var d = ((Markup)m).Topic.Description;
+      Console.WriteLine(d);
+  };
 
+
+  public IBcfBuilderDelegate.OnProjectCreated<IProject>
+    ProjectCreated { get; } = Console.WriteLine;
+
+}
 
 internal static class Program {
   private static async Task Main(string[] args) {
@@ -17,13 +29,13 @@ internal static class Program {
       FileMode.Open,
       FileAccess.Read);
 
-    // var bcfBuilderDelegate = new BcfBuilderDelegate();
-    // var streamBuilder = new BcfBuilder(bcfBuilderDelegate);
-    // await streamBuilder.ProcessStream(stream);
+    var bcfBuilderDelegate = new BcfBuilderDelegate();
+    var streamBuilder = new BcfBuilder(bcfBuilderDelegate);
+    await streamBuilder.ProcessStream(stream);
 
-    var builder = new BcfBuilder();
-    var bcf = await builder.BuildInMemoryFromStream(stream);
-    Console.WriteLine(bcf.Markups.Count);
+    // var builder = new BcfBuilder();
+    // var bcf = await builder.BuildInMemoryFromStream(stream);
+    // Console.WriteLine(bcf.Markups.Count);
 
     stream.Close();
 
