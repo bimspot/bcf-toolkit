@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using BcfToolkit.Model.Interfaces;
 
 namespace BcfToolkit.Model.Bcf21;
 
@@ -12,5 +13,5 @@ public partial class Bcf : IBcf {
 
   public ProjectExtension? Project { get; set; }
 
-  public Version? Version { get; set; }
+  public Version Version { get; set; }
 }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BcfToolkit.Model;
+using BcfToolkit.Model.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -54,11 +55,11 @@ public static class JsonExtensions {
 
       foreach (var file in topicFiles) {
         if (file.EndsWith("json") == false) {
-          Console.WriteLine($" - File is not json, skipping ${file}");
+          Log.Debug($" - File is not json, skipping ${file}");
           continue;
         }
 
-        Console.WriteLine($" - Processing {file}");
+        Log.Debug($" - Processing {file}");
 
         var markup = await ParseObject<TMarkup>(file);
         markups.Add(markup);
@@ -147,7 +148,7 @@ public static class JsonExtensions {
         return BcfVersion.TryParse(version);
       }
       catch (Exception e) {
-        Console.WriteLine("Unable to detect the bcf version of the json. Assumed version is 2.1.");
+        Log.Error("Unable to detect the bcf version of the json. Assumed version is 2.1.");
         return BcfVersionEnum.Bcf21;
       }
     });

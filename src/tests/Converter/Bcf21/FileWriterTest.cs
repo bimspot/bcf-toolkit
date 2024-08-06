@@ -20,7 +20,6 @@ public class FileWriterTests {
     var bcfResultBuilder = new BcfBuilder();
     var bcfResult = await bcfResultBuilder
       .BuildInMemoryFromStream(stream);
-
     Assert.That(
       bcf.Markups.FirstOrDefault()?.Topic.Title,
       Is.EqualTo(bcfResult.Markups.FirstOrDefault()?.Topic.Title));
@@ -38,7 +37,6 @@ public class FileWriterTests {
     var bcfResultBuilder = new BcfBuilder();
     var bcfResult = await bcfResultBuilder
       .BuildInMemoryFromStream(stream);
-
     Assert.That(
       bcf.Markups.FirstOrDefault()?.Topic.Title,
       Is.EqualTo(bcfResult.Markups.FirstOrDefault()?.Topic.Title));

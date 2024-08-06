@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
+using BcfToolkit.Model.Interfaces;
 using BcfToolkit.Utils;
 using Version = BcfToolkit.Model.Bcf21.Version;
 
@@ -20,7 +21,7 @@ public static class FileWriter {
   /// <param name="bcf">The `Bcf` object that should be written.</param>
   /// <param name="target">The target path where the json files will be saved.</param>
   /// <returns></returns>
-  public static Task WriteJson(Bcf bcf, string target) {
+  public static Task WriteBcfToJson(Bcf bcf, string target) {
     if (Directory.Exists(target)) Directory.Delete(target, true);
     Directory.CreateDirectory(target);
 
@@ -85,11 +86,13 @@ public static class FileWriter {
   /// <param name="cancellationToken"></param>
   /// <returns>Generated stream from bcf zip.</returns>
   /// <exception cref="ApplicationException"></exception>
-  public static void SerializeAndWriteBcfToStream(IBcf bcf,
-    ZipArchive zip, CancellationToken? cancellationToken = null) {
+  public static void SerializeAndWriteBcfToStream(
+    IBcf bcf,
+    ZipArchive zip,
+    CancellationToken? cancellationToken = null) {
     var bcfObject = (Bcf)bcf;
 
-    zip.SerializeAndCreateEntry("bcf.version", new Version());
+    zip.CreateEntryFromObject("bcf.version", new Version());
 
     // Writing markup files to zip archive, one markup per entry.
     foreach (var markup in bcfObject.Markups) {
@@ -99,28 +102,41 @@ public static class FileWriter {
 
       var guid = markup.GetTopic()?.Guid;
       if (guid == null) {
-        Console.WriteLine(" - Topic Guid is missing, skipping markup");
+        Log.Debug(" - Topic Guid is missing, skipping markup");
         continue;
       }
 
       var topicFolder = $"{guid}";
+      
+      zip.CreateEntryFromObject($"{topicFolder}/markup.bcf", markup);
 
-      zip.SerializeAndCreateEntry($"{topicFolder}/markup.bcf", markup);
+      foreach (var viewpoint in markup.Viewpoints) {
+        zip.CreateEntryFromObject($"{topicFolder}/{viewpoint.Viewpoint}", viewpoint.VisualizationInfo);
 
-      var visInfo =
-        (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
-      zip.SerializeAndCreateEntry($"{topicFolder}/viewpoint.bcf", visInfo);
+        var snapshotFileName = viewpoint.Snapshot;
+        var snapshotBase64String = viewpoint.SnapshotData?.Data;
+        if (string.IsNullOrEmpty(snapshotFileName) || snapshotBase64String == null)
+          continue;
+        var snapshotBytes = Convert.FromBase64String(snapshotBase64String);
+        zip.CreateEntryFromBytes($"{topicFolder}/{snapshotFileName}", snapshotBytes);
+      }
 
-      var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
-      var base64String = markup.GetFirstViewPoint()?.SnapshotData;
-      if (snapshotFileName == null || base64String == null) continue;
-      const string pattern = @"^data:image\/[a-zA-Z]+;base64,";
-      var result = Regex.Replace(base64String, pattern, string.Empty);
-      var bytes = Convert.FromBase64String(result);
-      zip.SerializeAndCreateEntry($"{topicFolder}/{snapshotFileName}", bytes);
+      //Additional files can be referenced by other files via their relative
+      //paths. It is recommended to put them in a folder called Documents in the
+      //root folder of the zip archive.
+      var internalDocuments = markup
+        .Topic.DocumentReference
+        .Where(d => !d.IsExternal);
+      foreach (var document in internalDocuments) {
+        var documentFileName = Path.GetFileName(document.ReferencedDocument);
+        var documentBase64String = document.DocumentData.Data;
+        if (string.IsNullOrEmpty(documentFileName)) continue;
+        var documentBytes = Convert.FromBase64String(documentBase64String);
+        zip.CreateEntryFromBytes($"documents/{documentFileName}", documentBytes);
+      }
     }
 
-    zip.SerializeAndCreateEntry("project.bcfp", bcfObject.Project);
+    zip.CreateEntryFromObject("project.bcfp", bcfObject.Project);
   }
 
   /// <summary>
@@ -166,7 +182,7 @@ public static class FileWriter {
 
       var guid = markup.GetTopic()?.Guid;
       if (guid == null) {
-        Console.WriteLine(
+        Log.Debug(
           " - Topic Guid is missing, skipping markup");
         continue;
       }
@@ -178,26 +194,41 @@ public static class FileWriter {
         topicFolder,
         "markup.bcf",
         markup));
-
-      var visInfo =
-        (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
-      writeTasks.Add(
-        BcfExtensions.SerializeAndWriteXmlFile(
+      
+      foreach (var viewpoint in markup.Viewpoints) {
+        writeTasks.Add(BcfExtensions.SerializeAndWriteXmlFile(
           topicFolder,
-          "viewpoint.bcfv",
-          visInfo));
+          viewpoint.Viewpoint,
+          viewpoint.VisualizationInfo));
+        
+        var snapshotFileName = viewpoint.Snapshot;
+        var snapshotBase64String = viewpoint.SnapshotData?.Data;
+        if (string.IsNullOrEmpty(snapshotFileName) || snapshotBase64String == null)
+          continue;
+        writeTasks.Add(File.WriteAllBytesAsync(
+          $"{topicFolder}/{snapshotFileName}",
+          Convert.FromBase64String(snapshotBase64String)));
+      }
 
-      var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
+      //Additional files can be referenced by other files via their relative
+      //paths. It is recommended to put them in a folder called Documents in the
+      //root folder of the zip archive.
+      var documentFolder = $"{tmpFolder}/documents";
+      var internalDocuments = markup
+        .Topic.DocumentReference
+        .Where(d => !d.IsExternal);
+      foreach (var document in internalDocuments) {
+        var documentFileName = Path.GetFileName(document.ReferencedDocument);
+        var documentBase64String = document.DocumentData.Data;
+        if (string.IsNullOrEmpty(documentFileName)) continue;
 
-      var base64String = markup.GetFirstViewPoint()?.SnapshotData;
+        if (Directory.Exists(documentFolder) is not true)
+          Directory.CreateDirectory(documentFolder);
 
-      if (snapshotFileName == null || base64String == null) continue;
-      const string pattern = @"^data:image\/[a-zA-Z]+;base64,";
-      var result = Regex.Replace(base64String,
-        pattern, string.Empty);
-      writeTasks.Add(File.WriteAllBytesAsync(
-        $"{topicFolder}/{snapshotFileName}",
-        Convert.FromBase64String(result)));
+        writeTasks.Add(File.WriteAllBytesAsync(
+          $"{documentFolder}/{documentFileName}",
+          Convert.FromBase64String(documentBase64String)));
+      }
     }
 
     writeTasks.Add(
@@ -208,7 +239,7 @@ public static class FileWriter {
 
     await Task.WhenAll(writeTasks);
 
-    Console.WriteLine($"Zipping the output: {target}");
+    Log.Debug($"Zipping the output: {target}");
     if (File.Exists(target)) File.Delete(target);
     ZipFile.CreateFromDirectory(tmpFolder, target);
 

@@ -185,6 +185,49 @@ public class ConverterTests {
     Assert.That(typeof(BcfToolkit.Model.Bcf30.Bcf), Is.EqualTo(bcf.GetType()));
     Assert.That(1, Is.EqualTo(bcf.Markups.Count));
     Assert.That("OPEN", Is.EqualTo(bcf.Extensions.TopicStatuses.FirstOrDefault()));
-    Assert.That("3.0", Is.EqualTo(bcf.Version?.VersionId));
+    Assert.That("3.0", Is.EqualTo(bcf.Version.VersionId));
+  }
+
+  /// <summary>
+  ///   It should generate a bcf v3.0 object converted from bcf v2.1.
+  /// </summary>
+  [Test]
+  [Category("BCF v2.1")]
+  public async Task BuildV30BcfFromStreamWithInternalDocumentTest() {
+    await using var stream =
+      new FileStream(
+        "Resources/Bcf/v2.1/MaximumInformation.bcfzip",
+        FileMode.Open,
+        FileAccess.Read);
+    var bcf = await _converter.BcfFromStream<BcfToolkit.Model.Bcf30.Bcf>(stream);
+    Assert.That(typeof(BcfToolkit.Model.Bcf30.Bcf), Is.EqualTo(bcf.GetType()));
+    var document =
+      bcf.Document?.Documents.FirstOrDefault(d => d.Filename.Equals("markup.xsd"));
+    var documentRef = bcf
+      .Markups
+      .FirstOrDefault(m =>
+        m.Topic.Guid.Equals("7ddc3ef0-0ab7-43f1-918a-45e38b42369c"))?
+      .Topic
+      .DocumentReferences
+      .FirstOrDefault(d =>
+        d.Description.Equals("Markup.xsd Schema"));
+    Assert.That(document?.DocumentData.Mime, Is.EqualTo("data:application/xml;base64"));
+    Assert.That(document?.DocumentData.Data.Length, Is.EqualTo(10644));
+    Assert.That(documentRef?.DocumentGuid, Is.EqualTo(document?.Guid));
+  }
+
+  /// <summary>
+  ///   It should generate a bcf skipping the markup file.
+  /// </summary>
+  [Test]
+  [Category("BCF v2.1")]
+  public async Task WriteBcfToFolderTest() {
+    await using var stream =
+      new FileStream(
+        "Resources/Bcf/v2.1/MaximumInformation.bcfzip",
+        FileMode.Open,
+        FileAccess.Read);
+    var bcf = await _converter.BcfFromStream<BcfToolkit.Model.Bcf21.Bcf>(stream);
+    await _converter.ToBcf(bcf, "Resources/output/Bcf/v2.1/MaximumInformation.bcfzip");
   }
 }

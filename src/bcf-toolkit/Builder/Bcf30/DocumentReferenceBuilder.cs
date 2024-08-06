@@ -15,7 +15,7 @@ public partial class DocumentReferenceBuilder :
     return this;
   }
 
-  public DocumentReferenceBuilder SetDescription(string description) {
+  public DocumentReferenceBuilder SetDescription(string? description) {
     _documentReference.Description = description;
     return this;
   }

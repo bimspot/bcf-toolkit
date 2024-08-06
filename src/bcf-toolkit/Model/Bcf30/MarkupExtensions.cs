@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using BcfToolkit.Model.Interfaces;
 using Newtonsoft.Json;
 
 namespace BcfToolkit.Model.Bcf30;
@@ -11,6 +13,23 @@ public partial class Markup : IMarkup {
 
   public IViewPoint? GetFirstViewPoint() {
     return Topic.Viewpoints?.FirstOrDefault();
+  }
+  
+  public void SetViewPoints<TVisualizationInfo>(
+    Dictionary<string, TVisualizationInfo>? visInfos,
+    Dictionary<string, FileData>? snapshots) where TVisualizationInfo : IVisualizationInfo {
+    this.Topic.Viewpoints.ToList().ForEach(viewPoint => {
+      if (visInfos is not null) {
+        visInfos.TryGetValue(viewPoint.Viewpoint, out var visInfo);
+        if (visInfo is not null && visInfo is VisualizationInfo visualizationInfo)
+          viewPoint.VisualizationInfo = visualizationInfo;
+      }
+      if (snapshots is not null) {
+        snapshots.TryGetValue(viewPoint.Snapshot, out var snapshot);
+        if (snapshot is not null)
+          viewPoint.SnapshotData = snapshot;
+      }
+    });
   }
 
   // This method that controls the access to the `Header` instance.
@@ -39,7 +58,7 @@ public partial class ViewPoint : IViewPoint {
   /// </summary>
   [XmlIgnore]
   [JsonProperty("snapshot_data")]
-  public string? SnapshotData { get; set; }
+  public FileData? SnapshotData { get; set; }
 }
 public partial class File : IHeaderFile { }
 public partial class BimSnippet : IBimSnippet { }

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using BcfToolkit.Builder.Bcf21;
 using BcfToolkit.Model.Bcf21;
@@ -27,11 +28,12 @@ public static class SchemaConverterToBcf21 {
   /// <returns>Returns the converted object.</returns>
   public static Model.Bcf21.Bcf Convert(Model.Bcf30.Bcf from) {
     var builder = new BcfBuilder();
-
-    return
-    builder
+    return builder
       .AddMarkups(from.Markups.Select(ConvertMarkup).ToList())
       .SetProject(ConvertProject(from.Project?.Project))
+      .SetDocumentData(from.Document?.Documents
+        .Select(d => new { d.Guid, Data = Tuple.Create(d.Filename, d.DocumentData) })
+        .ToDictionary(e => e.Guid, e => e.Data))
       .Build();
   }
 
@@ -43,8 +45,7 @@ public static class SchemaConverterToBcf21 {
       return null;
     }
 
-    return
-      builder
+    return builder
       .SetProjectId(from.ProjectId)
       .SetProjectName(from.Name)
       .SetExtensionSchema("extensions.xsd")
@@ -80,8 +81,6 @@ public static class SchemaConverterToBcf21 {
       .AddViewPoints(from.Topic.Viewpoints.Select(ConvertViewPoint).ToList())
       .AddRelatedTopics(from.Topic.RelatedTopics.Select(ConvertRelatedTopic).ToList())
       .Build();
-
-    return builder.Build();
   }
 
   private static Model.Bcf21.HeaderFile ConvertHeaderFile(Model.Bcf30.File from) {
@@ -114,7 +113,7 @@ public static class SchemaConverterToBcf21 {
   private static Model.Bcf21.TopicDocumentReference ConvertDocumentReference(
     Model.Bcf30.DocumentReference from) {
     var builder = new DocumentReferenceBuilder();
-    var isExternal = string.IsNullOrEmpty(from.Url);
+    var isExternal = !string.IsNullOrEmpty(from.Url);
 
     return builder
       .SetGuid(from.Guid)
@@ -206,11 +205,21 @@ public static class SchemaConverterToBcf21 {
     var builder = new PerspectiveCameraBuilder();
 
     return builder
-        .SetCameraDirection(from.CameraDirection.X, from.CameraDirection.Y, from.CameraDirection.Z)
-        .SetCameraViewPoint(from.CameraViewPoint.X, from.CameraViewPoint.Y, from.CameraViewPoint.Z)
-        .SetCameraUpVector(from.CameraUpVector.X, from.CameraUpVector.Y, from.CameraUpVector.Z)
-        .SetFieldOfView(from.FieldOfView)
-        .Build();
+      .SetCameraDirection(
+        from.CameraDirection.X, 
+        from.CameraDirection.Y,
+        from.CameraDirection.Z)
+      .SetCameraViewPoint(
+        from.CameraViewPoint.X, 
+        from.CameraViewPoint.Y,
+        from.CameraViewPoint.Z)
+      .SetCameraUpVector(
+        from.CameraUpVector.X, 
+        from.CameraUpVector.Y,
+        from.CameraUpVector.Z)
+      .SetFieldOfView(from.FieldOfView)
+      .Build();
+
     //TODO: AspectRatio data loss
   }
 

@@ -9,7 +9,7 @@ using BcfToolkit.Builder.Bcf30;
 using BcfToolkit.Utils;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
-using Version = BcfToolkit.Model.Bcf30.Version;
+using BcfToolkit.Model.Interfaces;
 
 namespace BcfToolkit.Converter.Bcf30;
 
@@ -57,7 +57,8 @@ public class Converter : IConverter {
       };
 
   public async Task BcfToJson(Stream source, string target) {
-    var bcf = await _builder.BuildInMemoryFromStream(source);
+    var builder = new BcfBuilder();
+    var bcf = await builder.BuildFromStream(source);
     await FileWriter.WriteJson(bcf, target);
   }
 
@@ -126,7 +127,7 @@ public class Converter : IConverter {
     }
 
     var writerFn = _streamWriterFn[targetVersion];
-    var zip = new ZipArchive(stream, ZipArchiveMode.Create, true);
+    using var zip = new ZipArchive(stream, ZipArchiveMode.Create, true);
     writerFn(convertedBcf, zip, cancellationToken);
   }
 
@@ -139,7 +140,7 @@ public class Converter : IConverter {
   }
   
   public async Task<T> BcfFromStream<T>(Stream stream) {
-    var bcf = await _builder.BuildInMemoryFromStream(stream);
+    var bcf = await _builder.BuildFromStream(stream);
     var targetVersion = BcfVersion.TryParse(typeof(T));
     var converterFn = _converterFn[targetVersion];
     return (T)converterFn(bcf);

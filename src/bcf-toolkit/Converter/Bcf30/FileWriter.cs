@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf30;
+using BcfToolkit.Model.Interfaces;
 using BcfToolkit.Utils;
 using File = System.IO.File;
 using Version = BcfToolkit.Model.Bcf30.Version;
@@ -109,8 +110,8 @@ public static class FileWriter {
   public static void SerializeAndWriteBcfToStream(IBcf bcf, ZipArchive zip,
     CancellationToken? cancellationToken = null) {
     var bcfObject = (Bcf)bcf;
-
-    zip.SerializeAndCreateEntry("bcf.version", new Version());
+    
+    zip.CreateEntryFromObject("bcf.version", new Version());
 
     // Writing markup files to zip arhive, one markup per entry.
     foreach (var markup in bcfObject.Markups) {
@@ -120,31 +121,37 @@ public static class FileWriter {
 
       var guid = markup.GetTopic()?.Guid;
       if (guid == null) {
-        Console.WriteLine(" - Topic Guid is missing, skipping markup");
+        Log.Debug(" - Topic Guid is missing, skipping markup");
         continue;
       }
 
       var topicFolder = $"{guid}";
+      zip.CreateEntryFromObject($"{topicFolder}/markup.bcf", markup);
 
-      zip.SerializeAndCreateEntry($"{topicFolder}/markup.bcf", markup);
+      foreach (var viewpoint in markup.Topic.Viewpoints) {
+        zip.CreateEntryFromObject($"{topicFolder}/{viewpoint.Viewpoint}", viewpoint.VisualizationInfo);
 
-      var visInfo =
-        (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
-      zip.SerializeAndCreateEntry($"{topicFolder}/viewpoint.bcfv", visInfo);
-
-      // Write snapshot
-      var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
-      var base64String = markup.GetFirstViewPoint()?.SnapshotData;
-      if (snapshotFileName == null || base64String == null) continue;
-      const string pattern = @"^data:image\/[a-zA-Z]+;base64,";
-      var result = Regex.Replace(base64String, pattern, string.Empty);
-      var bytes = Convert.FromBase64String(result);
-      zip.SerializeAndCreateEntry($"{topicFolder}/{snapshotFileName}", bytes);
+        var snapshotFileName = viewpoint.Snapshot;
+        var snapshotBase64String = viewpoint.SnapshotData?.Data;
+        if (string.IsNullOrEmpty(snapshotFileName) || snapshotBase64String == null)
+          continue;
+        var snapshotBytes = Convert.FromBase64String(snapshotBase64String);
+        zip.CreateEntryFromBytes($"{topicFolder}/{snapshotFileName}", snapshotBytes);
+      }
     }
 
-    zip.SerializeAndCreateEntry("extensions.xml", bcfObject.Extensions);
-    zip.SerializeAndCreateEntry("project.bcfp", bcfObject.Project);
-    zip.SerializeAndCreateEntry("documents.xml", bcfObject.Document);
+    zip.CreateEntryFromObject("extensions.xml", bcfObject.Extensions);
+    zip.CreateEntryFromObject("project.bcfp", bcfObject.Project);
+    zip.CreateEntryFromObject("documents.xml", bcfObject.Document);
+
+    if (bcfObject.Document?.Documents is null) return;
+    foreach (var document in bcfObject.Document.Documents) {
+      var documentFileName = document.Guid;
+      var base64String = document.DocumentData?.Data;
+      if (documentFileName is null || base64String is null) continue;
+      var bytes = Convert.FromBase64String(base64String);
+      zip.CreateEntryFromBytes($"documents/{documentFileName}", bytes);
+    }
   }
 
   /// <summary>
@@ -188,7 +195,7 @@ public static class FileWriter {
 
       var guid = markup.GetTopic()?.Guid;
       if (guid == null) {
-        Console.WriteLine(
+        Log.Debug(
           " - Topic Guid is missing, skipping markup");
         continue;
       }
@@ -199,23 +206,22 @@ public static class FileWriter {
       writeTasks.Add(
         BcfExtensions.SerializeAndWriteXmlFile(topicFolder, "markup.bcf",
           markup));
+      
+      foreach (var viewpoint in markup.Topic.Viewpoints) {
+        writeTasks.Add(BcfExtensions.SerializeAndWriteXmlFile(
+          topicFolder,
+          viewpoint.Viewpoint,
+          viewpoint.VisualizationInfo));
 
-      var visInfo =
-        (VisualizationInfo)markup.GetFirstViewPoint()?.GetVisualizationInfo()!;
-      writeTasks.Add(BcfExtensions.SerializeAndWriteXmlFile(
-        topicFolder,
-        "viewpoint.bcfv",
-        visInfo));
-
-      var snapshotFileName = markup.GetFirstViewPoint()?.Snapshot;
-      var base64String = markup.GetFirstViewPoint()?.SnapshotData;
-      if (snapshotFileName == null || base64String == null) continue;
-      const string pattern = @"^data:image\/[a-zA-Z]+;base64,";
-      var result = Regex.Replace(base64String,
-        pattern, string.Empty);
-      writeTasks.Add(File.WriteAllBytesAsync(
-        $"{topicFolder}/{snapshotFileName}",
-        Convert.FromBase64String(result)));
+        var snapshotFileName = viewpoint.Snapshot;
+        var snapshotBase64String = viewpoint.SnapshotData?.Data;
+        if (string.IsNullOrEmpty(snapshotFileName) ||
+            snapshotBase64String == null)
+          continue;
+        writeTasks.Add(File.WriteAllBytesAsync(
+          $"{topicFolder}/{snapshotFileName}",
+          Convert.FromBase64String(snapshotBase64String)));
+      }
     }
 
     writeTasks.Add(BcfExtensions.SerializeAndWriteXmlFile(tmpFolder,
@@ -225,9 +231,24 @@ public static class FileWriter {
     writeTasks.Add(BcfExtensions.SerializeAndWriteXmlFile(tmpFolder,
       "documents.xml", bcfObject.Document));
 
+    var documentFolder = $"{tmpFolder}/documents";
+    if (bcfObject.Document?.Documents is not null)
+      foreach (var document in bcfObject.Document.Documents) {
+        var documentFileName = document.Guid;
+        var base64String = document.DocumentData?.Data;
+        if (documentFileName is null || base64String is null) continue;
+
+        if (Directory.Exists(documentFolder) is not true)
+          Directory.CreateDirectory(documentFolder);
+
+        writeTasks.Add(File.WriteAllBytesAsync(
+          $"{documentFolder}/{documentFileName}",
+          Convert.FromBase64String(base64String)));
+      }
+
     await Task.WhenAll(writeTasks);
 
-    Console.WriteLine($"Zipping the output: {target}");
+    Log.Debug($"Zipping the output: {target}");
     if (File.Exists(target)) File.Delete(target);
     ZipFile.CreateFromDirectory(tmpFolder, target);
 

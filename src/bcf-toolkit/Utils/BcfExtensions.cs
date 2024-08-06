@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Model;
+using BcfToolkit.Model.Interfaces;
 
 namespace BcfToolkit.Utils;
 
@@ -45,7 +47,8 @@ public static class BcfExtensions {
   /// </summary>
   /// <param name="stream">The source stream of the BCFzip.</param>
   /// <returns>Returns a Task with a List of `Markup` models.</returns>
-  public static async Task<ConcurrentBag<TMarkup>> ParseMarkups<TMarkup,
+  public static async Task<ConcurrentBag<TMarkup>> ParseMarkups<
+    TMarkup,
     TVisualizationInfo>(Stream stream)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo {
@@ -61,7 +64,7 @@ public static class BcfExtensions {
       throw new ArgumentException("Source stream is not readable.");
 
     var objType = typeof(TMarkup);
-    Console.WriteLine($"\nProcessing {objType.Name}\n");
+    Log.Debug($"\nProcessing {objType.Name}\n");
 
     // A thread-safe storage for the parsed topics.
     var markups = new ConcurrentBag<TMarkup>();
@@ -80,8 +83,8 @@ public static class BcfExtensions {
     // are kept here for the currently processes ones.
     var currentUuid = "";
     var markup = default(TMarkup);
-    var viewpoint = default(TVisualizationInfo);
-    string? snapshot = null;
+    Dictionary<string, TVisualizationInfo>? visInfos = null;
+    Dictionary<string, FileData>? snapshots = null;
 
     var topicEntries = archive
       .Entries
@@ -94,7 +97,7 @@ public static class BcfExtensions {
     foreach (var entry in topicEntries) {
       var isLastTopicEntry = entry == topicEntries.Last();
 
-      Console.WriteLine(entry.FullName);
+      Log.Debug(entry.FullName);
 
       // This sets the folder context
       var uuid = entry.FullName.Split("/")[0];
@@ -104,16 +107,16 @@ public static class BcfExtensions {
 
       if (isNewTopic)
         WritingOutMarkup(
-          markup,
-          viewpoint,
-          ref snapshot,
+          ref markup,
+          ref visInfos,
+          ref snapshots,
           currentUuid,
           markups,
           onMarkupCreated);
 
       currentUuid = uuid;
 
-      // Parsing BCF files
+      // Parsing markup files
       if (entry.IsBcf()) {
         var document = await XDocument.LoadAsync(
           entry.Open(),
@@ -124,29 +127,26 @@ public static class BcfExtensions {
 
       // Parsing the viewpoint file
       else if (entry.IsBcfViewpoint()) {
-        if (viewpoint != null)
-          // TODO: No support for multiple viewpoints!
-          Console.WriteLine("No support for multiple viewpoints!");
+        visInfos ??= new Dictionary<string, TVisualizationInfo>();
         var document = await XDocument.LoadAsync(
           entry.Open(),
           LoadOptions.None,
           CancellationToken.None);
-        viewpoint = document.BcfObject<TVisualizationInfo>();
+        visInfos.Add(entry.Name, document.BcfObject<TVisualizationInfo>());
       }
 
       // Parsing the snapshot
       else if (entry.IsSnapshot()) {
-        if (snapshot != null)
-          // TODO: No support for multiple snapshots!
-          Console.WriteLine("No support for multiple snapshots!");
-        snapshot = entry.Snapshot();
+        snapshots ??= new Dictionary<string, FileData>();
+        var snapshot = entry.FileData();
+        snapshots.Add(snapshot.Key, snapshot.Value);
       }
 
       if (isLastTopicEntry)
         WritingOutMarkup(
-          markup,
-          viewpoint,
-          ref snapshot,
+          ref markup,
+          ref visInfos,
+          ref snapshots,
           currentUuid,
           markups,
           onMarkupCreated);
@@ -158,9 +158,9 @@ public static class BcfExtensions {
   }
 
   private static void WritingOutMarkup<TMarkup, TVisualizationInfo>(
-    TMarkup? markup,
-    TVisualizationInfo? viewpoint,
-    ref string? snapshot,
+    ref TMarkup? markup,
+    ref Dictionary<string, TVisualizationInfo>? visInfos,
+    ref Dictionary<string, FileData>? snapshots,
     string currentUuid,
     ConcurrentBag<TMarkup> markups,
     IBcfBuilderDelegate.OnMarkupCreated<TMarkup>? onMarkupCreated = null)
@@ -168,24 +168,16 @@ public static class BcfExtensions {
     where TVisualizationInfo : IVisualizationInfo {
     // This is a new subfolder, writing out Markup.
     if (markup != null) {
-      var firstViewPoint = markup.GetFirstViewPoint();
+      markup.SetViewPoints(visInfos, snapshots);
 
-      if (firstViewPoint != null) {
-        firstViewPoint.SetVisualizationInfo(viewpoint);
-        firstViewPoint.SnapshotData = snapshot;
-      }
+      onMarkupCreated?.Invoke(markup);
 
-      if (onMarkupCreated is not null) {
-        onMarkupCreated(markup);
-      }
-      else {
-        markups.Add(markup);
-      }
+      markups.Add(markup);
 
       // Null-ing external references
       markup = default;
-      viewpoint = default;
-      snapshot = null;
+      visInfos = null;
+      snapshots = null;
     }
     else {
       throw new InvalidDataException(
@@ -219,31 +211,68 @@ public static class BcfExtensions {
   /// <param name="stream">The stream of the BCFzip.</param>
   /// <returns>Returns a Task with an `ProjectInfo` model.</returns>
   public static Task<TProjectInfo?> ParseProject<TProjectInfo>(Stream stream) {
-    return ParseOptional<TProjectInfo>(stream, entry => entry.IsProject());
+    return ParseOptional<TProjectInfo>(stream, entry => entry.IsBcfProject());
   }
 
   /// <summary>
   ///   The method unzips the BCFzip from a file stream,
   ///   and parses the `documents.xml` file within to create an in memory
   ///   representation of the data.
-  ///   An XML file defining the documents in a project.
-  ///   This is an optional file in the BCF archive.
-  ///   HISTORY: New file in BCF 3.0.
+  ///   It is possible to store additional files in the BCF container as
+  ///   documents. The documents must be located in a folder called Documents in
+  ///   the root directory, and must be referenced by the documents.xml file.
+  ///   For uniqueness, the filename of a document in the BCF must be the
+  ///   document guid. The actual filename is stored in the documents.xml.
+  ///   
+  ///   The `documents.xml` and documents folder are optional in the BCF archive.
+  ///
+  ///   HISTORY: New in BCF 3.0.
   /// </summary>
   /// <param name="stream">The stream of to the BCFzip.</param>
   /// <returns>Returns a Task with an `DocumentInfo` model.</returns>
-  public static Task<TDocumentInfo?>
-    ParseDocuments<TDocumentInfo>(Stream stream) {
-    return ParseOptional<TDocumentInfo>(stream, entry => entry.IsDocuments());
+  public static async Task<TDocumentInfo?>
+    ParseDocuments<TDocumentInfo>(Stream stream)
+    where TDocumentInfo : IDocumentInfo {
+    if (stream is null || !stream.CanRead)
+      throw new ArgumentException("Source stream is not readable.");
+
+    var objType = typeof(TDocumentInfo);
+    Log.Debug($"\nProcessing {objType.Name}\n");
+
+    var documentInfo = default(TDocumentInfo);
+
+    using var archive = new ZipArchive(stream, ZipArchiveMode.Read, true);
+
+    // Without the document info file (documents.xml) further operations are
+    // meaningless
+    var documentInfoEntry = archive
+      .Entries
+      .FirstOrDefault(entry => entry.IsDocuments());
+    if (documentInfoEntry is null) return documentInfo;
+
+    var document = await XDocument.LoadAsync(
+      documentInfoEntry.Open(),
+      LoadOptions.None,
+      CancellationToken.None);
+    documentInfo = document.BcfObject<TDocumentInfo>();
+
+    foreach (var entry in archive.DocumentEntries()) {
+      Log.Debug(entry.FullName);
+      documentInfo.SetDocumentData(entry);
+    }
+
+    // Stream must be positioned back to 0 in order to use it again
+    stream.Position = 0;
+    return documentInfo;
   }
 
   private static Task<T> ParseRequired<T>(
     Stream stream,
     Func<ZipArchiveEntry, bool> filterFn) {
-    var obj = ParseObject<T>(stream, filterFn, true);
-    if (obj == null)
+    var obj = ParseObject<T>(stream, filterFn);
+    if (obj is null)
       throw new InvalidDataException($"{typeof(T)} is not found in BCF.");
-    return obj!;
+    return obj;
   }
 
   private static Task<T?> ParseOptional<T>(
@@ -261,19 +290,16 @@ public static class BcfExtensions {
   /// </summary>
   /// <param name="stream">The stream containing the BCFzip data.</param>
   /// <param name="filterFn">The filter function used to identify the desired file.</param>
-  /// <param name="isRequired">Specifies whether the file is required or optional.</param>
   /// <typeparam name="T">The generic type parameter representing the desired object type.</typeparam>
   /// <returns>Returns a Task with a model of type `T`.</returns>
-  /// <exception cref="InvalidDataException">Thrown if the file is marked as required but is missing.</exception>
   private static async Task<T?> ParseObject<T>(
     Stream stream,
-    Func<ZipArchiveEntry, bool> filterFn,
-    bool isRequired = false) {
-    if (stream == null || !stream.CanRead)
+    Func<ZipArchiveEntry, bool> filterFn) {
+    if (stream is null || !stream.CanRead)
       throw new ArgumentException("Source stream is not readable.");
 
     var objType = typeof(T);
-    Console.WriteLine($"\nProcessing {objType.Name}\n");
+    Log.Debug($"\nProcessing {objType.Name}\n");
 
     var obj = default(T);
 
@@ -283,7 +309,7 @@ public static class BcfExtensions {
     foreach (var entry in archive.Entries) {
       if (!filterFn(entry)) continue;
 
-      Console.WriteLine(entry.FullName);
+      Log.Debug(entry.FullName);
 
       var document = await XDocument.LoadAsync(
         entry.Open(),
@@ -338,7 +364,7 @@ public static class BcfExtensions {
     foreach (var entry in archive.Entries) {
       if (!entry.IsVersion()) continue;
 
-      Console.WriteLine(entry.FullName);
+      Log.Debug(entry.FullName);
 
       var document = await XDocument.LoadAsync(
         entry.Open(),

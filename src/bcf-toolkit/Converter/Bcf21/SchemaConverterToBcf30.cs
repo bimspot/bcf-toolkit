@@ -4,19 +4,20 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf30;
+using BcfToolkit.Utils;
 
 namespace BcfToolkit.Converter.Bcf21;
 
-public class BcfBuilderDelegate : BcfToolkit.Builder.Bcf21.Interfaces.IBcfBuilderDelegate {
-  public BcfToolkit.Builder.Bcf21.Interfaces.IBcfBuilderDelegate.OnMarkupCreated<Model.Bcf21.Markup>
-    MarkupCreated { get; } = markup => {
-      var converted = SchemaConverterToBcf30.ConvertMarkup(markup);
-  };
-
-  public BcfToolkit.Builder.Bcf21.Interfaces.IBcfBuilderDelegate.OnProjectCreated<Model.Bcf21.ProjectExtension>
-    ProjectCreated { get; } = Console.WriteLine;
-
-}
+// public class BcfBuilderDelegate : BcfToolkit.Builder.Bcf21.Interfaces.IBcfBuilderDelegate {
+//   public BcfToolkit.Builder.Bcf21.Interfaces.IBcfBuilderDelegate.OnMarkupCreated<Model.Bcf21.Markup>
+//     MarkupCreated { get; } = markup => {
+//       var converted = SchemaConverterToBcf30.ConvertMarkup(markup);
+//   };
+//
+//   public BcfToolkit.Builder.Bcf21.Interfaces.IBcfBuilderDelegate.OnProjectCreated<Model.Bcf21.ProjectExtension>
+//     ProjectCreated { get; } = Console.WriteLine;
+//
+// }
 
 public static class SchemaConverterToBcf30 {
 
@@ -32,87 +33,130 @@ public static class SchemaConverterToBcf30 {
     var builder = new BcfBuilder();
     builder
       .AddMarkups(from.Markups.Select(ConvertMarkup).ToList(), true)
-      .SetDocument(UpdateDocumentInfo(from.Markups
-        .SelectMany(m => m.Topic.DocumentReference)
-        .Where(r => !r.IsExternal)
-        .ToList()));
+      .SetDocument(dI => dI
+        .AddDocuments(from.Markups
+          .SelectMany(m => m.Topic.DocumentReference)
+          .Where(r => !r.IsExternal)
+          .ToList()
+          .Select(ConvertDocument)
+          .ToList()));
 
     var project = from.Project;
-    if (project != null)
-      builder.SetProject(p => p
-        .SetProjectId(project.Project.ProjectId)
-        .SetProjectName(project.Project.Name));
+
+    if (project != null) {
+      builder.SetProject(p => {
+        p.SetProjectId(project.Project.ProjectId);
+        if (project.Project.Name != string.Empty) {
+          p.SetProjectName(project.Project.Name);
+        }
+      });
+    }
 
     return builder.Build();
   }
   
-  public static async Task ProcessStream(Stream stream) {
-    var del = new BcfBuilderDelegate();
-    var fromBuilder = new BcfToolkit.Builder.Bcf21.BcfBuilder(del);
-    await fromBuilder.ProcessStream(stream);
-    tobecontinued
-  }
+  // public static async Task ProcessStream(Stream stream) {
+  //   var del = new BcfBuilderDelegate();
+  //   var fromBuilder = new BcfToolkit.Builder.Bcf21.BcfBuilder(del);
+  //   await fromBuilder.ProcessStream(stream);
+  // }
 
   public static Model.Bcf30.Markup ConvertMarkup(Model.Bcf21.Markup from) {
     var builder = new MarkupBuilder();
     var topic = from.Topic;
     builder
       .AddHeaderFiles(from.Header.Select(ConvertHeaderFile).ToList())
-      .AddReferenceLinks(topic.ReferenceLink.ToList())
-      .SetTitle(topic.Title)
-      .SetPriority(topic.Priority)
+      .AddReferenceLinks(topic.ReferenceLink.Where(referenceLink =>
+        !string.IsNullOrEmpty(referenceLink))
+        .ToList())
       .SetIndex(topic.Index)
-      .AddLabels(topic.Labels.ToList())
+      .SetTitle(from.Topic.Title)
+      .AddLabels(topic.Labels.Where(label => !string.IsNullOrEmpty(label))
+        .ToList())
       .SetCreationDate(topic.CreationDate)
-      .SetCreationAuthor(topic.CreationAuthor)
+      .SetCreationAuthor(from.Topic.CreationAuthor)
       .SetModifiedDate(topic.ModifiedDate)
-      .SetModifiedAuthor(topic.ModifiedAuthor)
       .SetDueDate(topic.DueDate)
-      .SetAssignedTo(topic.AssignedTo)
-      .SetStage(topic.Stage)
-      .SetDescription(topic.Description)
-      .AddRelatedTopics(topic.RelatedTopic.Select(t => t.Guid).ToList())
+      .AddRelatedTopics(topic.RelatedTopic.Select(t => t.Guid)
+        .ToList())
       .AddComments(from.Comment.Select(ConvertComment).ToList())
       .AddViewPoints(from.Viewpoints.Select(ConvertViewPoint).ToList())
       .SetGuid(from.Topic.Guid)
-      .SetTopicType(from.Topic.TopicType ??= "ERROR")
-      .SetTopicStatus(from.Topic.TopicStatus ??= "OPEN")
+      .SetTopicType(string.IsNullOrEmpty(from.Topic.TopicType)
+        ? "ERROR"
+        : from.Topic.TopicType)
+      .SetTopicStatus(string.IsNullOrEmpty(from.Topic.TopicStatus)
+        ? "OPEN"
+        : from.Topic.TopicStatus)
       .AddDocumentReferences(from.Topic.DocumentReference
         .Select(ConvertDocumentReference).ToList());
 
     var bimSnippet = topic.BimSnippet;
-    if (bimSnippet != null)
+
+    if (bimSnippet != null) {
       builder
         .SetBimSnippet(b => b
           .SetReference(bimSnippet.Reference)
           .SetReferenceSchema(bimSnippet.ReferenceSchema)
           .SetSnippetType(bimSnippet.SnippetType)
           .SetIsExternal(bimSnippet.IsExternal));
+    }
+
+    if (from.Topic.Priority != string.Empty)
+      builder.SetPriority(from.Topic.Priority);
+
+    if (from.Topic.ModifiedAuthor != string.Empty)
+      builder.SetModifiedAuthor(from.Topic.ModifiedAuthor);
+
+    if (from.Topic.AssignedTo != string.Empty)
+      builder.SetAssignedTo(from.Topic.AssignedTo);
+
+    if (from.Topic.Stage != string.Empty)
+      builder.SetStage(from.Topic.Stage);
+
+    if (from.Topic.Description != string.Empty)
+      builder.SetDescription(from.Topic.Description);
 
     return builder.Build();
   }
 
   private static Model.Bcf30.File ConvertHeaderFile(Model.Bcf21.HeaderFile from) {
     var builder = new FileBuilder();
-    return builder
-      .SetFileName(from.Filename)
+
+    builder
       .SetDate(from.Date)
-      .SetReference(from.Reference)
       .SetIfcProject(from.IfcProject)
       .SetIfcSpatialStructureElement(from.IfcSpatialStructureElement)
-      .SetIsExternal(from.IsExternal)
-      .Build();
+      .SetIsExternal(from.IsExternal);
+
+    if (from.Filename != string.Empty)
+      builder.SetFileName(from.Filename);
+
+    if (from.Reference != string.Empty)
+      builder.SetReference(from.Reference);
+
+    return builder.Build();
   }
 
   private static Model.Bcf30.DocumentReference ConvertDocumentReference(
     Model.Bcf21.TopicDocumentReference from) {
     var builder = new DocumentReferenceBuilder();
-    return builder
-      .SetDescription(from.Description)
-      .SetGuid(from.Guid ??= Guid.NewGuid().ToString())
+
+    var guid = from.Guid ??= Guid.NewGuid().ToString();
+    builder
+      .SetGuid(guid)
       .SetUrl(from.IsExternal ? from.ReferencedDocument : null)
-      .SetDocumentGuid(from.IsExternal ? null : Guid.NewGuid().ToString()) //TODO: generate guid based on guid and description
-      .Build();
+      // pattern for document guid
+      // {guid of the referenced document}{name of the referenced document}
+      .SetDocumentGuid(!from.IsExternal
+        ? GuidUtils.NewGuidByContent($"{guid}{from.ReferencedDocument}")
+        : null);
+
+    if (from.Description != string.Empty) {
+      builder.SetDescription(from.Description);
+    }
+
+    return builder.Build();
   }
 
   private static Model.Bcf30.Comment ConvertComment(Model.Bcf21.Comment from) {
@@ -120,27 +164,46 @@ public static class SchemaConverterToBcf30 {
     builder
       .SetDate(from.Date)
       .SetAuthor(from.Author)
-      .SetCommentProperty(from.CommentProperty)
       .SetModifiedDate(from.ModifiedDate)
-      .SetModifiedAuthor(from.ModifiedAuthor)
       .SetGuid(from.Guid);
 
-    if (from.Viewpoint != null)
-      builder.SetViewPointGuid(from.Viewpoint?.Guid);
+    if (from.ModifiedAuthor != string.Empty) {
+      builder.SetModifiedAuthor(from.ModifiedAuthor);
+    }
+
+    if (from.Viewpoint != null) {
+      builder
+        .SetViewPointGuid(from.Viewpoint?.Guid);
+
+      if (from.CommentProperty != string.Empty) {
+        builder.SetCommentProperty(from.CommentProperty);
+      }
+    }
+    else {
+      builder.SetCommentProperty(from.CommentProperty);
+    }
 
     return builder.Build();
   }
 
   private static Model.Bcf30.ViewPoint ConvertViewPoint(
     Model.Bcf21.ViewPoint from) {
-    return new Model.Bcf30.ViewPoint {
-      Viewpoint = from.Viewpoint,
-      Snapshot = from.Snapshot,
+    var viewPoint = new Model.Bcf30.ViewPoint {
       SnapshotData = from.SnapshotData,
       Index = from.Index,
       Guid = from.Guid,
       VisualizationInfo = ConvertVisualizationInfo(from.VisualizationInfo)
     };
+
+    if (from.Viewpoint != string.Empty) {
+      viewPoint.Viewpoint = from.Viewpoint;
+    }
+
+    if (from.Snapshot != string.Empty) {
+      viewPoint.Snapshot = from.Snapshot;
+    }
+
+    return viewPoint;
   }
 
   private static Model.Bcf30.VisualizationInfo? ConvertVisualizationInfo(
@@ -225,11 +288,18 @@ public static class SchemaConverterToBcf30 {
   private static Model.Bcf30.Component ConvertComponent(
     Model.Bcf21.Component from) {
     var builder = new ComponentBuilder();
-    return builder
-      .SetOriginatingSystem(from.OriginatingSystem)
-      .SetAuthoringToolId(from.AuthoringToolId)
-      .SetIfcGuid(from.IfcGuid)
-      .Build();
+    builder
+      .SetIfcGuid(from.IfcGuid);
+
+    if (from.OriginatingSystem != string.Empty) {
+      builder.SetOriginatingSystem(from.OriginatingSystem);
+    }
+
+    if (from.AuthoringToolId != string.Empty) {
+      builder.SetAuthoringToolId(from.AuthoringToolId);
+    }
+
+    return builder.Build();
   }
 
   private static Model.Bcf30.ComponentColoringColor ConvertColor(
@@ -292,7 +362,7 @@ public static class SchemaConverterToBcf30 {
       .Build();
   }
 
-  private static Action<DocumentInfoBuilder> UpdateDocumentInfo(
+  private static Action<DocumentInfoBuilder> ConvertDocumentInfo(
     List<Model.Bcf21.TopicDocumentReference> docReferences) {
     return dI => dI
       .AddDocuments(docReferences.Select(ConvertDocument).ToList());
@@ -301,10 +371,18 @@ public static class SchemaConverterToBcf30 {
   private static Model.Bcf30.Document ConvertDocument(
     Model.Bcf21.TopicDocumentReference docReference) {
     var builder = new DocumentBuilder();
-    return builder
-      .SetFileName(docReference.ReferencedDocument)
-      .SetDescription(docReference.Description)
-      .SetGuid(docReference.Guid)
-      .Build();
+    builder
+      .SetFileName(Path.GetFileName(docReference.ReferencedDocument))
+      // pattern for document guid
+      // {guid of the referenced document}{name of the referenced document}
+      .SetGuid(GuidUtils.NewGuidByContent(
+        $"{docReference.Guid}{docReference.ReferencedDocument}"))
+      .SetDocumentData(docReference.DocumentData);
+
+    if (docReference.Description != string.Empty) {
+      builder.SetDescription(docReference.Description);
+    }
+
+    return builder.Build();
   }
 }

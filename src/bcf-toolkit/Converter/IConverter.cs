@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using BcfToolkit.Model;
+using BcfToolkit.Model.Interfaces;
 
 namespace BcfToolkit.Converter;
 
