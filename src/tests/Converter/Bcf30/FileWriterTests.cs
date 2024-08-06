@@ -19,7 +19,7 @@ public class FileWriterTests {
 
     var bcfResultBuilder = new BcfBuilder();
     var bcfResult = await bcfResultBuilder
-      .BuildFromStream(stream);
+      .BuildInMemoryFromStream(stream);
 
     Assert.That(
       bcf.Markups.FirstOrDefault()?.Topic.Title,
@@ -37,7 +37,7 @@ public class FileWriterTests {
 
     var bcfResultBuilder = new BcfBuilder();
     var bcfResult = await bcfResultBuilder
-      .BuildFromStream(stream);
+      .BuildInMemoryFromStream(stream);
 
     Assert.That(
       bcf.Markups.FirstOrDefault()?.Topic.Title,

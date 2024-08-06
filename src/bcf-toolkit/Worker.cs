@@ -135,9 +135,9 @@ public class Worker {
   /// </summary>
   /// <param name="stream">The stream of the source BCF zip archive.</param>
   /// <returns>Returns the in-memory BCF model.</returns>
-  public async Task BcfFromStream(Stream stream) {
+  public async Task<Bcf> BcfFromStream(Stream stream) {
     await InitConverterFromStreamArchive(stream);
-    await _converter.BcfFromStream<Bcf>(stream);
+    return await _converter.BcfFromStream<Bcf>(stream);
   }
 
   /// <summary>

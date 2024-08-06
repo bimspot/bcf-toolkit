@@ -8,14 +8,7 @@ using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit;
 
-public class BcfBuilderDelegate : IBcfBuilderDelegate {
-  public IBcfBuilderDelegate.OnMarkupCreated<Markup>
-    MarkupCreated { get; } = Console.WriteLine;
 
-  public IBcfBuilderDelegate.OnProjectCreated<ProjectExtension>
-    ProjectCreated { get; } = Console.WriteLine;
-
-}
 
 internal static class Program {
   private static async Task Main(string[] args) {

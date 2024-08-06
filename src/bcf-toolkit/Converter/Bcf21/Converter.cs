@@ -9,7 +9,6 @@ using BcfToolkit.Builder.Bcf21;
 using BcfToolkit.Utils;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
-using Version = BcfToolkit.Model.Bcf21.Version;
 
 namespace BcfToolkit.Converter.Bcf21;
 
@@ -19,7 +18,7 @@ namespace BcfToolkit.Converter.Bcf21;
 /// </summary>
 public class Converter : IConverter {
   private BcfBuilder _builder = new();
-
+  
   /// <summary>
   ///   Defines the converter function, which must be used for converting the
   ///   BCF object to the targeted version.
@@ -150,5 +149,11 @@ public class Converter : IConverter {
     var targetVersion = BcfVersion.TryParse(typeof(T));
     var converterFn = _converterFn[targetVersion];
     return (T)converterFn(bcf);
+  }
+  
+  public async Task ProcessStream<T>(Stream stream) {
+    var targetVersion = BcfVersion.TryParse(typeof(T));
+    
+    await _builder.ProcessStream(stream);
   }
 }
