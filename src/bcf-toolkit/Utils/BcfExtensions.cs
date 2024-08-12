@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using BcfToolkit.Builder.Bcf30.Interfaces;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Interfaces;
 
@@ -55,8 +55,10 @@ public static class BcfExtensions {
     return await _ParseMarkups<TMarkup, TVisualizationInfo>(stream);
   }
 
-  private static async Task<ConcurrentBag<TMarkup>> _ParseMarkups<TMarkup,
-    TVisualizationInfo>(Stream stream,
+  private static async Task<ConcurrentBag<TMarkup>> _ParseMarkups<
+    TMarkup,
+    TVisualizationInfo>(
+    Stream stream,
     IBcfBuilderDelegate.OnMarkupCreated<TMarkup>? onMarkupCreated = null)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo {
@@ -170,9 +172,11 @@ public static class BcfExtensions {
     if (markup != null) {
       markup.SetViewPoints(visInfos, snapshots);
 
-      onMarkupCreated?.Invoke(markup);
-
-      markups.Add(markup);
+      // If a delegate is provided, invoke it without adding markup to the BCF
+      if(onMarkupCreated is not null)
+        onMarkupCreated.Invoke(markup);
+      else
+        markups.Add(markup);
 
       // Null-ing external references
       markup = default;

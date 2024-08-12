@@ -147,15 +147,14 @@ public class Converter : IConverter {
   
   public async Task<T> BcfFromStream<T>(Stream stream) {
     var bcf = await _builder.BuildInMemoryFromStream(stream);
-
     var targetVersion = BcfVersion.TryParse(typeof(T));
     var converterFn = _converterFn[targetVersion];
     return (T)converterFn(bcf);
   }
   
-  public async Task ProcessStream<T>(Stream stream) {
-    var targetVersion = BcfVersion.TryParse(typeof(T));
-    
+  public async Task ProcessStream(Stream stream) {
+    // var targetVersion = BcfVersion.TryParse(typeof(T));
+    _builder.Set
     await _builder.ProcessStream(stream);
   }
 }

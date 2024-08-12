@@ -3,7 +3,6 @@ using BcfToolkit.Builder.Bcf30.Interfaces;
 using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model.Bcf30;
 using Bcf = BcfToolkit.Model.Bcf30.Bcf;
-using IBcfBuilderDelegate = BcfToolkit.Builder.Bcf30.Interfaces.IBcfBuilderDelegate;
 using Markup = BcfToolkit.Model.Bcf30.Markup;
 
 namespace BcfToolkit.Builder.Bcf30;
@@ -15,16 +14,11 @@ public partial class BcfBuilder : IBcfBuilder<
     ExtensionsBuilder,
     DocumentInfoBuilder>,
   IDefaultBuilder<BcfBuilder> {
+  
   private readonly Bcf _bcf = new();
-
-  private readonly IBcfBuilderDelegate? _delegate;
-
-  public BcfBuilder(IBcfBuilderDelegate? builderDelegate = null) {
-    this._delegate = builderDelegate;
-
-    _bcf.Version = new VersionBuilder()
-      .WithDefaults()
-      .Build();
+  
+  public BcfBuilder() {
+    SetVersion();
   }
 
   public BcfBuilder AddMarkup(Action<MarkupBuilder> builder) {
@@ -52,6 +46,13 @@ public partial class BcfBuilder : IBcfBuilder<
     var documentInfo =
       BuilderUtils.BuildItem<DocumentInfoBuilder, DocumentInfo>(builder);
     _bcf.Document = documentInfo;
+    return this;
+  }
+
+  public BcfBuilder SetVersion() {
+    _bcf.Version = new VersionBuilder()
+      .WithDefaults()
+      .Build();
     return this;
   }
 

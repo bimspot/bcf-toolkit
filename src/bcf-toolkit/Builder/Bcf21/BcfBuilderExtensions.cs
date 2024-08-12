@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -8,14 +7,14 @@ using System.Threading.Tasks;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 using BcfToolkit.Utils;
-using IBcfBuilderDelegate = BcfToolkit.Builder.Bcf21.Interfaces.IBcfBuilderDelegate;
+using Interfaces_IBcfBuilderDelegate = BcfToolkit.Builder.Interfaces.IBcfBuilderDelegate;
 
 namespace BcfToolkit.Builder.Bcf21;
 
 public partial class BcfBuilder {
-  private readonly IBcfBuilderDelegate? _delegate;
+  private readonly Interfaces_IBcfBuilderDelegate? _delegate;
   
-  public BcfBuilder(IBcfBuilderDelegate? builderDelegate = null) {
+  public BcfBuilder(Interfaces_IBcfBuilderDelegate builderDelegate = null) {
     this._delegate = builderDelegate;
     
     _bcf.Version = new VersionBuilder()

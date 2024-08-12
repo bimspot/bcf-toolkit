@@ -18,10 +18,17 @@ public class BcfBuilderDelegate : IBcfBuilderDelegate {
       Console.WriteLine(d);
   };
 
+  public IBcfBuilderDelegate.OnExtensionsCreated<IExtensions> ExtensionsCreated {
+    get;
+  }
+
 
   public IBcfBuilderDelegate.OnProjectCreated<IProject>
     ProjectCreated { get; } = Console.WriteLine;
 
+  public IBcfBuilderDelegate.OnDocumentCreated<IDocumentInfo> DocumentCreatedCreated {
+    get;
+  }
 }
 
 internal static class Program {
