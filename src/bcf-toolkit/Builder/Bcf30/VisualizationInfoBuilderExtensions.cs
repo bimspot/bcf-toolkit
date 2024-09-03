@@ -30,4 +30,19 @@ public partial class VisualizationInfoBuilder {
     bitmaps?.ForEach(_visualizationInfo.Bitmaps.Add);
     return this;
   }
+
+  public VisualizationInfoBuilder SetOrthogonalCamera(OrthogonalCamera orthogonalCamera) {
+    _visualizationInfo.OrthogonalCamera = orthogonalCamera;
+    return this;
+  }
+
+  public VisualizationInfoBuilder SetPerspectiveCamera(PerspectiveCamera perspectiveCamera) {
+    _visualizationInfo.PerspectiveCamera = perspectiveCamera;
+    return this;
+  }
+
+  public VisualizationInfoBuilder SetVisibility(ComponentVisibility visibility) {
+    _visualizationInfo.GetComponentsInstance().Visibility = visibility;
+    return this;
+  }
 }

@@ -6,7 +6,7 @@ using BcfToolkit.Model.Interfaces;
 
 namespace BcfToolkit.Builder.Bcf30;
 
-public class ViewPointBuilder : IViewPointBuilder<
+public partial class ViewPointBuilder : IViewPointBuilder<
   ViewPointBuilder, VisualizationInfoBuilder> {
   private readonly ViewPoint _viewPoint = new();
 

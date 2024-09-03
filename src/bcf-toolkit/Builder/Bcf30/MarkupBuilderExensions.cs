@@ -44,4 +44,9 @@ public partial class MarkupBuilder {
     documentReferences.ForEach(_markup.Topic.DocumentReferences.Add);
     return this;
   }
+
+  public MarkupBuilder SetBimSnippet(BimSnippet bimSnippet) {
+    _markup.Topic.BimSnippet = bimSnippet;
+    return this;
+  }
 }

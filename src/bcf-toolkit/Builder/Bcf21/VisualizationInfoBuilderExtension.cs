@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 
 namespace BcfToolkit.Builder.Bcf21;
@@ -48,6 +46,12 @@ public partial class VisualizationInfoBuilder {
   public VisualizationInfoBuilder SetPerspectiveCamera(
     PerspectiveCamera? perspectiveCamera) {
     _visualizationInfo.PerspectiveCamera = perspectiveCamera;
+    return this;
+  }
+
+  public VisualizationInfoBuilder SetViewSetupHints(
+    ViewSetupHints? viewSetupHints) {
+    _visualizationInfo.GetComponentsInstance().ViewSetupHints = viewSetupHints;
     return this;
   }
 
