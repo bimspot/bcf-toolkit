@@ -284,10 +284,9 @@ public class SuperBcfFile {
       .Build();
 
     await _converter.ToBcf(bcf,
-      "/Users/daniel/developer/bimspot/bcf-toolkit/src/tests/Resources/Bcf/v3.0/super30.bcfzip");
+      "Resources/Bcf/v3.0/super30.bcfzip");
   }
 
-  [Test]
   public async Task ReadBcf30FileTest() {
     var samples = new List<string> {
       "Resources/Bcf/v3.0/super30.bcfzip"

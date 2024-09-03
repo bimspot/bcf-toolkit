@@ -241,7 +241,7 @@ public class SuperBcfFile {
       .Build();
 
     await _converter.ToBcf(bcf,
-      "/Users/daniel/developer/bimspot/bcf-toolkit/src/tests/Resources/Bcf/v2.1/super21.zip");
+      "Resources/Bcf/v2.1/super21.bcfzip");
   }
 
 
