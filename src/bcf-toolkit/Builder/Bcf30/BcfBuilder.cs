@@ -14,9 +14,9 @@ public partial class BcfBuilder : IBcfBuilder<
     ExtensionsBuilder,
     DocumentInfoBuilder>,
   IDefaultBuilder<BcfBuilder> {
-  
+
   private readonly Bcf _bcf = new();
-  
+
   public BcfBuilder() {
     SetVersion();
   }

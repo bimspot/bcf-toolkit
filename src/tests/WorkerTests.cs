@@ -142,7 +142,7 @@ public class WorkerTests {
     Assert.That(expectedVersion, Is.EqualTo(version));
     await stream.FlushAsync();
   }
-  
+
   // [Test]
   // [Category("BCF v3.0")]
   // public async Task BcfV30ToV21StreamSamplesTests() {

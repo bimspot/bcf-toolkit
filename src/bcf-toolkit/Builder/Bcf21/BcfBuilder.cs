@@ -12,7 +12,11 @@ public partial class BcfBuilder : IBcfBuilder<
     ProjectExtensionBuilder>,
   IDefaultBuilder<BcfBuilder> {
   private readonly Bcf _bcf = new();
-  
+
+  public BcfBuilder() {
+    SetVersion();
+  }
+
   public BcfBuilder AddMarkup(Action<MarkupBuilder> builder) {
     var markup =
       (Markup)BuilderUtils.BuildItem<MarkupBuilder, IMarkup>(builder);
@@ -25,6 +29,13 @@ public partial class BcfBuilder : IBcfBuilder<
       (ProjectExtension)BuilderUtils.BuildItem<ProjectExtensionBuilder, IProject>(
         builder);
     _bcf.Project = project;
+    return this;
+  }
+
+  public BcfBuilder SetVersion() {
+    _bcf.Version = new VersionBuilder()
+      .WithDefaults()
+      .Build();
     return this;
   }
 

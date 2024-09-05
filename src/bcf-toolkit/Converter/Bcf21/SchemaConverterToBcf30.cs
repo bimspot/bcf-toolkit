@@ -54,7 +54,7 @@ public static class SchemaConverterToBcf30 {
 
     return builder.Build();
   }
-  
+
   // public static async Task ProcessStream(Stream stream) {
   //   var del = new BcfBuilderDelegate();
   //   var fromBuilder = new BcfToolkit.Builder.Bcf21.BcfBuilder(del);

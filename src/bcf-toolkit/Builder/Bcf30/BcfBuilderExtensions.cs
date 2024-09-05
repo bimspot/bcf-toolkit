@@ -10,32 +10,35 @@ using BcfToolkit.Utils;
 namespace BcfToolkit.Builder.Bcf30;
 
 public partial class BcfBuilder {
-  
+
   private IBcfBuilderDelegate? _delegate;
-  
+
   public void SetDelegate(IBcfBuilderDelegate? builderDelegate) {
     this._delegate = builderDelegate;
   }
-  
-  public async Task ProcessStream(Stream source) {
+
+  public Task ProcessStream(Stream source) {
     if (_delegate is null) {
       Console.WriteLine("IBcfBuilderDelegate is not set.");
-      return;
+      return Task.CompletedTask;
     }
 
-    await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(
-      source,
-      _delegate.MarkupCreated);
+    var tasks = new List<Task> {
+      BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(
+        source,
+        _delegate.MarkupCreated),
+      BcfExtensions.ParseExtensions<Extensions>(
+        source,
+        _delegate.ExtensionsCreated),
+      BcfExtensions.ParseProject<ProjectInfo>(
+        source,
+        _delegate.ProjectCreated),
+      BcfExtensions.ParseDocuments<DocumentInfo>(
+        source,
+        _delegate.DocumentCreatedCreated)
+    };
 
-    // var extensions = await BcfExtensions.ParseExtensions<Extensions>(source);
-    // _delegate.ExtensionsCreated(extensions);
-    //
-    // _bcf.Project = await BcfExtensions.ParseProject<ProjectInfo>(source);
-    // _bcf.Document = await BcfExtensions.ParseDocuments<DocumentInfo>(source);
-    // var extensions = await BcfExtensions.ParseExtensions<Extensions>(source);
-
-    // _bcf.Project = await BcfExtensions.ParseProject<ProjectInfo>(source);
-    // _bcf.Document = await BcfExtensions.ParseDocuments<DocumentInfo>(source);
+    return Task.WhenAll(tasks);
   }
 
   //
@@ -46,8 +49,7 @@ public partial class BcfBuilder {
   /// <param name="source">The file stream.</param>
   /// <returns>Returns the built object.</returns>
   public async Task<Bcf> BuildInMemoryFromStream(Stream source) {
-    _bcf.Markups =
-      await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);
+    _bcf.Markups = await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);
     _bcf.Extensions = await BcfExtensions.ParseExtensions<Extensions>(source);
     _bcf.Project = await BcfExtensions.ParseProject<ProjectInfo>(source);
     _bcf.Document = await BcfExtensions.ParseDocuments<DocumentInfo>(source);

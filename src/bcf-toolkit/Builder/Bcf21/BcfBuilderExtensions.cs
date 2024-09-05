@@ -4,36 +4,32 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 using BcfToolkit.Utils;
-using Interfaces_IBcfBuilderDelegate = BcfToolkit.Builder.Interfaces.IBcfBuilderDelegate;
 
 namespace BcfToolkit.Builder.Bcf21;
 
 public partial class BcfBuilder {
-  private readonly Interfaces_IBcfBuilderDelegate? _delegate;
-  
-  public BcfBuilder(Interfaces_IBcfBuilderDelegate builderDelegate = null) {
+  private IBcfBuilderDelegate? _delegate;
+
+  public void SetDelegate(IBcfBuilderDelegate? builderDelegate) {
     this._delegate = builderDelegate;
-    
-    _bcf.Version = new VersionBuilder()
-      .WithDefaults()
-      .Build();
   }
-  public async Task ProcessStream(Stream source) {
+
+  public Task ProcessStream(Stream source) {
     if (_delegate is null) {
       Console.WriteLine("IBcfBuilderDelegate is not set.");
-      return;
+      return Task.CompletedTask;
     }
 
-    // await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source, _delegate.MarkupCreated);
+    var tasks = new List<Task> {
+      BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source, _delegate.MarkupCreated),
+      BcfExtensions.ParseProject<ProjectExtension>(source, _delegate.ProjectCreated)
+    };
 
-    // var extensions = await BcfExtensions.ParseExtensions<Extensions>(source);
-    // _delegate.ExtensionsCreated(extensions);
-    //
-    // _bcf.Project = await BcfExtensions.ParseProject<ProjectInfo>(source);
-    // _bcf.Document = await BcfExtensions.ParseDocuments<DocumentInfo>(source);
+    return Task.WhenAll(tasks);
   }
 
   public async Task<Bcf> BuildInMemoryFromStream(Stream source) {

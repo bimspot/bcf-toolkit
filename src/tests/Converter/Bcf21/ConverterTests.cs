@@ -165,9 +165,9 @@ public class ConverterTests {
         FileMode.Open,
         FileAccess.Read);
     var bcf = await _converter.BcfFromStream<Bcf>(stream);
-    Assert.That(typeof(Bcf), Is.EqualTo(bcf.GetType()));
-    Assert.That(1, Is.EqualTo(bcf.Markups.Count));
-    Assert.That("2.1", Is.EqualTo(bcf.Version?.VersionId));
+    Assert.That(bcf.GetType(), Is.EqualTo(typeof(Bcf)));
+    Assert.That(bcf.Markups.Count, Is.EqualTo(1));
+    Assert.That(bcf.Version?.VersionId, Is.EqualTo("2.1"));
   }
 
   /// <summary>

@@ -107,7 +107,7 @@ public static class FileWriter {
       }
 
       var topicFolder = $"{guid}";
-      
+
       zip.CreateEntryFromObject($"{topicFolder}/markup.bcf", markup);
 
       foreach (var viewpoint in markup.Viewpoints) {
@@ -194,13 +194,13 @@ public static class FileWriter {
         topicFolder,
         "markup.bcf",
         markup));
-      
+
       foreach (var viewpoint in markup.Viewpoints) {
         writeTasks.Add(BcfExtensions.SerializeAndWriteXmlFile(
           topicFolder,
           viewpoint.Viewpoint,
           viewpoint.VisualizationInfo));
-        
+
         var snapshotFileName = viewpoint.Snapshot;
         var snapshotBase64String = viewpoint.SnapshotData?.Data;
         if (string.IsNullOrEmpty(snapshotFileName) || snapshotBase64String == null)

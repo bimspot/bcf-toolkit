@@ -14,7 +14,7 @@ public partial class Markup : IMarkup {
   public IViewPoint? GetFirstViewPoint() {
     return Topic.Viewpoints?.FirstOrDefault();
   }
-  
+
   public void SetViewPoints<TVisualizationInfo>(
     Dictionary<string, TVisualizationInfo>? visInfos,
     Dictionary<string, FileData>? snapshots) where TVisualizationInfo : IVisualizationInfo {

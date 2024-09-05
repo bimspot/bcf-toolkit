@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf21;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Utils;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
@@ -19,7 +20,7 @@ namespace BcfToolkit.Converter.Bcf21;
 /// </summary>
 public class Converter : IConverter {
   private BcfBuilder _builder = new();
-  
+
   /// <summary>
   ///   Defines the converter function, which must be used for converting the
   ///   BCF object to the targeted version.
@@ -57,7 +58,7 @@ public class Converter : IConverter {
       };
 
   public async Task BcfToJson(Stream source, string targetPath) {
-    var bcf = await _builder.BuildInMemoryFromStream(source);    
+    var bcf = await _builder.BuildInMemoryFromStream(source);
     await FileWriter.WriteBcfToJson(bcf, targetPath);
   }
 
@@ -144,17 +145,18 @@ public class Converter : IConverter {
   public Task ToJson(IBcf bcf, string target) {
     return FileWriter.WriteBcfToJson((Bcf)bcf, target);
   }
-  
+
   public async Task<T> BcfFromStream<T>(Stream stream) {
     var bcf = await _builder.BuildInMemoryFromStream(stream);
     var targetVersion = BcfVersion.TryParse(typeof(T));
     var converterFn = _converterFn[targetVersion];
     return (T)converterFn(bcf);
   }
-  
-  public async Task ProcessStream(Stream stream) {
-    // var targetVersion = BcfVersion.TryParse(typeof(T));
-    _builder.Set
-    await _builder.ProcessStream(stream);
+
+  public Task ProcessStream(
+    Stream stream,
+    IBcfBuilderDelegate builderDelegate) {
+    _builder.SetDelegate(builderDelegate);
+    return _builder.ProcessStream(stream);
   }
 }

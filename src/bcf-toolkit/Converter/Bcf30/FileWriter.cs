@@ -110,7 +110,7 @@ public static class FileWriter {
   public static void SerializeAndWriteBcfToStream(IBcf bcf, ZipArchive zip,
     CancellationToken? cancellationToken = null) {
     var bcfObject = (Bcf)bcf;
-    
+
     zip.CreateEntryFromObject("bcf.version", new Version());
 
     // Writing markup files to zip arhive, one markup per entry.
@@ -206,7 +206,7 @@ public static class FileWriter {
       writeTasks.Add(
         BcfExtensions.SerializeAndWriteXmlFile(topicFolder, "markup.bcf",
           markup));
-      
+
       foreach (var viewpoint in markup.Topic.Viewpoints) {
         writeTasks.Add(BcfExtensions.SerializeAndWriteXmlFile(
           topicFolder,

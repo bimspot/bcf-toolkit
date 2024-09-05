@@ -206,15 +206,15 @@ public static class SchemaConverterToBcf21 {
 
     return builder
       .SetCameraDirection(
-        from.CameraDirection.X, 
+        from.CameraDirection.X,
         from.CameraDirection.Y,
         from.CameraDirection.Z)
       .SetCameraViewPoint(
-        from.CameraViewPoint.X, 
+        from.CameraViewPoint.X,
         from.CameraViewPoint.Y,
         from.CameraViewPoint.Z)
       .SetCameraUpVector(
-        from.CameraUpVector.X, 
+        from.CameraUpVector.X,
         from.CameraUpVector.Y,
         from.CameraUpVector.Z)
       .SetFieldOfView(from.FieldOfView)

@@ -139,18 +139,18 @@ public class Converter : IConverter {
   public Task ToJson(IBcf bcf, string target) {
     return FileWriter.WriteJson((Bcf)bcf, target);
   }
-  
+
   public async Task<T> BcfFromStream<T>(Stream stream) {
     var bcf = await _builder.BuildInMemoryFromStream(stream);
     var targetVersion = BcfVersion.TryParse(typeof(T));
     var converterFn = _converterFn[targetVersion];
     return (T)converterFn(bcf);
   }
-  
-  public async Task ProcessStream(
-    Stream stream, 
+
+  public Task ProcessStream(
+    Stream stream,
     IBcfBuilderDelegate builderDelegate) {
     _builder.SetDelegate(builderDelegate);
-    await _builder.ProcessStream(stream);
+    return _builder.ProcessStream(stream);
   }
 }

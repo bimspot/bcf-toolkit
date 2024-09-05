@@ -1,6 +1,5 @@
 using System;
 using BcfToolkit.Builder.Bcf21.Interfaces;
-using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 using BcfToolkit.Model.Interfaces;
 
