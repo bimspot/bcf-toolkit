@@ -621,10 +621,12 @@ namespace BcfToolkit.Model.Bcf21
         public Components Components { get; set; }
         
         [System.Xml.Serialization.XmlElementAttribute("OrthogonalCamera")]
-        public OrthogonalCamera OrthogonalCamera { get; set; }
+#nullable enable
+        public OrthogonalCamera? OrthogonalCamera { get; set; }
         
         [System.Xml.Serialization.XmlElementAttribute("PerspectiveCamera")]
-        public PerspectiveCamera PerspectiveCamera { get; set; }
+        public PerspectiveCamera? PerspectiveCamera { get; set; }
+#nullable disable
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.ObjectModel.Collection<Line> _lines;

@@ -50,6 +50,9 @@ public class ConverterTests {
       "Resources/Bcf/v3.0/SingleInvisibleWall.bcfzip",
       "Resources/output/json/v3.0/SingleInvisibleWall");
     _converter.BcfToJson(
+      "Resources/Bcf/v3.0/SingleVisibleWall.bcfzip",
+      "Resources/output/json/v3.0/SingleVisibleWall");
+    _converter.BcfToJson(
       "Resources/Bcf/v3.0/TestBcf30.bcfzip",
       "Resources/output/json/v3.0/TestBcf30");
     _converter.BcfToJson(
