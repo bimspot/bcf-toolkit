@@ -22,7 +22,6 @@ internal static class Program {
 
     Log.Configure(Serilog.Log.Debug, null, null, Serilog.Log.Error);
 
-
     var sourcePathOption = new Option<string>(
       name: "--source",
       description: "The absolute path of the source file.") { IsRequired = true };
@@ -60,7 +59,6 @@ internal static class Program {
       Log.Error(e.Message);
       Environment.Exit(9);
     }
-
     Environment.Exit(0);
   }
 }

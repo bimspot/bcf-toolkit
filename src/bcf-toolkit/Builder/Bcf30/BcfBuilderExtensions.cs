@@ -1,22 +1,55 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model.Bcf30;
 using BcfToolkit.Utils;
 
 namespace BcfToolkit.Builder.Bcf30;
 
 public partial class BcfBuilder {
+
+  private IBcfBuilderDelegate? _delegate;
+
+  public void SetDelegate(IBcfBuilderDelegate? builderDelegate) {
+    this._delegate = builderDelegate;
+  }
+
+  public Task ProcessStream(Stream source) {
+    if (_delegate is null) {
+      Console.WriteLine("IBcfBuilderDelegate is not set.");
+      return Task.CompletedTask;
+    }
+
+    var tasks = new List<Task> {
+      BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(
+        source,
+        _delegate.MarkupCreated),
+      BcfExtensions.ParseExtensions<Extensions>(
+        source,
+        _delegate.ExtensionsCreated),
+      BcfExtensions.ParseProject<ProjectInfo>(
+        source,
+        _delegate.ProjectCreated),
+      BcfExtensions.ParseDocuments<DocumentInfo>(
+        source,
+        _delegate.DocumentCreatedCreated)
+    };
+
+    return Task.WhenAll(tasks);
+  }
+
+  //
   /// <summary>
   ///   The method builds and returns an instance of BCF 3.0 object from the
   ///   specified file stream.
   /// </summary>
   /// <param name="source">The file stream.</param>
   /// <returns>Returns the built object.</returns>
-  public async Task<Bcf> BuildFromStream(Stream source) {
-    _bcf.Markups =
-      await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);
+  public async Task<Bcf> BuildInMemoryFromStream(Stream source) {
+    _bcf.Markups = await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);
     _bcf.Extensions = await BcfExtensions.ParseExtensions<Extensions>(source);
     _bcf.Project = await BcfExtensions.ParseProject<ProjectInfo>(source);
     _bcf.Document = await BcfExtensions.ParseDocuments<DocumentInfo>(source);

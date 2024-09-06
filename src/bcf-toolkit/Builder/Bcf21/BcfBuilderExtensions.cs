@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 using BcfToolkit.Utils;
@@ -12,7 +12,27 @@ using BcfToolkit.Utils;
 namespace BcfToolkit.Builder.Bcf21;
 
 public partial class BcfBuilder {
-  public async Task<Bcf> BuildFromStream(Stream source) {
+  private IBcfBuilderDelegate? _delegate;
+
+  public void SetDelegate(IBcfBuilderDelegate? builderDelegate) {
+    this._delegate = builderDelegate;
+  }
+
+  public Task ProcessStream(Stream source) {
+    if (_delegate is null) {
+      Console.WriteLine("IBcfBuilderDelegate is not set.");
+      return Task.CompletedTask;
+    }
+
+    var tasks = new List<Task> {
+      BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source, _delegate.MarkupCreated),
+      BcfExtensions.ParseProject<ProjectExtension>(source, _delegate.ProjectCreated)
+    };
+
+    return Task.WhenAll(tasks);
+  }
+
+  public async Task<Bcf> BuildInMemoryFromStream(Stream source) {
     _bcf.Markups =
       await BcfExtensions.ParseMarkups<Markup, VisualizationInfo>(source);
     _bcf.Project = await BcfExtensions.ParseProject<ProjectExtension>(source);

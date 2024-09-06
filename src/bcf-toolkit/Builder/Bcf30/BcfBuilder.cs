@@ -14,12 +14,11 @@ public partial class BcfBuilder : IBcfBuilder<
     ExtensionsBuilder,
     DocumentInfoBuilder>,
   IDefaultBuilder<BcfBuilder> {
+
   private readonly Bcf _bcf = new();
 
   public BcfBuilder() {
-    _bcf.Version = new VersionBuilder()
-      .WithDefaults()
-      .Build();
+    SetVersion();
   }
 
   public BcfBuilder AddMarkup(Action<MarkupBuilder> builder) {
@@ -47,6 +46,13 @@ public partial class BcfBuilder : IBcfBuilder<
     var documentInfo =
       BuilderUtils.BuildItem<DocumentInfoBuilder, DocumentInfo>(builder);
     _bcf.Document = documentInfo;
+    return this;
+  }
+
+  public BcfBuilder SetVersion() {
+    _bcf.Version = new VersionBuilder()
+      .WithDefaults()
+      .Build();
     return this;
   }
 

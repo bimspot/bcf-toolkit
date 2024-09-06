@@ -8,5 +8,5 @@ public interface IFromStreamBuilder<TItem> {
   ///   It builds and returns the specified item from a specified stream.
   /// </summary>
   /// <returns>Returns the built item.</returns>
-  Task<TItem> BuildFromStream(Stream source);
+  Task<TItem> BuildInMemoryFromStream(Stream source);
 }

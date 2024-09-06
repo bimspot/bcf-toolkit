@@ -9,9 +9,9 @@ using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 using NUnit.Framework;
 
-namespace tests.Builder.Bcf21;
+namespace Tests.Builder.Bcf21;
 
-public class BcfBuilderTests {
+public class BcfBuilderInMemoryTests {
   private BcfBuilder _builder = null!;
 
 
@@ -153,7 +153,7 @@ public class BcfBuilderTests {
       "Resources/Bcf/v2.1/MaximumInformation.bcfzip",
       FileMode.Open,
       FileAccess.Read);
-    var bcf = await _builder.BuildFromStream(stream);
+    var bcf = await _builder.BuildInMemoryFromStream(stream);
     Assert.That(bcf.Markups.Count, Is.EqualTo(2));
     var markup = bcf
       .Markups

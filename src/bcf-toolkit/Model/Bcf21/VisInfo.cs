@@ -114,6 +114,8 @@ namespace BcfToolkit.Model.Bcf21
         [System.ComponentModel.DescriptionAttribute("It is currently limited to a value between 45 and 60 degrees. This limitation wil" +
             "l be dropped in the next release and viewers should be expect values outside thi" +
             "s range in current implementations.")]
+
+        // NOTIFICATION: limitation does not really make sense
         // [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(double), "45", "60")]
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
         [System.Xml.Serialization.XmlElementAttribute("FieldOfView")]
@@ -619,10 +621,12 @@ namespace BcfToolkit.Model.Bcf21
         public Components Components { get; set; }
         
         [System.Xml.Serialization.XmlElementAttribute("OrthogonalCamera")]
-        public OrthogonalCamera OrthogonalCamera { get; set; }
+#nullable enable
+        public OrthogonalCamera? OrthogonalCamera { get; set; }
         
         [System.Xml.Serialization.XmlElementAttribute("PerspectiveCamera")]
-        public PerspectiveCamera PerspectiveCamera { get; set; }
+        public PerspectiveCamera? PerspectiveCamera { get; set; }
+#nullable disable
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.ObjectModel.Collection<Line> _lines;

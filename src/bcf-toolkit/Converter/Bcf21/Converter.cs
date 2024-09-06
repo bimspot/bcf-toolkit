@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf21;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Utils;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
@@ -57,7 +58,7 @@ public class Converter : IConverter {
       };
 
   public async Task BcfToJson(Stream source, string targetPath) {
-    var bcf = await _builder.BuildFromStream(source);
+    var bcf = await _builder.BuildInMemoryFromStream(source);
     await FileWriter.WriteBcfToJson(bcf, targetPath);
   }
 
@@ -146,9 +147,16 @@ public class Converter : IConverter {
   }
 
   public async Task<T> BcfFromStream<T>(Stream stream) {
-    var bcf = await _builder.BuildFromStream(stream);
+    var bcf = await _builder.BuildInMemoryFromStream(stream);
     var targetVersion = BcfVersion.TryParse(typeof(T));
     var converterFn = _converterFn[targetVersion];
     return (T)converterFn(bcf);
+  }
+
+  public Task ProcessStream(
+    Stream stream,
+    IBcfBuilderDelegate builderDelegate) {
+    _builder.SetDelegate(builderDelegate);
+    return _builder.ProcessStream(stream);
   }
 }

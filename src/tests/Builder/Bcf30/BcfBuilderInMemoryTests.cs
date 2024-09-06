@@ -4,19 +4,19 @@ using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf30;
 using NUnit.Framework;
 
-namespace tests.Builder.Bcf30;
+namespace Tests.Builder.Bcf30;
 
-public class BcfBuilderTests {
-  private BcfBuilder _builder = null!;
+public class BcfBuilderInMemoryTests {
+  private BcfBuilder _inMemoryBuilder = null!;
 
   [SetUp]
   public void Setup() {
-    _builder = new BcfBuilder();
+    _inMemoryBuilder = new BcfBuilder();
   }
 
   [Test]
   public void BuildBcfWithComplexFields() {
-    var bcf = _builder
+    var bcf = _inMemoryBuilder
       .AddMarkup(m => m
         .SetTitle("Title")
         .SetGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
@@ -38,27 +38,29 @@ public class BcfBuilderTests {
 
   [Test]
   public void BuildBcfWithMissingRequiredFields() {
-    Assert.That(() => _builder.Build(), Throws.ArgumentException);
+    Assert.That(() => _inMemoryBuilder.Build(), Throws.ArgumentException);
   }
 
   [Test]
-  public async Task BuildBcfFromStream() {
+  public async Task BuildInMemoryBcfFromStream() {
     await using var stream = new FileStream(
       "Resources/Bcf/v3.0/UserAssignment.bcfzip",
       FileMode.Open,
       FileAccess.Read);
-    var bcf = await _builder.BuildFromStream(stream);
+    var bcf = await _inMemoryBuilder.BuildInMemoryFromStream(stream);
     Assert.That(1, Is.EqualTo(bcf.Markups.Count));
     Assert.That(
       "Architect@example.com",
       Is.EqualTo(bcf.Markups.FirstOrDefault()?.Topic.AssignedTo));
   }
+
   [Test]
-  public async Task BuildEmptyBcfFromStream() {
+  public async Task BuildEmptyBcfFromStreamTest() {
     await using var stream = new FileStream(
       "Resources/Bcf/v3.0/Empty.bcfzip",
       FileMode.Open,
       FileAccess.Read);
-    Assert.That(() => _builder.BuildFromStream(stream), Throws.ArgumentException);
+    Assert.That(() => _inMemoryBuilder.BuildInMemoryFromStream(stream),
+      Throws.Exception);
   }
 }

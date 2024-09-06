@@ -12,6 +12,7 @@ public interface IBcfBuilder<
   out TDocumentInfoBuilder> :
   IBuilder<Bcf>,
   IFromStreamBuilder<Bcf> {
+
   /// <summary>
   ///   Returns the builder object extended with a new `Markup`.
   /// </summary>

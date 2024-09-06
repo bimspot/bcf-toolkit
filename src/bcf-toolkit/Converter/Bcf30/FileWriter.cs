@@ -126,7 +126,6 @@ public static class FileWriter {
       }
 
       var topicFolder = $"{guid}";
-
       zip.CreateEntryFromObject($"{topicFolder}/markup.bcf", markup);
 
       foreach (var viewpoint in markup.Topic.Viewpoints) {

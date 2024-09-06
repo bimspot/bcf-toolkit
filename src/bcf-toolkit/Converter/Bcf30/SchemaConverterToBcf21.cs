@@ -205,11 +205,21 @@ public static class SchemaConverterToBcf21 {
     var builder = new PerspectiveCameraBuilder();
 
     return builder
-      .SetCameraDirection(from.CameraDirection.X, from.CameraDirection.Y, from.CameraDirection.Z)
-      .SetCameraViewPoint(from.CameraViewPoint.X, from.CameraViewPoint.Y, from.CameraViewPoint.Z)
-      .SetCameraUpVector(from.CameraUpVector.X, from.CameraUpVector.Y, from.CameraUpVector.Z)
+      .SetCameraDirection(
+        from.CameraDirection.X,
+        from.CameraDirection.Y,
+        from.CameraDirection.Z)
+      .SetCameraViewPoint(
+        from.CameraViewPoint.X,
+        from.CameraViewPoint.Y,
+        from.CameraViewPoint.Z)
+      .SetCameraUpVector(
+        from.CameraUpVector.X,
+        from.CameraUpVector.Y,
+        from.CameraUpVector.Z)
       .SetFieldOfView(from.FieldOfView)
       .Build();
+
     //TODO: AspectRatio data loss
   }
 

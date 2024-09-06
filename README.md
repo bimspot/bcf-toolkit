@@ -182,6 +182,42 @@ worker.ToBcf(bcf, BcfVersionEnum.Bcf30, outputStream, token);
 await outputStream.FlushAsync();
 ```
 
+#### Stream processing with delegate callbacks
+The converters support processing BCF file streams with delegate-based callback
+functions. This allows for the incremental construction of an in-memory BCF
+representation, where a delegate function is invoked after each part of the BCF
+is processed. It allows a more equal memory usage. 
+
+To use this feature, the user must create a custom delegate class which 
+implements the `IBcfBuilderDelegate` interface. This interface defines the 
+callback methods that will be triggered after each part of the BCF is built.
+
+Implement custom delegate class:
+```csharp
+public class BcfBuilderDelegate : IBcfBuilderDelegate {
+  public IBcfBuilderDelegate.OnMarkupCreated<IMarkup>
+    MarkupCreated { get; } = Console.WriteLine;
+
+  public IBcfBuilderDelegate.OnExtensionsCreated<IExtensions>
+    ExtensionsCreated { get; } = Console.WriteLine;
+
+  public IBcfBuilderDelegate.OnProjectCreated<IProject>
+    ProjectCreated { get; } = Console.WriteLine;
+
+  public IBcfBuilderDelegate.OnDocumentCreated<IDocumentInfo>
+    DocumentCreatedCreated { get; } = Console.WriteLine;
+}
+```
+
+Process BCF stream:
+```csharp
+var bcfBuilderDelegate = new BcfBuilderDelegate();
+builder = new BcfBuilder();
+builder.SetDelegate(bcfBuilderDelegate);
+await using var stream = new FileStream(source, FileMode.Open, FileAccess.Read);
+await builder.ProcessStream(stream);
+```
+
 ## File Structure
 
 The structure of the BCF is per [the standard][3]. There is, however, no

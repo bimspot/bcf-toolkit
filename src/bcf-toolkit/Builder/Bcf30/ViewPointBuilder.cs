@@ -39,6 +39,7 @@ public class ViewPointBuilder : IViewPointBuilder<
     return this;
   }
 
+
   public ViewPointBuilder SetSnapshotData(FileData? snapshotData) {
     _viewPoint.SnapshotData = snapshotData;
     return this;

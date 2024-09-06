@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Interfaces;
 
@@ -135,4 +136,17 @@ public interface IConverter {
   ///   Returns the `Bcf` object which is specified as a type parameter.
   /// </returns>
   Task<T> BcfFromStream<T>(Stream stream);
+
+  /// <summary>
+  ///   The function processes BCF file stream and constructs an in-memory
+  ///   representation of the BCF. As each part of the BCF is built the
+  ///   associated delegate function is invoked.
+  /// </summary>
+  /// <param name="stream">The BCF file stream.</param>
+  /// <param name="builderDelegate">
+  ///   The delegate object containing callback functions that are invoked
+  ///   after each part of the BCF is constructed.
+  /// </param>
+  /// <returns></returns>
+  public Task ProcessStream(Stream stream, IBcfBuilderDelegate builderDelegate);
 }

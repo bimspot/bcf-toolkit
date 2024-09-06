@@ -341,7 +341,7 @@ public class WorkerTests {
       "Resources/Bcf/v2.1/AllPartsVisible.bcfzip",
       FileMode.Open,
       FileAccess.Read);
-    var bcf = await builder.BuildFromStream(stream);
+    var bcf = await builder.BuildInMemoryFromStream(stream);
     _worker.ToBcf(bcf, BcfVersionEnum.Bcf21, outputStream);
 
     await outputStream.FlushAsync();

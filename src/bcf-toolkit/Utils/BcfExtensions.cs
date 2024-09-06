@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using BcfToolkit.Builder.Interfaces;
 using BcfToolkit.Model;
 using BcfToolkit.Model.Interfaces;
 
@@ -24,15 +25,25 @@ public static class BcfExtensions {
   ///   The method unzips the BCFzip from a stream,
   ///   and parses the markup xml files within to create an in memory
   ///   representation of the data.
-  ///   Topic folder structure inside a BCFzip archive:
-  ///   The folder name is the GUID of the topic. This GUID is in the UUID form.
-  ///   The GUID must be all-lowercase. The folder contains the following file:
-  ///   * markup.bcf
-  ///   Additionally the folder can contain other files:
-  ///   * Viewpoint files
-  ///   * Snapshot files
-  ///   * Bitmaps
-  ///   Notification: This function adjusts the stream position back to 0 in order to use it again.
+  /// </summary>
+  /// <param name="stream">The source stream of the BCFzip.</param>
+  /// <param name="onMarkupCreated">
+  ///   If the delegate function is set, the caller will receive every markup
+  ///   as they are created, without building up an in-memory representation
+  ///   of the entire BCF document.
+  /// </param>
+  public static async Task ParseMarkups<TMarkup,
+    TVisualizationInfo>(Stream stream,
+    IBcfBuilderDelegate.OnMarkupCreated<TMarkup> onMarkupCreated)
+    where TMarkup : IMarkup
+    where TVisualizationInfo : IVisualizationInfo {
+    await _ParseMarkups<TMarkup, TVisualizationInfo>(stream, onMarkupCreated);
+  }
+
+  /// <summary>
+  ///   The method unzips the BCFzip from a stream,
+  ///   and parses the markup xml files within to create an in memory
+  ///   representation of the data.
   /// </summary>
   /// <param name="stream">The source stream of the BCFzip.</param>
   /// <returns>Returns a Task with a List of `Markup` models.</returns>
@@ -41,7 +52,34 @@ public static class BcfExtensions {
     TVisualizationInfo>(Stream stream)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo {
-    if (stream == null || !stream.CanRead)
+    return await _ParseMarkups<TMarkup, TVisualizationInfo>(stream);
+  }
+
+  /// <summary>
+  ///   The method unzips the BCFzip from a stream,
+  ///   and parses the markup xml files within to create an in memory
+  ///   representation of the data.
+  /// </summary>
+  /// <param name="stream">The source stream of the BCFzip.</param>
+  /// <param name="onMarkupCreated">
+  ///   If the delegate function is set, the caller will receive every markup
+  ///   as they are created, without building up an in-memory representation
+  ///   of the entire BCF document.
+  /// </param>
+  /// <typeparam name="TMarkup"></typeparam>
+  /// <typeparam name="TVisualizationInfo"></typeparam>
+  /// <returns></returns>
+  /// <exception cref="ArgumentException">
+  ///   Exception is thrown if the source stream is not readable.
+  /// </exception>
+  private static async Task<ConcurrentBag<TMarkup>> _ParseMarkups<
+    TMarkup,
+    TVisualizationInfo>(
+    Stream stream,
+    IBcfBuilderDelegate.OnMarkupCreated<TMarkup>? onMarkupCreated = null)
+    where TMarkup : IMarkup
+    where TVisualizationInfo : IVisualizationInfo {
+    if (stream is not { CanRead: true })
       throw new ArgumentException("Source stream is not readable.");
 
     var objType = typeof(TMarkup);
@@ -56,7 +94,7 @@ public static class BcfExtensions {
     // This iterates through the archive file-by-file and the sub-folders
     // being just in the names of the entries.
     // We know it is a new Markup, when the folder (uuid) changes. In that
-    // case the Markup object is created and pushed into the bac. A special
+    // case the Markup object is created and pushed into the bag. A special
     // case is the last entry in the archive, when that is reached, the
     // markup is created as well.
 
@@ -82,18 +120,18 @@ public static class BcfExtensions {
 
       // This sets the folder context
       var uuid = entry.FullName.Split("/")[0];
-      //var isTopic = Regex.IsMatch(uuid.Replace("-", ""), "^[a-fA-F0-9]+$");
 
       var isNewTopic =
         !string.IsNullOrEmpty(currentUuid) && uuid != currentUuid;
 
       if (isNewTopic)
-        WritingOutMarkup(
+        AddOrInvokeMarkup(
           ref markup,
           ref visInfos,
           ref snapshots,
           currentUuid,
-          markups);
+          markups,
+          onMarkupCreated);
 
       currentUuid = uuid;
 
@@ -124,12 +162,13 @@ public static class BcfExtensions {
       }
 
       if (isLastTopicEntry)
-        WritingOutMarkup(
+        AddOrInvokeMarkup(
           ref markup,
           ref visInfos,
           ref snapshots,
           currentUuid,
-          markups);
+          markups,
+          onMarkupCreated);
     }
 
     // Stream must be positioned back to 0 in order to use it again
@@ -137,18 +176,36 @@ public static class BcfExtensions {
     return markups;
   }
 
-  private static void WritingOutMarkup<TMarkup, TVisualizationInfo>(
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <param name="markup"></param>
+  /// <param name="visInfos"></param>
+  /// <param name="snapshots"></param>
+  /// <param name="currentUuid"></param>
+  /// <param name="markups"></param>
+  /// <param name="onMarkupCreated"></param>
+  /// <typeparam name="TMarkup"></typeparam>
+  /// <typeparam name="TVisualizationInfo"></typeparam>
+  /// <exception cref="InvalidDataException"></exception>
+  private static void AddOrInvokeMarkup<TMarkup, TVisualizationInfo>(
     ref TMarkup? markup,
     ref Dictionary<string, TVisualizationInfo>? visInfos,
     ref Dictionary<string, FileData>? snapshots,
     string currentUuid,
-    ConcurrentBag<TMarkup> markups)
+    ConcurrentBag<TMarkup> markups,
+    IBcfBuilderDelegate.OnMarkupCreated<TMarkup>? onMarkupCreated = null)
     where TMarkup : IMarkup
     where TVisualizationInfo : IVisualizationInfo {
     // This is a new subfolder, writing out Markup.
     if (markup != null) {
       markup.SetViewPoints(visInfos, snapshots);
-      markups.Add(markup);
+
+      // If a delegate is provided, invoke it without adding markup to the BCF
+      if (onMarkupCreated is not null)
+        onMarkupCreated?.Invoke(markup);
+      else
+        markups.Add(markup);
 
       // Null-ing external references
       markup = default;
@@ -171,8 +228,41 @@ public static class BcfExtensions {
   /// </summary>
   /// <param name="stream">The file stream of the BCFzip.</param>
   /// <returns>Returns a Task with an `Extensions` model.</returns>
-  public static Task<TExtensions> ParseExtensions<TExtensions>(Stream stream) {
-    return ParseRequired<TExtensions>(stream, entry => entry.IsExtensions());
+  public static Task<TExtensions> ParseExtensions<TExtensions>(Stream stream)
+    where TExtensions : IExtensions {
+    return _ParseExtensions<TExtensions>(stream);
+  }
+
+  /// <summary>
+  ///   The method unzips the BCFzip from a file stream,
+  ///   and parses the `extensions.xml` file within to create an in memory
+  ///   representation of the data.
+  ///   This is a required in the BCF archive.
+  ///   HISTORY: New file in BCF 3.0.
+  ///   An XML file defining the extensions of a project.
+  /// </summary>
+  /// <param name="stream">The file stream of the BCFzip.</param>
+  /// <param name="onExtensionsCreated">
+  ///   If the delegate function is set, the caller will receive an extensions
+  ///   as it is created, without building up an in-memory representation
+  ///   of the entire BCF document.
+  /// </param>
+  /// <returns>Returns a Task with an `Extensions` model.</returns>
+  public static Task ParseExtensions<TExtensions>(
+    Stream stream,
+    IBcfBuilderDelegate.OnExtensionsCreated<TExtensions>? onExtensionsCreated)
+    where TExtensions : IExtensions {
+    return _ParseExtensions(stream, onExtensionsCreated);
+  }
+
+  private static async Task<TExtensions> _ParseExtensions<TExtensions>(
+    Stream stream,
+    IBcfBuilderDelegate.OnExtensionsCreated<TExtensions>? onExtensionsCreated = null)
+    where TExtensions : IExtensions {
+    var extensions =
+      await ParseRequired<TExtensions>(stream, entry => entry.IsExtensions());
+    onExtensionsCreated?.Invoke(extensions);
+    return extensions;
   }
 
   /// <summary>
@@ -186,8 +276,55 @@ public static class BcfExtensions {
   /// </summary>
   /// <param name="stream">The stream of the BCFzip.</param>
   /// <returns>Returns a Task with an `ProjectInfo` model.</returns>
-  public static Task<TProjectInfo?> ParseProject<TProjectInfo>(Stream stream) {
-    return ParseOptional<TProjectInfo>(stream, entry => entry.IsBcfProject());
+  public static Task<TProjectInfo?> ParseProject<TProjectInfo>(Stream stream)
+    where TProjectInfo : IProject {
+    return _ParseProject<TProjectInfo>(stream);
+  }
+
+  /// <summary>
+  ///   The method unzips the BCFzip from a file stream,
+  ///   and parses the `project.bcfp` file within to create an in memory
+  ///   representation of the data.
+  ///   This is an optional file in the BCF archive.
+  ///   HISTORY: From BCF 2.0.
+  ///   The project file contains reference information about the project
+  ///   the topics belong to.
+  /// </summary>
+  /// <param name="stream">The stream of the BCFzip.</param>
+  /// <param name="onProjectCreated">
+  ///   If the delegate function is set, the caller will receive a project
+  ///   as it is created, without building up an in-memory representation
+  ///   of the entire BCF document.
+  /// </param>
+  /// <returns>Returns a Task with an `ProjectInfo` model.</returns>
+  public static Task ParseProject<TProjectInfo>(
+    Stream stream,
+    IBcfBuilderDelegate.OnProjectCreated<TProjectInfo> onProjectCreated)
+    where TProjectInfo : IProject {
+    return _ParseProject(stream, onProjectCreated);
+  }
+
+  private static async Task<TProjectInfo?> _ParseProject<TProjectInfo>(
+    Stream stream,
+    IBcfBuilderDelegate.OnProjectCreated<TProjectInfo>? onProjectCreated = null)
+    where TProjectInfo : IProject {
+    var project = await ParseOptional<TProjectInfo>(stream, entry => entry.IsBcfProject());
+    if (project is not null)
+      onProjectCreated?.Invoke(project);
+    return project;
+  }
+
+  public static Task<TDocumentInfo?> ParseDocuments<TDocumentInfo>(
+    Stream stream)
+    where TDocumentInfo : IDocumentInfo {
+    return _ParseDocuments<TDocumentInfo>(stream);
+  }
+
+  public static Task ParseDocuments<TDocumentInfo>(
+    Stream stream,
+    IBcfBuilderDelegate.OnDocumentCreated<TDocumentInfo>? onDocumentCreated)
+    where TDocumentInfo : IDocumentInfo {
+    return _ParseDocuments(stream, onDocumentCreated);
   }
 
   /// <summary>
@@ -201,13 +338,15 @@ public static class BcfExtensions {
   ///   document guid. The actual filename is stored in the documents.xml.
   ///   
   ///   The `documents.xml` and documents folder are optional in the BCF archive.
-  ///
+  /// 
   ///   HISTORY: New in BCF 3.0.
   /// </summary>
   /// <param name="stream">The stream of to the BCFzip.</param>
+  /// <param name="onDocumentCreated"></param>
   /// <returns>Returns a Task with an `DocumentInfo` model.</returns>
-  public static async Task<TDocumentInfo?>
-    ParseDocuments<TDocumentInfo>(Stream stream)
+  private static async Task<TDocumentInfo?> _ParseDocuments<TDocumentInfo>(
+    Stream stream,
+    IBcfBuilderDelegate.OnDocumentCreated<TDocumentInfo>? onDocumentCreated = null)
     where TDocumentInfo : IDocumentInfo {
     if (stream is null || !stream.CanRead)
       throw new ArgumentException("Source stream is not readable.");
@@ -239,13 +378,14 @@ public static class BcfExtensions {
 
     // Stream must be positioned back to 0 in order to use it again
     stream.Position = 0;
+    onDocumentCreated?.Invoke(documentInfo);
     return documentInfo;
   }
 
-  private static Task<T> ParseRequired<T>(
+  private static async Task<T> ParseRequired<T>(
     Stream stream,
     Func<ZipArchiveEntry, bool> filterFn) {
-    var obj = ParseObject<T>(stream, filterFn);
+    var obj = await ParseObject<T>(stream, filterFn);
     if (obj is null)
       throw new InvalidDataException($"{typeof(T)} is not found in BCF.");
     return obj;

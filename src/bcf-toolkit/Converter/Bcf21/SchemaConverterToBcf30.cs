@@ -2,10 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf30;
 using BcfToolkit.Utils;
 
 namespace BcfToolkit.Converter.Bcf21;
+
+// public class BcfBuilderDelegate : BcfToolkit.Builder.Bcf21.Interfaces.IBcfBuilderDelegate {
+//   public BcfToolkit.Builder.Bcf21.Interfaces.IBcfBuilderDelegate.OnMarkupCreated<Model.Bcf21.Markup>
+//     MarkupCreated { get; } = markup => {
+//       var converted = SchemaConverterToBcf30.ConvertMarkup(markup);
+//   };
+//
+//   public BcfToolkit.Builder.Bcf21.Interfaces.IBcfBuilderDelegate.OnProjectCreated<Model.Bcf21.ProjectExtension>
+//     ProjectCreated { get; } = Console.WriteLine;
+//
+// }
 
 public static class SchemaConverterToBcf30 {
 
@@ -43,7 +55,13 @@ public static class SchemaConverterToBcf30 {
     return builder.Build();
   }
 
-  private static Model.Bcf30.Markup ConvertMarkup(Model.Bcf21.Markup from) {
+  // public static async Task ProcessStream(Stream stream) {
+  //   var del = new BcfBuilderDelegate();
+  //   var fromBuilder = new BcfToolkit.Builder.Bcf21.BcfBuilder(del);
+  //   await fromBuilder.ProcessStream(stream);
+  // }
+
+  public static Model.Bcf30.Markup ConvertMarkup(Model.Bcf21.Markup from) {
     var builder = new MarkupBuilder();
     var topic = from.Topic;
     builder
