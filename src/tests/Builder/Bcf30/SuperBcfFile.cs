@@ -31,7 +31,7 @@ public class SuperBcfFile {
   public async Task CreateSuperBcf30File() {
 
     var labels = new List<string> { "label1", "label2", };
-    var referenceLinks = new List<string> { "link1", "link2", "link3" };
+    var referenceLinks = new List<string> { "http://www.buildingsmart-tech.org", "www.google.com" };
 
     // Header
     var fileBuilder = new FileBuilder();
@@ -39,10 +39,10 @@ public class SuperBcfFile {
       fileBuilder
         .SetReference("reference")
         .SetIsExternal(true)
-        .SetFileName("FileName")
+        .SetFileName("StructuralModel.ifc")
         .SetDate(DateTime.Today)
-        .SetIfcProject("1234567890123456789012")
-        .SetIfcSpatialStructureElement("1234567890123456789013")
+        .SetIfcProject("5g8GxLEzP459ZWW6_RGsez")
+        .SetIfcSpatialStructureElement("138GxLEzP459ZWW6_RGsez")
         .Build();
     var headers = new List<File> { headerFile };
 
@@ -52,10 +52,15 @@ public class SuperBcfFile {
       topicDocumentReferenceBuilder
         .SetDescription("description")
         .SetGuid("000b4df2-0187-49a9-8a4a-23992696bafd")
-        .SetUrl("documentUrl")
-        .SetDocumentGuid("111b4df2-0187-49a9-8a4a-23992696bafd")
+        .SetDocumentGuid("447b4df2-0187-49a9-8a4a-23992696bafd")
         .Build();
-    var topicDocumentReferences = new List<DocumentReference> { topicDocumentReference };
+
+    var topicDocumentReferenceExternal =
+      topicDocumentReferenceBuilder
+        .SetDescription("BCF 3.0 Markup Schema")
+        .SetUrl("http://www.buildingsmart-tech.org/specifications/bcf-releases/bcfxml-v1/markup.xsd/at_download/file<")
+        .Build();
+    var topicDocumentReferences = new List<DocumentReference> { topicDocumentReference, topicDocumentReferenceExternal };
 
     // Comments
     var commentBuilder1 = new CommentBuilder();
@@ -63,21 +68,21 @@ public class SuperBcfFile {
     var comment1 =
       commentBuilder1
         .SetGuid("999b4df2-0187-49a9-8a4a-23992696bafd")
-        .SetModifiedAuthor("modAuthor1")
+        .SetModifiedAuthor("john.wick@johnwick.com")
         .SetDate(DateTime.Today)
         .SetModifiedDate(DateTime.Today)
-        .SetAuthor("author1")
-        .SetCommentProperty("commProp1")
+        .SetAuthor("john.wick@johnwick.com")
+        .SetCommentProperty("Pls changes the wall thickness to 8cm")
         .Build();
     var comment2 =
       commentBuilder2
         .SetGuid("998b4df2-0187-49a9-8a4a-23992696bafd")
-        .SetModifiedAuthor("modAuthor2")
+        .SetModifiedAuthor("jim.carry@jim.com")
         .SetDate(DateTime.Today)
         .SetModifiedDate(DateTime.Today)
-        .SetAuthor("author2")
-        .SetViewPointGuid("111b4df2-0187-49a9-8a4a-23992696bafd")
-        .SetCommentProperty("commProp2")
+        .SetAuthor("jim.carry@jim.com")
+        .SetViewPointGuid("445b4df2-0187-49a9-8a4a-23992696bafd")
+        .SetCommentProperty("Pls changes the wall thickness to 8cm")
         .Build();
     var comments = new List<Comment> { comment1, comment2 };
 
@@ -86,27 +91,17 @@ public class SuperBcfFile {
     var componentBuilder = new ComponentBuilder();
     var component =
       componentBuilder
-        .SetIfcGuid("1234567890123456789015")
+        .SetIfcGuid("118GxLEzP459ZWW6_RGsez")
         .SetOriginatingSystem("originatingSystem")
         .SetAuthoringToolId("authoringToolId")
         .Build();
-    var components = new List<Component> { component, component };
+    var components = new List<Component> { component };
 
     var visibilityBuilder = new VisibilityBuilder();
     var compVis =
       visibilityBuilder
         .SetDefaultVisibility(true)
         .AddExceptions(components)
-        .Build();
-
-    var orthoBuilder = new OrthogonalCameraBuilder();
-    var ortho =
-      orthoBuilder
-        .SetAspectRatio(1.2)
-        .SetViewToWorldScale(1.2)
-        .SetCameraViewPoint(21.2, 2.4, 3.6)
-        .SetCameraDirection(31.2, 2.4, 3.6)
-        .SetCameraUpVector(41.2, 2.4, 3.6)
         .Build();
 
     var persBuilder = new PerspectiveCameraBuilder();
@@ -174,11 +169,9 @@ public class SuperBcfFile {
     var visualizationInfo =
       visualizationInfoBuilder
         .SetGuid("334b4df2-0187-49a9-8a4a-23992696bafd")
-        .SetOrthogonalCamera(ortho)
         .SetPerspectiveCamera(pers)
         .AddBitmaps(bitmaps)
         .AddColorings(colorings)
-        .AddSelections(components)
         .AddClippingPlanes(clippingPlanes)
         .SetVisibility(compVis)
         .AddSelections(components)
@@ -189,7 +182,7 @@ public class SuperBcfFile {
     var viewPoint =
       viewPointBuilder
         .SetGuid("445b4df2-0187-49a9-8a4a-23992696bafd")
-        .SetIndex(5)
+        .SetIndex(0)
         .SetSnapshot("snapshot")
         .SetSnapshotData(new FileData {
           Data = "aGVsbG8="
@@ -203,7 +196,7 @@ public class SuperBcfFile {
     var bimSnippetBuilder = new BimSnippetBuilder();
     var bimSnippet =
       bimSnippetBuilder
-        .SetReference("reference")
+        .SetReference("https://.../snippetExample.ifc")
         .SetIsExternal(true)
         .SetSnippetType("snippetType")
         .SetReferenceSchema("refSchema")
@@ -224,10 +217,10 @@ public class SuperBcfFile {
       documentBuilder
         .SetDescription("desc")
         .SetGuid("447b4df2-0187-49a9-8a4a-23992696bafd")
-        .SetFileName("New document")
+        .SetFileName("NewIfc.ifc")
         .SetDocumentData(documentData)
         .Build();
-    var docList = new List<Document>();
+    var docList = new List<Document> { doc };
     var docBuilder = new DocumentInfoBuilder();
 
     var docInfo =
@@ -235,13 +228,13 @@ public class SuperBcfFile {
         .AddDocuments(docList)
         .Build();
 
-    var priorities = new List<string> { "priority1", "priority2" };
-    var users = new List<string> { "user1", "user2" };
-    var stages = new List<string> { "stage1", "stage2" };
+    var priorities = new List<string> { "Low", "Critical", "High" };
+    var users = new List<string> { "john.wick@johnwick.com", "jim.carry@jim.com" };
+    var stages = new List<string> { "PreDesign", "Design" };
     var snippetTypes = new List<string> { "snippetType1", "snippetType2" };
-    var topicLabels = new List<string> { "label1", "label2" };
-    var topicStatuses = new List<string> { "open", "closed" };
-    var topicTypes = new List<string> { "type1", "type2" };
+    var topicLabels = new List<string> { "ARC", "STR" };
+    var topicStatuses = new List<string> { "Open", "Closed" };
+    var topicTypes = new List<string> { "Issue", "Warning", "Error" };
 
     var extensionsBuilder = new ExtensionsBuilder();
     var extensions =
@@ -266,17 +259,17 @@ public class SuperBcfFile {
         .AddLabels(labels)
         .AddComments(comments)
         .AddViewPoints(viewPoints)
-        .SetTitle("title")
-        .SetPriority("priority")
+        .SetTitle("Wall reposition issue")
+        .SetPriority("Critical")
         .SetGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
-        .SetCreationAuthor("creationAuthor")
-        .SetModifiedAuthor("modAuthor")
-        .SetAssignedTo("assignedTo")
-        .SetStage("stage")
-        .SetTopicType("topicType")
-        .SetTopicStatus("readyyy")
+        .SetCreationAuthor("john.wick@johnwick.com")
+        .SetModifiedAuthor("john.wick@johnwick.com")
+        .SetAssignedTo("jim.carry@jim.com")
+        .SetStage("Design")
+        .SetTopicType("Error")
+        .SetTopicStatus("Open")
         .SetDescription("description")
-        .SetIndex(5)
+        .SetIndex(0)
         .SetCreationDate(DateTime.Today)
         .SetDueDate(DateTime.Today)
         .SetModifiedDate(DateTime.Today)

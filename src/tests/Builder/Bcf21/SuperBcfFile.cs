@@ -29,7 +29,8 @@ public class SuperBcfFile {
   public async Task CreateSuperBcf21File() {
 
     var labels = new List<string> { "label1", "label2", };
-    var referenceLinks = new List<string> { "link1", "link2", "link3" };
+    var referenceLinks = new List<string> { "http://www.buildingsmart-tech.org", "www.google.com" };
+
 
     // Header
     var headerBuilder = new HeaderFileBuilder();
@@ -37,9 +38,9 @@ public class SuperBcfFile {
       headerBuilder
         .SetDate(DateTime.Now)
         .SetReference("reference")
-        .SetFileName("Bauprojekt 1")
-        .SetIfcProject("1234567890123456789012")
-        .SetIfcSpatialStructureElement("1234567890123456789013")
+        .SetFileName("Bauprojekt1.ifc")
+        .SetIfcProject("4g8GxLEzP459ZWW6_RGsez")
+        .SetIfcSpatialStructureElement("128GxLEzP459ZWW6_RGsez")
         .SetIsExternal(true)
         .Build();
     var headers = new List<HeaderFile> { header };
@@ -54,12 +55,19 @@ public class SuperBcfFile {
         .SetReferencedDocument("ref_document.png")
         .Build();
 
+    var topicDocumentReferenceExternal =
+      topicDocumentReferenceBuilder
+        .SetDescription("BCFv1 Markup Schema")
+        .SetIsExternal(true)
+        .SetReferencedDocument("http://www.buildingsmart-tech.org/specifications/bcf-releases/bcfxml-v1/markup.xsd/at_download/file<")
+        .Build();
+
     topicDocumentReference.DocumentData = new FileData {
       Mime = "image/png",
       Data = "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="
     };
     var topicDocumentReferences = new List<TopicDocumentReference>
-      {topicDocumentReference};
+      {topicDocumentReference, topicDocumentReferenceExternal};
 
     // Comments
     var commentBuilder1 = new CommentBuilder();
@@ -67,21 +75,21 @@ public class SuperBcfFile {
     var comment1 =
       commentBuilder1
         .SetGuid("998b4df2-0187-49a9-8a4a-23992696bafd")
-        .SetModifiedAuthor("modAuthor1")
+        .SetModifiedAuthor("john.wick@johnwick.com")
         .SetDate(DateTime.Today)
         .SetModifiedDate(DateTime.Today)
-        .SetAuthor("author1")
-        .SetCommentProperty("commProp1")
+        .SetAuthor("john.wick@johnwick.com")
+        .SetCommentProperty("This wall should be moved 1cm left.")
         .Build();
     var comment2 =
       commentBuilder2
         .SetGuid("997b4df2-0187-49a9-8a4a-23992696bafd")
-        .SetModifiedAuthor("modAuthor2")
+        .SetModifiedAuthor("jim.carry@jim.com")
         .SetDate(DateTime.Today)
         .SetModifiedDate(DateTime.Today)
-        .SetAuthor("author2")
-        .SetViewPointGuid("996b4df2-0187-49a9-8a4a-23992696bafd")
-        .SetCommentProperty("commProp2")
+        .SetAuthor("jim.carry@jim.com")
+        .SetViewPointGuid("444b4df2-0187-49a9-8a4a-23992696bafd")
+        .SetCommentProperty("This wall should be moved 2cm left.")
         .Build();
     var comments = new List<Comment>
       {comment1, comment2};
@@ -92,11 +100,11 @@ public class SuperBcfFile {
     var componentBuilder = new ComponentBuilder();
     var component =
       componentBuilder
-        .SetIfcGuid("1234567890123456789014")
+        .SetIfcGuid("0g8GxLEzP459ZWW6_RGsez")
         .SetOriginatingSystem("originatingSystem")
         .SetAuthoringToolId("authoringToolId")
         .Build();
-    var components = new List<Component> { component, component };
+    var components = new List<Component> { component };
 
     var visibilityBuilder = new VisibilityBuilder();
     var compVis =
@@ -112,15 +120,6 @@ public class SuperBcfFile {
         .SetCameraUpVector(11.2, 21.4, 31.6)
         .SetCameraViewPoint(11.2, 12.4, 13.6)
         .SetViewToWorldScale(1.0)
-        .Build();
-
-    var persBuilder = new PerspectiveCameraBuilder();
-    var pers =
-      persBuilder
-        .SetCameraDirection(1.2, 2.4, 3.6)
-        .SetCameraUpVector(21.2, 22.4, 23.6)
-        .SetCameraViewPoint(12.2, 22.4, 32.6)
-        .SetFieldOfView(1.0)
         .Build();
 
     var vsHintBuilder = new ViewSetupHintsBuilder();
@@ -165,7 +164,6 @@ public class SuperBcfFile {
       visualizationInfoBuilder
         .SetGuid("333b4df2-0187-49a9-8a4a-23992696bafd")
         .SetOrthogonalCamera(ortho)
-        .SetPerspectiveCamera(pers)
         .SetViewSetupHints(vsHint)
         .AddBitmaps(visBitmaps)
         .AddColorings(colorings)
@@ -179,7 +177,7 @@ public class SuperBcfFile {
     var viewPoint =
       viewPointBuilder
         .SetGuid("444b4df2-0187-49a9-8a4a-23992696bafd")
-        .SetIndex(5)
+        .SetIndex(0)
         .SetSnapshot("snapshot.png")
         .SetSnapshotData(new FileData {
           Mime = "data:image/png;base64",
@@ -194,7 +192,7 @@ public class SuperBcfFile {
     var bimSnippetBuilder = new BimSnippetBuilder();
     var bimSnippet =
       bimSnippetBuilder
-        .SetReference("reference")
+        .SetReference("https://.../snippetExample.ifc")
         .SetIsExternal(true)
         .SetSnippetType("snippetType")
         .SetReferenceSchema("refSchema")
@@ -212,22 +210,22 @@ public class SuperBcfFile {
     var bcf = _builder
       .AddMarkup(m => m
         .AddHeaderFiles(headers)
-        .SetTitle("Main title")
-        .SetPriority("Important")
+        .SetTitle("Wall reposition issue")
+        .SetPriority("Low")
         .SetGuid("3ffb4df2-0187-49a9-8a4a-23992696bafd")
-        .SetCreationAuthor("creationAuthor")
-        .SetModifiedAuthor("modAuthor")
-        .SetAssignedTo("assignedTo")
-        .SetStage("design")
-        .SetTopicType("topicType")
-        .SetTopicStatus("finished")
+        .SetCreationAuthor("john.wick@johnwick.com")
+        .SetModifiedAuthor("john.wick@johnwick.com")
+        .SetAssignedTo("jim.carry@jim.com")
+        .SetStage("PreDesign")
+        .SetTopicType("Warning")
+        .SetTopicStatus("Closed")
         .SetDescription("Give me more details")
         .AddLabels(labels)
         .AddReferenceLinks(referenceLinks)
         .AddDocumentReferences(topicDocumentReferences)
         .AddComments(comments)
         .AddViewPoints(viewPoints)
-        .SetIndex(5)
+        .SetIndex(0)
         .SetCreationDate(DateTime.Today)
         .SetDueDate(DateTime.Today)
         .SetModifiedDate(DateTime.Today)

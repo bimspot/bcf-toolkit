@@ -24,7 +24,7 @@ public class BcfBuilderTests {
         .SetTopicType("Issue")
         .SetTopicStatus("Open"))
       .SetExtensions(e => e
-        .AddTopicType("ERROR")
+        .AddTopicType("Error")
         .AddTopicStatus("OPEN")
         .AddPriority("HIGH"))
       .SetProject(p => p

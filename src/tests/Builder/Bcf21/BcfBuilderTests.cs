@@ -35,9 +35,9 @@ public class BcfBuilderTests {
       headerBuilder
       .SetDate(DateTime.Now)
       .SetReference(string.Empty)
-      .SetFileName("Filename")
-      .SetIfcProject("1234567890123456789012")
-      .SetIfcSpatialStructureElement("1234567890123456789012")
+      .SetFileName("StructuralModel.ifc")
+      .SetIfcProject("1g8GxLEzP459ZWW6_RGsez")
+      .SetIfcSpatialStructureElement("2g8GxLEzP459ZWW6_RGsez")
       .SetIsExternal(true)
       .Build();
     var headers = new List<HeaderFile> { header };
@@ -62,8 +62,8 @@ public class BcfBuilderTests {
         .SetModifiedAuthor(string.Empty)
         .SetDate(DateTime.Today)
         .SetModifiedDate(DateTime.Today)
-        .SetAuthor("author1")
-        .SetCommentProperty("commProp1")
+        .SetAuthor("john.wick@johnwick.com")
+        .SetCommentProperty("Pls changes the wall thickness to 8cm")
         .Build();
     var commentPropCanBeEmpty =
       commentBuilder2
@@ -71,8 +71,8 @@ public class BcfBuilderTests {
         .SetModifiedAuthor(string.Empty)
         .SetDate(DateTime.Today)
         .SetModifiedDate(DateTime.Today)
-        .SetAuthor("author2")
-        .SetViewPointGuid("111b4df2-0187-49a9-8a4a-23992696bafd")
+        .SetAuthor("jim.carry@jim.com")
+        .SetViewPointGuid("444b4df2-0187-49a9-8a4a-23992696bafd")
         .SetCommentProperty(string.Empty)
         .Build();
     var comments = new List<Comment> { commentPropMustHaveValue, commentPropCanBeEmpty };
@@ -83,7 +83,7 @@ public class BcfBuilderTests {
     var componentBuilder = new ComponentBuilder();
     var component =
       componentBuilder
-        .SetIfcGuid("1234567890123456789012")
+        .SetIfcGuid("3g8GxLEzP459ZWW6_RGsez")
         .SetOriginatingSystem(string.Empty)
         .SetAuthoringToolId(string.Empty)
         .Build();
@@ -104,7 +104,7 @@ public class BcfBuilderTests {
     var viewPoint =
       viewPointBuilder
         .SetGuid("444b4df2-0187-49a9-8a4a-23992696bafd")
-        .SetIndex(5)
+        .SetIndex(0)
         .SetSnapshot(string.Empty)
         .SetSnapshotData(new FileData {
           Data = "snapshotdata1"
