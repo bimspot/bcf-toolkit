@@ -235,7 +235,6 @@ public class SuperBcfFile {
         .SetProjectId("3ZSh2muKX7S8MCESk95seC")
         .SetProjectName("projectName")
         .SetExtensionSchema("extensionSchema"))
-      //   .SetDocumentData(docData)
       .Build();
 
     await _converter.ToBcf(bcf,

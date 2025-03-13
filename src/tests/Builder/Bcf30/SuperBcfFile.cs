@@ -168,7 +168,6 @@ public class SuperBcfFile {
 
     var visualizationInfo =
       visualizationInfoBuilder
-        // .SetGuid("334b4df2-0187-49a9-8a4a-23992696bafd")
         .SetPerspectiveCamera(pers)
         .AddBitmaps(bitmaps)
         .AddColorings(colorings)
