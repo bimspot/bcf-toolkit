@@ -789,9 +789,9 @@ namespace BcfToolkit.Model.Bcf30
         
         /// <summary>
         /// <para xml:lang="en">Pattern: [a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}.</para>
+        /// This field is required but was not mentioned in the documentation.
         /// </summary>
         [System.ComponentModel.DataAnnotations.RegularExpressionAttribute("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}")]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
         [System.Xml.Serialization.XmlAttributeAttribute("Guid")]
         public string Guid { get; set; }
     }
