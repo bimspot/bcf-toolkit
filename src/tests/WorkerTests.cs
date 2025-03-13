@@ -40,15 +40,12 @@ public class WorkerTests {
   [Category("BCF v2.1")]
   public async Task BuildBcfFromV21StreamSamplesTests() {
     var samples = new List<string> {
-      // "Resources/Bcf/v2.1/AllPartsVisible.bcfzip", // assigned to is empty
       "Resources/Bcf/v2.1/ComponentSelection.bcfzip",
       "Resources/Bcf/v2.1/ExternalBIMSnippet.bcfzip",
       "Resources/Bcf/v2.1/MaximumInformation.bcfzip",
       "Resources/Bcf/v2.1/MinimumInformation.bcfzip",
       "Resources/Bcf/v2.1/MiniSolibri.bcfzip",
-      // "Resources/Bcf/v2.1/RelatedTopics.bcfzip", // comment property is empty
-      // "Resources/Bcf/v2.1/SingleVisibleWall.bcfzip", // comment property is empty
-      // "Resources/Bcf/v2.1/UserAssignment.bcfzip" // description is empty
+      "Resources/Bcf/v2.1/MissingVisualizationInfoGuid.bcfzip"
     };
 
     var tasks = samples.Select(async path => {
@@ -207,7 +204,7 @@ public class WorkerTests {
       "Resources/Bcf/v3.0/SingleInvisibleWall.bcfzip",
       "Resources/Bcf/v3.0/TestBcf30.bcfzip",
       "Resources/Bcf/v3.0/TopicsWithDifferentModelsVisible.bcfzip",
-      "Resources/Bcf/v3.0/UserAssignment.bcfzip"
+      "Resources/Bcf/v3.0/UserAssignment.bcfzip",
     };
     var tasks = samples.Select(async source => {
       var target =
