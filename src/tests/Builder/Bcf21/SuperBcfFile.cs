@@ -10,7 +10,7 @@ using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 using NUnit.Framework;
 
-namespace tests.Builder.Bcf21;
+namespace Tests.Builder.Bcf21;
 
 
 public class SuperBcfFile {
@@ -162,7 +162,7 @@ public class SuperBcfFile {
 
     var visualizationInfo =
       visualizationInfoBuilder
-        .SetGuid("333b4df2-0187-49a9-8a4a-23992696bafd")
+        // .SetGuid("333b4df2-0187-49a9-8a4a-23992696bafd")
         .SetOrthogonalCamera(ortho)
         .SetViewSetupHints(vsHint)
         .AddBitmaps(visBitmaps)

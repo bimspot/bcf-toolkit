@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using BcfToolkit.Utils;
 using NUnit.Framework;
 
-namespace tests.Utils;
+namespace Tests.Utils;
 
 [TestFixture]
 public class ZipArchiveEntryExtensionsTests {
