@@ -12,7 +12,7 @@ using NUnit.Framework;
 using BcfBuilder = BcfToolkit.Builder.Bcf30.BcfBuilder;
 using File = BcfToolkit.Model.Bcf30.File;
 
-namespace tests.Builder.Bcf30;
+namespace Tests.Builder.Bcf30;
 
 
 public class SuperBcfFile {
@@ -168,7 +168,6 @@ public class SuperBcfFile {
 
     var visualizationInfo =
       visualizationInfoBuilder
-        .SetGuid("334b4df2-0187-49a9-8a4a-23992696bafd")
         .SetPerspectiveCamera(pers)
         .AddBitmaps(bitmaps)
         .AddColorings(colorings)

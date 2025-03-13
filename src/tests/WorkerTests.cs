@@ -40,15 +40,12 @@ public class WorkerTests {
   [Category("BCF v2.1")]
   public async Task BuildBcfFromV21StreamSamplesTests() {
     var samples = new List<string> {
-      // "Resources/Bcf/v2.1/AllPartsVisible.bcfzip", // assigned to is empty
       "Resources/Bcf/v2.1/ComponentSelection.bcfzip",
       "Resources/Bcf/v2.1/ExternalBIMSnippet.bcfzip",
       "Resources/Bcf/v2.1/MaximumInformation.bcfzip",
       "Resources/Bcf/v2.1/MinimumInformation.bcfzip",
       "Resources/Bcf/v2.1/MiniSolibri.bcfzip",
-      // "Resources/Bcf/v2.1/RelatedTopics.bcfzip", // comment property is empty
-      // "Resources/Bcf/v2.1/SingleVisibleWall.bcfzip", // comment property is empty
-      // "Resources/Bcf/v2.1/UserAssignment.bcfzip" // description is empty
+      "Resources/Bcf/v2.1/MissingVisualizationInfoGuid.bcfzip"
     };
 
     var tasks = samples.Select(async path => {
@@ -143,38 +140,6 @@ public class WorkerTests {
     await stream.FlushAsync();
   }
 
-  // [Test]
-  // [Category("BCF v3.0")]
-  // public async Task BcfV30ToV21StreamSamplesTests() {
-  //   var samples = new List<string> {
-  //     "Resources/Bcf/v3.0/ComponentSelection.bcfzip",
-  //     "Resources/Bcf/v3.0/DocumentReferenceExternal.bcfzip",
-  //     "Resources/Bcf/v3.0/DocumentReferenceInternal.bcfzip",
-  //     "Resources/Bcf/v3.0/DueDate.bcfzip",
-  //     "Resources/Bcf/v3.0/Labels.bcfzip",
-  //     "Resources/Bcf/v3.0/Milestone.bcfzip",
-  //     "Resources/Bcf/v3.0/RelatedTopics.bcfzip",
-  //     "Resources/Bcf/v3.0/SingleInvisibleWall.bcfzip",
-  //     "Resources/Bcf/v3.0/TestBcf30.bcfzip",
-  //     "Resources/Bcf/v3.0/TopicsWithDifferentModelsVisible.bcfzip",
-  //     "Resources/Bcf/v3.0/UserAssignment.bcfzip"
-  //   };
-  //
-  //   var tasks = samples.Select(async path => {
-  //     var builder = new BcfToolkit.Builder.Bcf30.BcfBuilder();
-  //     await using var inputStream =
-  //       new FileStream(path, FileMode.Open, FileAccess.Read);
-  //
-  //     var bcf = await builder.BuildFromStream(inputStream);
-  //     var stream = await _worker.ToBcf(bcf, BcfVersionEnum.Bcf21);
-  //     var version = await BcfExtensions.GetVersionFromStreamArchive(stream);
-  //     Assert.That(BcfVersionEnum.Bcf21, Is.EqualTo(version));
-  //     await stream.FlushAsync();
-  //   }).ToArray();
-  //
-  //   await Task.WhenAll(tasks);
-  // }
-
   [Test]
   [Category("BCF v2.1")]
   public async Task ConvertBcfZipToJsonV21SamplesTests() {
@@ -207,7 +172,7 @@ public class WorkerTests {
       "Resources/Bcf/v3.0/SingleInvisibleWall.bcfzip",
       "Resources/Bcf/v3.0/TestBcf30.bcfzip",
       "Resources/Bcf/v3.0/TopicsWithDifferentModelsVisible.bcfzip",
-      "Resources/Bcf/v3.0/UserAssignment.bcfzip"
+      "Resources/Bcf/v3.0/UserAssignment.bcfzip",
     };
     var tasks = samples.Select(async source => {
       var target =
@@ -346,12 +311,5 @@ public class WorkerTests {
 
     await outputStream.FlushAsync();
     outputStream.Close();
-
-    // await using var inputStream = new FileStream(
-    //   path,
-    //   FileMode.Open,
-    //   FileAccess.Read);
-    // var bcfResult = await _worker.BcfFromStream(inputStream);
-    // Assert.That(bcfResult.Markups.Count, Is.EqualTo(1));
   }
 }

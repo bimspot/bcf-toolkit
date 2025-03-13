@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using BcfToolkit.Builder.Bcf30;
 using NUnit.Framework;
 
-namespace tests.Builder.Bcf30;
+namespace Tests.Builder.Bcf30;
 
 public class BcfBuilderTests {
   private BcfBuilder _builder = null!;

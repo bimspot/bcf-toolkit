@@ -9,7 +9,7 @@ using BcfToolkit.Model;
 using BcfToolkit.Model.Bcf21;
 using NUnit.Framework;
 
-namespace tests.Builder.Bcf21;
+namespace Tests.Builder.Bcf21;
 
 public class BcfBuilderTests {
   private BcfBuilder _builder = null!;

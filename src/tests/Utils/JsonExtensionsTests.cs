@@ -5,7 +5,7 @@ using NUnit.Framework;
 using bcf21 = BcfToolkit.Model.Bcf21;
 using bcf30 = BcfToolkit.Model.Bcf30;
 
-namespace tests.Utils;
+namespace Tests.Utils;
 
 public class JsonExtensionsTests {
   /// <summary>
